@@ -170,6 +170,11 @@ The golden-standard reference pages under `docs/acpi/` already embody every rule
   - GOOD: `### acpi_ev_gpe_dispatch routes by dispatch type`
   - BAD: `### Why the EC uses a raw handler`
   - GOOD: `### EC installs a raw GPE handler`
+- Every DETAILS H3/H4 heading is a declarative "what-does-what" statement (a subject performing an action on an object), never a bare noun or a bare symbol name. A reader should learn what the symbol does from the heading alone. This applies to DETAILS subsection headings; the H3 catalog labels in LINUX KERNEL (grouped by file or functional area, for example `### Tree store primitives (vma.h)`) stay as noun-phrase labels and are exempt.
+  - BAD: `### vma_state_init` or `### The slab cache`
+  - GOOD: `### vma_state_init creates the vm_area_cachep slab`
+  - BAD: `### vm_refcnt`
+  - GOOD: `### vm_refcnt encodes attach state and the per-VMA lock in six values`
 
 ### 7a. Prose colon idioms (mandatory)
 
@@ -226,6 +231,14 @@ Before writing any body paragraph, scan for these patterns and rewrite if any ap
 
 If any of these appear in body prose, rewrite the paragraph as plain declarative sentences. Quote comments with "According to the comment <quote>, ..." or "The comment reads <quote>." instead of label-colon framing.
 
+Do not use these words in body prose; each asserts a framing without naming a mechanism. Replace each with the concrete rule, count, or helper it stands in for.
+
+- "contract" (including "the X, Y, Z contract"): name the actual precondition, guarantee, rule, or invariant. BAD: `The reset, duplicate, destroy contract spans every per-object state.` GOOD: state the reset rule, the duplicate rule, and the destroy rule each path follows.
+- "tally": use "count" or "running count". BAD: `the running tally of VMAs`. GOOD: `the running count of VMAs`.
+- "canonical": name the helper or path plainly. BAD: `the canonical helper is vma_link() in mm/vma.c`. GOOD: `the helper that performs it is vma_link() in mm/vma.c`.
+
+Do not hedge with vague frequency or generality words in prose ("usually", "typically", "generally", "often", "normally", "commonly", "mostly", "in practice", "tends to", "on a hot cpu"). Each dodges the actual condition the code tests. Name that condition instead. BAD: `A vm_area_alloc() on a hot cpu usually takes a ready object from the per-cpu sheaf without locking a shared slab.` GOOD: `A vm_area_alloc() takes a ready object from the per-cpu main sheaf without locking a shared slab while that sheaf is non-empty, and reaches the shared slab only to refill an empty sheaf.` A frequency word reproduced verbatim from kernel source inside a fenced block, or a genuine measured statistic that cites a counter or benchmark, is exempt.
+
 ### 7d. Hollow superlatives and unsupported adjectives (mandatory)
 
 Never characterize a kernel construct with a ranking adjective unless the same sentence (or the next one) names the concrete mechanic that justifies the ranking. Each kernel symbol, mode, or path is unique by definition; saying it is "the most X" or "the least Y" or "the strongest Z" without explaining the comparison adds zero information and is banned.
@@ -263,6 +276,7 @@ Every page must read as a self-contained source. A reader who never opens the ke
 
 Concrete requirements:
 
+- Never fabricate, paraphrase, or approximate kernel source. Every fenced ` ```c ` block must be the real code, located and verified with the semcode tools (`find_function`, `find_type`, `grep_functions`) and by reading the on-disk source file, then reproduced verbatim (exact text, all comments, and tab indentation). Confirm the symbol exists at the documented version and that the reproduced lines match the file before citing them; if you cannot locate the real code for a symbol, do not show a code block for it. Where a semcode index is stale or disagrees with the working tree, the on-disk source at the documented version is the ground truth.
 - For every function listed in LINUX KERNEL, the DETAILS section must contain at least one fenced ` ```c ` block showing either its full body (when it is small) or the body of the case label / branch / inner block that the page is actually describing. Do not describe a function's behavior in prose alone when the body would fit in a screen of code.
 - For every struct or enum listed in LINUX KERNEL, the DETAILS section must contain a fenced ` ```c ` block reproducing the type definition (including comments and `#ifdef` regions). The reader must see the exact field list and any decorative comments without leaving the page.
 - For every macro or static array (e.g. `fallbacks[][]`, `__used` lookup tables) referenced in body prose, reproduce the definition as a fenced block at the point where the prose first depends on it.
@@ -960,6 +974,23 @@ When a page illustrates a behavior with a concrete driver, both the choice of dr
 - When performing batch edits across many files, preserve existing content (e.g., lspci output, code references) that was added in prior passes. Read the full file before editing to avoid accidentally removing prior enrichments.
 
 ### 9. Save the page
+
+A page is not done until both gates below pass. Complete them before writing the file, and do not save on any failure.
+
+**Gate A (mechanical, grep the finished page).** Confirm zero hits for each, and re-run after every edit including your own hand-edits: em-dashes; `**` boldface in prose; the label-colon-explanation idiom in prose (7a/7c), excluding the caution blockquote and text inside quotes; the 7c/7d editorializing and superlative phrases (`the reasoning`, `is the key`, `X matters`, `X is what makes Y`, `the pattern is`, `worthwhile`, `crucial`, `elegant`, `cornerstone`, `the most <adj>`, and the like); the banned words `contract`, `tally` (also `tallied`/`tallies`/`tallying`), `canonical`; vague hedges (`usually`, `typically`, `generally`, `normally`, `commonly`, `mostly`, `in practice`, `tends to`); `vtable`; internal `.md` cross-links; and `Why`/`How`/`Where` or trailing-`?` headings.
+
+**Gate B (review sign-off, the rules a grep cannot catch).** Verify each item by performing the named action and recording the evidence (a count or a list, not "looks fine"). A page is not done until every item is confirmed; reading the page is not sufficient.
+
+1. Self-contained citation (7e). Walk the page's LINUX KERNEL section symbol by symbol. For each function, struct, enum, and macro, confirm DETAILS reproduces its definition (or the exact branch the page describes) as a fenced ` ```c ` block, and also shows a concrete caller or usage as code. Record the count of LINUX KERNEL symbols and that every one has both blocks. Sign off only at zero gaps.
+2. Grounded, non-fabricated code (7e). For every fenced ` ```c ` block, open the on-disk source at its cited `path:line` and confirm the block matches verbatim (tab indentation and comments preserved, `...` only for disclosed elisions). Cross-check with the semcode tools, but the on-disk source at the documented version is ground truth. Record the count of code blocks and that every one was confirmed against the file. Sign off only when none is left unverified.
+3. Every symbol linked, keyword kept (7f). Scan every inline `` `code` `` span outside fenced blocks. Confirm each kernel symbol is an Elixir link to the correct `path#Lline`, and that types keep the `struct`/`enum` keyword. Spot-read the cited lines on disk. Record any bare span or wrong line found and fixed. Sign off at zero.
+4. What-does-what DETAILS headings (7). Read every H3 and H4 under `## DETAILS`. Confirm each is a declarative subject-verb-object sentence, not a bare noun or symbol name. Sign off with the heading count.
+5. No negative constructions or anthropomorphic verbs (7). Read the prose. Confirm no `It is X, not Y` constructions, no `lives`/`sits`/`wants` for code, and `walk` used only for traversing a data structure. Grep `[^a-z]not `, ` lives`, ` sits `, ` wants ` for candidates, then judge each in context. Sign off after reading, not after grepping alone.
+6. Full coverage (7j). For each behavior the page documents, enumerate every site that exhibits it with `find_callers`/`grep` and confirm the page cites all of them, or cites a representative spread and states how many exist. Confirm every hard-coded limit or constant is named with its value, and that the object lifecycle (allocation, initialization, freeing, the serializing locks, reference counting) and the asynchronous behavior are covered. Record the enumeration. Sign off.
+7. Driver examples actively maintained (7k). For each driver cited as an example, run `git log` on its file and confirm substantive commits within roughly three years, and that its role is explained from its own source on this page. Record the newest substantive commit per driver. Sign off.
+8. ASCII diagrams (7g-7i). For each figure, confirm Unicode box-drawing only with no ASCII `\`, `|`, or `/` used as a connector, every line under 80 columns, each content-row `│` landing on a `┬` or `┴` junction of the borders above and below, and that the figure shows a spatial or temporal relationship rather than a function-call chain. Sign off per figure.
+
+Record the outcome of Gate A and Gate B before saving. If any item cannot be confirmed, the page is not done and is not written.
 
 Write the completed page to: `${CLAUDE_SKILL_DIR}/docs/<dir>/<topic-slug>.md`
 
