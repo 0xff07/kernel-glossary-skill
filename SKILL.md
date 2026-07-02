@@ -18,7 +18,7 @@ Content structure:
 - `docs/` — all documentation articles
 - `docs/templates/TEMPLATE-FULL.md` — full page template with all sections
 - `docs/samples/` — the golden-standard reference pages for writing. This directory holds frozen copies of exemplar pages (plus one labelled counterexample) kept independent of the live subsystem directories, so the exemplars stay findable even after the hierarchy under `docs/` is reorganized. The worked examples here define the house standard for the lead summary, section structure, prose, ASCII diagrams, self-contained kernel-source citation, and depth of coverage. When writing any new page, calibrate against the closest-matching page under `docs/samples/`, and refer to example pages only by their `docs/samples/` path.
-- `scripts/verify_page.py` — the machine verifier that checks a finished page's Elixir links, code-block verbatimness, and banned prose patterns against the local kernel tree (see "Machine verification" near the end of this file)
+- `scripts/verify_page.py` — the advisory machine verifier that checks a finished page's Elixir links, code-block verbatimness, and banned prose patterns against the local kernel tree. Its findings are leads, never verdicts; the manual gates in section 9 are the authority and work without it (see "Machine verification (advisory)" near the end of this file)
 - Major subsystem directories under `docs/`: one per entry in the Subsystem Map at the end of this file (the `dir` field of each entry)
 
 ## Input
@@ -988,10 +988,23 @@ This rule extends the every-symbol-linked rule in 7f with anchor selection and e
 
 Every OTHER SOURCES entry is a mailing-list URL taken byte-exactly from a `Link:` trailer in `git log` output for a commit the page discusses (both `https://lore.kernel.org/...` and `https://lkml.kernel.org/r/<message-id>` trailer forms qualify), or a lore.kernel.org URL returned by the semcode `dig` tool for that commit. Never construct, guess, or "normalize" a URL: no hand-built `git.kernel.org/.../commit/?id=` links, no reconstructed lore paths, no search-result URLs. Format each entry as `[<commit subject> (commit <abbreviated sha>)](<trailer URL>)`. A relevant commit that has no `Link:` trailer is cited in prose by sha and subject and gets no OTHER SOURCES entry.
 
+### 7o. Behavioral-claim verification (mandatory)
+
+A page is a set of claims about kernel behavior, and each claim class below has a named audit action. The style and linking rules make a page readable and navigable; these actions are what make it true. Perform them while writing, and re-perform them whenever reviewing, enhancing, or reusing a page, because they catch the class of error that reads correctly, links correctly, and survives every mechanical check.
+
+- Universal quantifiers are enumerations. Every sentence containing "only", "never", "always", "all", "every", "exactly N", "the single", or "once" asserts the size or uniformity of a set. Enumerate that set before writing the sentence (semcode `find_callers` plus a tree-wide grep that includes headers), then either cite every member with location links or weaken the sentence to what the enumeration shows. A page in this knowledge base asserted a helper "is invoked from exactly one place" while the tree held four callers (the plain store helper, its gfp variant, the fork-path bulk store, and an error-path rollback); only re-running the enumeration catches this class.
+- Every enumeration states its search basis inline. Give the scope with the number (directories searched, headers included or not, definition sites excluded, the architecture and CONFIG filter): "a grep across mm/, fs/, kernel/, drivers/, arch/x86/, and include/ at this tree finds 118 call sites of ... outside their definitions". A count whose basis is unstated cannot be re-verified and does not qualify. When a count holds only under the page's CONFIG assumptions (a caller compiled out without `CONFIG_MMU`), say so at the claim, not only in the page preamble.
+- Counts are re-derived at review, never trusted. Whoever reviews, lints, or enhances the page re-runs every enumeration and corrects drift; a re-count on a live page corrected a written 119 to the 118 actually on disk.
+- A restated condition is derived, not paraphrased. When prose restates a guard or threshold in words ("requires map_count + 2 < sysctl_max_map_count - 3"), derive the restatement from the reproduced code by exact negation of its operator, keep the exact constants, and show the guard as a code block beside the sentence so a reader can repeat the derivation.
+- Headings are claims. A DETAILS heading must be true of everything in its section, and a heading edit is a claim edit. One polish pass strengthened "the accessors mediate every flag change" into "the accessors take the write lock before every flag change" directly above an excerpt whose own kernel comment reads "needs no locking"; the stronger heading was false. Verify each heading against the section's excerpts after writing it and after every rewording.
+- Prose does not outrun its excerpt. Read each behavioral sentence against the adjacent code line by line. Semantics carried by the primitive's own name are behavior and are stated, not dropped: an ordering suffix (`refcount_set_release()` orders the preceding field writes before the count becomes visible to an acquiring reader), a `_locked`/`_unlocked` variant, an RCU flavor, saturation semantics.
+- Invariant claims get a counterexample search. Before asserting a lifecycle invariant ("set once and never changes", "always called under lock L", "freed only through F"), search for the counterexample explicitly: every assignment site of the field, every caller that lacks the lock, every free path. Cite the kernel's own enforcement when it exists (a `lockdep_assert_held()`, a `VM_WARN_ON()`, a `const` qualifier), because an assertion line is stronger evidence than a grep that found nothing.
+- Provenance line numbers are claims too (7l). Content matching does not validate them; open the file and confirm the excerpt begins at the cited line.
+
 ### 8. Behavioral rules
 
 - When asked to "discuss" or "review" a plan, engage conversationally with concise observations and questions. Do not immediately start executing, writing files, or producing verbose output. Wait for explicit approval before creating files.
-- When creating a multi-page documentation set, generate pages one at a time: exactly one writer agent in flight at any moment, so a session rate limit or API failure interrupts at most one page's work. Lint agents may trail the writer concurrently (their loss is cheap to redo). Keep batch groupings as ordering and checkpoint units only; after each page, record status in the plan file and report done versus remaining. The full campaign workflow is in "Multi-page campaigns" below.
+- When creating a multi-page documentation set, generate in batches of about five pages: dispatch one writer agent per page, roughly five in flight at once, wait for the batch to finish, then checkpoint (record status in the plan file, report done versus remaining) before launching the next batch. Do not launch the whole catalog at once; a session rate limit or API outage kills every in-flight writer, and about five resumable agents is a loss a checkpointed campaign absorbs. Lint agents may trail into the next batch. The full campaign workflow is in "Multi-page campaigns" below.
 - When a sub-agent dies mid-page (rate limit, transient API error), resume that same agent by sending it a message; its research context survives in its transcript. Tell it explicitly to skip re-research and write (or fix) from what it already has. Spawn a fresh agent only after resuming fails, and then hand it a compact state summary.
 - Always read template/reference files first before generating any content.
 - When using parallel sub-agents (Agent tool), ensure they have Write permissions before spawning. If Write is unavailable to agents, fall back to sequential processing immediately rather than failing and retrying.
@@ -999,20 +1012,21 @@ Every OTHER SOURCES entry is a mailing-list URL taken byte-exactly from a `Link:
 
 ### 9. Save the page
 
-A page is not done until both gates below pass, and who runs them depends on the mode. A single agent or human producing a page end-to-end runs both gates itself before the page is final. In the pipelined campaign mode (see "Multi-page campaigns" below), the writer follows every rule while composing but does not run the gate loops; a separate lint agent runs Gate A plus the mechanical parts of Gate B (largely via `scripts/verify_page.py`) and the exhaustive 7m span pass, fixing violations in place; the orchestrator then re-runs the verifier as final sign-off. In both modes a page is final only at zero unadjudicated findings.
+A page is not done until both gates below pass, and who runs them depends on the mode. A single agent or human producing a page end-to-end runs both gates itself before the page is final. In the pipelined campaign mode (see "Multi-page campaigns" below), the writer follows every rule while composing but does not run the gate loops; a separate lint agent runs Gate A plus the mechanical parts of Gate B (accelerated by the advisory `scripts/verify_page.py` where it helps) and the exhaustive 7m span pass, fixing violations in place; the orchestrator then re-runs the gates as final sign-off. In both modes a page is final only at zero unadjudicated findings. The gates are defined by the manual procedures below and are executable entirely by hand; the script only speeds them up and can be dropped without weakening them.
 
-**Gate A (mechanical, grep the finished page).** Confirm zero hits for each, and re-run after every edit including your own hand-edits: em-dashes; `**` boldface in prose; the label-colon-explanation idiom in prose (7a/7c), excluding the caution blockquote and text inside quotes; the 7c/7d editorializing and superlative phrases (`the reasoning`, `is the key`, `X matters`, `X is what makes Y`, `the pattern is`, `worthwhile`, `crucial`, `elegant`, `cornerstone`, `the most <adj>`, and the like); the banned words `contract`, `tally` (also `tallied`/`tallies`/`tallying`), `canonical`; vague hedges (`usually`, `typically`, `generally`, `normally`, `commonly`, `mostly`, `in practice`, `tends to`); `vtable`; the word `arm`/`arms` for a branch or union case (7c; CPU-architecture names and verbatim quotes exempt); internal `.md` cross-links; and `Why`/`How`/`Where` or trailing-`?` headings. `scripts/verify_page.py` automates most of this sweep (its exemption handling included); boldface and the 7b prose-list shapes stay manual.
+**Gate A (mechanical, grep the finished page).** Confirm zero hits for each, and re-run after every edit including your own hand-edits: em-dashes; `**` boldface in prose; the label-colon-explanation idiom in prose (7a/7c), excluding the caution blockquote and text inside quotes; the 7c/7d editorializing and superlative phrases (`the reasoning`, `is the key`, `X matters`, `X is what makes Y`, `the pattern is`, `worthwhile`, `crucial`, `elegant`, `cornerstone`, `the most <adj>`, and the like); the banned words `contract`, `tally` (also `tallied`/`tallies`/`tallying`), `canonical`; vague hedges (`usually`, `typically`, `generally`, `normally`, `commonly`, `mostly`, `in practice`, `tends to`); `vtable`; the word `arm`/`arms` for a branch or union case (7c; CPU-architecture names and verbatim quotes exempt); internal `.md` cross-links; and `Why`/`How`/`Where` or trailing-`?` headings. The grep list above is the gate; `scripts/verify_page.py` accelerates it but is advisory (see "Machine verification (advisory)"). When the script is unavailable, fails, or its output looks wrong, run the greps above by hand, fence-aware, and judge each hit in context; boldface and the 7b prose-list shapes are manual either way.
 
 **Gate B (review sign-off, the rules a grep cannot catch).** Verify each item by performing the named action and recording the evidence (a count or a list, not "looks fine"). A page is not done until every item is confirmed; reading the page is not sufficient.
 
 1. Self-contained citation (7e). Walk the page's LINUX KERNEL section symbol by symbol. For each function, struct, enum, and macro, confirm DETAILS reproduces its definition (or the exact branch the page describes) as a fenced ` ```c ` block, and also shows a concrete caller or usage as code. Record the count of LINUX KERNEL symbols and that every one has both blocks. Sign off only at zero gaps.
-2. Grounded, non-fabricated code (7e/7l). For every fenced ` ```c ` block, open the on-disk source at its cited `path:line` and confirm the block matches verbatim (tab indentation and comments preserved, `...` only for disclosed elisions). Cross-check with the semcode tools, but the on-disk source at the documented version is ground truth. `scripts/verify_page.py` automates this via the 7l provenance comments. Record the count of code blocks and that every one was confirmed against the file. Sign off only when none is left unverified.
+2. Grounded, non-fabricated code (7e/7l). For every fenced ` ```c ` block, open the on-disk source at its cited `path:line` and confirm the block matches verbatim (tab indentation and comments preserved, `...` only for disclosed elisions). Cross-check with the semcode tools, but the on-disk source at the documented version is ground truth. `scripts/verify_page.py` accelerates this via the 7l provenance comments, but it matches content anywhere in the named file and does not validate the claimed line number; confirm the excerpt actually begins at the cited line. Fallback when the script is unavailable: print the file's lines at the cited range (`sed -n 'START,ENDp'`) beside each block and compare directly. Record the count of code blocks and that every one was confirmed against the file. Sign off only when none is left unverified.
 3. Every symbol linked, keyword kept (7f). Scan every inline `` `code` `` span outside fenced blocks. Confirm each kernel symbol is an Elixir link to the correct `path#Lline`, and that types keep the `struct`/`enum` keyword. Spot-read the cited lines on disk. Record any bare span or wrong line found and fixed. Sign off at zero.
 4. What-does-what DETAILS headings (7). Read every H3 and H4 under `## DETAILS`. Confirm each is a declarative subject-verb-object sentence, not a bare noun or symbol name. Sign off with the heading count.
 5. No negative constructions or anthropomorphic verbs (7). Read the prose. Confirm no `It is X, not Y` constructions, no `lives`/`sits`/`wants` for code, and `walk` used only for traversing a data structure. Grep `[^a-z]not `, ` lives`, ` sits `, ` wants ` for candidates, then judge each in context. Sign off after reading, not after grepping alone.
 6. Full coverage (7j). For each behavior the page documents, enumerate every site that exhibits it with `find_callers`/`grep` and confirm the page cites all of them, or cites a representative spread and states how many exist. Confirm every hard-coded limit or constant is named with its value, and that the object lifecycle (allocation, initialization, freeing, the serializing locks, reference counting) and the asynchronous behavior are covered. Record the enumeration. Sign off.
 7. Driver examples actively maintained (7k). For each driver cited as an example, run `git log` on its file and confirm substantive commits within roughly three years, and that its role is explained from its own source on this page. Record the newest substantive commit per driver. Sign off.
 8. ASCII diagrams (7g-7i). For each figure, confirm Unicode box-drawing only with no ASCII `\`, `|`, or `/` used as a connector, every line under 80 columns, each content-row `│` landing on a `┬` or `┴` junction of the borders above and below, and that the figure shows a spatial or temporal relationship rather than a function-call chain. Sign off per figure.
+9. Behavioral-claim audit (7o). List every universal quantifier ("only", "never", "always", "all", "every", "exactly N"), every count, every restated guard or threshold, and every lifecycle invariant in the page. For each, re-run the enumeration or derivation (record the search performed and its result) and correct the sentence to match. Confirm every DETAILS heading is true of everything in its section and every behavioral sentence agrees with its adjacent excerpt. Sign off with the claim list and its evidence.
 
 Record the outcome of Gate A and Gate B before saving. If any item cannot be confirmed, the page is not done and is not written.
 
@@ -1033,7 +1047,7 @@ A campaign starts with a plan the user approves, kept in a durable plan file tha
 1. Inventory. Spawn read-only research agents, one per major area of the topic, over the subsystem's `kernel_paths` at the documented kernel version. Each agent returns a compact digest: the core structs and their field groups, the API families with file:line anchors, lifecycle and locking facts, hard-coded limits, and version-specific renames or removals (the facts that make pages version-correct). Record the digests in the plan file. Treat every line number in a digest as a hint to re-verify at write time, never as a citation; semcode indexes can lag the tree, and the on-disk source at the documented version is always ground truth.
 2. Catalog. Turn the inventory into a page catalog: one table row per page with (a) the output path `docs/<dir>/<group>/<slug>.md`, (b) a scope statement naming the anchor symbols the page is built around, each with a file:line hint, and (c) a tag recording whether the page was explicitly requested or curated to fill a gap. Prefer fine granularity: one mechanism, one page. A vague or blank bullet in the user's topic list is a gap to curate into concrete pages, never a topic to skip. Record explicitly which suggested topics were folded into other pages rather than given their own (the fold-in list prevents re-litigating scope later).
 3. Boundary rules. Self-contained pages overlap by design, so for every cluster of sibling pages write one boundary statement that fixes each page's mission. The useful form names the seam symbol: "page A owns the syscall surface and treats the X machinery as a black box; page B owns X's object pipeline; page C owns the physical teardown; helper Y at file:line is the seam where A's coverage ends and B's opens". These statements go into the plan file and later verbatim into each writer brief, so siblings recap each other in at most one short paragraph instead of duplicating walkthroughs.
-4. Batch order. Order pages foundational-to-derived: encodings and counters before the objects that hold them, objects before the tree/list machinery that indexes them, machinery before the syscalls that drive it, core mechanisms before driver instances. Batches are ordering and checkpoint units only; generation inside them is serial (see below).
+4. Batch order. Order pages foundational-to-derived: encodings and counters before the objects that hold them, objects before the tree/list machinery that indexes them, machinery before the syscalls that drive it, core mechanisms before driver instances. Split the catalog into batches of about five pages; the batch is the unit of dispatch and checkpointing (see "Batch generation and interruption recovery" below).
 5. Checkpoint with the user. Present the catalog and directory layout and get an explicit go before generating anything. Record every subsequent user amendment (priority reorders, pipeline changes, new bans) in a dated amendments section of the plan file at the moment it arrives; amendments supersede the original order silently otherwise.
 
 The plan file is the campaign's memory: inventory digests, the catalog, boundary rules, amendments, per-batch status, the draft-reuse map, and lessons learned (verifier false-positive classes, settled linking adjudications). After any interruption, the plan file plus the pages on disk are sufficient to resume without redoing research.
@@ -1081,6 +1095,8 @@ The differences that matter are not the raw sizes but what produced them:
 
 When drafts of any prior generation exist for a topic (next section), this contrast is the acceptance test: reusing a draft is legitimate only when the result is indistinguishable from a fresh page written to this standard.
 
+The audit does not stop at golden. A later enhancement pass over this same golden page corrected an off-by-one call-site count (a written 119 for the 118 on disk) and a provenance comment two lines off its excerpt, and a 7o audit after that found a false universal claim both passes had missed: the page asserted a helper "is invoked from exactly one place" while the tree holds four callers (the plain store helper, its gfp variant, the fork-path bulk store, and an error-path rollback). Golden samples calibrate form and depth; correctness is established only by re-running the 7o actions against the tree, on every page, however golden its history.
+
 ### Reusing prior drafts
 
 When earlier-generation draft pages exist for topics in the catalog, mine them instead of ignoring them, under these rules:
@@ -1096,8 +1112,8 @@ When earlier-generation draft pages exist for topics in the catalog, mine them i
 Campaign pages are produced by a three-stage pipeline. The separation exists because a writer re-reading its own page misses its own blind spots; an independent pass with fresh context reliably catches wrong anchors, drifted excerpts, and skipped spans the writer cannot see.
 
 1. Writer (the strongest available model). Researches with semcode plus Grep/Read, confirms every fact on disk, and writes the complete page following every rule in this file while composing. The writer does not run the Gate A/B loops after writing; its brief says so explicitly, because self-lint spends the strongest model's budget on work the next stage redoes better.
-2. Lint (a different, cheaper model, fresh context). Runs `scripts/verify_page.py`; performs the manual sweeps the script cannot do (boldface, 7b prose-list shapes, 7d superlatives judged in context, negative constructions, anthropomorphic verbs); and executes the exhaustive 7m span-linking pass. Fixes everything in place, re-runs the script after its own edits, and reports what changed plus every finding it adjudicated as a false positive, with reasoning. Concurrent lint agents use unique scratchpad filenames for any helper scripts (shared names have collided).
-3. Final verify (the orchestrator). Re-runs `scripts/verify_page.py` after lint, spot-audits the adjudications, and only then marks the page done in the plan file. Residual findings are fixed or recorded in the plan file as settled false-positive classes for future lint briefs.
+2. Lint (a different, cheaper model, fresh context). Runs the advisory `scripts/verify_page.py`, falling back to the manual gate procedures when the script fails or is absent; performs the manual sweeps the script cannot do (boldface, 7b prose-list shapes, 7d superlatives judged in context, negative constructions, anthropomorphic verbs); re-derives the page's counts, universal claims, and restated conditions per 7o; and executes the exhaustive 7m span-linking pass. Fixes everything in place, re-checks after its own edits, and reports what changed plus every finding it adjudicated as a false positive, with reasoning. Concurrent lint agents use unique scratchpad filenames for any helper scripts (shared names have collided).
+3. Final verify (the orchestrator). Re-runs the gates after lint (script-accelerated or manual), spot-audits the adjudications, and only then marks the page done in the plan file. Residual findings are fixed or recorded in the plan file as settled false-positive classes for future lint briefs.
 
 Model-tier guidance, subsystem-independent: page writing needs the strongest model available (research judgment, prose discipline, figure quality); the lint pass is mechanical-plus-checklist work a mid-tier model performs reliably when the brief is explicit and exhaustive; the orchestrator keeps final sign-off and never delegates it.
 
@@ -1134,6 +1150,10 @@ GROUND RULES.
   excerpt in DETAILS; every hard-coded limit named with value and line;
   lifecycle (alloc/init/free/locking/refcount) and all state transitions
   covered (7j).
+- Behavioral claims per 7o: enumerate a set before writing "only", "never",
+  "always", or "exactly N" about it; state each enumeration's search basis
+  inline; derive restated guards from the reproduced code by exact negation;
+  make every DETAILS heading true of its whole section.
 - Writing rules 7 through 7k apply while composing: no em-dash, no boldface,
   no label-colon prose, no hedging, no editorializing, no "arm" for a branch
   or union case, declarative DETAILS headings, single-line paragraphs.
@@ -1154,10 +1174,14 @@ Lint the finished page <path> against the kernel tree at <tree path>,
 following the kernel-glossary-skill SKILL.md.
 
 1. Run: python3 <skill dir>/scripts/verify_page.py --tree <tree path> <path>
-   Fix every finding in place: wrong anchors get re-looked-up on disk,
-   non-verbatim blocks get re-excerpted from the file, banned prose gets
-   rewritten per 7a-7d. Re-run after your edits until the only remaining
-   findings are ones you adjudicate as false positives; report each
+   The script is advisory. If it is unavailable, fails, or a finding looks
+   wrong, fall back to the manual gates: the Gate A grep list from SKILL.md
+   section 9 run fence-aware, an on-disk comparison of every ```c block at
+   its /* path:line */ provenance, and opening each questioned link's target
+   line. Fix every confirmed finding in place: wrong anchors get
+   re-looked-up on disk, non-verbatim blocks get re-excerpted from the file,
+   banned prose gets rewritten per 7a-7d. Re-check after your edits until
+   the only remaining findings are adjudicated false positives; report each
    adjudication with its reasoning. Known false-positive classes to
    adjudicate rather than "fix": <from the plan file, e.g. expression spans
    linking one constituent symbol, syscall-name links anchored at the kernel
@@ -1173,23 +1197,31 @@ following the kernel-glossary-skill SKILL.md.
    members. Exemptions: <the settled 7m exemption list>. Never cite in-page
    or in-family precedent to leave a span bare; the rule always wins and
    pre-existing bare spans in the same family get fixed too.
-4. Do not change facts, scope, or structure; this is a compliance pass.
-   Use a unique scratchpad filename for any helper script you write.
+4. Correctness re-derivation (7o): re-run the enumeration behind every
+   count and every "only"/"never"/"always"/"exactly" claim; re-derive every
+   restated guard against its excerpt; confirm each DETAILS heading is true
+   of everything in its section; confirm each excerpt begins at its claimed
+   provenance line. These are the only fact edits you may make; report each
+   with the search you ran and its result.
+5. Beyond the 7o corrections, do not change facts, scope, or structure;
+   this is a compliance pass. Use a unique scratchpad filename for any
+   helper script you write.
 
-Report: findings fixed by class with counts, adjudicated false positives
-with reasoning, residual items you could not resolve.
+Report: findings fixed by class with counts, 7o corrections with evidence,
+adjudicated false positives with reasoning, residual items you could not
+resolve.
 ```
 
-### Serial generation and interruption recovery
+### Batch generation and interruption recovery
 
-- Exactly one writer runs at a time. Serial generation bounds what a session rate limit or API outage can destroy to one page's in-flight work; parallel writer fleets have lost multiple pages' research at a single limit. Lint agents may trail concurrently.
+- Generate about five pages per batch: one writer agent per page, dispatched together, then a hard checkpoint before the next batch launches. Five keeps what a session rate limit or API outage can kill at once down to a recoverable set (each dead writer resumes from its transcript) while still parallelizing the writing. Do not launch the whole catalog in parallel. Lint agents may trail into the following batch.
 - When a writer or lint agent dies mid-page, resume that same agent with a message; its research context survives in its transcript. Say explicitly "do not redo the research; write the page now from what you have". If repeated resumes fail, extract a compact state report and hand the remainder to a fresh agent.
 - After every completed page, update the plan file (status, page statistics, adjudications, lessons) so a future session resumes from the plan file plus the on-disk pages alone.
 - Pages land only under `${CLAUDE_SKILL_DIR}/docs/<dir>/`. No `SUMMARY.md` or `mkdocs.yml` edits, and no git commits, without an explicit user go.
 
-### Machine verification
+### Machine verification (advisory)
 
-`${CLAUDE_SKILL_DIR}/scripts/verify_page.py` is the mechanical gate executor:
+`${CLAUDE_SKILL_DIR}/scripts/verify_page.py` accelerates the mechanical gates:
 
 ```
 python3 scripts/verify_page.py --tree /path/to/kernel/tree page.md [more.md ...]
@@ -1197,7 +1229,9 @@ python3 scripts/verify_page.py --tree /path/to/kernel/tree page.md [more.md ...]
 
 It auto-detects the documented kernel version from each page's first Elixir link and checks three layers. First, every Elixir link: the file exists in the tree, the cited line is in range, and the linked symbol's text is found within a few lines of the anchor (with allowances for Kconfig links dropping the `CONFIG_` prefix, `_noprof` allocation wrappers, macro-generated accessors, and wildcard-family links). Second, every fenced c block: diffed verbatim, modulo declared `...` elisions, against the file named by its 7l provenance comment. Third, a fence-aware Gate A sweep (em-dash, label-colon, editorializing, banned words, hedges, "arm", internal `.md` links, negative constructions, bad headings) with a verbatim-quote exemption.
 
-What it cannot check stays manual: boldface, 7b prose-list shapes, 7d superlatives in context, heading declarativeness (Gate B item 4), definition-plus-usage completeness (item 1), behavior coverage (item 6), and figure geometry (item 8). A script finding is fixed or explicitly adjudicated as a false positive with reasoning, never ignored; recurring false-positive classes get recorded in the plan file, folded into future lint briefs, and, when crisp enough, into the script itself.
+The script is advisory, never authoritative; the manual procedures in section 9 and rule 7o are the gates, and the script only speeds them up. Treat its output as leads, in both directions. False positives accumulate as the script ages out of maintenance (kernel idioms, link forms, and the style rules drift away from its regexes); act on a finding only after the underlying rule in this file confirms it, and record a finding the rule does not confirm as a false-positive class instead of obeying the script. False negatives are structural: the script validates only what is present on the page. It cannot see a missing link, a missing usage excerpt, an unenumerated call site, or a wrong behavioral claim; its symbol check accepts any match within a few lines of the anchor, so a link that violates 7m's definition-line rule can still pass; and its code check matches content anywhere in the named file, so a wrong provenance line number passes. A CLEAN result therefore never closes a gate by itself, and a page that is script-CLEAN can still fail Gate B and the 7o audit.
+
+When the script is unavailable, crashes, or cannot be trusted, run the gates by hand; they are defined to work without it. Gate A is the grep list in section 9 run fence-aware, judging each hit in context. Gate B item 2 is performed by opening every ```c block's provenance file at its cited line (`sed -n 'START,ENDp'`) and comparing the reproduced lines directly. Gate B item 3 is performed by opening each link's target line and confirming the symbol's definition is there. The 7o behavioral-claim audit is manual always. Fold crisp new false-positive classes into the script when convenient, but never let a page's done-ness depend on the script running.
 
 ## Subsystem Map
 
