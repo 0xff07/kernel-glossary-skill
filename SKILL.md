@@ -17,7 +17,8 @@ Content structure:
 
 - `docs/` — all documentation articles
 - `docs/templates/TEMPLATE-FULL.md` — full page template with all sections
-- `docs/acpi/` — the golden-standard reference pages for writing. The worked examples under this directory define the house style for the lead summary, section structure, prose, ASCII diagrams, and self-contained kernel-source citation. When writing any new page, imitate the closest-matching page under `docs/acpi/`, and not pages in any other subsystem directory.
+- `docs/samples/` — the golden-standard reference pages for writing. This directory holds frozen copies of exemplar pages (plus one labelled counterexample) kept independent of the live subsystem directories, so the exemplars stay findable even after the hierarchy under `docs/` is reorganized. The worked examples here define the house standard for the lead summary, section structure, prose, ASCII diagrams, self-contained kernel-source citation, and depth of coverage. When writing any new page, calibrate against the closest-matching page under `docs/samples/`, and refer to example pages only by their `docs/samples/` path.
+- `scripts/verify_page.py` — the machine verifier that checks a finished page's Elixir links, code-block verbatimness, and banned prose patterns against the local kernel tree (see "Machine verification" near the end of this file)
 - Major subsystem directories under `docs/`: one per entry in the Subsystem Map at the end of this file (the `dir` field of each entry)
 
 ## Input
@@ -31,20 +32,19 @@ If `$ARGUMENTS` is empty, derive the subsystem and topic from the conversation c
 
 ## Procedure
 
-### 1. Read the template and the golden reference pages
+### 1. Read the template and the golden samples
 
 Before generating any content, read `docs/templates/TEMPLATE-FULL.md` (relative to `${CLAUDE_SKILL_DIR}`) for the page structure and section order.
 
-Then pick the golden-standard reference page to imitate. The pages under `docs/acpi/`, and not pages in any other subsystem directory, are the golden standard for writing: they define the house style for structure, prose, ASCII diagrams, and self-contained kernel-source citation. Open the one or two whose scenario most resembles the page about to be written, read them in full, and use them as the concrete reference while writing. Map the new page to the closest analog:
+Then read the golden samples under `${CLAUDE_SKILL_DIR}/docs/samples/`. These are frozen copies of real pages that met every gate in this file and passed the machine verifier with zero findings; they are the concrete standard for structure, prose, diagram style, code-citation density, and depth of coverage. Open the one or two whose archetype most resembles the page about to be written and read them in full before writing:
 
-- register or bitfield pages: `docs/acpi/ec/registers.md`
-- control method / AML object pages: `docs/acpi/core/evaluate-object.md`, `docs/acpi/config/crs.md`, `docs/acpi/config/dsm.md`
-- event, interrupt, and dispatch pages: `docs/acpi/event/gpe.md`, `docs/acpi/event/sci.md`, `docs/acpi/event/fixed-events.md`
-- notification / callback pages: `docs/acpi/notify/notify.md`, `docs/acpi/notify/handlers.md`
-- identification / enumeration object pages: `docs/acpi/id/hid.md`, `docs/acpi/id/sta.md`
-- power-state pages: `docs/acpi/pm/d-states.md`, `docs/acpi/pm/power-resources.md`
+- structure-tour pages (one central struct documented field group by field group, with its accessor and lifecycle catalog): `docs/samples/golden-overview-mm-struct.md`
+- lifecycle / refcount / locking-protocol pages: `docs/samples/golden-lifecycle-mm-refcount.md` (also the smallest acceptable depth for a fine-grained page)
+- encoding / bitfield / flag-layout pages (including register-figure style): `docs/samples/golden-encoding-pgtable-entries.md`
+- pages rebuilt from earlier drafts: `docs/samples/golden-enhanced-vma-overview.md`, read side by side with the counterexample below
+- `docs/samples/draft-original-vma-overview.md` is a COUNTEREXAMPLE, the stale draft the enhanced page was rebuilt from. Do not imitate it. It is kept so the measurable difference between a plausible draft and a page meeting this standard stays visible (see "Draft-versus-golden contrast" near the end of this file).
 
-If none matches exactly, pick the closest structural analog under `docs/acpi/` anyway. Do not fall back to pages outside `docs/acpi/` as the style model.
+If no archetype matches, pick the structurally closest golden sample anyway. Do not calibrate against pages elsewhere under `docs/`; they may predate the current rules. Where a sample and a rule in this file disagree (a sample can predate a later rule), the rules in this file govern; samples are calibration, not license.
 
 ### 2. Determine subsystem and output path
 
@@ -104,6 +104,8 @@ For kernel documentation files:
 [`Documentation/subsystem/file.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/subsystem/file.rst): brief description
 ```
 
+Which line a link anchors at, and which symbol occurrences must be linked, is governed by rule 7m (definition-line anchoring, file-location links for call sites, and the exhaustive span-linking pass).
+
 ### 5. Identify specifications
 
 Check source code comments and headers for references to specification chapters and sections. Map the subsystem to its known specifications using the `spec` field from the Subsystem Map.
@@ -156,7 +158,7 @@ Follow the template structure exactly. The page must contain these sections in o
 
 ### 7. Writing rules (mandatory)
 
-The golden-standard reference pages under `docs/acpi/` already embody every rule in this section. The closest-matching page you read in step 1 is your worked example; mirror its structure, phrasing, diagram style, and code-citation density. The examples in the rules below use ACPI symbols to match those pages; they illustrate the rule mechanic, and the page to imitate is always the closest `docs/acpi` page. All generated content must follow these rules:
+The golden samples under `docs/samples/` embody every rule in this section. The closest-matching sample you read in step 1 is your worked example; match its structure, diagram style, code-citation density, and depth. The examples in the rules below use ACPI and mm symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem. All generated content must follow these rules:
 
 - No em-dashes. Use parentheses instead: "CC (Command Completed)" not "CC --- Command Completed"
 - No boldface (`**...**`)
@@ -214,7 +216,7 @@ Body prose in DETAILS, SUMMARY, and the lead summary paragraph must not use the 
 
 The forbidden shape is "<noun phrase ending in a period or colon> + <bullet/numbered list>" used as exposition. Phrases that head such lists ("Two notable details.", "Three layers stack.", "Four cases run from strongest to weakest.", "Concrete uses.", "Five upfront refusals.") are banned even with a period. Restate as a paragraph.
 
-The H3 catalog lists in LINUX KERNEL (grouped by file or functional area as the docs/acpi pages do, for example `EC_SC status bit macros`, `Port accessors`, `Transaction state machine`) and the bullet lists in KERNEL DOCUMENTATION and OTHER SOURCES are reference catalogs and remain as lists. Tables remain as tables. This rule applies only to prose-explanation lists, not to reference catalogs.
+The H3 catalog lists in LINUX KERNEL (grouped by file or functional area as the golden samples do, for example `EC_SC status bit macros`, `Port accessors`, `Transaction state machine`) and the bullet lists in KERNEL DOCUMENTATION and OTHER SOURCES are reference catalogs and remain as lists. Tables remain as tables. This rule applies only to prose-explanation lists, not to reference catalogs.
 
 ### 7c. Forbidden phrases checklist
 
@@ -236,6 +238,7 @@ Do not use these words in body prose; each asserts a framing without naming a me
 - "contract" (including "the X, Y, Z contract"): name the actual precondition, guarantee, rule, or invariant. BAD: `The reset, duplicate, destroy contract spans every per-object state.` GOOD: state the reset rule, the duplicate rule, and the destroy rule each path follows.
 - "tally": use "count" or "running count". BAD: `the running tally of VMAs`. GOOD: `the running count of VMAs`.
 - "canonical": name the helper or path plainly. BAD: `the canonical helper is vma_link() in mm/vma.c`. GOOD: `the helper that performs it is vma_link() in mm/vma.c`.
+- "arm" / "arms" for a case of a union, a branch of a conditional, a side of a split, or one member of a pair of code paths: use "branch", "case", "side", "leg", "half", or the concrete symbol name instead. BAD: `the write-fault arm of do_wp_page`. GOOD: `the write-fault branch of do_wp_page`. CPU-architecture names (Arm, ARM64, arm64) and verbatim quotes from kernel source or commit messages are exempt.
 
 Do not hedge with vague frequency or generality words in prose ("usually", "typically", "generally", "often", "normally", "commonly", "mostly", "in practice", "tends to", "on a hot cpu"). Each dodges the actual condition the code tests. Name that condition instead. BAD: `A vm_area_alloc() on a hot cpu usually takes a ready object from the per-cpu sheaf without locking a shared slab.` GOOD: `A vm_area_alloc() takes a ready object from the per-cpu main sheaf without locking a shared slab while that sheaf is non-empty, and reaches the shared slab only to refill an empty sheaf.` A frequency word reproduced verbatim from kernel source inside a fenced block, or a genuine measured statistic that cites a counter or benchmark, is exempt.
 
@@ -319,7 +322,7 @@ Only include an ASCII diagram when it conveys a spatial or temporal relationship
 
 Do not draw a diagram for a simple linear sequence of function calls, a top-down call chain, a state machine with two states, or any flow that reads naturally as a paragraph or as a fenced code block of pseudocode. "Function A calls B which calls C" is prose, not a diagram. A single arrow chain in a box is not a diagram. If a reader would understand the same content faster from one sentence of declarative prose, write the sentence and delete the diagram.
 
-When a diagram is used, follow the style established in the golden-standard pages under `docs/acpi/` (for example the status-byte register map in `docs/acpi/ec/registers.md` and the sparse GPE slot map in `docs/acpi/event/gpe.md`). Use Unicode box-drawing characters (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼`) and `▼ ▲ ◀ ▶` for arrows. Title each sub-diagram with a short heading underlined by a `────` rule. Multiple sub-diagrams may share one fenced block when each has its own titled section. Indent the whole figure 4 spaces inside the fenced block so it reads as a figure, not as text. Keep every line under 80 columns so the figure renders without wrapping in plain-text views.
+When a diagram is used, follow the style established in the golden samples (for example the page-table-entry bit layouts and slot-map figures in `docs/samples/golden-encoding-pgtable-entries.md`) and the reference figures in 7h and 7i. Use Unicode box-drawing characters (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼`) and `▼ ▲ ◀ ▶` for arrows. Title each sub-diagram with a short heading underlined by a `────` rule. Multiple sub-diagrams may share one fenced block when each has its own titled section. Indent the whole figure 4 spaces inside the fenced block so it reads as a figure, not as text. Keep every line under 80 columns so the figure renders without wrapping in plain-text views.
 
 Pure ASCII `\`, `/`, and `|` are never used as box-drawing or connector characters. The `/` and `|` characters are acceptable inside the figure only as English word separators ("ROOT_PORT / DOWNSTREAM"), as C bitwise expressions (`LBMS | LABS`), or inside reproduced kernel source. All box sides, corners, junctions, and arrows are Unicode.
 
@@ -965,24 +968,45 @@ When a page illustrates a behavior with a concrete driver, both the choice of dr
   - BAD: "The cs35l56 driver registers a jack-detect callback, just like the codec documented elsewhere in this knowledge base."
   - GOOD: "The cs35l56 driver (a Cirrus Logic amplifier in `sound/soc/codecs/cs35l56.c`) registers a jack-detect callback through its `set_jack` component op."
 
+### 7l. Code-block provenance comments (mandatory)
+
+Every fenced ` ```c ` block opens with a provenance comment naming the on-disk origin of the excerpt, in the exact form `/* path/from/tree/root.c:LINE */` on its own first line, where LINE is the number of the first reproduced line in the file at the documented version. A short annotation may follow the line number inside the comment (`/* mm/vma.c:497 (in __split_vma()) */`). A block that stitches excerpts from several places (a caller plus its callee, two case labels far apart, a struct field plus the helper that writes it) marks each excerpt's start with its own interior `/* path:line */` delimiter line, and marks elided code inside an excerpt with a standalone `...` line. Everything between delimiters is verbatim file content per 7e (tabs preserved, comments retained, no reflowed lines).
+
+The provenance comment is what makes a page machine-checkable. `scripts/verify_page.py` splits each block at its delimiters and diffs every unit against the named file, so a missing or wrong provenance line turns an on-disk match into a finding, and a silently drifted excerpt is caught the moment the script runs. Non-code fenced blocks (ASCII figures, quoted commit-message tables, shell output) carry no provenance comment and are not diffed.
+
+### 7m. Link anchoring and exhaustive span linking (mandatory)
+
+This rule extends the every-symbol-linked rule in 7f with anchor selection and exhaustiveness. It is what the numbers in "Golden samples and measured criteria" call links per page.
+
+- A link whose text is a symbol name (`` `vma_start_read()` ``, `` `struct mm_struct` ``, `` `VM_LOCKED` ``, and the LINUX KERNEL `` `'\<sym\>':'path'` `` form) anchors at the symbol's DEFINITION line, so the reference stays valid for `git log -L` and survives unrelated churn elsewhere in the file. It does not anchor at a call site, a comment mention, or a line inside some other function's body, even when that line is what the surrounding prose discusses.
+- A reference to a specific non-definition place in code (a call site, one branch, one field assignment) is written as a file-location link whose text is the path and line, for example [`mm/vma.c:717`](https://elixir.bootlin.com/linux/v7.0/source/mm/vma.c#L717). Prose that enumerates call sites uses one location link per site, so every count in the page is checkable one click deep.
+- Every occurrence of every kernel symbol outside fenced blocks is linked, including repeats of the same symbol on the same page. The exhaustive pass includes the classes that are easiest to skip: `CONFIG_*` options link to the `config X` line of the Kconfig file that declares them; generic primitives (`READ_ONCE()`, `memcpy()`, `rcu_read_lock()`, `atomic_read()`, and the like) link to the definition relevant to the documented architecture; a field path written as `a->b` or `foo.bar` links to the field's declaration line inside the struct definition; an ops-struct member named in prose ("the `fault` hook") links to that member's line in the ops struct definition.
+- Settled exemptions (spans that may stay bare): C keywords and operators; local variables, parameters, and goto labels quoted from an excerpt; literal and error values (`-EINVAL`, `NULL` as a value); `/proc`, `/sys`, and sysctl path strings; Kconfig syntax fragments (`=y`); tracepoint field names; a wildcard family name (`VM_*`) when the members it stands for are linked nearby; commit hashes; the `name(2)` man-page notation when the page links the syscall's kernel entry point elsewhere; and symbols verified absent from the documented tree (state the absence in prose).
+- Precedent never overrides the rule. "Other pages leave `CONFIG_FOO` bare" or "this page already has thirty bare `READ_ONCE()` spans" is not a reason to leave the next one bare; the rule wins, and the pre-existing in-family spans get fixed in the same pass.
+
+### 7n. OTHER SOURCES provenance (mandatory)
+
+Every OTHER SOURCES entry is a mailing-list URL taken byte-exactly from a `Link:` trailer in `git log` output for a commit the page discusses (both `https://lore.kernel.org/...` and `https://lkml.kernel.org/r/<message-id>` trailer forms qualify), or a lore.kernel.org URL returned by the semcode `dig` tool for that commit. Never construct, guess, or "normalize" a URL: no hand-built `git.kernel.org/.../commit/?id=` links, no reconstructed lore paths, no search-result URLs. Format each entry as `[<commit subject> (commit <abbreviated sha>)](<trailer URL>)`. A relevant commit that has no `Link:` trailer is cited in prose by sha and subject and gets no OTHER SOURCES entry.
+
 ### 8. Behavioral rules
 
 - When asked to "discuss" or "review" a plan, engage conversationally with concise observations and questions. Do not immediately start executing, writing files, or producing verbose output. Wait for explicit approval before creating files.
-- When creating large batches of documentation pages (10+), work in batches of 5-6 files at a time to avoid rate limits. After each batch, checkpoint progress and report what is done vs remaining.
+- When creating a multi-page documentation set, generate pages one at a time: exactly one writer agent in flight at any moment, so a session rate limit or API failure interrupts at most one page's work. Lint agents may trail the writer concurrently (their loss is cheap to redo). Keep batch groupings as ordering and checkpoint units only; after each page, record status in the plan file and report done versus remaining. The full campaign workflow is in "Multi-page campaigns" below.
+- When a sub-agent dies mid-page (rate limit, transient API error), resume that same agent by sending it a message; its research context survives in its transcript. Tell it explicitly to skip re-research and write (or fix) from what it already has. Spawn a fresh agent only after resuming fails, and then hand it a compact state summary.
 - Always read template/reference files first before generating any content.
 - When using parallel sub-agents (Agent tool), ensure they have Write permissions before spawning. If Write is unavailable to agents, fall back to sequential processing immediately rather than failing and retrying.
 - When performing batch edits across many files, preserve existing content (e.g., lspci output, code references) that was added in prior passes. Read the full file before editing to avoid accidentally removing prior enrichments.
 
 ### 9. Save the page
 
-A page is not done until both gates below pass. Complete them before writing the file, and do not save on any failure.
+A page is not done until both gates below pass, and who runs them depends on the mode. A single agent or human producing a page end-to-end runs both gates itself before the page is final. In the pipelined campaign mode (see "Multi-page campaigns" below), the writer follows every rule while composing but does not run the gate loops; a separate lint agent runs Gate A plus the mechanical parts of Gate B (largely via `scripts/verify_page.py`) and the exhaustive 7m span pass, fixing violations in place; the orchestrator then re-runs the verifier as final sign-off. In both modes a page is final only at zero unadjudicated findings.
 
-**Gate A (mechanical, grep the finished page).** Confirm zero hits for each, and re-run after every edit including your own hand-edits: em-dashes; `**` boldface in prose; the label-colon-explanation idiom in prose (7a/7c), excluding the caution blockquote and text inside quotes; the 7c/7d editorializing and superlative phrases (`the reasoning`, `is the key`, `X matters`, `X is what makes Y`, `the pattern is`, `worthwhile`, `crucial`, `elegant`, `cornerstone`, `the most <adj>`, and the like); the banned words `contract`, `tally` (also `tallied`/`tallies`/`tallying`), `canonical`; vague hedges (`usually`, `typically`, `generally`, `normally`, `commonly`, `mostly`, `in practice`, `tends to`); `vtable`; internal `.md` cross-links; and `Why`/`How`/`Where` or trailing-`?` headings.
+**Gate A (mechanical, grep the finished page).** Confirm zero hits for each, and re-run after every edit including your own hand-edits: em-dashes; `**` boldface in prose; the label-colon-explanation idiom in prose (7a/7c), excluding the caution blockquote and text inside quotes; the 7c/7d editorializing and superlative phrases (`the reasoning`, `is the key`, `X matters`, `X is what makes Y`, `the pattern is`, `worthwhile`, `crucial`, `elegant`, `cornerstone`, `the most <adj>`, and the like); the banned words `contract`, `tally` (also `tallied`/`tallies`/`tallying`), `canonical`; vague hedges (`usually`, `typically`, `generally`, `normally`, `commonly`, `mostly`, `in practice`, `tends to`); `vtable`; the word `arm`/`arms` for a branch or union case (7c; CPU-architecture names and verbatim quotes exempt); internal `.md` cross-links; and `Why`/`How`/`Where` or trailing-`?` headings. `scripts/verify_page.py` automates most of this sweep (its exemption handling included); boldface and the 7b prose-list shapes stay manual.
 
 **Gate B (review sign-off, the rules a grep cannot catch).** Verify each item by performing the named action and recording the evidence (a count or a list, not "looks fine"). A page is not done until every item is confirmed; reading the page is not sufficient.
 
 1. Self-contained citation (7e). Walk the page's LINUX KERNEL section symbol by symbol. For each function, struct, enum, and macro, confirm DETAILS reproduces its definition (or the exact branch the page describes) as a fenced ` ```c ` block, and also shows a concrete caller or usage as code. Record the count of LINUX KERNEL symbols and that every one has both blocks. Sign off only at zero gaps.
-2. Grounded, non-fabricated code (7e). For every fenced ` ```c ` block, open the on-disk source at its cited `path:line` and confirm the block matches verbatim (tab indentation and comments preserved, `...` only for disclosed elisions). Cross-check with the semcode tools, but the on-disk source at the documented version is ground truth. Record the count of code blocks and that every one was confirmed against the file. Sign off only when none is left unverified.
+2. Grounded, non-fabricated code (7e/7l). For every fenced ` ```c ` block, open the on-disk source at its cited `path:line` and confirm the block matches verbatim (tab indentation and comments preserved, `...` only for disclosed elisions). Cross-check with the semcode tools, but the on-disk source at the documented version is ground truth. `scripts/verify_page.py` automates this via the 7l provenance comments. Record the count of code blocks and that every one was confirmed against the file. Sign off only when none is left unverified.
 3. Every symbol linked, keyword kept (7f). Scan every inline `` `code` `` span outside fenced blocks. Confirm each kernel symbol is an Elixir link to the correct `path#Lline`, and that types keep the `struct`/`enum` keyword. Spot-read the cited lines on disk. Record any bare span or wrong line found and fixed. Sign off at zero.
 4. What-does-what DETAILS headings (7). Read every H3 and H4 under `## DETAILS`. Confirm each is a declarative subject-verb-object sentence, not a bare noun or symbol name. Sign off with the heading count.
 5. No negative constructions or anthropomorphic verbs (7). Read the prose. Confirm no `It is X, not Y` constructions, no `lives`/`sits`/`wants` for code, and `walk` used only for traversing a data structure. Grep `[^a-z]not `, ` lives`, ` sits `, ` wants ` for candidates, then judge each in context. Sign off after reading, not after grepping alone.
@@ -996,7 +1020,184 @@ Write the completed page to: `${CLAUDE_SKILL_DIR}/docs/<dir>/<topic-slug>.md`
 
 Do not modify `SUMMARY.md` or `mkdocs.yml`.
 
-Ask before doing actual save.
+In interactive single-page use, ask before the actual save. In a campaign whose page catalog the user has already approved, save each finished page without a per-page ask and checkpoint per the behavioral rules; git commits still require an explicit user go.
+
+## Multi-page campaigns: planning, dispatch, and verification
+
+Everything above defines a single page. This section defines the workflow for producing a whole documentation set (tens of pages) for one subsystem area: how to plan the set, dispatch page production to sub-agents, and verify the result. It is the workflow that produced the golden samples under `docs/samples/`, written here in subsystem-independent terms; substitute any subsystem's `kernel_paths`, structures, and syscall surface for the mm examples.
+
+### Plan before generating
+
+A campaign starts with a plan the user approves, kept in a durable plan file that survives context loss and session interruption. Build it in this order:
+
+1. Inventory. Spawn read-only research agents, one per major area of the topic, over the subsystem's `kernel_paths` at the documented kernel version. Each agent returns a compact digest: the core structs and their field groups, the API families with file:line anchors, lifecycle and locking facts, hard-coded limits, and version-specific renames or removals (the facts that make pages version-correct). Record the digests in the plan file. Treat every line number in a digest as a hint to re-verify at write time, never as a citation; semcode indexes can lag the tree, and the on-disk source at the documented version is always ground truth.
+2. Catalog. Turn the inventory into a page catalog: one table row per page with (a) the output path `docs/<dir>/<group>/<slug>.md`, (b) a scope statement naming the anchor symbols the page is built around, each with a file:line hint, and (c) a tag recording whether the page was explicitly requested or curated to fill a gap. Prefer fine granularity: one mechanism, one page. A vague or blank bullet in the user's topic list is a gap to curate into concrete pages, never a topic to skip. Record explicitly which suggested topics were folded into other pages rather than given their own (the fold-in list prevents re-litigating scope later).
+3. Boundary rules. Self-contained pages overlap by design, so for every cluster of sibling pages write one boundary statement that fixes each page's mission. The useful form names the seam symbol: "page A owns the syscall surface and treats the X machinery as a black box; page B owns X's object pipeline; page C owns the physical teardown; helper Y at file:line is the seam where A's coverage ends and B's opens". These statements go into the plan file and later verbatim into each writer brief, so siblings recap each other in at most one short paragraph instead of duplicating walkthroughs.
+4. Batch order. Order pages foundational-to-derived: encodings and counters before the objects that hold them, objects before the tree/list machinery that indexes them, machinery before the syscalls that drive it, core mechanisms before driver instances. Batches are ordering and checkpoint units only; generation inside them is serial (see below).
+5. Checkpoint with the user. Present the catalog and directory layout and get an explicit go before generating anything. Record every subsequent user amendment (priority reorders, pipeline changes, new bans) in a dated amendments section of the plan file at the moment it arrives; amendments supersede the original order silently otherwise.
+
+The plan file is the campaign's memory: inventory digests, the catalog, boundary rules, amendments, per-batch status, the draft-reuse map, and lessons learned (verifier false-positive classes, settled linking adjudications). After any interruption, the plan file plus the pages on disk are sufficient to resume without redoing research.
+
+### Golden samples and measured criteria
+
+The golden samples were produced by this workflow and passed `scripts/verify_page.py` with zero findings against their kernel tree. Their measured shape defines concretely what "in-depth, fine-grained" means for this knowledge base:
+
+| sample | lines | c blocks | Elixir links | figures |
+|---|---|---|---|---|
+| `docs/samples/golden-overview-mm-struct.md` | 2,940 | 98 | 861 | 1 |
+| `docs/samples/golden-lifecycle-mm-refcount.md` | 1,743 | 59 | 591 | 1 |
+| `docs/samples/golden-encoding-pgtable-entries.md` | 3,024 | 141 | 718 | 3 |
+| `docs/samples/golden-enhanced-vma-overview.md` | 2,922 | 107 | 634 | 1 |
+
+Across the thirteen pages of the campaign that produced them, the per-page ranges were 1,468 to 3,270 lines, 46 to 141 code blocks, and 357 to 861 Elixir links. These numbers are outcomes, not targets: they fall out of the depth rules below when applied to a fine-grained topic. Use them as a smell test. A page far under them nearly always means missing usage excerpts, unenumerated call sites, or a skipped lifecycle, and the fix is completing coverage per 7j and Gate B, never padding prose. There is no length ceiling; a page ends when coverage is complete, not at a line count.
+
+The depth rules that produce those numbers:
+
+- Definition plus usage, per symbol. Every symbol in the LINUX KERNEL catalog gets both its definition excerpt and at least one real caller or usage excerpt in DETAILS (Gate B item 1). A page of definitions alone reads like a header file; the usage excerpt is what makes each symbol's role concrete.
+- Full site enumeration with counts. When prose says a helper is used at N sites, N is a verified count (semcode `find_callers` plus grep, re-checked on disk) and the sites are enumerated with per-site file-location links (7m), or a representative spread is cited with the total stated.
+- Every hard-coded limit named with its value and its defining file and line (7j).
+- Lifecycle and state transitions in full: allocation, initialization, teardown order, the serializing locks, reference counting, and every state a tracked field moves through with the transition drivers cited (7j).
+
+### Draft-versus-golden contrast
+
+`docs/samples/draft-original-vma-overview.md` is an earlier-generation draft of the same topic as `docs/samples/golden-enhanced-vma-overview.md`; the golden page was rebuilt from it. The pair is kept in `docs/samples/` so the gap between a plausible draft and a page meeting this standard stays concrete and measurable:
+
+| measure | draft | golden |
+|---|---|---|
+| lines | 1,161 | 2,922 |
+| fenced c blocks | 43 | 107 |
+| provenance comments | 43 (one per block; single-excerpt blocks only) | 127 (stitched blocks with interior 7l delimiters) |
+| Elixir links | 409 | 634 |
+| `verify_page.py` result | 1 non-verbatim code block, 1 Gate A hit | zero findings |
+
+The differences that matter are not the raw sizes but what produced them:
+
+- Verification versus plausibility. The draft states facts that read correctly and are wrong at the tree. It claims the VMA's `vm_mm` back-pointer "is set once, at allocation, and never changes"; the golden page shows the second writer (the fork path, where `vm_area_init_from()` copies the parent's pointer and `dup_mmap()` then redirects the clone at the child address space) with both excerpts inline. It claims the anonymous-VMA `vm_pgoff` "holds the starting PFN of the range"; the golden page reproduces the on-disk code showing `vma->vm_pgoff = vma->vm_start >> PAGE_SHIFT` (a virtual page index) together with the kernel's own comment. It claims `vma_set_range()` has "seven call sites in mm/vma.c" and that "every path that resizes a VMA goes through it"; the golden page enumerates all seven sites with location links (six in `mm/vma.c` plus one in `mm/mmap.c`) and shows the split path that adjusts the fields directly. Every draft claim was re-verified symbol by symbol before it survived into the golden page.
+- Definition-plus-usage depth. The draft's `vm_lock_seq` section is one paragraph (4 lines); the golden page's runs 88 lines with the field definition, the writer-side stamping code, and the reader-side comparison code. Section for section, the golden page carries the caller excerpt the draft only alludes to.
+- Enumeration with location links. The draft asserts counts in prose; the golden page links each site individually, so every count is checkable one click deep.
+- Source-of-truth links in OTHER SOURCES. The draft hand-built `git.kernel.org/.../commit/?id=` URLs; the golden page carries byte-exact `Link:` trailer URLs from `git log` (7n).
+- Machine cleanliness. The draft fails the verifier (one stitched excerpt does not match the tree verbatim; one label-colon idiom in prose); the golden page has zero findings.
+- Coverage. The golden page adds whole sections absent from the draft (the per-VMA lock state catalog, the lifecycle-driver catalog, the mapping-path orchestration walk, the newer preparation-descriptor struct) because the coverage rules in 7j demanded them.
+
+When drafts of any prior generation exist for a topic (next section), this contrast is the acceptance test: reusing a draft is legitimate only when the result is indistinguishable from a fresh page written to this standard.
+
+### Reusing prior drafts
+
+When earlier-generation draft pages exist for topics in the catalog, mine them instead of ignoring them, under these rules:
+
+1. Map first, read once. Spawn research agents to read the draft corpus once and record a reuse map in the plan file: for each draft, a verdict (backbone-reusable, mine-sections-only, or ignore), symbol spot-check results against the documented tree, its defect classes with counts (banned wording, stale symbol names, non-verbatim excerpts), and pointers from draft sections to the catalog pages they feed. All later work consults the map, not the corpus.
+2. Reuse structure, re-verify everything. A draft may contribute its skeleton, section ordering, tables, and figures. Every symbol, line number, code excerpt, and factual claim taken from a draft is re-verified against the on-disk tree at the documented version before it lands. Treat drafts as unverified claims with good structure; the staleness class that survives spot checks is the silently renamed symbol, so re-find each symbol rather than trusting name continuity.
+3. Extend to standard. Reused sections are extended to the definition-plus-usage depth, full enumerations, and lifecycle coverage above. A reused page that stays at draft depth is not done.
+4. Scrub to the rules. Sweep reused prose for every Gate A class (drafts predate some rules; branch-metaphor "arm" and label-colon idioms cluster in them), add or correct 7l provenance comments, and rebuild OTHER SOURCES per 7n.
+5. Collect across drafts. One catalog page may assemble sections mined from several drafts; the boundary rules decide what belongs where.
+
+### Dispatch pipeline: writer, lint, verify
+
+Campaign pages are produced by a three-stage pipeline. The separation exists because a writer re-reading its own page misses its own blind spots; an independent pass with fresh context reliably catches wrong anchors, drifted excerpts, and skipped spans the writer cannot see.
+
+1. Writer (the strongest available model). Researches with semcode plus Grep/Read, confirms every fact on disk, and writes the complete page following every rule in this file while composing. The writer does not run the Gate A/B loops after writing; its brief says so explicitly, because self-lint spends the strongest model's budget on work the next stage redoes better.
+2. Lint (a different, cheaper model, fresh context). Runs `scripts/verify_page.py`; performs the manual sweeps the script cannot do (boldface, 7b prose-list shapes, 7d superlatives judged in context, negative constructions, anthropomorphic verbs); and executes the exhaustive 7m span-linking pass. Fixes everything in place, re-runs the script after its own edits, and reports what changed plus every finding it adjudicated as a false positive, with reasoning. Concurrent lint agents use unique scratchpad filenames for any helper scripts (shared names have collided).
+3. Final verify (the orchestrator). Re-runs `scripts/verify_page.py` after lint, spot-audits the adjudications, and only then marks the page done in the plan file. Residual findings are fixed or recorded in the plan file as settled false-positive classes for future lint briefs.
+
+Model-tier guidance, subsystem-independent: page writing needs the strongest model available (research judgment, prose discipline, figure quality); the lint pass is mechanical-plus-checklist work a mid-tier model performs reliably when the brief is explicit and exhaustive; the orchestrator keeps final sign-off and never delegates it.
+
+### Writer brief template
+
+Fill the brackets from the plan file. Reproduce the conventions in the brief itself; a writer must never have to guess a house rule.
+
+```
+Write the page <output path> for the <subsystem> knowledge base, following
+the kernel-glossary-skill SKILL.md in full.
+
+MISSION. <Scope statement from the catalog row, naming the anchor symbols
+with file:line hints.> <The boundary rules for this page's cluster: what
+this page owns, what each sibling page owns, the seam symbols. Recap of
+sibling territory is limited to one short paragraph.>
+
+GROUND RULES.
+- Documented tree: <path>, version <tag>. Every fact, line number, and
+  excerpt is verified against the on-disk tree before it lands; semcode
+  results are hints, the disk is ground truth. Architecture scope: <arch>.
+  State CONFIG assumptions in the page where behavior depends on them:
+  <list>.
+- Research with semcode (find_function, find_type, find_callers,
+  grep_functions, find_commit, dig) plus Grep/Read. Enumerate call-site
+  populations before writing any prose that counts or characterizes them.
+- Template section order exactly; section 6 heading for this subsystem:
+  <value or "omit">. The page is self-contained; no internal .md links.
+- Every ```c block verbatim from disk with a /* path:line */ provenance
+  comment (7l); interior delimiters for stitched excerpts; tabs preserved.
+- Symbol-name links anchor at definition lines; call sites use file:line
+  location links; every symbol occurrence outside fences is linked (7m).
+- OTHER SOURCES only from byte-exact Link: trailers in git log (7n).
+- Depth: every LINUX KERNEL symbol gets a definition excerpt AND a usage
+  excerpt in DETAILS; every hard-coded limit named with value and line;
+  lifecycle (alloc/init/free/locking/refcount) and all state transitions
+  covered (7j).
+- Writing rules 7 through 7k apply while composing: no em-dash, no boldface,
+  no label-colon prose, no hedging, no editorializing, no "arm" for a branch
+  or union case, declarative DETAILS headings, single-line paragraphs.
+- <If drafts feed this page: the draft file(s) and sections to mine, the
+  "Reusing prior drafts" rules, and the known defects of those drafts from
+  the reuse map.>
+
+Do NOT run the Gate A/B verification loops after writing; a separate lint
+stage does that. Write the file to <output path>. Your final message is a
+short report (sections written, catalog symbol count, call-site counts you
+verified, anything you could not verify), not the page text.
+```
+
+### Lint brief template
+
+```
+Lint the finished page <path> against the kernel tree at <tree path>,
+following the kernel-glossary-skill SKILL.md.
+
+1. Run: python3 <skill dir>/scripts/verify_page.py --tree <tree path> <path>
+   Fix every finding in place: wrong anchors get re-looked-up on disk,
+   non-verbatim blocks get re-excerpted from the file, banned prose gets
+   rewritten per 7a-7d. Re-run after your edits until the only remaining
+   findings are ones you adjudicate as false positives; report each
+   adjudication with its reasoning. Known false-positive classes to
+   adjudicate rather than "fix": <from the plan file, e.g. expression spans
+   linking one constituent symbol, syscall-name links anchored at the kernel
+   entry point, designated-initializer citations>.
+2. Manual Gate A sweep for what the script cannot see: boldface in prose,
+   intro-sentence-plus-list shapes (7b), hollow superlatives judged in
+   context (7d), negative constructions, anthropomorphic verbs.
+3. Exhaustive span pass (7m): every occurrence of every kernel symbol
+   outside fenced blocks is linked, INCLUDING repeats, CONFIG_* options (to
+   the Kconfig config line), generic primitives (READ_ONCE, memcpy,
+   rcu_read_lock, ... to their definitions for the documented architecture),
+   field paths a->b (to the field declaration), and named ops-struct
+   members. Exemptions: <the settled 7m exemption list>. Never cite in-page
+   or in-family precedent to leave a span bare; the rule always wins and
+   pre-existing bare spans in the same family get fixed too.
+4. Do not change facts, scope, or structure; this is a compliance pass.
+   Use a unique scratchpad filename for any helper script you write.
+
+Report: findings fixed by class with counts, adjudicated false positives
+with reasoning, residual items you could not resolve.
+```
+
+### Serial generation and interruption recovery
+
+- Exactly one writer runs at a time. Serial generation bounds what a session rate limit or API outage can destroy to one page's in-flight work; parallel writer fleets have lost multiple pages' research at a single limit. Lint agents may trail concurrently.
+- When a writer or lint agent dies mid-page, resume that same agent with a message; its research context survives in its transcript. Say explicitly "do not redo the research; write the page now from what you have". If repeated resumes fail, extract a compact state report and hand the remainder to a fresh agent.
+- After every completed page, update the plan file (status, page statistics, adjudications, lessons) so a future session resumes from the plan file plus the on-disk pages alone.
+- Pages land only under `${CLAUDE_SKILL_DIR}/docs/<dir>/`. No `SUMMARY.md` or `mkdocs.yml` edits, and no git commits, without an explicit user go.
+
+### Machine verification
+
+`${CLAUDE_SKILL_DIR}/scripts/verify_page.py` is the mechanical gate executor:
+
+```
+python3 scripts/verify_page.py --tree /path/to/kernel/tree page.md [more.md ...]
+```
+
+It auto-detects the documented kernel version from each page's first Elixir link and checks three layers. First, every Elixir link: the file exists in the tree, the cited line is in range, and the linked symbol's text is found within a few lines of the anchor (with allowances for Kconfig links dropping the `CONFIG_` prefix, `_noprof` allocation wrappers, macro-generated accessors, and wildcard-family links). Second, every fenced c block: diffed verbatim, modulo declared `...` elisions, against the file named by its 7l provenance comment. Third, a fence-aware Gate A sweep (em-dash, label-colon, editorializing, banned words, hedges, "arm", internal `.md` links, negative constructions, bad headings) with a verbatim-quote exemption.
+
+What it cannot check stays manual: boldface, 7b prose-list shapes, 7d superlatives in context, heading declarativeness (Gate B item 4), definition-plus-usage completeness (item 1), behavior coverage (item 6), and figure geometry (item 8). A script finding is fixed or explicitly adjudicated as a false positive with reasoning, never ignored; recurring false-positive classes get recorded in the plan file, folded into future lint briefs, and, when crisp enough, into the script itself.
 
 ## Subsystem Map
 
