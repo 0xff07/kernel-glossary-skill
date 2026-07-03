@@ -957,6 +957,8 @@ A page documents a mechanism in full, not only the single function path that pro
 - Cover the data structures and their helpers, not only entry-point functions. Identify the kernel's internal data structures for the topic (the structs, enums, and typedefs that hold the state) together with the helper functions and accessor macros that allocate, initialize, read, modify, and destroy them. List them in the LINUX KERNEL section, reproduce their definitions as fenced ` ```c ` blocks in the DETAILS section, and show the accessors in use there. A page that names a behavior but omits the struct that records the state, or the helper that changes it, is incomplete.
 - Cover the object lifecycle and asynchronous behavior, not only static call sites. For each key object, document its life cycle: allocation, initialization, freeing, the locks that serialize access to it, and its reference counting (`kref` / `refcount_t` get and put, and the put that drops the last reference and frees it). Document the dynamic behavior as well: state transitions (which field advances through which states, and what drives each transition), notification mechanisms (notifier chains, `struct completion`, wait queues, eventfd, uevents), and deferred or asynchronous work (`work_struct` and `delayed_work` on a workqueue, tasklets, timers, threaded IRQs, RCU callbacks), along with the ordering and concurrency rules between them. Tracing only "function A calls function B" misses the lifecycle and asynchronous behavior the page exists to explain.
 - Call out hard-coded limit values explicitly. Search the code for the constants that bound the mechanism: timeouts, retry and attempt counts, maximum allowable error counts, buffer and queue sizes, poll and backoff intervals, and similar thresholds, whether defined as a macro, an enum value, or a bare literal. Find as many as exist rather than stopping at the first; name each one in the page with its value and the macro or literal that holds it, cite its file and line, and reproduce the defining line in a fenced ` ```c ` block where the value governs a code path the page walks. A page that describes a timeout, a retry loop, or an error threshold without stating the actual number is incomplete.
+- The catalog and the scope statement define done-ness. A page is complete when every symbol in its LINUX KERNEL catalog and every behavior in its scope statement is covered to the rules above; "the core API is documented" is not a completion test, and importance ranking never shrinks coverage. When the material outgrows one page, split it along a boundary statement into finer sibling pages; never thin any page's coverage to shorten it.
+- Compression may remove words, never coverage. Shortening or rewriting a page must not remove cataloged symbols, documented behaviors, call-site enumerations, figures that carry layout facts, or KERNEL DOCUMENTATION / OTHER SOURCES entries. Removing any of those is a scope change made deliberately: the catalog and the scope statement shrink in the same edit, and the cut is reported. Rule 7p governs the procedure when the shortening happens while deriving from existing material.
 - Order DETAILS from generic to specific. Within DETAILS, present the subsystem-generic mechanism first (the core data structures, the shared code path, the framework behavior), then the vendor-, channel-, or driver-specific instances built on top of it. The reader should understand the general mechanism before reading how a particular driver specializes it.
 
 ### 7k. Driver examples (mandatory)
@@ -1001,6 +1003,17 @@ A page is a set of claims about kernel behavior, and each claim class below has 
 - Invariant claims get a counterexample search. Before asserting a lifecycle invariant ("set once and never changes", "always called under lock L", "freed only through F"), search for the counterexample explicitly: every assignment site of the field, every caller that lacks the lock, every free path. Cite the kernel's own enforcement when it exists (a `lockdep_assert_held()`, a `VM_WARN_ON()`, a `const` qualifier), because an assertion line is stronger evidence than a grep that found nothing.
 - Provenance line numbers are claims too (7l). Content matching does not validate them; open the file and confirm the excerpt begins at the cited line.
 
+### 7p. Deriving from an existing page (mandatory)
+
+These rules govern producing a page from existing material of any provenance, in any subsystem: an earlier-generation draft, a prior revision of the same page, or pages being compressed, merged, or split.
+
+1. Inventory the source first. List the source's LINUX KERNEL catalog entries, its DETAILS sections, the distinct behaviors and call-site enumerations it documents, its figures, and its KERNEL DOCUMENTATION and OTHER SOURCES entries.
+2. Give every inventory item an explicit disposition: kept (and where it now lands), merged (into which section), or cut (with the reason). No item disappears without a disposition; a coverage loss that happens as a side effect of rewriting is the failure mode this rule exists to prevent.
+3. A cut is a scope decision, not an edit. It removes the item from the LINUX KERNEL catalog and from the scope statement in the same change, and it is reported in the final message (and recorded in the campaign plan file) so the orchestrator or the user can veto it. A symbol that stays in the catalog cannot have its DETAILS coverage cut.
+4. The derived page passes the same Gate B parity audit (item 1) as a fresh page. Coverage in the source is not coverage in the derived page; "the source covered it" fails the audit.
+
+A measured failure of exactly this kind motivates the rule: a 2,645-line page compressed to 1,268 lines kept its iterator-helper symbols in the LINUX KERNEL catalog while silently dropping their DETAILS sections, kept one catalog symbol with no DETAILS mention at all, and landed at 0.73 fenced blocks per catalog entry where every conforming page measures at least 1.0. The parity audit catches the desync mechanically; the disposition list is what makes any removal legitimate.
+
 ### 8. Behavioral rules
 
 - When asked to "discuss" or "review" a plan, engage conversationally with concise observations and questions. Do not immediately start executing, writing files, or producing verbose output. Wait for explicit approval before creating files.
@@ -1018,7 +1031,7 @@ A page is not done until both gates below pass, and who runs them depends on the
 
 **Gate B (review sign-off, the rules a grep cannot catch).** Verify each item by performing the named action and recording the evidence (a count or a list, not "looks fine"). A page is not done until every item is confirmed; reading the page is not sufficient.
 
-1. Self-contained citation (7e). Walk the page's LINUX KERNEL section symbol by symbol. For each function, struct, enum, and macro, confirm DETAILS reproduces its definition (or the exact branch the page describes) as a fenced ` ```c ` block, and also shows a concrete caller or usage as code. Record the count of LINUX KERNEL symbols and that every one has both blocks. Sign off only at zero gaps.
+1. Catalog-to-DETAILS parity (7e/7j). Build a parity table with one row per LINUX KERNEL catalog symbol and two evidence columns: where DETAILS reproduces its definition (or the exact case label / branch the page describes) as a fenced ` ```c ` block, and where DETAILS shows a concrete caller or usage as code. Every cell must hold a location in the page; an empty cell is a gap, and a catalog symbol that appears nowhere in DETAILS is a hard failure. Check the reverse direction too: a symbol that carries its own DETAILS section belongs in the catalog. When the page names several distinct users or call paths for one symbol, each named one appears as an excerpt or a per-site location link (7m) and the shown-versus-enumerated split is stated. Tripwire before building the table: fewer fenced ` ```c ` blocks than catalog entries means unpaired symbols (every conforming page measured runs 1.03 to 1.47 blocks per entry; a deficient derived page measured 0.73). Record the table; a bare count does not qualify. Sign off only at zero empty cells.
 2. Grounded, non-fabricated code (7e/7l). For every fenced ` ```c ` block, open the on-disk source at its cited `path:line` and confirm the block matches verbatim (tab indentation and comments preserved, `...` only for disclosed elisions). Cross-check with the semcode tools, but the on-disk source at the documented version is ground truth. `scripts/verify_page.py` accelerates this via the 7l provenance comments, but it matches content anywhere in the named file and does not validate the claimed line number; confirm the excerpt actually begins at the cited line. Fallback when the script is unavailable: print the file's lines at the cited range (`sed -n 'START,ENDp'`) beside each block and compare directly. Record the count of code blocks and that every one was confirmed against the file. Sign off only when none is left unverified.
 3. Every symbol linked, keyword kept (7f). Scan every inline `` `code` `` span outside fenced blocks. Confirm each kernel symbol is an Elixir link to the correct `path#Lline`, and that types keep the `struct`/`enum` keyword. Spot-read the cited lines on disk. Record any bare span or wrong line found and fixed. Sign off at zero.
 4. What-does-what DETAILS headings (7). Read every H3 and H4 under `## DETAILS`. Confirm each is a declarative subject-verb-object sentence, not a bare noun or symbol name. Sign off with the heading count.
@@ -1063,7 +1076,7 @@ The golden samples were produced by this workflow and passed `scripts/verify_pag
 | `docs/samples/golden-encoding-pgtable-entries.md` | 3,024 | 141 | 718 | 3 |
 | `docs/samples/golden-enhanced-vma-overview.md` | 2,922 | 107 | 634 | 1 |
 
-Across the thirteen pages of the campaign that produced them, the per-page ranges were 1,468 to 3,270 lines, 46 to 141 code blocks, and 357 to 861 Elixir links. These numbers are outcomes, not targets: they fall out of the depth rules below when applied to a fine-grained topic. Use them as a smell test. A page far under them nearly always means missing usage excerpts, unenumerated call sites, or a skipped lifecycle, and the fix is completing coverage per 7j and Gate B, never padding prose. There is no length ceiling; a page ends when coverage is complete, not at a line count.
+Across the thirteen pages of the campaign that produced them, the per-page ranges were 1,468 to 3,270 lines, 46 to 141 code blocks, and 357 to 861 Elixir links. These numbers are outcomes, not targets: they fall out of the depth rules below when applied to a fine-grained topic. Three tripwires convert them into checks that work for any subsystem: a finished fine-grained page below the smallest golden sample (1,468 lines); a page with fewer fenced ` ```c ` blocks than LINUX KERNEL catalog entries (conforming pages measure 1.03 to 1.47 blocks per entry, because every symbol needs a definition and a usage excerpt; a deficient derived page measured 0.73); and a catalog that shrank across a rewrite without reported cuts. Any tripped wire forces the Gate B parity audit (item 1) and, for a derived page, the 7p disposition list before the page can be called done. The fix for a tripped page is completing coverage per 7j and Gate B, or cutting scope explicitly per 7p; it is never padding prose and never silent thinning. There is no length ceiling; a page ends when coverage is complete, not at a line count.
 
 The depth rules that produce those numbers:
 
@@ -1097,15 +1110,16 @@ When drafts of any prior generation exist for a topic (next section), this contr
 
 The audit does not stop at golden. A later enhancement pass over this same golden page corrected an off-by-one call-site count (a written 119 for the 118 on disk) and a provenance comment two lines off its excerpt, and a 7o audit after that found a false universal claim both passes had missed: the page asserted a helper "is invoked from exactly one place" while the tree holds four callers (the plain store helper, its gfp variant, the fork-path bulk store, and an error-path rollback). Golden samples calibrate form and depth; correctness is established only by re-running the 7o actions against the tree, on every page, however golden its history.
 
-### Reusing prior drafts
+### Deriving from prior drafts and pages
 
-When earlier-generation draft pages exist for topics in the catalog, mine them instead of ignoring them, under these rules:
+When earlier-generation drafts or prior revisions exist for topics in the catalog, mine them instead of ignoring them, under these rules (rule 7p carries the per-page mechanics):
 
 1. Map first, read once. Spawn research agents to read the draft corpus once and record a reuse map in the plan file: for each draft, a verdict (backbone-reusable, mine-sections-only, or ignore), symbol spot-check results against the documented tree, its defect classes with counts (banned wording, stale symbol names, non-verbatim excerpts), and pointers from draft sections to the catalog pages they feed. All later work consults the map, not the corpus.
 2. Reuse structure, re-verify everything. A draft may contribute its skeleton, section ordering, tables, and figures. Every symbol, line number, code excerpt, and factual claim taken from a draft is re-verified against the on-disk tree at the documented version before it lands. Treat drafts as unverified claims with good structure; the staleness class that survives spot checks is the silently renamed symbol, so re-find each symbol rather than trusting name continuity.
 3. Extend to standard. Reused sections are extended to the definition-plus-usage depth, full enumerations, and lifecycle coverage above. A reused page that stays at draft depth is not done.
 4. Scrub to the rules. Sweep reused prose for every Gate A class (drafts predate some rules; branch-metaphor "arm" and label-colon idioms cluster in them), add or correct 7l provenance comments, and rebuild OTHER SOURCES per 7n.
 5. Collect across drafts. One catalog page may assemble sections mined from several drafts; the boundary rules decide what belongs where.
+6. Disposition, not disappearance. Every source catalog entry, DETAILS section, behavior, enumeration, figure, and reference gets a 7p disposition (kept, merged, or cut with its reason). Cuts shrink the derived page's catalog and scope statement in the same change and are recorded in the plan file so the orchestrator or the user can veto them; the derived page then passes the Gate B parity audit like a fresh one.
 
 ### Dispatch pipeline: writer, lint, verify
 
@@ -1113,7 +1127,7 @@ Campaign pages are produced by a three-stage pipeline. The separation exists bec
 
 1. Writer (the strongest available model). Researches with semcode plus Grep/Read, confirms every fact on disk, and writes the complete page following every rule in this file while composing. The writer does not run the Gate A/B loops after writing; its brief says so explicitly, because self-lint spends the strongest model's budget on work the next stage redoes better.
 2. Lint (a different, cheaper model, fresh context). Runs the advisory `scripts/verify_page.py`, falling back to the manual gate procedures when the script fails or is absent; performs the manual sweeps the script cannot do (boldface, 7b prose-list shapes, 7d superlatives judged in context, negative constructions, anthropomorphic verbs); re-derives the page's counts, universal claims, and restated conditions per 7o; and executes the exhaustive 7m span-linking pass. Fixes everything in place, re-checks after its own edits, and reports what changed plus every finding it adjudicated as a false positive, with reasoning. Concurrent lint agents use unique scratchpad filenames for any helper scripts (shared names have collided).
-3. Final verify (the orchestrator). Re-runs the gates after lint (script-accelerated or manual), spot-audits the adjudications, and only then marks the page done in the plan file. Residual findings are fixed or recorded in the plan file as settled false-positive classes for future lint briefs.
+3. Final verify (the orchestrator). Re-runs the gates after lint (script-accelerated or manual), spot-audits the adjudications, confirms the Gate B parity table has zero empty cells (dispatching a writer follow-up for any coverage gap lint flagged, since lint does not write new sections), and confirms any 7p cuts were reported before marking the page done in the plan file. Residual findings are fixed or recorded in the plan file as settled false-positive classes for future lint briefs.
 
 Model-tier guidance, subsystem-independent: page writing needs the strongest model available (research judgment, prose discipline, figure quality); the lint pass is mechanical-plus-checklist work a mid-tier model performs reliably when the brief is explicit and exhaustive; the orchestrator keeps final sign-off and never delegates it.
 
@@ -1147,9 +1161,13 @@ GROUND RULES.
   location links; every symbol occurrence outside fences is linked (7m).
 - OTHER SOURCES only from byte-exact Link: trailers in git log (7n).
 - Depth: every LINUX KERNEL symbol gets a definition excerpt AND a usage
-  excerpt in DETAILS; every hard-coded limit named with value and line;
-  lifecycle (alloc/init/free/locking/refcount) and all state transitions
-  covered (7j).
+  excerpt in DETAILS (so the finished page carries at least as many ```c
+  blocks as catalog entries); every hard-coded limit named with value and
+  line; lifecycle (alloc/init/free/locking/refcount) and all state
+  transitions covered (7j). Done-ness is the catalog and scope statement
+  exhausted, never "the core API is documented". If the material outgrows
+  one page, report a proposed split along a boundary statement; never thin
+  coverage to shorten the page.
 - Behavioral claims per 7o: enumerate a set before writing "only", "never",
   "always", or "exactly N" about it; state each enumeration's search basis
   inline; derive restated guards from the reproduced code by exact negation;
@@ -1157,9 +1175,13 @@ GROUND RULES.
 - Writing rules 7 through 7k apply while composing: no em-dash, no boldface,
   no label-colon prose, no hedging, no editorializing, no "arm" for a branch
   or union case, declarative DETAILS headings, single-line paragraphs.
-- <If drafts feed this page: the draft file(s) and sections to mine, the
-  "Reusing prior drafts" rules, and the known defects of those drafts from
-  the reuse map.>
+- <If an existing draft or prior page feeds this one: the source file(s)
+  and sections to mine, the known source defects from the reuse map, and
+  the 7p rules: inventory the source's catalog entries, sections,
+  behaviors, figures, and references first; give every item a
+  kept/merged/cut disposition; report every cut and shrink the catalog and
+  scope statement with it. A symbol kept in the catalog keeps its DETAILS
+  coverage.>
 
 Do NOT run the Gate A/B verification loops after writing; a separate lint
 stage does that. Write the file to <output path>. Your final message is a
@@ -1203,11 +1225,17 @@ following the kernel-glossary-skill SKILL.md.
    of everything in its section; confirm each excerpt begins at its claimed
    provenance line. These are the only fact edits you may make; report each
    with the search you ran and its result.
-5. Beyond the 7o corrections, do not change facts, scope, or structure;
+5. Parity audit (Gate B item 1): build the catalog-to-DETAILS table, one
+   row per LINUX KERNEL symbol, recording where its definition excerpt and
+   its usage excerpt land. Flag the tripwire if the page has fewer ```c
+   blocks than catalog entries. Do not write missing sections yourself;
+   report every empty cell as a coverage gap for a writer follow-up.
+6. Beyond the 7o corrections, do not change facts, scope, or structure;
    this is a compliance pass. Use a unique scratchpad filename for any
    helper script you write.
 
 Report: findings fixed by class with counts, 7o corrections with evidence,
+parity gaps (catalog symbols lacking a definition or usage excerpt),
 adjudicated false positives with reasoning, residual items you could not
 resolve.
 ```
