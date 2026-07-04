@@ -17,7 +17,7 @@ Content structure:
 
 - `docs/` — all documentation articles
 - `docs/templates/TEMPLATE-FULL.md` — full page template with all sections
-- `docs/samples/` — the golden-standard reference pages for writing. This directory holds frozen copies of exemplar pages (plus one labelled counterexample) kept independent of the live subsystem directories, so the exemplars stay findable even after the hierarchy under `docs/` is reorganized. The worked examples here define the house standard for the lead summary, section structure, prose, ASCII diagrams, self-contained kernel-source citation, and depth of coverage. When writing any new page, calibrate against the closest-matching page under `docs/samples/`, and refer to example pages only by their `docs/samples/` path.
+- `docs/samples/` — the golden-standard reference material. This directory holds frozen copies of exemplar pages, one labelled counterexample, and the campaign plan file that produced the exemplars, kept independent of the live subsystem directories so they stay findable even after the hierarchy under `docs/` is reorganized. The worked examples here define the house standard for the lead summary, section structure, prose, ASCII diagrams, self-contained kernel-source citation, depth of coverage, and campaign planning. When writing any new page or plan, calibrate against the closest-matching file under `docs/samples/`, and refer to example files only by their `docs/samples/` path.
 - `scripts/verify_page.py` — the advisory machine verifier that checks a finished page's Elixir links, code-block verbatimness, and banned prose patterns against the local kernel tree. Its findings are leads, never verdicts; the manual gates in section 9 are the authority and work without it (see "Machine verification (advisory)" near the end of this file)
 - Major subsystem directories under `docs/`: one per entry in the Subsystem Map at the end of this file (the `dir` field of each entry)
 
@@ -1057,15 +1057,104 @@ Everything above defines a single page. This section defines the workflow for pr
 
 ### Plan before generating
 
-A campaign starts with a plan the user approves, kept in a durable plan file that survives context loss and session interruption. Build it in this order:
+A campaign starts with a plan the user approves, kept in a durable plan file that survives context loss and session interruption. Create the plan file the moment planning starts (in Claude Code, plan mode provides one; otherwise create `<topic>-plan.md`) and treat it as the single source of truth: every phase below writes its output into the file, and nothing load-bearing stays only in conversation or in agent transcripts. `docs/samples/plan-mm-campaign.md` is the plan file of the campaign that produced the golden samples, with one curation: its Status section is reduced to generic entry shapes with placeholders, so the example teaches the log's form without tying the sample to any one execution. Read it once before planning a campaign for any subsystem and imitate its section shapes rather than inventing new ones.
 
-1. Inventory. Spawn read-only research agents, one per major area of the topic, over the subsystem's `kernel_paths` at the documented kernel version. Each agent returns a compact digest: the core structs and their field groups, the API families with file:line anchors, lifecycle and locking facts, hard-coded limits, and version-specific renames or removals (the facts that make pages version-correct). Record the digests in the plan file. Treat every line number in a digest as a hint to re-verify at write time, never as a citation; semcode indexes can lag the tree, and the on-disk source at the documented version is always ground truth.
-2. Catalog. Turn the inventory into a page catalog: one table row per page with (a) the output path `docs/<dir>/<group>/<slug>.md`, (b) a scope statement naming the anchor symbols the page is built around, each with a file:line hint, and (c) a tag recording whether the page was explicitly requested or curated to fill a gap. Prefer fine granularity: one mechanism, one page. A vague or blank bullet in the user's topic list is a gap to curate into concrete pages, never a topic to skip. Record explicitly which suggested topics were folded into other pages rather than given their own (the fold-in list prevents re-litigating scope later).
-3. Boundary rules. Self-contained pages overlap by design, so for every cluster of sibling pages write one boundary statement that fixes each page's mission. The useful form names the seam symbol: "page A owns the syscall surface and treats the X machinery as a black box; page B owns X's object pipeline; page C owns the physical teardown; helper Y at file:line is the seam where A's coverage ends and B's opens". These statements go into the plan file and later verbatim into each writer brief, so siblings recap each other in at most one short paragraph instead of duplicating walkthroughs.
-4. Batch order. Order pages foundational-to-derived: encodings and counters before the objects that hold them, objects before the tree/list machinery that indexes them, machinery before the syscalls that drive it, core mechanisms before driver instances. Split the catalog into batches of about five pages; the batch is the unit of dispatch and checkpointing (see "Batch generation and interruption recovery" below).
-5. Checkpoint with the user. Present the catalog and directory layout and get an explicit go before generating anything. Record every subsequent user amendment (priority reorders, pipeline changes, new bans) in a dated amendments section of the plan file at the moment it arrives; amendments supersede the original order silently otherwise.
+Build the plan in this order:
+
+1. Extract the request's constraints before touching the tree. From the request (a prompt file or the conversation), record verbatim into the plan file's Context and Scope sections: the architecture scope, the granularity preference, the emphasis areas the request stresses (lifecycle, state transitions, hard limits, callback semantics), any wording bans or mandatory tools, and the topic list itself. Note where the request is explicitly incomplete ("this list is rough", a blank bullet, an area with no bullets); each such gap is a curation obligation, never an omission to mirror.
+2. Inventory with parallel read-only agents, one per major area. Split the topic into three to six areas along the request's own headings and dispatch one read-only research agent per area, in parallel (read-only inventory agents are safe to parallelize; writers are not). Each brief follows the "Inventory brief template" below: the area, the `kernel_paths` subset to search, the documented tree and version, the toolset (semcode `find_type`, `find_function`, `find_callers`, `grep_functions`, plus Grep and Read), and the six digest deliverables. Demand a COMPACT digest; a compact report survives agent deaths and resumes better than prose chapters, and it lands verbatim in the plan file. When an inventory agent dies (rate limit, transient API error), resume that same agent and ask for the compact report of what it has so far instead of restarting the research; spawn a fresh agent only after resuming fails twice.
+3. Record the digests in the plan file, one Inventory findings subsection per area, before any catalog work. Treat every line number in a digest as a hint to re-verify at write time, never as a citation; semcode indexes can lag the tree, and the on-disk source at the documented version is always ground truth. Give the version-specific renames and removals their own prominence; they are the facts that keep pages version-correct.
+4. Curate the catalog yourself; do not delegate it. Catalog design is the load-bearing judgment of the campaign, and the orchestrator (or the human planner) makes it from the digests. Map every bullet of the request to one or more catalog rows; curate gap-fill rows for topics the digests surfaced that the request missed; and for every suggested topic that does NOT get a page, record a fold-in adjudication naming the page that absorbs it (the fold-in list prevents re-litigating scope later). Each catalog row carries (a) the output path `docs/<dir>/<group>/<slug>.md`, (b) a scope statement naming the anchor symbols the page is built around, each with a file:line hint from the digest, and (c) a tag recording whether the row was explicitly requested or curated. Prefer fine granularity: one mechanism, one page; a request bullet that mixes kinds of page (the object itself, its ops structure, the syscalls that drive it) becomes multiple groups, and a "walkthrough" bullet becomes an overview row plus an algorithm row. Choose the directory organization at the same time (two levels, `docs/<dir>/<group>/`, matching the house layout) and state its rationale in the file.
+5. Write the boundary rules. Self-contained pages overlap by design, so for every cluster of sibling rows write one boundary statement that fixes each page's mission. The useful form names the seam symbol: "page A owns the syscall surface and treats the X machinery as a black box; page B owns X's object pipeline; page C owns the physical teardown; helper Y at file:line is the seam where A's coverage ends and B's opens". These statements go into the plan file and later verbatim into each writer brief, so siblings recap each other in at most one short paragraph instead of duplicating walkthroughs.
+6. Have the catalog adversarially reviewed by a fresh agent. Dispatch a plan-review agent (the "Plan review brief template" below) whose only job is to attack the catalog: coverage gaps against the digests, duplicated ownership, wrong granularity, ordering defects, anchor symbols absent at the documented version. Apply the amendments you accept and record the outcome in the plan file; the campaign that produced the golden samples took two merges, two splits, six scope amendments, four new fold-ins, and its boundary statements from this review. A catalog nobody attacked ships its blind spots.
+7. Order the batches foundational-to-derived: encodings and counters before the objects that hold them, objects before the tree/list machinery that indexes them, machinery before the syscalls that drive it, core mechanisms before driver instances. Split the catalog into batches of about five pages; the batch is the unit of dispatch and checkpointing (see "Batch generation and interruption recovery" below).
+8. Checkpoint with the user before generating anything. Ask only the genuine scope questions, each with two to four concrete options (include a supporting construct group or not; cover a full syscall surface or a subset), present the final catalog and directory layout, and get an explicit go. Record the questions, the answers, and every later amendment (priority reorders, pipeline changes, new bans) in a dated amendments section at the moment it arrives; amendments supersede the original order silently otherwise, and a superseded ordering stays in the file marked as reference.
+
+A plan is complete when every item below holds; confirm each before presenting it:
+
+- Every bullet of the request maps to at least one catalog row or one recorded fold-in, and blank or vague bullets became curated rows.
+- Every catalog row has its output path, a scope statement with at least one anchor symbol carrying a file:line hint, and a requested-or-curated tag.
+- The catalog states the projected page total and the tag census (how many requested, how many curated).
+- Every sibling cluster has a boundary statement naming its seam symbol.
+- The fold-in list records every absorbed topic and its absorbing page.
+- One inventory digest per area is in the file, including the version-specific renames and removals.
+- The batch order is foundational-to-derived in batches of about five, and the write-time cautions (line numbers are hints, with the known drift examples found so far) are recorded.
+- The adversarial review ran and its accepted amendments are recorded.
+- The user checkpoint happened: the questions, the decisions, and the explicit go are in the file.
+- The save and commit policy is stated (where pages land, no navigation-file edits, no git commits without a user go).
 
 The plan file is the campaign's memory: inventory digests, the catalog, boundary rules, amendments, per-batch status, the draft-reuse map, and lessons learned (verifier false-positive classes, settled linking adjudications). After any interruption, the plan file plus the pages on disk are sufficient to resume without redoing research.
+
+### Plan file structure
+
+`docs/samples/plan-mm-campaign.md` carries eight top-level sections; a conforming plan file carries the same elements (the nesting may vary, the presence may not):
+
+1. Context: what was asked, where the requirements come from, what is explicitly not an input, and the output root.
+2. Status: a living, dated checklist. Every phase completion, batch result, suspension, correction, and lesson is appended at the moment it happens; a future session resumes from this section plus the pages on disk.
+3. Scope decisions: the user-confirmed choices, numbered.
+4. Inventory findings: one compact digest per area, from the inventory agents, including the version-specific renames and removals.
+5. Directory organization: the group layout with its rationale.
+6. Page catalog: one table per group with columns page | scope (anchor symbols) | tag, followed by the fold-in adjudications, the projected total with tag census, and the overlap boundary rules (one statement per sibling cluster, seam symbols named).
+7. Execution and verification: the per-page procedure and its campaign-specific deltas, project-specific writing bans from the request, gate ownership for the pipeline, write-time rules (line numbers are hints, with the known-drift list), user amendments (dated, explicitly superseding what they replace), the batch order (current, plus any superseded order kept for reference), and the save/commit policy.
+8. Draft reuse map, when prior material exists (rule 7p and "Deriving from prior drafts and pages"): per source file, a reuse verdict, symbol spot-check results, defect classes with counts, and section-to-page mining pointers, plus an enhancement backlog for already-written pages.
+
+### Inventory brief template
+
+One brief per area; fill the brackets. Dispatch all areas in parallel as read-only agents.
+
+```
+Inventory the <area name> area of the <subsystem> subsystem for a
+documentation campaign. Read-only research; do not write or edit any file.
+
+Tree: <path>, version <tag>. Search with semcode (find_type, find_function,
+find_callers, grep_functions) plus Grep and Read, over: <kernel_paths
+subset for this area>. Index line numbers are hints; confirm on disk
+before reporting a location.
+
+Return a COMPACT digest (a report of anchored facts, not prose chapters):
+1. Core structs of the area: each with its field groups, one-line roles,
+   and the definition's file:line.
+2. API families: entry points, helpers, accessor macros, grouped by
+   family, each with file:line and a one-line role.
+3. Lifecycle and locking: alloc/init/free paths, the serializing locks,
+   refcounting, state fields and their transitions, with file:line anchors.
+4. Hard-coded limits: every constant bounding the mechanism, with its
+   value and file:line.
+5. Version-specific facts: symbols renamed, removed, or newly added at
+   this version relative to widely-documented older kernels.
+6. Suggested page topics the request does not list, each justified by the
+   anchor symbols it would be built around.
+Keep every item to one or two lines; the digest lands verbatim in a plan
+file. Your final message is the digest itself, nothing else.
+```
+
+### Plan review brief template
+
+Dispatch after the catalog and boundary rules exist, to a fresh agent that took no part in writing them.
+
+```
+Adversarially review this documentation-campaign plan for <subsystem
+area>. You are attacking the catalog, not the prose. Input: the plan file
+at <path> (context, inventory digests, catalog, boundary rules, batch
+order). Tree for spot checks: <path>, version <tag>.
+
+Hunt for, and propose concrete fixes with one-line justifications:
+1. Coverage gaps: topics present in the inventory digests or the user
+   request but absent from both the catalog and the fold-in list.
+2. Duplicated ownership: sibling pages whose scope statements would force
+   the same walkthrough twice; propose the boundary statement and seam
+   symbol, or a merge.
+3. Wrong granularity: rows whose scope exceeds one page's material
+   (propose the split line) and rows too thin to stand alone (propose the
+   merge target).
+4. Ordering defects: pages batched before the pages that explain their
+   prerequisites.
+5. Anchor errors: scope-statement symbols that do not exist at the
+   documented version (spot-check against the tree).
+
+Return a numbered amendment list (merge / split / rescope / reorder /
+fold-in), each naming the affected rows. Do not rewrite the plan yourself.
+```
 
 ### Golden samples and measured criteria
 
