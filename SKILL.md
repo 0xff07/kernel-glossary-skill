@@ -995,6 +995,8 @@ Every OTHER SOURCES entry is a mailing-list URL taken byte-exactly from a `Link:
 A page is a set of claims about kernel behavior, and each claim class below has a named audit action. The style and linking rules make a page readable and navigable; these actions are what make it true. Perform them while writing, and re-perform them whenever reviewing, enhancing, or reusing a page, because they catch the class of error that reads correctly, links correctly, and survives every mechanical check.
 
 - Universal quantifiers are enumerations. Every sentence containing "only", "never", "always", "all", "every", "exactly N", "the single", or "once" asserts the size or uniformity of a set. Enumerate that set before writing the sentence (semcode `find_callers` plus a tree-wide grep that includes headers), then either cite every member with location links or weaken the sentence to what the enumeration shows. A page in this knowledge base asserted a helper "is invoked from exactly one place" while the tree held four callers (the plain store helper, its gfp variant, the fork-path bulk store, and an error-path rollback); only re-running the enumeration catches this class.
+- A per-member claim is as many claims as the family has members. A sentence of the form "each X ..." or "every X ..." that asserts a property or a one-to-one relationship over a family ("each wrapper forwards to exactly one underlying primitive", "every callback runs under the lock", "each descriptor slot maps to one register") is verified by building the member-to-property mapping first: list every member of the family and, for each member, everything the property names for it. One exception falsifies the sentence. When an exception exists, restate the sentence to what the mapping shows, restrict the family explicitly ("every read-side helper ..."), or name the classifier that makes the claim true and say what falls outside it ("one primary primitive, plus cursor-bookkeeping helpers"); an unstated classifier is how a strictly-false claim reads as true and survives review. A lead sentence in this knowledge base asserted that each wrapper helper "forwards to exactly one" underlying primitive while the page's own per-helper table showed one wrapper calling a range-setup helper plus the store primitive; the mapping audit catches this, and the heading failure under "Headings are claims" below is the same shape applied to a section.
+- Lead and SUMMARY compression gets no precision waiver. Quantified, universal, and per-member claims in the lead paragraph and in SUMMARY are audited exactly like DETAILS claims, and each must agree with the DETAILS evidence that carries it (the section, table, or enumeration on the same page). Cross-check every lead and SUMMARY quantifier against the page's own tables and enumerations at sign-off; a summary that contradicts the page's own table is the first inconsistency a reader finds. Compression may drop detail; it may never trade accuracy for sweep.
 - Every enumeration states its search basis inline. Give the scope with the number (directories searched, headers included or not, definition sites excluded, the architecture and CONFIG filter): "a grep across mm/, fs/, kernel/, drivers/, arch/x86/, and include/ at this tree finds 118 call sites of ... outside their definitions". A count whose basis is unstated cannot be re-verified and does not qualify. When a count holds only under the page's CONFIG assumptions (a caller compiled out without `CONFIG_MMU`), say so at the claim, not only in the page preamble.
 - Counts are re-derived at review, never trusted. Whoever reviews, lints, or enhances the page re-runs every enumeration and corrects drift; a re-count on a live page corrected a written 119 to the 118 actually on disk.
 - A restated condition is derived, not paraphrased. When prose restates a guard or threshold in words ("requires map_count + 2 < sysctl_max_map_count - 3"), derive the restatement from the reproduced code by exact negation of its operator, keep the exact constants, and show the guard as a code block beside the sentence so a reader can repeat the derivation.
@@ -1039,7 +1041,7 @@ A page is not done until both gates below pass, and who runs them depends on the
 6. Full coverage (7j). For each behavior the page documents, enumerate every site that exhibits it with `find_callers`/`grep` and confirm the page cites all of them, or cites a representative spread and states how many exist. Confirm every hard-coded limit or constant is named with its value, and that the object lifecycle (allocation, initialization, freeing, the serializing locks, reference counting) and the asynchronous behavior are covered. Record the enumeration. Sign off.
 7. Driver examples actively maintained (7k). For each driver cited as an example, run `git log` on its file and confirm substantive commits within roughly three years, and that its role is explained from its own source on this page. Record the newest substantive commit per driver. Sign off.
 8. ASCII diagrams (7g-7i). For each figure, confirm Unicode box-drawing only with no ASCII `\`, `|`, or `/` used as a connector, every line under 80 columns, each content-row `│` landing on a `┬` or `┴` junction of the borders above and below, and that the figure shows a spatial or temporal relationship rather than a function-call chain. Sign off per figure.
-9. Behavioral-claim audit (7o). List every universal quantifier ("only", "never", "always", "all", "every", "exactly N"), every count, every restated guard or threshold, and every lifecycle invariant in the page. For each, re-run the enumeration or derivation (record the search performed and its result) and correct the sentence to match. Confirm every DETAILS heading is true of everything in its section and every behavioral sentence agrees with its adjacent excerpt. Sign off with the claim list and its evidence.
+9. Behavioral-claim audit (7o). List every universal quantifier ("only", "never", "always", "all", "every", "exactly N"), every count, every per-member "each/every X" claim, every restated guard or threshold, and every lifecycle invariant in the page. For each, re-run the enumeration or derivation (record the search performed and its result) and correct the sentence to match; for per-member claims, rebuild the member-to-property mapping and confirm every member, or confirm the stated classifier and its boundary. Confirm every DETAILS heading is true of everything in its section, every behavioral sentence agrees with its adjacent excerpt, and every lead and SUMMARY quantifier agrees with the DETAILS section, table, or enumeration that carries its evidence. Sign off with the claim list and its evidence.
 
 Record the outcome of Gate A and Gate B before saving. If any item cannot be confirmed, the page is not done and is not written.
 
@@ -1169,9 +1171,13 @@ GROUND RULES.
   one page, report a proposed split along a boundary statement; never thin
   coverage to shorten the page.
 - Behavioral claims per 7o: enumerate a set before writing "only", "never",
-  "always", or "exactly N" about it; state each enumeration's search basis
-  inline; derive restated guards from the reproduced code by exact negation;
-  make every DETAILS heading true of its whole section.
+  "always", or "exactly N" about it; build the member-to-property mapping
+  before writing any "each/every X" sentence, and when the claim holds only
+  for a primary or direct relation, state that classifier and its boundary
+  in the sentence; keep every lead and SUMMARY quantifier consistent with
+  the page's own DETAILS tables and enumerations; state each enumeration's
+  search basis inline; derive restated guards from the reproduced code by
+  exact negation; make every DETAILS heading true of its whole section.
 - Writing rules 7 through 7k apply while composing: no em-dash, no boldface,
   no label-colon prose, no hedging, no editorializing, no "arm" for a branch
   or union case, declarative DETAILS headings, single-line paragraphs.
@@ -1220,11 +1226,16 @@ following the kernel-glossary-skill SKILL.md.
    or in-family precedent to leave a span bare; the rule always wins and
    pre-existing bare spans in the same family get fixed too.
 4. Correctness re-derivation (7o): re-run the enumeration behind every
-   count and every "only"/"never"/"always"/"exactly" claim; re-derive every
-   restated guard against its excerpt; confirm each DETAILS heading is true
-   of everything in its section; confirm each excerpt begins at its claimed
-   provenance line. These are the only fact edits you may make; report each
-   with the search you ran and its result.
+   count and every "only"/"never"/"always"/"exactly" claim; rebuild the
+   member-to-property mapping behind every "each/every X" sentence (one
+   exception falsifies it; fix the sentence, restrict the family, or state
+   the classifier and its boundary); check every lead and SUMMARY
+   quantifier against the DETAILS section, table, or enumeration that
+   carries its evidence; re-derive every restated guard against its
+   excerpt; confirm each DETAILS heading is true of everything in its
+   section; confirm each excerpt begins at its claimed provenance line.
+   These are the only fact edits you may make; report each with the search
+   you ran and its result.
 5. Parity audit (Gate B item 1): build the catalog-to-DETAILS table, one
    row per LINUX KERNEL symbol, recording where its definition excerpt and
    its usage excerpt land. Flag the tripwire if the page has fewer ```c
