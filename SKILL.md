@@ -17,7 +17,7 @@ Content structure:
 
 - `docs/` — all documentation articles
 - `docs/templates/TEMPLATE-FULL.md` — full page template with all sections
-- `docs/samples/` — the golden-standard reference material. This directory holds frozen copies of exemplar pages, one labelled counterexample, and the campaign plan file that produced the exemplars, kept independent of the live subsystem directories so they stay findable even after the hierarchy under `docs/` is reorganized. The worked examples here define the house standard for the lead summary, section structure, prose, ASCII diagrams, self-contained kernel-source citation, depth of coverage, and campaign planning. When writing any new page or plan, calibrate against the closest-matching file under `docs/samples/`, and refer to example files only by their `docs/samples/` path.
+- `docs/samples/` — the reference samples for writing and planning. This directory holds frozen copies of exemplar pages, one labelled counterexample, and the campaign plan file that produced the exemplars, kept independent of the live subsystem directories so they stay findable even after the hierarchy under `docs/` is reorganized. The worked examples here define the house standard for the lead summary, section structure, prose, ASCII diagrams, self-contained kernel-source citation, depth of coverage, and campaign planning. Samples are style, structure, and depth guidance ONLY; they are never an authoritative source of kernel knowledge. Each documents its own tree at its own version and can carry errors found later, so no technical claim, line number, or excerpt is ever taken from a sample into new work; every fact is researched against the documented tree (7e, 7o). When writing any new page or plan, calibrate against the closest-matching file under `docs/samples/`, and refer to example files only by their `docs/samples/` path.
 - `scripts/verify_page.py` — the advisory machine verifier that checks a finished page's Elixir links, code-block verbatimness, and banned prose patterns against the local kernel tree. Its findings are leads, never verdicts; the manual gates in section 9 are the authority and work without it (see "Machine verification (advisory)" near the end of this file)
 - Major subsystem directories under `docs/`: one per entry in the Subsystem Map at the end of this file (the `dir` field of each entry)
 
@@ -26,25 +26,28 @@ Content structure:
 `$ARGUMENTS` or conversation context provides:
 - The subsystem (e.g., xHCI, PCIe, ACPI, USB4, DRM)
 - The topic name (e.g., "host controller initialization", "MSI-X vectors")
+- The documented kernel version (e.g., `v7.0`): the tag of the local tree the pages cite
 - Optionally, an output directory override
 
 If `$ARGUMENTS` is empty, derive the subsystem and topic from the conversation context.
 
+The documented kernel version is a single value set once and used everywhere: every Elixir URL embeds it, every version-specific claim is checked at it, the verifier runs against the tree checked out at it, and a campaign pins it (tag plus commit) in the plan file's Context section. When the version is not given, derive it from the local tree (`git describe --tags` or `make -s kernelversion` at the tree root), confirm elixir.bootlin.com carries that tag, and state the value back to the user before generating. All version-bearing examples in this file use `v7.0`; substitute the documented version.
+
 ## Procedure
 
-### 1. Read the template and the golden samples
+### 1. Read the template and the samples
 
 Before generating any content, read `docs/templates/TEMPLATE-FULL.md` (relative to `${CLAUDE_SKILL_DIR}`) for the page structure and section order.
 
-Then read the golden samples under `${CLAUDE_SKILL_DIR}/docs/samples/`. These are frozen copies of real pages that met every gate in this file and passed the machine verifier with zero findings; they are the concrete standard for structure, prose, diagram style, code-citation density, and depth of coverage. Open the one or two whose archetype most resembles the page about to be written and read them in full before writing:
+Then read the samples under `${CLAUDE_SKILL_DIR}/docs/samples/`. These are frozen copies of real pages that met every gate in this file and passed the machine verifier with zero findings; they are the concrete standard for structure, prose, diagram style, code-citation density, and depth of coverage. Open the one or two whose archetype most resembles the page about to be written and read them in full before writing:
 
-- structure-tour pages (one central struct documented field group by field group, with its accessor and lifecycle catalog): `docs/samples/golden-overview-mm-struct.md`
-- lifecycle / refcount / locking-protocol pages: `docs/samples/golden-lifecycle-mm-refcount.md` (also the smallest acceptable depth for a fine-grained page)
-- encoding / bitfield / flag-layout pages (including register-figure style): `docs/samples/golden-encoding-pgtable-entries.md`
-- pages rebuilt from earlier drafts: `docs/samples/golden-enhanced-vma-overview.md`, read side by side with the counterexample below
-- `docs/samples/draft-original-vma-overview.md` is a COUNTEREXAMPLE, the stale draft the enhanced page was rebuilt from. Do not imitate it. It is kept so the measurable difference between a plausible draft and a page meeting this standard stays visible (see "Draft-versus-golden contrast" near the end of this file).
+- structure-tour pages (one central struct documented field group by field group, with its accessor and lifecycle catalog): `docs/samples/page-overview-mm-struct.md`
+- lifecycle / refcount / locking-protocol pages: `docs/samples/page-lifecycle-mm-refcount.md` (also the smallest acceptable depth for a fine-grained page)
+- encoding / bitfield / flag-layout pages (including register-figure style): `docs/samples/page-encoding-pgtable-entries.md`
+- pages rebuilt from earlier drafts: `docs/samples/page-enhanced-vma-overview.md`, read side by side with the counterexample below
+- `docs/samples/draft-original-vma-overview.md` is a COUNTEREXAMPLE, the stale draft the enhanced page was rebuilt from. Do not imitate it. It is kept so the measurable difference between a plausible draft and a page meeting this standard stays visible (see "Draft-versus-page contrast" near the end of this file).
 
-If no archetype matches, pick the structurally closest golden sample anyway. Do not calibrate against pages elsewhere under `docs/`; they may predate the current rules. Where a sample and a rule in this file disagree (a sample can predate a later rule), the rules in this file govern; samples are calibration, not license.
+If no archetype matches, pick the structurally closest sample page anyway. Do not calibrate against pages elsewhere under `docs/`; they may predate the current rules. Where a sample and a rule in this file disagree (a sample can predate a later rule), the rules in this file govern; samples are calibration, not license. Samples calibrate form only, never facts: a sample documents its own tree at its own version, and a sample page has carried a false claim found only by a later audit (see "Draft-versus-page contrast"). Take zero kernel facts, line numbers, or excerpts from a sample into the page being written; research every fact against the documented tree.
 
 ### 2. Determine subsystem and output path
 
@@ -87,7 +90,7 @@ Record exact file paths and line numbers for every function, struct, or macro fo
 
 ### 4. Construct Elixir cross referencer URLs
 
-Use the base URL: `https://elixir.bootlin.com/linux/v7.0/source/`
+Use the base URL `https://elixir.bootlin.com/linux/<version>/source/`, where `<version>` is the documented kernel version from the Input section (for campaigns, the version pinned in the plan file's Context). One page never mixes versions. The examples below use `v7.0`:
 
 For file references:
 ```
@@ -158,7 +161,7 @@ Follow the template structure exactly. The page must contain these sections in o
 
 ### 7. Writing rules (mandatory)
 
-The golden samples under `docs/samples/` embody every rule in this section. The closest-matching sample you read in step 1 is your worked example; match its structure, diagram style, code-citation density, and depth. The examples in the rules below use ACPI and mm symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem. All generated content must follow these rules:
+The sample pages under `docs/samples/` embody every rule in this section. The closest-matching sample you read in step 1 is your worked example; match its structure, diagram style, code-citation density, and depth. The examples in the rules below use ACPI and mm symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem. All generated content must follow these rules:
 
 - No em-dashes. Use parentheses instead: "CC (Command Completed)" not "CC --- Command Completed"
 - No boldface (`**...**`)
@@ -216,7 +219,7 @@ Body prose in DETAILS, SUMMARY, and the lead summary paragraph must not use the 
 
 The forbidden shape is "<noun phrase ending in a period or colon> + <bullet/numbered list>" used as exposition. Phrases that head such lists ("Two notable details.", "Three layers stack.", "Four cases run from strongest to weakest.", "Concrete uses.", "Five upfront refusals.") are banned even with a period. Restate as a paragraph.
 
-The H3 catalog lists in LINUX KERNEL (grouped by file or functional area as the golden samples do, for example `EC_SC status bit macros`, `Port accessors`, `Transaction state machine`) and the bullet lists in KERNEL DOCUMENTATION and OTHER SOURCES are reference catalogs and remain as lists. Tables remain as tables. This rule applies only to prose-explanation lists, not to reference catalogs.
+The H3 catalog lists in LINUX KERNEL (grouped by file or functional area as the sample pages do, for example `EC_SC status bit macros`, `Port accessors`, `Transaction state machine`) and the bullet lists in KERNEL DOCUMENTATION and OTHER SOURCES are reference catalogs and remain as lists. Tables remain as tables. This rule applies only to prose-explanation lists, not to reference catalogs.
 
 ### 7c. Forbidden phrases checklist
 
@@ -322,7 +325,7 @@ Only include an ASCII diagram when it conveys a spatial or temporal relationship
 
 Do not draw a diagram for a simple linear sequence of function calls, a top-down call chain, a state machine with two states, or any flow that reads naturally as a paragraph or as a fenced code block of pseudocode. "Function A calls B which calls C" is prose, not a diagram. A single arrow chain in a box is not a diagram. If a reader would understand the same content faster from one sentence of declarative prose, write the sentence and delete the diagram.
 
-When a diagram is used, follow the style established in the golden samples (for example the page-table-entry bit layouts and slot-map figures in `docs/samples/golden-encoding-pgtable-entries.md`) and the reference figures in 7h and 7i. Use Unicode box-drawing characters (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼`) and `▼ ▲ ◀ ▶` for arrows. Title each sub-diagram with a short heading underlined by a `────` rule. Multiple sub-diagrams may share one fenced block when each has its own titled section. Indent the whole figure 4 spaces inside the fenced block so it reads as a figure, not as text. Keep every line under 80 columns so the figure renders without wrapping in plain-text views.
+When a diagram is used, follow the style established in the sample pages (for example the page-table-entry bit layouts and slot-map figures in `docs/samples/page-encoding-pgtable-entries.md`) and the reference figures in 7h and 7i. Use Unicode box-drawing characters (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼`) and `▼ ▲ ◀ ▶` for arrows. Title each sub-diagram with a short heading underlined by a `────` rule. Multiple sub-diagrams may share one fenced block when each has its own titled section. Indent the whole figure 4 spaces inside the fenced block so it reads as a figure, not as text. Keep every line under 80 columns so the figure renders without wrapping in plain-text views.
 
 Pure ASCII `\`, `/`, and `|` are never used as box-drawing or connector characters. The `/` and `|` characters are acceptable inside the figure only as English word separators ("ROOT_PORT / DOWNSTREAM"), as C bitwise expressions (`LBMS | LABS`), or inside reproduced kernel source. All box sides, corners, junctions, and arrows are Unicode.
 
@@ -965,7 +968,7 @@ A page documents a mechanism in full, not only the single function path that pro
 
 When a page illustrates a behavior with a concrete driver, both the choice of driver and the way the page keeps that example self-contained matter.
 
-- Cite only actively-maintained drivers. When choosing a driver as a usage example, pick one with major activity in the past three years (roughly 2023 onward for the v7.0 tree). Confirm this before citing: run `git log` on the driver's file, or semcode `find_commit` with `path_patterns` for the driver's path, and check for substantive commits within the last three years (ignore treewide renames, whitespace, and other mechanical churn). Do not illustrate current behavior with a driver whose only recent commits are trivial or whose last real change is years old; a dormant driver may use deprecated patterns that misrepresent how the mechanism is used today. If no recently-active driver exercises the behavior, say so rather than reaching for a stale one.
+- Cite only actively-maintained drivers. When choosing a driver as a usage example, pick one with major activity in the three years leading up to the documented version's release (for a v7.0 tree, roughly 2023 onward). Confirm this before citing: run `git log` on the driver's file, or semcode `find_commit` with `path_patterns` for the driver's path, and check for substantive commits within the last three years (ignore treewide renames, whitespace, and other mechanical churn). Do not illustrate current behavior with a driver whose only recent commits are trivial or whose last real change is years old; a dormant driver may use deprecated patterns that misrepresent how the mechanism is used today. If no recently-active driver exercises the behavior, say so rather than reaching for a stale one.
 - Describe a driver example from its own kernel source, and keep the explanation on this page. Give the driver's role (vendor, bus, device class) and cite its file and the relevant function or callback inline, so the reader needs nothing beyond this page to understand it. Do not point the reader to another driver or another page as a substitute for the explanation, and do not explain the driver by analogy to one documented elsewhere; everything the reader needs is stated here, from this driver's own code.
   - BAD: "The cs35l56 driver registers a jack-detect callback, just like the codec documented elsewhere in this knowledge base."
   - GOOD: "The cs35l56 driver (a Cirrus Logic amplifier in `sound/soc/codecs/cs35l56.c`) registers a jack-detect callback through its `set_jack` component op."
@@ -978,7 +981,7 @@ The provenance comment is what makes a page machine-checkable. `scripts/verify_p
 
 ### 7m. Link anchoring and exhaustive span linking (mandatory)
 
-This rule extends the every-symbol-linked rule in 7f with anchor selection and exhaustiveness. It is what the numbers in "Golden samples and measured criteria" call links per page.
+This rule extends the every-symbol-linked rule in 7f with anchor selection and exhaustiveness. It is what the numbers in "Samples and measured criteria" call links per page.
 
 - A link whose text is a symbol name (`` `vma_start_read()` ``, `` `struct mm_struct` ``, `` `VM_LOCKED` ``, and the LINUX KERNEL `` `'\<sym\>':'path'` `` form) anchors at the symbol's DEFINITION line, so the reference stays valid for `git log -L` and survives unrelated churn elsewhere in the file. It does not anchor at a call site, a comment mention, or a line inside some other function's body, even when that line is what the surrounding prose discusses.
 - A reference to a specific non-definition place in code (a call site, one branch, one field assignment) is written as a file-location link whose text is the path and line, for example [`mm/vma.c:717`](https://elixir.bootlin.com/linux/v7.0/source/mm/vma.c#L717). Prose that enumerates call sites uses one location link per site, so every count in the page is checkable one click deep.
@@ -1053,20 +1056,20 @@ In interactive single-page use, ask before the actual save. In a campaign whose 
 
 ## Multi-page campaigns: planning, dispatch, and verification
 
-Everything above defines a single page. This section defines the workflow for producing a whole documentation set (tens of pages) for one subsystem area: how to plan the set, dispatch page production to sub-agents, and verify the result. It is the workflow that produced the golden samples under `docs/samples/`, written here in subsystem-independent terms; substitute any subsystem's `kernel_paths`, structures, and syscall surface for the mm examples.
+Everything above defines a single page. This section defines the workflow for producing a whole documentation set (tens of pages) for one subsystem area: how to plan the set, dispatch page production to sub-agents, and verify the result. It is the workflow that produced the sample pages under `docs/samples/`, written here in subsystem-independent terms; substitute any subsystem's `kernel_paths`, structures, and syscall surface for the mm examples.
 
 ### Plan before generating
 
-A campaign starts with a plan the user approves, kept in a durable plan file that survives context loss and session interruption. Create the plan file the moment planning starts (in Claude Code, plan mode provides one; otherwise create `<topic>-plan.md`) and treat it as the single source of truth: every phase below writes its output into the file, and nothing load-bearing stays only in conversation or in agent transcripts. `docs/samples/plan-mm-campaign.md` is the plan file of the campaign that produced the golden samples, with one curation: its Status section is reduced to generic entry shapes with placeholders, so the example teaches the log's form without tying the sample to any one execution. Read it once before planning a campaign for any subsystem and imitate its section shapes rather than inventing new ones.
+A campaign starts with a plan the user approves, kept in a durable plan file that survives context loss and session interruption. Create the plan file the moment planning starts (in Claude Code, plan mode provides one; otherwise create `<topic>-plan.md`) and treat it as the single source of truth: every phase below writes its output into the file, and nothing load-bearing stays only in conversation or in agent transcripts. `docs/samples/plan-mm-campaign.md` is the plan file of the campaign that produced the sample pages, with one curation: its Status section is reduced to generic entry shapes with placeholders, so the example teaches the log's form without tying the sample to any one execution. Read it once before planning a campaign for any subsystem and imitate its section shapes rather than inventing new ones.
 
 Build the plan in this order:
 
-1. Extract the request's constraints before touching the tree. From the request (a prompt file or the conversation), record verbatim into the plan file's Context and Scope sections: the architecture scope, the granularity preference, the emphasis areas the request stresses (lifecycle, state transitions, hard limits, callback semantics), any wording bans or mandatory tools, and the topic list itself. Note where the request is explicitly incomplete ("this list is rough", a blank bullet, an area with no bullets); each such gap is a curation obligation, never an omission to mirror.
+1. Extract the request's constraints before touching the tree. From the request (a prompt file or the conversation), record verbatim into the plan file's Context and Scope sections: the documented tree with its version tag and commit pin, the architecture scope, the granularity preference, the emphasis areas the request stresses (lifecycle, state transitions, hard limits, callback semantics), any wording bans or mandatory tools, and the topic list itself. Note where the request is explicitly incomplete ("this list is rough", a blank bullet, an area with no bullets); each such gap is a curation obligation, never an omission to mirror.
 2. Inventory with parallel read-only agents, one per major area. Split the topic into three to six areas along the request's own headings and dispatch one read-only research agent per area, in parallel (read-only inventory agents are safe to parallelize; writers are not). Each brief follows the "Inventory brief template" below: the area, the `kernel_paths` subset to search, the documented tree and version, the toolset (semcode `find_type`, `find_function`, `find_callers`, `grep_functions`, plus Grep and Read), and the six digest deliverables. Demand a COMPACT digest; a compact report survives agent deaths and resumes better than prose chapters, and it lands verbatim in the plan file. When an inventory agent dies (rate limit, transient API error), resume that same agent and ask for the compact report of what it has so far instead of restarting the research; spawn a fresh agent only after resuming fails twice.
 3. Record the digests in the plan file, one Inventory findings subsection per area, before any catalog work. Treat every line number in a digest as a hint to re-verify at write time, never as a citation; semcode indexes can lag the tree, and the on-disk source at the documented version is always ground truth. Give the version-specific renames and removals their own prominence; they are the facts that keep pages version-correct.
 4. Curate the catalog yourself; do not delegate it. Catalog design is the load-bearing judgment of the campaign, and the orchestrator (or the human planner) makes it from the digests. Map every bullet of the request to one or more catalog rows; curate gap-fill rows for topics the digests surfaced that the request missed; and for every suggested topic that does NOT get a page, record a fold-in adjudication naming the page that absorbs it (the fold-in list prevents re-litigating scope later). Each catalog row carries (a) the output path `docs/<dir>/<group>/<slug>.md`, (b) a scope statement naming the anchor symbols the page is built around, each with a file:line hint from the digest, and (c) a tag recording whether the row was explicitly requested or curated. Prefer fine granularity: one mechanism, one page; a request bullet that mixes kinds of page (the object itself, its ops structure, the syscalls that drive it) becomes multiple groups, and a "walkthrough" bullet becomes an overview row plus an algorithm row. Choose the directory organization at the same time (two levels, `docs/<dir>/<group>/`, matching the house layout) and state its rationale in the file.
 5. Write the boundary rules. Self-contained pages overlap by design, so for every cluster of sibling rows write one boundary statement that fixes each page's mission. The useful form names the seam symbol: "page A owns the syscall surface and treats the X machinery as a black box; page B owns X's object pipeline; page C owns the physical teardown; helper Y at file:line is the seam where A's coverage ends and B's opens". These statements go into the plan file and later verbatim into each writer brief, so siblings recap each other in at most one short paragraph instead of duplicating walkthroughs.
-6. Have the catalog adversarially reviewed by a fresh agent. Dispatch a plan-review agent (the "Plan review brief template" below) whose only job is to attack the catalog: coverage gaps against the digests, duplicated ownership, wrong granularity, ordering defects, anchor symbols absent at the documented version. Apply the amendments you accept and record the outcome in the plan file; the campaign that produced the golden samples took two merges, two splits, six scope amendments, four new fold-ins, and its boundary statements from this review. A catalog nobody attacked ships its blind spots.
+6. Have the catalog adversarially reviewed by a fresh agent. Dispatch a plan-review agent (the "Plan review brief template" below) whose only job is to attack the catalog: coverage gaps against the digests, duplicated ownership, wrong granularity, ordering defects, anchor symbols absent at the documented version. Apply the amendments you accept and record the outcome in the plan file; the campaign that produced the sample pages took two merges, two splits, six scope amendments, four new fold-ins, and its boundary statements from this review. A catalog nobody attacked ships its blind spots.
 7. Order the batches foundational-to-derived: encodings and counters before the objects that hold them, objects before the tree/list machinery that indexes them, machinery before the syscalls that drive it, core mechanisms before driver instances. Split the catalog into batches of about five pages; the batch is the unit of dispatch and checkpointing (see "Batch generation and interruption recovery" below).
 8. Checkpoint with the user before generating anything. Ask only the genuine scope questions, each with two to four concrete options (include a supporting construct group or not; cover a full syscall surface or a subset), present the final catalog and directory layout, and get an explicit go. Record the questions, the answers, and every later amendment (priority reorders, pipeline changes, new bans) in a dated amendments section at the moment it arrives; amendments supersede the original order silently otherwise, and a superseded ordering stays in the file marked as reference.
 
@@ -1089,7 +1092,7 @@ The plan file is the campaign's memory: inventory digests, the catalog, boundary
 
 `docs/samples/plan-mm-campaign.md` carries eight top-level sections; a conforming plan file carries the same elements (the nesting may vary, the presence may not):
 
-1. Context: what was asked, where the requirements come from, what is explicitly not an input, and the output root.
+1. Context: what was asked, where the requirements come from, the documented tree with its version tag and commit pin, what is explicitly not an input, and the output root.
 2. Status: a living, dated checklist. Every phase completion, batch result, suspension, correction, and lesson is appended at the moment it happens; a future session resumes from this section plus the pages on disk.
 3. Scope decisions: the user-confirmed choices, numbered.
 4. Inventory findings: one compact digest per area, from the inventory agents, including the version-specific renames and removals.
@@ -1156,18 +1159,18 @@ Return a numbered amendment list (merge / split / rescope / reorder /
 fold-in), each naming the affected rows. Do not rewrite the plan yourself.
 ```
 
-### Golden samples and measured criteria
+### Samples and measured criteria
 
-The golden samples were produced by this workflow and passed `scripts/verify_page.py` with zero findings against their kernel tree. Their measured shape defines concretely what "in-depth, fine-grained" means for this knowledge base:
+The sample pages were produced by this workflow and passed `scripts/verify_page.py` with zero findings against their kernel tree. Their measured shape defines concretely what "in-depth, fine-grained" means for this knowledge base:
 
 | sample | lines | c blocks | Elixir links | figures |
 |---|---|---|---|---|
-| `docs/samples/golden-overview-mm-struct.md` | 2,940 | 98 | 861 | 1 |
-| `docs/samples/golden-lifecycle-mm-refcount.md` | 1,743 | 59 | 591 | 1 |
-| `docs/samples/golden-encoding-pgtable-entries.md` | 3,024 | 141 | 718 | 3 |
-| `docs/samples/golden-enhanced-vma-overview.md` | 2,922 | 107 | 634 | 1 |
+| `docs/samples/page-overview-mm-struct.md` | 2,940 | 98 | 861 | 1 |
+| `docs/samples/page-lifecycle-mm-refcount.md` | 1,743 | 59 | 591 | 1 |
+| `docs/samples/page-encoding-pgtable-entries.md` | 3,024 | 141 | 718 | 3 |
+| `docs/samples/page-enhanced-vma-overview.md` | 2,922 | 107 | 634 | 1 |
 
-Across the thirteen pages of the campaign that produced them, the per-page ranges were 1,468 to 3,270 lines, 46 to 141 code blocks, and 357 to 861 Elixir links. These numbers are outcomes, not targets: they fall out of the depth rules below when applied to a fine-grained topic. Three tripwires convert them into checks that work for any subsystem: a finished fine-grained page below the smallest golden sample (1,468 lines); a page with fewer fenced ` ```c ` blocks than LINUX KERNEL catalog entries (conforming pages measure 1.03 to 1.47 blocks per entry, because every symbol needs a definition and a usage excerpt; a deficient derived page measured 0.73); and a catalog that shrank across a rewrite without reported cuts. Any tripped wire forces the Gate B parity audit (item 1) and, for a derived page, the 7p disposition list before the page can be called done. The fix for a tripped page is completing coverage per 7j and Gate B, or cutting scope explicitly per 7p; it is never padding prose and never silent thinning. There is no length ceiling; a page ends when coverage is complete, not at a line count.
+Across the thirteen pages of the campaign that produced them, the per-page ranges were 1,468 to 3,270 lines, 46 to 141 code blocks, and 357 to 861 Elixir links. These numbers are outcomes, not targets: they fall out of the depth rules below when applied to a fine-grained topic. Three tripwires convert them into checks that work for any subsystem: a finished fine-grained page below the smallest sample page (1,468 lines); a page with fewer fenced ` ```c ` blocks than LINUX KERNEL catalog entries (conforming pages measure 1.03 to 1.47 blocks per entry, because every symbol needs a definition and a usage excerpt; a deficient derived page measured 0.73); and a catalog that shrank across a rewrite without reported cuts. Any tripped wire forces the Gate B parity audit (item 1) and, for a derived page, the 7p disposition list before the page can be called done. The fix for a tripped page is completing coverage per 7j and Gate B, or cutting scope explicitly per 7p; it is never padding prose and never silent thinning. There is no length ceiling; a page ends when coverage is complete, not at a line count.
 
 The depth rules that produce those numbers:
 
@@ -1176,11 +1179,11 @@ The depth rules that produce those numbers:
 - Every hard-coded limit named with its value and its defining file and line (7j).
 - Lifecycle and state transitions in full: allocation, initialization, teardown order, the serializing locks, reference counting, and every state a tracked field moves through with the transition drivers cited (7j).
 
-### Draft-versus-golden contrast
+### Draft-versus-page contrast
 
-`docs/samples/draft-original-vma-overview.md` is an earlier-generation draft of the same topic as `docs/samples/golden-enhanced-vma-overview.md`; the golden page was rebuilt from it. The pair is kept in `docs/samples/` so the gap between a plausible draft and a page meeting this standard stays concrete and measurable:
+`docs/samples/draft-original-vma-overview.md` is an earlier-generation draft of the same topic as `docs/samples/page-enhanced-vma-overview.md`; the sample page was rebuilt from it. The pair is kept in `docs/samples/` so the gap between a plausible draft and a page meeting this standard stays concrete and measurable:
 
-| measure | draft | golden |
+| measure | draft | page |
 |---|---|---|
 | lines | 1,161 | 2,922 |
 | fenced c blocks | 43 | 107 |
@@ -1190,16 +1193,16 @@ The depth rules that produce those numbers:
 
 The differences that matter are not the raw sizes but what produced them:
 
-- Verification versus plausibility. The draft states facts that read correctly and are wrong at the tree. It claims the VMA's `vm_mm` back-pointer "is set once, at allocation, and never changes"; the golden page shows the second writer (the fork path, where `vm_area_init_from()` copies the parent's pointer and `dup_mmap()` then redirects the clone at the child address space) with both excerpts inline. It claims the anonymous-VMA `vm_pgoff` "holds the starting PFN of the range"; the golden page reproduces the on-disk code showing `vma->vm_pgoff = vma->vm_start >> PAGE_SHIFT` (a virtual page index) together with the kernel's own comment. It claims `vma_set_range()` has "seven call sites in mm/vma.c" and that "every path that resizes a VMA goes through it"; the golden page enumerates all seven sites with location links (six in `mm/vma.c` plus one in `mm/mmap.c`) and shows the split path that adjusts the fields directly. Every draft claim was re-verified symbol by symbol before it survived into the golden page.
-- Definition-plus-usage depth. The draft's `vm_lock_seq` section is one paragraph (4 lines); the golden page's runs 88 lines with the field definition, the writer-side stamping code, and the reader-side comparison code. Section for section, the golden page carries the caller excerpt the draft only alludes to.
-- Enumeration with location links. The draft asserts counts in prose; the golden page links each site individually, so every count is checkable one click deep.
-- Source-of-truth links in OTHER SOURCES. The draft hand-built `git.kernel.org/.../commit/?id=` URLs; the golden page carries byte-exact `Link:` trailer URLs from `git log` (7n).
-- Machine cleanliness. The draft fails the verifier (one stitched excerpt does not match the tree verbatim; one label-colon idiom in prose); the golden page has zero findings.
-- Coverage. The golden page adds whole sections absent from the draft (the per-VMA lock state catalog, the lifecycle-driver catalog, the mapping-path orchestration walk, the newer preparation-descriptor struct) because the coverage rules in 7j demanded them.
+- Verification versus plausibility. The draft states facts that read correctly and are wrong at the tree. It claims the VMA's `vm_mm` back-pointer "is set once, at allocation, and never changes"; the sample page shows the second writer (the fork path, where `vm_area_init_from()` copies the parent's pointer and `dup_mmap()` then redirects the clone at the child address space) with both excerpts inline. It claims the anonymous-VMA `vm_pgoff` "holds the starting PFN of the range"; the sample page reproduces the on-disk code showing `vma->vm_pgoff = vma->vm_start >> PAGE_SHIFT` (a virtual page index) together with the kernel's own comment. It claims `vma_set_range()` has "seven call sites in mm/vma.c" and that "every path that resizes a VMA goes through it"; the sample page enumerates all seven sites with location links (six in `mm/vma.c` plus one in `mm/mmap.c`) and shows the split path that adjusts the fields directly. Every draft claim was re-verified symbol by symbol before it survived into the sample page.
+- Definition-plus-usage depth. The draft's `vm_lock_seq` section is one paragraph (4 lines); the sample page's runs 88 lines with the field definition, the writer-side stamping code, and the reader-side comparison code. Section for section, the sample page carries the caller excerpt the draft only alludes to.
+- Enumeration with location links. The draft asserts counts in prose; the sample page links each site individually, so every count is checkable one click deep.
+- Source-of-truth links in OTHER SOURCES. The draft hand-built `git.kernel.org/.../commit/?id=` URLs; the sample page carries byte-exact `Link:` trailer URLs from `git log` (7n).
+- Machine cleanliness. The draft fails the verifier (one stitched excerpt does not match the tree verbatim; one label-colon idiom in prose); the sample page has zero findings.
+- Coverage. The sample page adds whole sections absent from the draft (the per-VMA lock state catalog, the lifecycle-driver catalog, the mapping-path orchestration walk, the newer preparation-descriptor struct) because the coverage rules in 7j demanded them.
 
 When drafts of any prior generation exist for a topic (next section), this contrast is the acceptance test: reusing a draft is legitimate only when the result is indistinguishable from a fresh page written to this standard.
 
-The audit does not stop at golden. A later enhancement pass over this same golden page corrected an off-by-one call-site count (a written 119 for the 118 on disk) and a provenance comment two lines off its excerpt, and a 7o audit after that found a false universal claim both passes had missed: the page asserted a helper "is invoked from exactly one place" while the tree holds four callers (the plain store helper, its gfp variant, the fork-path bulk store, and an error-path rollback). Golden samples calibrate form and depth; correctness is established only by re-running the 7o actions against the tree, on every page, however golden its history.
+The audit does not stop at a sample. A later enhancement pass over this same sample page corrected an off-by-one call-site count (a written 119 for the 118 on disk) and a provenance comment two lines off its excerpt, and a 7o audit after that found a false universal claim both passes had missed: the page asserted a helper "is invoked from exactly one place" while the tree holds four callers (the plain store helper, its gfp variant, the fork-path bulk store, and an error-path rollback). Sample pages calibrate form and depth; correctness is established only by re-running the 7o actions against the tree, on every page, however clean its history.
 
 ### Deriving from prior drafts and pages
 
