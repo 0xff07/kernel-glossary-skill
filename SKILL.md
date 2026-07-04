@@ -18,7 +18,6 @@ Content structure:
 - `docs/` — all documentation articles
 - `docs/templates/TEMPLATE-FULL.md` — full page template with all sections
 - `docs/samples/` — the reference samples for writing and planning. This directory holds frozen copies of exemplar pages, one labelled counterexample, and the campaign plan file that produced the exemplars, kept independent of the live subsystem directories so they stay findable even after the hierarchy under `docs/` is reorganized. The worked examples here define the house standard for the lead summary, section structure, prose, ASCII diagrams, self-contained kernel-source citation, depth of coverage, and campaign planning. Samples are style, structure, and depth guidance ONLY; they are never an authoritative source of kernel knowledge. Each documents its own tree at its own version and can carry errors found later, so no technical claim, line number, or excerpt is ever taken from a sample into new work; every fact is researched against the documented tree (7e, 7o). When writing any new page or plan, calibrate against the closest-matching file under `docs/samples/`, and refer to example files only by their `docs/samples/` path.
-- `scripts/verify_page.py` — the advisory machine verifier that checks a finished page's Elixir links, code-block verbatimness, and banned prose patterns against the local kernel tree. Its findings are leads, never verdicts; the manual gates in section 9 are the authority and work without it (see "Machine verification (advisory)" near the end of this file)
 - Major subsystem directories under `docs/`: one per entry in the Subsystem Map at the end of this file (the `dir` field of each entry)
 
 ## Input
@@ -31,7 +30,7 @@ Content structure:
 
 If `$ARGUMENTS` is empty, derive the subsystem and topic from the conversation context.
 
-The documented kernel version is a single value set once and used everywhere: every Elixir URL embeds it, every version-specific claim is checked at it, the verifier runs against the tree checked out at it, and a campaign pins it (tag plus commit) in the plan file's Context section. When the version is not given, derive it from the local tree (`git describe --tags` or `make -s kernelversion` at the tree root), confirm elixir.bootlin.com carries that tag, and state the value back to the user before generating. All version-bearing examples in this file use `v7.0`; substitute the documented version.
+The documented kernel version is a single value set once and used everywhere: every Elixir URL embeds it, every version-specific claim is checked at it, the mechanical checks run against the tree checked out at it, and a campaign pins it (tag plus commit) in the plan file's Context section. When the version is not given, derive it from the local tree (`git describe --tags` or `make -s kernelversion` at the tree root), confirm elixir.bootlin.com carries that tag, and state the value back to the user before generating. All version-bearing examples in this file use `v7.0`; substitute the documented version.
 
 ## Procedure
 
@@ -39,7 +38,7 @@ The documented kernel version is a single value set once and used everywhere: ev
 
 Before generating any content, read `docs/templates/TEMPLATE-FULL.md` (relative to `${CLAUDE_SKILL_DIR}`) for the page structure and section order.
 
-Then read the samples under `${CLAUDE_SKILL_DIR}/docs/samples/`. These are frozen copies of real pages that met every gate in this file and passed the machine verifier with zero findings; they are the concrete standard for structure, prose, diagram style, code-citation density, and depth of coverage. Open the one or two whose archetype most resembles the page about to be written and read them in full before writing:
+Then read the samples under `${CLAUDE_SKILL_DIR}/docs/samples/`. These are frozen copies of real pages that met every gate in this file with zero findings under the mechanical checks; they are the concrete standard for structure, prose, diagram style, code-citation density, and depth of coverage. Open the one or two whose archetype most resembles the page about to be written and read them in full before writing:
 
 - structure-tour pages (one central struct documented field group by field group, with its accessor and lifecycle catalog): `docs/samples/page-overview-mm-struct.md`
 - lifecycle / refcount / locking-protocol pages: `docs/samples/page-lifecycle-mm-refcount.md` (also the smallest acceptable depth for a fine-grained page)
@@ -977,7 +976,7 @@ When a page illustrates a behavior with a concrete driver, both the choice of dr
 
 Every fenced ` ```c ` block opens with a provenance comment naming the on-disk origin of the excerpt, in the exact form `/* path/from/tree/root.c:LINE */` on its own first line, where LINE is the number of the first reproduced line in the file at the documented version. A short annotation may follow the line number inside the comment (`/* mm/vma.c:497 (in __split_vma()) */`). A block that stitches excerpts from several places (a caller plus its callee, two case labels far apart, a struct field plus the helper that writes it) marks each excerpt's start with its own interior `/* path:line */` delimiter line, and marks elided code inside an excerpt with a standalone `...` line. Everything between delimiters is verbatim file content per 7e (tabs preserved, comments retained, no reflowed lines).
 
-The provenance comment is what makes a page machine-checkable. `scripts/verify_page.py` splits each block at its delimiters and diffs every unit against the named file, so a missing or wrong provenance line turns an on-disk match into a finding, and a silently drifted excerpt is caught the moment the script runs. Non-code fenced blocks (ASCII figures, quoted commit-message tables, shell output) carry no provenance comment and are not diffed.
+The provenance comment is what makes a page checkable. A reviewer opens the named file at the cited line and compares the unit directly (see "Mechanical checks (by hand)"), so a missing or wrong provenance line turns an on-disk match into a finding, and a silently drifted excerpt is caught on the first comparison. Non-code fenced blocks (ASCII figures, quoted commit-message tables, shell output) carry no provenance comment and are not diffed.
 
 ### 7m. Link anchoring and exhaustive span linking (mandatory)
 
@@ -1019,6 +1018,48 @@ These rules govern producing a page from existing material of any provenance, in
 
 A measured failure of exactly this kind motivates the rule: a 2,645-line page compressed to 1,268 lines kept its iterator-helper symbols in the LINUX KERNEL catalog while silently dropping their DETAILS sections, kept one catalog symbol with no DETAILS mention at all, and landed at 0.73 fenced blocks per catalog entry where every conforming page measures at least 1.0. The parity audit catches the desync mechanically; the disposition list is what makes any removal legitimate.
 
+### 7q. Rephrase recipes (quick reference)
+
+Every ban has a one-line recipe; apply the recipe instead of re-deriving compliant phrasing per hit. The full rules with worked examples are 7 through 7d; this table is the lookup.
+
+| banned | recipe |
+|---|---|
+| em-dash | parentheses, or two sentences |
+| label-colon prose ("X: Y", "The fix: Y") | one plain declarative sentence; introduce quotes with "According to the comment ..." |
+| intro sentence + explanatory list | fold the items into one flowing sentence |
+| hedge (usually, typically, often, in practice, ...) | name the exact condition the code tests |
+| hollow superlative, "X matters", "the key ..." | name the mechanic in the same clause and drop the ranking |
+| "contract" | state the precondition, guarantee, or invariant it stands for |
+| "tally" | "count" |
+| "canonical X" | "the X that performs it", named plainly |
+| "arm"/"arms" for a branch or union case | "branch", "case", "side", "leg", or the symbol name |
+| "X, not Y" | state X plainly; drop the contrast |
+| lives / sits / wants for code placement | "is defined in", "is held in", "is stored in" |
+| "walk" for a scalar changing value | "transitions through", "advances through" |
+| Why/How/Where or question headings | declarative subject-verb-object heading |
+| "vtable" | "function pointer struct" or the concrete type name |
+| bare kernel-symbol span | Elixir link anchored at the definition line (7m) |
+
+### 7r. Settled adjudications registry (paste into every brief)
+
+This registry consolidates the exemptions scattered through 7a-7m plus the adjudications settled across generation batches. Writer and lint briefs inherit it verbatim (paste it whole; do not summarize), so agents apply the decisions instead of re-litigating them, and two agents in the same batch cannot diverge on a boundary. When a new adjudication is settled during a campaign, record it in the plan file's Status as a LESSON and fold it into this registry.
+
+Exempt (never flag, and never reword a compliant construct to silence a pattern match):
+- Capitalized CPU-architecture names for the arm-word ban: Arm, ARM64, arm64, "32-bit Arm".
+- Label-colon shapes inside double-quoted verbatim text (commit subjects, kernel comments), in catalog bullets of LINUX KERNEL / KERNEL DOCUMENTATION / OTHER SOURCES, in table cells, and in H3/H4 catalog labels.
+- Value and expression spans (`a | B`, `map_count + 2 < limit - 3`): link a constituent symbol where one exists; the span itself is not a bare-span violation.
+- Wildcard-family names (`VM_*`) when the members they stand for are linked nearby.
+- Hyphenated compounds embedding a hedge word ("read-mostly"); verbatim quotes containing hedges or superlatives.
+- `name(2)` man-page notation when the syscall's kernel entry point is linked elsewhere on the page.
+- Designated-initializer citations anchored at the initializer line.
+- `/proc`, `/sys`, and sysctl path strings; Kconfig fragments (`=y`); tracepoint field names; locals, parameters, and goto labels quoted from excerpts; error and literal values; commit hashes; symbols verified absent from the documented tree (state the absence in prose).
+
+Settled rulings (always required; in-family precedent never overrides them):
+- `CONFIG_*` options are always linked to the `config X` line of the declaring Kconfig file (settled after two lint passes diverged on exactly this).
+- Generic primitives (`READ_ONCE()`, `memcpy()`, `rcu_read_lock()`, `atomic_read()`, and the like) are always linked to the definition relevant to the documented architecture.
+- An ops-struct member named in prose links to that member's line in the struct definition.
+- Pre-existing bare spans of the same family get fixed in the same pass; "other pages leave it bare" is never a reason.
+
 ### 8. Behavioral rules
 
 - When asked to "discuss" or "review" a plan, engage conversationally with concise observations and questions. Do not immediately start executing, writing files, or producing verbose output. Wait for explicit approval before creating files.
@@ -1030,14 +1071,14 @@ A measured failure of exactly this kind motivates the rule: a 2,645-line page co
 
 ### 9. Save the page
 
-A page is not done until both gates below pass, and who runs them depends on the mode. A single agent or human producing a page end-to-end runs both gates itself before the page is final. In the pipelined campaign mode (see "Multi-page campaigns" below), the writer follows every rule while composing but does not run the gate loops; a separate lint agent runs Gate A plus the mechanical parts of Gate B (accelerated by the advisory `scripts/verify_page.py` where it helps) and the exhaustive 7m span pass, fixing violations in place; the orchestrator then re-runs the gates as final sign-off. In both modes a page is final only at zero unadjudicated findings. The gates are defined by the manual procedures below and are executable entirely by hand; the script only speeds them up and can be dropped without weakening them.
+A page is not done until both gates below pass, and who runs them depends on the mode. A single agent or human producing a page end-to-end runs both gates itself before the page is final. In the pipelined campaign mode (see "Multi-page campaigns" below), the writer follows every rule while composing but does not run the gate loops; a separate lint agent runs Gate A plus the mechanical parts of Gate B and the exhaustive 7m span pass, fixing violations in place; the orchestrator then re-runs the gates as final sign-off. In both modes a page is final only at zero unadjudicated findings. The gates are manual procedures throughout (see "Mechanical checks (by hand)"); there is no checker script.
 
-**Gate A (mechanical, grep the finished page).** Confirm zero hits for each, and re-run after every edit including your own hand-edits: em-dashes; `**` boldface in prose; the label-colon-explanation idiom in prose (7a/7c), excluding the caution blockquote and text inside quotes; the 7c/7d editorializing and superlative phrases (`the reasoning`, `is the key`, `X matters`, `X is what makes Y`, `the pattern is`, `worthwhile`, `crucial`, `elegant`, `cornerstone`, `the most <adj>`, and the like); the banned words `contract`, `tally` (also `tallied`/`tallies`/`tallying`), `canonical`; vague hedges (`usually`, `typically`, `generally`, `normally`, `commonly`, `mostly`, `in practice`, `tends to`); `vtable`; the word `arm`/`arms` for a branch or union case (7c; CPU-architecture names and verbatim quotes exempt); internal `.md` cross-links; and `Why`/`How`/`Where` or trailing-`?` headings. The grep list above is the gate; `scripts/verify_page.py` accelerates it but is advisory (see "Machine verification (advisory)"). When the script is unavailable, fails, or its output looks wrong, run the greps above by hand, fence-aware, and judge each hit in context; boldface and the 7b prose-list shapes are manual either way.
+**Gate A (mechanical, grep the finished page).** Confirm zero hits for each, and re-run after every edit including your own hand-edits: em-dashes; `**` boldface in prose; the label-colon-explanation idiom in prose (7a/7c), excluding the caution blockquote and text inside quotes; the 7c/7d editorializing and superlative phrases (`the reasoning`, `is the key`, `X matters`, `X is what makes Y`, `the pattern is`, `worthwhile`, `crucial`, `elegant`, `cornerstone`, `the most <adj>`, and the like); the banned words `contract`, `tally` (also `tallied`/`tallies`/`tallying`), `canonical`; vague hedges (`usually`, `typically`, `generally`, `normally`, `commonly`, `mostly`, `in practice`, `tends to`); `vtable`; the word `arm`/`arms` for a branch or union case (7c; CPU-architecture names and verbatim quotes exempt); internal `.md` cross-links; and `Why`/`How`/`Where` or trailing-`?` headings. The grep list above is the gate. Run it by hand, fence-aware, using the candidate greps in "Mechanical checks (by hand)", and judge every hit against the exemptions and the 7r registry before editing; never reword an exempt construct to silence a pattern. Boldface and the 7b prose-list shapes are read-through checks.
 
 **Gate B (review sign-off, the rules a grep cannot catch).** Verify each item by performing the named action and recording the evidence (a count or a list, not "looks fine"). A page is not done until every item is confirmed; reading the page is not sufficient.
 
 1. Catalog-to-DETAILS parity (7e/7j). Build a parity table with one row per LINUX KERNEL catalog symbol and two evidence columns: where DETAILS reproduces its definition (or the exact case label / branch the page describes) as a fenced ` ```c ` block, and where DETAILS shows a concrete caller or usage as code. Every cell must hold a location in the page; an empty cell is a gap, and a catalog symbol that appears nowhere in DETAILS is a hard failure. Check the reverse direction too: a symbol that carries its own DETAILS section belongs in the catalog. When the page names several distinct users or call paths for one symbol, each named one appears as an excerpt or a per-site location link (7m) and the shown-versus-enumerated split is stated. Tripwire before building the table: fewer fenced ` ```c ` blocks than catalog entries means unpaired symbols (every conforming page measured runs 1.03 to 1.47 blocks per entry; a deficient derived page measured 0.73). Record the table; a bare count does not qualify. Sign off only at zero empty cells.
-2. Grounded, non-fabricated code (7e/7l). For every fenced ` ```c ` block, open the on-disk source at its cited `path:line` and confirm the block matches verbatim (tab indentation and comments preserved, `...` only for disclosed elisions). Cross-check with the semcode tools, but the on-disk source at the documented version is ground truth. `scripts/verify_page.py` accelerates this via the 7l provenance comments, but it matches content anywhere in the named file and does not validate the claimed line number; confirm the excerpt actually begins at the cited line. Fallback when the script is unavailable: print the file's lines at the cited range (`sed -n 'START,ENDp'`) beside each block and compare directly. Record the count of code blocks and that every one was confirmed against the file. Sign off only when none is left unverified.
+2. Grounded, non-fabricated code (7e/7l). For every fenced ` ```c ` block, open the on-disk source at its cited `path:line` and confirm the block matches verbatim (tab indentation and comments preserved, `...` only for disclosed elisions). Cross-check with the semcode tools, but the on-disk source at the documented version is ground truth. Print the file's lines at the cited range (`sed -n 'START,ENDp'`) beside each block and compare directly, unit by unit for stitched blocks; the excerpt must begin at the cited line, and content matching elsewhere in the file with a wrong claimed line is a finding. Record the count of code blocks and that every one was confirmed against the file. Sign off only when none is left unverified.
 3. Every symbol linked, keyword kept (7f). Scan every inline `` `code` `` span outside fenced blocks. Confirm each kernel symbol is an Elixir link to the correct `path#Lline`, and that types keep the `struct`/`enum` keyword. Spot-read the cited lines on disk. Record any bare span or wrong line found and fixed. Sign off at zero.
 4. What-does-what DETAILS headings (7). Read every H3 and H4 under `## DETAILS`. Confirm each is a declarative subject-verb-object sentence, not a bare noun or symbol name. Sign off with the heading count.
 5. No negative constructions or anthropomorphic verbs (7). Read the prose. Confirm no `It is X, not Y` constructions, no `lives`/`sits`/`wants` for code, and `walk` used only for traversing a data structure. Grep `[^a-z]not `, ` lives`, ` sits `, ` wants ` for candidates, then judge each in context. Sign off after reading, not after grepping alone.
@@ -1161,7 +1202,7 @@ fold-in), each naming the affected rows. Do not rewrite the plan yourself.
 
 ### Samples and measured criteria
 
-The sample pages were produced by this workflow and passed `scripts/verify_page.py` with zero findings against their kernel tree. Their measured shape defines concretely what "in-depth, fine-grained" means for this knowledge base:
+The sample pages were produced by this workflow and verified link-by-link and excerpt-by-excerpt against their kernel tree with zero findings. Their measured shape defines concretely what "in-depth, fine-grained" means for this knowledge base:
 
 | sample | lines | c blocks | Elixir links | figures |
 |---|---|---|---|---|
@@ -1189,7 +1230,7 @@ The depth rules that produce those numbers:
 | fenced c blocks | 43 | 107 |
 | provenance comments | 43 (one per block; single-excerpt blocks only) | 127 (stitched blocks with interior 7l delimiters) |
 | Elixir links | 409 | 634 |
-| `verify_page.py` result | 1 non-verbatim code block, 1 Gate A hit | zero findings |
+| mechanical checks | 1 non-verbatim code block, 1 Gate A hit | zero findings |
 
 The differences that matter are not the raw sizes but what produced them:
 
@@ -1197,7 +1238,7 @@ The differences that matter are not the raw sizes but what produced them:
 - Definition-plus-usage depth. The draft's `vm_lock_seq` section is one paragraph (4 lines); the sample page's runs 88 lines with the field definition, the writer-side stamping code, and the reader-side comparison code. Section for section, the sample page carries the caller excerpt the draft only alludes to.
 - Enumeration with location links. The draft asserts counts in prose; the sample page links each site individually, so every count is checkable one click deep.
 - Source-of-truth links in OTHER SOURCES. The draft hand-built `git.kernel.org/.../commit/?id=` URLs; the sample page carries byte-exact `Link:` trailer URLs from `git log` (7n).
-- Machine cleanliness. The draft fails the verifier (one stitched excerpt does not match the tree verbatim; one label-colon idiom in prose); the sample page has zero findings.
+- Mechanical cleanliness. The draft fails the checks (one stitched excerpt does not match the tree verbatim; one label-colon idiom in prose); the sample page has zero findings.
 - Coverage. The sample page adds whole sections absent from the draft (the per-VMA lock state catalog, the lifecycle-driver catalog, the mapping-path orchestration walk, the newer preparation-descriptor struct) because the coverage rules in 7j demanded them.
 
 When drafts of any prior generation exist for a topic (next section), this contrast is the acceptance test: reusing a draft is legitimate only when the result is indistinguishable from a fresh page written to this standard.
@@ -1220,8 +1261,8 @@ When earlier-generation drafts or prior revisions exist for topics in the catalo
 Campaign pages are produced by a three-stage pipeline. The separation exists because a writer re-reading its own page misses its own blind spots; an independent pass with fresh context reliably catches wrong anchors, drifted excerpts, and skipped spans the writer cannot see.
 
 1. Writer (the strongest available model). Researches with semcode plus Grep/Read, confirms every fact on disk, and writes the complete page following every rule in this file while composing. The writer does not run the Gate A/B loops after writing; its brief says so explicitly, because self-lint spends the strongest model's budget on work the next stage redoes better.
-2. Lint (a different, cheaper model, fresh context). Runs the advisory `scripts/verify_page.py`, falling back to the manual gate procedures when the script fails or is absent; performs the manual sweeps the script cannot do (boldface, 7b prose-list shapes, 7d superlatives judged in context, negative constructions, anthropomorphic verbs); re-derives the page's counts, universal claims, and restated conditions per 7o; and executes the exhaustive 7m span-linking pass. Fixes everything in place, re-checks after its own edits, and reports what changed plus every finding it adjudicated as a false positive, with reasoning. Concurrent lint agents use unique scratchpad filenames for any helper scripts (shared names have collided).
-3. Final verify (the orchestrator). Re-runs the gates after lint (script-accelerated or manual), spot-audits the adjudications, confirms the Gate B parity table has zero empty cells (dispatching a writer follow-up for any coverage gap lint flagged, since lint does not write new sections), and confirms any 7p cuts were reported before marking the page done in the plan file. Residual findings are fixed or recorded in the plan file as settled false-positive classes for future lint briefs.
+2. Lint (a different, cheaper model, fresh context). Runs the mechanical checks by hand (link targets, excerpt verbatimness, Gate A candidate greps, judging every hit against the 7r registry pasted into its brief); performs the read-through sweeps (boldface, 7b prose-list shapes, 7d superlatives judged in context, negative constructions, anthropomorphic verbs); re-derives the page's counts, universal claims, and restated conditions per 7o; and executes the exhaustive 7m span-linking pass. Fixes everything in place, re-checks after its own edits, and reports what changed plus every candidate it adjudicated as exempt, with reasoning. Concurrent lint agents use unique scratchpad filenames for any helper scripts they improvise (shared names have collided).
+3. Final verify (the orchestrator). Spot re-runs the mechanical checks after lint, audits the adjudications against the 7r registry, confirms the Gate B parity table has zero empty cells (dispatching a writer follow-up for any coverage gap lint flagged, since lint does not write new sections), and confirms any 7p cuts were reported before marking the page done in the plan file. Residual findings are fixed or recorded in the plan file as settled false-positive classes for future lint briefs.
 
 Model-tier guidance, subsystem-independent: page writing needs the strongest model available (research judgment, prose discipline, figure quality); the lint pass is mechanical-plus-checklist work a mid-tier model performs reliably when the brief is explicit and exhaustive; the orchestrator keeps final sign-off and never delegates it.
 
@@ -1272,7 +1313,10 @@ GROUND RULES.
   exact negation; make every DETAILS heading true of its whole section.
 - Writing rules 7 through 7k apply while composing: no em-dash, no boldface,
   no label-colon prose, no hedging, no editorializing, no "arm" for a branch
-  or union case, declarative DETAILS headings, single-line paragraphs.
+  or union case, declarative DETAILS headings, single-line paragraphs. Use
+  the 7q rephrase recipes instead of re-deriving compliant phrasing.
+- Settled adjudications registry (7r), pasted verbatim: <paste the full 7r
+  registry here>. Apply it as written; never reword an exempt construct.
 - <If an existing draft or prior page feeds this one: the source file(s)
   and sections to mine, the known source defects from the reuse map, and
   the 7p rules: inventory the source's catalog entries, sections,
@@ -1293,30 +1337,31 @@ verified, anything you could not verify), not the page text.
 Lint the finished page <path> against the kernel tree at <tree path>,
 following the kernel-glossary-skill SKILL.md.
 
-1. Run: python3 <skill dir>/scripts/verify_page.py --tree <tree path> <path>
-   The script is advisory. If it is unavailable, fails, or a finding looks
-   wrong, fall back to the manual gates: the Gate A grep list from SKILL.md
-   section 9 run fence-aware, an on-disk comparison of every ```c block at
-   its /* path:line */ provenance, and opening each questioned link's target
-   line. Fix every confirmed finding in place: wrong anchors get
+1. Mechanical checks by hand, per SKILL.md "Mechanical checks (by hand)":
+   open every Elixir link target and confirm definition-line anchoring (7m);
+   compare every ```c block against its /* path:line */ provenance on disk,
+   unit by unit, confirming each excerpt begins at its cited line; run the
+   Gate A candidate greps fence-aware. Judge every candidate against the 7r
+   registry pasted below BEFORE editing; a hit on an exempt construct is a
+   false candidate, and rewording a compliant phrase to silence a pattern is
+   itself a defect. Fix confirmed findings in place: wrong anchors get
    re-looked-up on disk, non-verbatim blocks get re-excerpted from the file,
-   banned prose gets rewritten per 7a-7d. Re-check after your edits until
-   the only remaining findings are adjudicated false positives; report each
-   adjudication with its reasoning. Known false-positive classes to
-   adjudicate rather than "fix": <from the plan file, e.g. expression spans
-   linking one constituent symbol, syscall-name links anchored at the kernel
-   entry point, designated-initializer citations>.
-2. Manual Gate A sweep for what the script cannot see: boldface in prose,
-   intro-sentence-plus-list shapes (7b), hollow superlatives judged in
-   context (7d), negative constructions, anthropomorphic verbs.
+   banned prose gets rewritten with the 7q recipes. Re-check after your
+   edits; report every candidate you adjudicated as exempt, with reasoning.
+   Settled adjudications registry (7r), pasted verbatim: <paste the full 7r
+   registry here>.
+2. Read-through Gate A sweep for what the candidate greps cannot express:
+   boldface in prose, intro-sentence-plus-list shapes (7b), hollow
+   superlatives judged in context (7d), negative constructions,
+   anthropomorphic verbs.
 3. Exhaustive span pass (7m): every occurrence of every kernel symbol
    outside fenced blocks is linked, INCLUDING repeats, CONFIG_* options (to
    the Kconfig config line), generic primitives (READ_ONCE, memcpy,
    rcu_read_lock, ... to their definitions for the documented architecture),
    field paths a->b (to the field declaration), and named ops-struct
-   members. Exemptions: <the settled 7m exemption list>. Never cite in-page
-   or in-family precedent to leave a span bare; the rule always wins and
-   pre-existing bare spans in the same family get fixed too.
+   members. Exemptions and rulings: the 7r registry pasted above. Never cite
+   in-page or in-family precedent to leave a span bare; the rule always wins
+   and pre-existing bare spans in the same family get fixed too.
 4. Correctness re-derivation (7o): re-run the enumeration behind every
    count and every "only"/"never"/"always"/"exactly" claim; rebuild the
    member-to-property mapping behind every "each/every X" sentence (one
@@ -1350,19 +1395,40 @@ resolve.
 - After every completed page, update the plan file (status, page statistics, adjudications, lessons) so a future session resumes from the plan file plus the on-disk pages alone.
 - Pages land only under `${CLAUDE_SKILL_DIR}/docs/<dir>/`. No `SUMMARY.md` or `mkdocs.yml` edits, and no git commits, without an explicit user go.
 
-### Machine verification (advisory)
+### Mechanical checks (by hand)
 
-`${CLAUDE_SKILL_DIR}/scripts/verify_page.py` accelerates the mechanical gates:
+The mechanical layer of the gates is executed with an editor and standard shell tools. There is no checker script to run, maintain, or trust; a script's regexes age into false positives and its passes into false confidence, so the checks below are the procedure itself. Work page by page.
+
+1. Link targets. List every cited location, then open each one and confirm what the link claims:
 
 ```
-python3 scripts/verify_page.py --tree /path/to/kernel/tree page.md [more.md ...]
+grep -oE 'source/[^)#[:space:]]+#L[0-9]+' page.md | sed 's|source/||; s|#L| |' | sort -u |
+while read f l; do echo "== $f:$l"; sed -n "${l}p" "/path/to/tree/$f"; done
 ```
 
-It auto-detects the documented kernel version from each page's first Elixir link and checks three layers. First, every Elixir link: the file exists in the tree, the cited line is in range, and the linked symbol's text is found within a few lines of the anchor (with allowances for Kconfig links dropping the `CONFIG_` prefix, `_noprof` allocation wrappers, macro-generated accessors, and wildcard-family links). Second, every fenced c block: diffed verbatim, modulo declared `...` elisions, against the file named by its 7l provenance comment. Third, a fence-aware Gate A sweep (em-dash, label-colon, editorializing, banned words, hedges, "arm", internal `.md` links, negative constructions, bad headings) with a verbatim-quote exemption.
+Judge each printed line: a symbol-name link must land on the symbol's definition line itself (7m), and a file:line location link must land on the exact site the prose describes. When link and code disagree, fix the anchor by re-finding the symbol on disk.
 
-The script is advisory, never authoritative; the manual procedures in section 9 and rule 7o are the gates, and the script only speeds them up. Treat its output as leads, in both directions. False positives accumulate as the script ages out of maintenance (kernel idioms, link forms, and the style rules drift away from its regexes); act on a finding only after the underlying rule in this file confirms it, and record a finding the rule does not confirm as a false-positive class instead of obeying the script. False negatives are structural: the script validates only what is present on the page. It cannot see a missing link, a missing usage excerpt, an unenumerated call site, or a wrong behavioral claim; its symbol check accepts any match within a few lines of the anchor, so a link that violates 7m's definition-line rule can still pass; and its code check matches content anywhere in the named file, so a wrong provenance line number passes. A CLEAN result therefore never closes a gate by itself, and a page that is script-CLEAN can still fail Gate B and the 7o audit.
+2. Excerpt verbatimness. For every fenced ` ```c ` block, open the provenance file at the cited line and compare unit by unit (an interior `/* path:line */` delimiter starts a new unit; a standalone `...` line marks a declared elision):
 
-When the script is unavailable, crashes, or cannot be trusted, run the gates by hand; they are defined to work without it. Gate A is the grep list in section 9 run fence-aware, judging each hit in context. Gate B item 2 is performed by opening every ```c block's provenance file at its cited line (`sed -n 'START,ENDp'`) and comparing the reproduced lines directly. Gate B item 3 is performed by opening each link's target line and confirming the symbol's definition is there. The 7o behavioral-claim audit is manual always. Fold crisp new false-positive classes into the script when convenient, but never let a page's done-ness depend on the script running.
+```
+sed -n 'START,ENDp' path/from/provenance.c
+```
+
+Each unit must begin at its cited line and match byte for byte, tabs included. Content that matches elsewhere in the file with a wrong claimed line number is a finding (7l, 7o).
+
+3. Gate A candidates. Run the candidate greps below fence-aware, then judge EVERY hit against the rule's exemptions and the settled adjudications registry (7r) before touching the page. A hit on an exempt construct is a false candidate, and rewording a compliant phrase to silence a pattern is itself an error: a writer once reworded a correct "32-bit Arm" purely to quiet an arm-word pattern, and that rewording was the only defect introduced. Fix confirmed hits with the 7q recipes.
+
+- `grep -n '—' page.md` — em-dashes; no exemption outside fenced blocks.
+- `grep -nE '^[A-Z][^:]{2,80}: [a-z]' page.md` — label-colon candidates; exempt inside double-quoted verbatim text, in catalog bullets, in table rows, and in H3/H4 catalog labels (7a).
+- `grep -niE '(usually|typically|generally|normally|commonly|mostly|often|in practice|tends to)' page.md` — hedges; hyphenated compounds ("read-mostly") and verbatim quotes are exempt.
+- `grep -niE '(^|[^a-z])arms?([^a-z]|$)' page.md` — the branch-metaphor ban; capitalized CPU-architecture names (Arm, ARM64, arm64) and verbatim quotes are exempt.
+- `grep -niE '(contract|tall(y|ies|ied)|canonical|vtable)' page.md` — banned words; verbatim quotes exempt.
+- `grep -nE ', not [a-z]+[.,]' page.md` — negative constructions.
+- `grep -n '](.*\.md)' page.md` — internal cross-link candidates; only non-URL .md targets are violations.
+- `grep -nE '^#{2,4} (Why|How|Where|What)|^#{2,4} .*\?$' page.md` — banned heading shapes.
+- `grep -n '\*\*' page.md` — boldface candidates; `/**` kerneldoc openers inside fenced code are exempt.
+
+What no grep can express stays a read-through: 7b prose-list shapes, 7d superlatives judged in context, heading truth (Gate B item 4, 7o), definition-plus-usage parity (Gate B item 1), coverage (item 6), figure geometry (item 8), and the whole 7o behavioral-claim audit. Every finding is fixed or recorded as a 7r adjudication with reasoning, never silenced.
 
 ## Subsystem Map
 
