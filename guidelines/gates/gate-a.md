@@ -1,0 +1,7 @@
+# Gate A (mechanical, grep the finished page)
+
+Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+
+Confirm zero hits for each, and re-run after every edit including your own hand-edits: em-dashes; `**` boldface in prose; the label-colon-explanation idiom in prose (7a/7c), excluding the caution blockquote and text inside quotes; the 7c/7d editorializing and superlative phrases (`the reasoning`, `is the key`, `X matters`, `X is what makes Y`, `the pattern is`, `worthwhile`, `crucial`, `elegant`, `cornerstone`, `the most <adj>`, and the like); the banned words `contract`, `tally` (also `tallied`/`tallies`/`tallying`), `canonical`; vague hedges (`usually`, `typically`, `generally`, `normally`, `commonly`, `mostly`, `in practice`, `tends to`); `vtable`; the word `arm`/`arms` for a branch or union case (7c; CPU-architecture names and verbatim quotes exempt); internal `.md` cross-links; and `Why`/`How`/`Where` or trailing-`?` headings. The grep list above is the gate. Run it by hand, fence-aware, using the candidate greps in `guidelines/gates/mechanical-checks.md`, and judge every hit against the exemptions and the 7r registry before editing; never reword an exempt construct to silence a pattern. Boldface and the 7b prose-list shapes are read-through checks.
+
+A page is final only at zero unadjudicated findings. The gate is a manual procedure; `guidelines/gates/mechanical-checks.md` carries the candidate greps and the no-checker-script doctrine.
