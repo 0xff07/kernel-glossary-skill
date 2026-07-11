@@ -2,7 +2,7 @@
 
 Purpose: resolve everything the later passes consume, before any research or writing.
 Inputs: the subsystem, the topic, and the documented kernel version (SKILL.md "Input").
-Outputs: the resolved subsystem entry (tag, dir, kernel_paths, spec, section6_heading), the output path, and the chosen sample archetype; recorded in the dossier HEADER (`guidelines/passes/dossier.md`) when a dossier is kept.
+Outputs: the resolved subsystem entry (tag, dir, kernel_paths, spec, section6_heading), the output path, the run's workspace under `progress/`, and the chosen sample archetype; recorded in the dossier HEADER (`guidelines/passes/dossier.md`).
 Run by: single-agent mode inline, as the first pass; in a campaign the orchestrator resolves these once per page into the writer brief, and the writer re-reads this file for the samples doctrine.
 Next: pass 01 (`guidelines/passes/01-research.md`).
 
@@ -35,3 +35,7 @@ Look up the subsystem in the Subsystem Map (`guidelines/reference/subsystems.md`
 Construct the output path: `${CLAUDE_SKILL_DIR}/docs/<dir>/<topic-slug>.md`
 
 If the output directory does not exist, create it.
+
+## Create the run workspace
+
+For a run outside a campaign, choose the run's short name and create its artifact directory `progress/<campaign>/` now, per `guidelines/campaign/progress-layout.md` (a campaign created its workspace at planning; the writer brief carries the path). Record the name in the dossier HEADER. Existing `progress/` entries belong to other runs: list their names only for the collision check, and read nothing inside them.

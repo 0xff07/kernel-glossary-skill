@@ -2,9 +2,11 @@
 
 Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
 
-`guidelines/samples/plan-mm-campaign.md` carries eight top-level sections; a conforming plan file carries the same elements (the nesting may vary, the presence may not):
+A plan file lives at `progress/<campaign>.md`, beside the campaign's artifact directory `progress/<campaign>/` (naming and isolation: `guidelines/campaign/progress-layout.md`).
 
-1. Context: what was asked, where the requirements come from, the documented tree with its version tag and commit pin, what is explicitly not an input, and the output root.
+`guidelines/samples/plan-mm-campaign.md` carries eight top-level sections; a conforming plan file carries the same elements (the nesting may vary, the presence may not). The sample predates the progress workspace layout and carries no campaign-name line; new plan files carry it — where a sample and a rule disagree, the rule governs.
+
+1. Context: what was asked, where the requirements come from, the campaign short name with its artifact directory (`progress/<campaign>/`), the documented tree with its version tag and commit pin, what is explicitly not an input, and the output root.
 2. Status: a living, dated checklist. Every phase completion, batch result, suspension, correction, and lesson is appended at the moment it happens; a future session resumes from this section plus the pages on disk.
 3. Scope decisions: the user-confirmed choices, numbered.
 4. Inventory findings: one compact digest per area, from the inventory agents, including the version-specific renames and removals.

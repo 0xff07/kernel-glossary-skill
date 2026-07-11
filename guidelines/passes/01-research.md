@@ -2,7 +2,7 @@
 
 Purpose: locate and record every fact the page will need, before any prose exists.
 Inputs: the resolved parameters from pass 00 (subsystem entry, topic scope, documented version); in a campaign also the catalog row's scope statement and boundary rules.
-Outputs: the research dossier at `progress/<campaign-or-topic>/<page-slug>.dossier.md`, per `guidelines/passes/dossier.md`.
+Outputs: the research dossier at `progress/<campaign>/<page-slug>.dossier.md`, in the run's artifact directory (`guidelines/campaign/progress-layout.md`), per `guidelines/passes/dossier.md`.
 Run by: the writer by default (single-agent inline, or the campaign writer agent before composing); a dedicated researcher agent (`guidelines/agents/researcher.md`) when a campaign fans research out explicitly.
 Next: pass 02 (`guidelines/passes/02-write.md`).
 

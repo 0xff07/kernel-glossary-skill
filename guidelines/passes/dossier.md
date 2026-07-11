@@ -10,8 +10,8 @@ The dossier is a hint sheet, never a source. It pins the documented version (tag
 
 ## Location and lifecycle
 
-- One dossier per page: `progress/<campaign-or-topic>/<page-slug>.dossier.md`, under the skill root. The lint and verify passes write their reports beside it as `<page-slug>.lint.md` and `<page-slug>.verify.md`.
-- `progress/` is gitignored and never committed. Its contents are disposable once a campaign closes (keep them until then; enhancement passes and gap-fill writers reuse them).
+- One dossier per page: `progress/<campaign>/<page-slug>.dossier.md`, in the run's artifact directory under the skill root (naming and isolation: `guidelines/campaign/progress-layout.md`; a single-page run's name is its topic slug). The lint and verify passes write their reports beside it as `<page-slug>.lint.md` and `<page-slug>.verify.md`, and any other intermediate an agent persists lands in the same directory as `<page-slug>.<purpose>.<ext>`.
+- `progress/` is gitignored and never committed. A run's artifacts are disposable once its campaign closes (keep them until then; enhancement passes and gap-fill writers reuse them). Another run's artifacts are off limits unless the user explicitly directs resume or reuse.
 - Whoever runs the research pass creates the dossier and keeps it current while researching: the writer by default, a dedicated researcher agent (`guidelines/agents/researcher.md`) when a campaign fans research out. The writer updates it whenever the disk disagrees with a recorded hint.
 - When a writer dies mid-page, resuming that same agent (its transcript keeps the richer context) stays the first recovery move; the dossier is the durable fallback, and a replacement agent starts by reading the dossier plus the plan file instead of redoing the research.
 - A solo agent single-stepping the passes writes the dossier even for a one-page task; it is what makes each pass resumable in a later session.
@@ -25,6 +25,7 @@ Sections mirror the research pass one for one, so a single agent can fill the do
 
 ## HEADER
 - output path: docs/<dir>/<topic-slug>.md
+- campaign: <run short name> (artifact directory progress/<campaign>/)
 - subsystem: <name> (entry in guidelines/reference/subsystems.md)
 - documented version: <tag>, commit <sha>
 - architecture / CONFIG scope: <arch>; <CONFIG assumptions>

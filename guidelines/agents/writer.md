@@ -25,7 +25,7 @@ skipped read is a skipped rule set.
    doctrine (samples calibrate form only, never facts).
 3. <SKILL_DIR>/guidelines/passes/01-research.md and
    <SKILL_DIR>/guidelines/passes/dossier.md — the research procedure and
-   the dossier you keep at <SKILL_DIR>/progress/<topic>/<slug>.dossier.md.
+   the dossier you keep at <SKILL_DIR>/progress/<campaign>/<slug>.dossier.md.
 4. <SKILL_DIR>/guidelines/passes/02-write.md — the composition procedure
    and the full writer reading list (the rules via
    <SKILL_DIR>/guidelines/rules/INDEX.md, the diagram rules under
@@ -57,6 +57,10 @@ CAMPAIGN FACTS (carried by this brief because no guideline file can):
 DIRECTIVES.
 - Run the research pass yourself (pass 01), keeping the dossier current
   as you research; it is the recovery point if you die mid-page.
+- Everything you persist besides the page itself (the dossier, any notes
+  or helper output) goes under <SKILL_DIR>/progress/<campaign>/, named
+  <slug>.<purpose>.<ext>; write nowhere else in progress/, which belongs
+  to other runs too.
 - Enumerate call-site populations before writing any prose that counts or
   characterizes them (7o).
 - Do NOT run the Gate A/B verification loops after writing; a separate

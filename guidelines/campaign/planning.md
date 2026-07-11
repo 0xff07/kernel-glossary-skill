@@ -6,7 +6,7 @@ The per-page passes under `guidelines/passes/` and the rules they invoke define 
 
 ## Plan before generating
 
-A campaign starts with a plan the user approves, kept in a durable plan file that survives context loss and session interruption. Create the plan file the moment planning starts (in Claude Code, plan mode provides one; otherwise create `<topic>-plan.md`; the required section structure is `guidelines/campaign/plan-file.md`) and treat it as the single source of truth: every phase below writes its output into the file, and nothing load-bearing stays only in conversation or in agent transcripts. `guidelines/samples/plan-mm-campaign.md` is the plan file of the campaign that produced the sample pages, with one curation: its Status section is reduced to generic entry shapes with placeholders, so the example teaches the log's form without tying the sample to any one execution. Read it once before planning a campaign for any subsystem and imitate its section shapes rather than inventing new ones.
+A campaign starts with a plan the user approves, kept in a durable plan file that survives context loss and session interruption. The moment planning starts, choose the campaign's unique short name and create its workspace per `guidelines/campaign/progress-layout.md`: the plan file at `progress/<campaign>.md` (required section structure: `guidelines/campaign/plan-file.md`) and the artifact directory `progress/<campaign>/` beside it, where every dossier, lint report, verify report, and other agent intermediate of this campaign will land. (Claude Code's plan mode provides a plan buffer of its own; the durable copy is still `progress/<campaign>.md`.) Treat the plan file as the single source of truth: every phase below writes its output into the file, and nothing load-bearing stays only in conversation or in agent transcripts. Existing entries under `progress/` belong to other runs: they constrain only the name choice, and nothing inside them is read or reused unless the user explicitly asks (`guidelines/campaign/progress-layout.md`). `guidelines/samples/plan-mm-campaign.md` is the plan file of the campaign that produced the sample pages, with one curation: its Status section is reduced to generic entry shapes with placeholders, so the example teaches the log's form without tying the sample to any one execution. Read it once before planning a campaign for any subsystem and imitate its section shapes rather than inventing new ones.
 
 Build the plan in this order:
 
@@ -21,6 +21,7 @@ Build the plan in this order:
 
 A plan is complete when every item below holds; confirm each before presenting it:
 
+- The Context section records the campaign short name and its workspace entries (`progress/<campaign>.md`, `progress/<campaign>/`).
 - Every bullet of the request maps to at least one catalog row or one recorded fold-in, and blank or vague bullets became curated rows.
 - Every catalog row has its output path, a scope statement with at least one anchor symbol carrying a file:line hint, and a requested-or-curated tag.
 - The catalog states the projected page total and the tag census (how many requested, how many curated).

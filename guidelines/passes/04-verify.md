@@ -2,7 +2,7 @@
 
 Purpose: final sign-off. A page is done only when both gates hold with zero unadjudicated findings; reading the page is not sufficient, and evidence is recorded per item.
 Inputs: the linted page, the lint report, the dossier (hints), and the kernel tree at the documented version.
-Outputs: the recorded Gate A and Gate B outcomes in a verify report at `progress/<campaign-or-topic>/<page-slug>.verify.md`; in a campaign, the page's completion entry in the plan file's Status section.
+Outputs: the recorded Gate A and Gate B outcomes in a verify report at `progress/<campaign>/<page-slug>.verify.md` (the run's artifact directory, `guidelines/campaign/progress-layout.md`); in a campaign, the page's completion entry in the plan file's Status section.
 Run by: single-agent mode inline (the same agent runs both gates itself); in a campaign the orchestrator (`guidelines/agents/verifier.md`), because final sign-off is never delegated.
 Next: save per SKILL.md's save and commit policy.
 

@@ -44,10 +44,10 @@ Everything in this skill lives in one of three top-level directories beside this
   - `guidelines/rules/` — the writing rules, one file per rule ID (`INDEX.md` maps every ID)
   - `guidelines/diagrams/` — the diagram rules and figure catalogs (7g, 7h, 7i)
   - `guidelines/gates/` — Gate A, Gate B, and the by-hand mechanical checks
-  - `guidelines/campaign/` — multi-page campaign methodology: planning, plan file structure, dispatch pipeline, draft reuse
+  - `guidelines/campaign/` — multi-page campaign methodology: planning, plan file structure, the progress workspace layout, dispatch pipeline, draft reuse
   - `guidelines/agents/` — role cards and dispatch brief templates for campaign sub-agents
   - `guidelines/reference/` — the Subsystem Map (`subsystems.md`, one entry per subsystem), the measured criteria, and the draft-versus-page contrast
-- `progress/` — gitignored runtime artifacts: per-page research dossiers and lint/verify reports (spec in `guidelines/passes/dossier.md`). Progress artifacts are hints and evidence trails; the on-disk kernel tree at the documented version is always ground truth.
+- `progress/` — gitignored per-run workspaces (layout, naming, and isolation rules: `guidelines/campaign/progress-layout.md`). Each campaign owns a plan file `progress/<campaign>.md` plus an artifact directory `progress/<campaign>/` holding its dossiers, lint/verify reports, and every other agent intermediate (dossier spec: `guidelines/passes/dossier.md`); a single-page run owns just the directory. Progress artifacts are hints and evidence trails; the on-disk kernel tree at the documented version is always ground truth.
 
 All relative paths in this skill resolve against this file's directory, available to the top-level agent as `${CLAUDE_SKILL_DIR}`. Sub-agent briefs carry the absolute skill path instead (a `SKILL_DIR` bracket in every brief template), because sub-agents do not inherit that variable.
 
@@ -59,18 +59,18 @@ Producing one page is five passes over named artifacts. Each pass file states it
 
 | pass | spec | input → output |
 |---|---|---|
-| plan (multi-page work only) | `guidelines/campaign/planning.md` | request → approved plan file |
-| 00 prep | `guidelines/passes/00-prep.md` | subsystem + topic + version → resolved subsystem entry, output path, sample archetype |
-| 01 research | `guidelines/passes/01-research.md` | page scope → dossier at `progress/<topic>/<slug>.dossier.md` (format: `guidelines/passes/dossier.md`) |
+| plan (multi-page work only) | `guidelines/campaign/planning.md` | request → approved plan file at `progress/<campaign>.md` |
+| 00 prep | `guidelines/passes/00-prep.md` | subsystem + topic + version → resolved subsystem entry, output path, run workspace, sample archetype |
+| 01 research | `guidelines/passes/01-research.md` | page scope → dossier at `progress/<campaign>/<slug>.dossier.md` (format: `guidelines/passes/dossier.md`) |
 | 02 write | `guidelines/passes/02-write.md` | dossier → draft page at `docs/<dir>/<slug>.md` |
-| 03 lint | `guidelines/passes/03-lint.md` | draft page → page fixed in place, plus `progress/<topic>/<slug>.lint.md` |
-| 04 verify | `guidelines/passes/04-verify.md` | linted page → Gate A/B outcomes recorded in `progress/<topic>/<slug>.verify.md`; page final |
+| 03 lint | `guidelines/passes/03-lint.md` | draft page → page fixed in place, plus `progress/<campaign>/<slug>.lint.md` |
+| 04 verify | `guidelines/passes/04-verify.md` | linted page → Gate A/B outcomes recorded in `progress/<campaign>/<slug>.verify.md`; page final |
 
 ## Modes
 
-Single page, single agent (the default for one topic): execute passes 00 through 04 in order yourself. You run both gates (`guidelines/gates/`), and the page is done only at zero unadjudicated findings. Write the dossier even for a single page; it is what makes each pass resumable in a later session. In interactive single-page use, ask before the actual save.
+Single page, single agent (the default for one topic): execute passes 00 through 04 in order yourself. You run both gates (`guidelines/gates/`), and the page is done only at zero unadjudicated findings. Write the dossier even for a single page, in the run's own workspace under `progress/` (`guidelines/campaign/progress-layout.md`); it is what makes each pass resumable in a later session. In interactive single-page use, ask before the actual save.
 
-Multi-page campaign (a documentation set of tens of pages): plan first per `guidelines/campaign/planning.md` (a campaign starts with a plan the user approves), then produce pages in batches through the writer → lint → verify pipeline per `guidelines/campaign/pipeline.md`, dispatching sub-agents with the role cards and brief templates under `guidelines/agents/`. Gate ownership splits by role: the writer composes under every rule but never runs the gate loops; the lint agent runs Gate A, the mechanical checks, the exhaustive 7m span pass, and the 7o re-derivations, fixing findings in place; the orchestrator runs final verify and never delegates sign-off. In a campaign whose page catalog the user has already approved, save each finished page without a per-page ask and checkpoint per the pipeline; git commits still require an explicit user go.
+Multi-page campaign (a documentation set of tens of pages): plan first per `guidelines/campaign/planning.md` (a campaign starts with a unique short name and workspace under `progress/` per `guidelines/campaign/progress-layout.md`, then a plan the user approves at `progress/<campaign>.md`), then produce pages in batches through the writer → lint → verify pipeline per `guidelines/campaign/pipeline.md`, dispatching sub-agents with the role cards and brief templates under `guidelines/agents/`. Gate ownership splits by role: the writer composes under every rule but never runs the gate loops; the lint agent runs Gate A, the mechanical checks, the exhaustive 7m span pass, and the 7o re-derivations, fixing findings in place; the orchestrator runs final verify and never delegates sign-off. In a campaign whose page catalog the user has already approved, save each finished page without a per-page ask and checkpoint per the pipeline; git commits still require an explicit user go.
 
 ## Writing rules and gates
 
@@ -87,5 +87,6 @@ No git commits without an explicit user go.
 ## Behavioral rules
 
 - When asked to "discuss" or "review" a plan, engage conversationally with concise observations and questions. Do not immediately start executing, writing files, or producing verbose output. Wait for explicit approval before creating files.
+- `progress/` accumulates the workspaces of prior runs. When starting a new page or campaign, list existing entry names only to pick a unique run name; read nothing inside them, and plan from scratch. Open an existing plan file or artifact directory only when the user explicitly asks to resume or reuse that run (`guidelines/campaign/progress-layout.md`).
 - Always read template/reference files first before generating any content; no page is generated before the prep pass (`guidelines/passes/00-prep.md`).
 - When performing batch edits across many files, preserve existing content (e.g., lspci output, code references) that was added in prior passes. Read the full file before editing to avoid accidentally removing prior enrichments.

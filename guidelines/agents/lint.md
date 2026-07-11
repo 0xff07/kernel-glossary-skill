@@ -3,7 +3,7 @@
 Role: runs the lint pass (`guidelines/passes/03-lint.md`) on one finished page: mechanical checks, Gate A, the exhaustive 7m span pass, the 7o re-derivations, and the parity audit in flag-only mode. Fixes findings in place; never writes new sections; never changes scope.
 Model tier: a different, cheaper model than the writer, in fresh context; the pass is mechanical-plus-checklist work a mid-tier model performs reliably when the brief is explicit (`guidelines/campaign/pipeline.md`).
 Mandatory reading: carried inside the brief below, as absolute paths.
-Report: written to `progress/` and summarized in the final message (format in the brief).
+Report: written to the run's artifact directory (`progress/<campaign>/`) and summarized in the final message (format in the brief).
 Death/resume: resume the same agent first; if repeated resumes fail, a fresh agent re-runs the pass from the page and the dossier (lint holds no research state worth salvaging beyond its report draft).
 
 ## Lint brief template
@@ -29,7 +29,7 @@ MANDATORY READING, in order, before touching the page:
    7f (the prose gates), 7l, 7m, 7n, 7o (provenance, links, sources,
    claims).
 5. <SKILL_DIR>/guidelines/reference/measured-criteria.md — the tripwires.
-6. The page's dossier at <SKILL_DIR>/progress/<topic>/<slug>.dossier.md,
+6. The page's dossier at <SKILL_DIR>/progress/<campaign>/<slug>.dossier.md,
    if present: its recorded search bases seed your 7o re-derivations; a
    dossier entry is never evidence.
 
@@ -38,10 +38,13 @@ CONSTRAINTS.
 - Do not write missing sections; report every parity gap (Gate B item 1)
   as a coverage gap for a writer follow-up.
 - Beyond the 7o corrections, do not change facts, scope, or structure.
-- Use a unique scratchpad filename for any helper script.
+- Any helper script or intermediate file you persist goes under
+  <SKILL_DIR>/progress/<campaign>/ with a unique <slug>.-prefixed name
+  (shared names have collided between concurrent lint agents); write
+  nowhere else in progress/, which belongs to other runs too.
 
 REPORT. Write the lint report to
-<SKILL_DIR>/progress/<topic>/<slug>.lint.md and summarize it as your
+<SKILL_DIR>/progress/<campaign>/<slug>.lint.md and summarize it as your
 final message: findings fixed by class with counts, 7o corrections with
 the search evidence, parity gaps, candidates adjudicated as exempt with
 reasoning (state the 7r ruling count you applied as proof of the

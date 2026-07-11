@@ -2,7 +2,7 @@
 
 Role: runs the research pass (`guidelines/passes/01-research.md`) for one page and produces its dossier (`guidelines/passes/dossier.md`) without writing the page. The campaign default is that the writer researches its own page (`guidelines/campaign/pipeline.md`); dispatch dedicated researchers only as an explicit opt-in, when research should fan out ahead of writing (pre-building dossiers for a batch) or when a single agent is stepping the passes one at a time across sessions.
 Model tier: strong enough for research judgment; the dossier's search bases and version-drift notes are what the write and lint passes build on.
-Writes only the dossier under `progress/`; everything else is read-only.
+Writes only the dossier, inside the run's artifact directory (`progress/<campaign>/`); everything else is read-only.
 Report: a two-line summary as the final message, never the dossier text.
 Death/resume: resume the same agent and ask it to flush what it has into the dossier; a partially filled dossier with accurate OPEN GAPS is a valid deliverable.
 
@@ -28,7 +28,8 @@ FACTS. Documented tree: <path>, version <tag>, commit <sha>.
 Architecture scope: <arch>. Index line numbers are hints; confirm on disk
 before recording a location.
 
-Write the dossier to <SKILL_DIR>/progress/<topic>/<slug>.dossier.md.
+Write the dossier to <SKILL_DIR>/progress/<campaign>/<slug>.dossier.md,
+and write nowhere else in progress/, which belongs to other runs too.
 Your final message is a two-line summary (symbol count, enumerations
 recorded, open gaps), not the dossier text.
 ```
