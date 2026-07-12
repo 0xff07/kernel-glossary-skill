@@ -65,6 +65,12 @@ When earlier-generation drafts or prior revisions exist for topics in the catalo
 5. Collect across drafts. One catalog page may assemble sections mined from several drafts; the boundary rules decide what belongs where.
 6. Disposition, not disappearance. Every source catalog entry, DETAILS section, behavior, enumeration, figure, and reference gets a 7p disposition (kept, merged, or cut with its reason). Cuts shrink the derived page's catalog and scope statement in the same change and are recorded in the plan file so the orchestrator or the user can veto them; the derived page then passes the Gate B parity audit like a fresh one.
 
+## Delta write campaigns (seeded by a verify run)
+
+A delta write campaign is an ordinary write campaign whose catalog comes ready-made: the delta catalog a verify campaign emitted (`guidelines/passes/04-verify.md`, verify-plan item 7). Planning collapses accordingly — the catalog rows (page, confirmed findings with verifier evidence, fix specifications, carried-over boundary statements, bans, and tree pin) are adopted as the page catalog, the verifier evidence stands in for the inventory digests, and no inventory agents run; the pass goes straight to the user checkpoint, where the finding list is approved or trimmed and the cadence question answers when the repaired pages get re-verified. The new campaign's Context declares the verify run it consumes (the reuse rule in SKILL.md, "The progress/ workspace"); because the delta catalog is committable with its verify plan, this works on a machine that never held the parent campaign's artifacts.
+
+Writers in a delta write campaign run in the derivation form (rule 7p, "Deriving from prior drafts and pages" above): the source is the current page plus its finding list, every touched claim is re-verified against the tree, dispositions prevent silent coverage loss while editing, and the exit suite runs over the result. Fixers sweep after the writers as in any write campaign; certification comes from the next verify campaign, which scopes to the still-uncertified pages by default.
+
 ## Inventory brief (planning step 2)
 
 One brief per area; fill the brackets. Dispatch all areas in parallel as read-only agents. Model tier: mid-tier is acceptable; the deliverable is anchored facts, not judgment. The agent's final message is the digest itself, recorded verbatim in the plan file's Inventory findings section.
