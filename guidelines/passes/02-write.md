@@ -4,7 +4,7 @@ Purpose: compose the complete page, following every writing rule while composing
 Inputs: the dossier (pass 01) and the resolved parameters (pass 00); every dossier fact is re-verified on disk before it lands, because the tree at the documented version is the only ground truth.
 Outputs: the draft page at `docs/<dir>/<topic-slug>.md`; the dossier updated where the disk disagreed with it; the parity checklist at `progress/<campaign>/<page-slug>.parity.md`.
 Run by: single-agent mode inline; in a campaign a dispatched writer agent (brief at the end of this file), on the strongest available model.
-Next: pass 03 (`guidelines/passes/03-lint.md`). A campaign writer finishes this pass by closing the parity table, running the mechanical exit suite below, and persisting its evidence into the dossier — it owns the page's substance end to end — but does not run the style sweeps on its own prose, because a fresh-context lint-fix stage does those better. A solo agent continues into pass 03 itself. Either way the page's state after this pass is WRITTEN: it stays uncertified until a verify pass or verify campaign signs it off (`guidelines/passes/04-verify.md`).
+Next: pass 03 (`guidelines/passes/03-lint.md`). A campaign writer finishes this pass by closing the parity table, running the mechanical exit suite below, and persisting its evidence into the dossier — it owns the page's facts end to end — but does not run the style sweeps on its own prose, because a fresh-context lint-fix stage does those better. A solo agent continues into pass 03 itself. Either way the page's state after this pass is WRITTEN: it stays uncertified until a verify pass or verify campaign signs it off (`guidelines/passes/04-verify.md`).
 
 Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
@@ -17,7 +17,7 @@ This pass owns the writer's reading list; the writer brief points here instead o
 3. `guidelines/reference/measured-criteria.md`: the depth rules and tripwires that define what "in-depth, fine-grained" measures as.
 4. The sample pages chosen in pass 00 (`guidelines/passes/00-prep.md`), under its doctrine that samples calibrate form only, never facts.
 5. The page's subsystem entry in `guidelines/reference/subsystems.md`.
-6. `guidelines/rules/3b-gate-b.md`: the writer satisfies its substance items by construction and by the mechanical exit suite below (1 parity, 2 grounded code, 3 links, 6 coverage, 7 driver recency, 9 behavioral claims); the whole gate is re-run later with fresh eyes — solo in pass 04, in a campaign by a verify campaign (`guidelines/passes/04-verify.md`). Gate A and the style-shaped items stay with the lint-fix stage — the writer never sweeps its own prose.
+6. `guidelines/rules/3b-gate-b.md`: the writer satisfies its factual items by construction and by the mechanical exit suite below (1 parity, 2 grounded code, 3 links, 6 coverage, 7 driver recency, 9 behavioral claims); the whole gate is re-run later with fresh eyes — solo in pass 04, in a campaign by a verify campaign (`guidelines/passes/04-verify.md`). Gate A and the style-shaped items stay with the lint-fix stage — the writer never sweeps its own prose.
 
 ## Generate the page
 
@@ -42,7 +42,7 @@ This is construction bookkeeping — tracking coverage forward while writing, th
 
 ## Mechanical exit suite (run before reporting done)
 
-After the page is complete, the writer verifies its own substance with the procedures below and fixes what they find before reporting. These are procedures against ground truth, not the style sweeps (which stay with the style-lint stage); running them is part of writing the page, and they are reliable in the writer's own hands precisely because they are mechanical.
+After the page is complete, the writer verifies its own facts with the procedures below and fixes what they find before reporting. These are procedures against ground truth, not the style sweeps (which stay with the style-lint stage); running them is part of writing the page, and they are reliable in the writer's own hands precisely because they are mechanical.
 
 1. Excerpts: byte-compare every fenced ` ```c ` unit against its provenance file at the cited line (tabs included; an interior `/* path:line */` delimiter starts a new unit, a standalone `...` line is a declared elision). Every unit begins at its cited line.
 2. Anchors: extract every Elixir link target, print the disk line at each, and confirm a symbol link lands on the definition line and a location link on the exact site the prose describes (7m; the 7r settled rulings govern `CONFIG_*` options, generic primitives, and ops-struct members).
@@ -59,7 +59,7 @@ The sample pages under `guidelines/reference/samples/` embody every rule. The cl
 
 ## Dispatching a writer (campaign brief)
 
-Role: researches, writes, and substance-verifies one complete page (passes 01 and 02). The writer owns everything disk-settleable on its page — catalog-to-DETAILS parity, excerpt verbatimness, link-anchor correctness, counts, and behavioral claims — and leaves no substantive holes: a page is not reported written until the parity table has zero empty rows (fill-or-decatalog) and the mechanical exit suite above has run clean with its evidence persisted. What the writer does not run are the style sweeps; the lint-fix stage with fresh context does those better. Model tier: the strongest available model; page writing needs research judgment, prose discipline, and figure quality. On death, resume the same agent first ("do not redo the research; write the page now from what you have"); if repeated resumes fail, a fresh agent starts from the page's dossier, its parity table, and the plan file.
+Role: researches, writes, and fact-verifies one complete page (passes 01 and 02). The writer owns everything disk-settleable on its page — catalog-to-DETAILS parity, excerpt verbatimness, link-anchor correctness, counts, and behavioral claims — and leaves no substantive holes: a page is not reported written until the parity table has zero empty rows (fill-or-decatalog) and the mechanical exit suite above has run clean with its evidence persisted. What the writer does not run are the style sweeps; the lint-fix stage with fresh context does those better. Model tier: the strongest available model; page writing needs research judgment, prose discipline, and figure quality. On death, resume the same agent first ("do not redo the research; write the page now from what you have"); if repeated resumes fail, a fresh agent starts from the page's dossier, its parity table, and the plan file.
 
 Fill the brackets from the plan file. The brief names the files that carry every house rule, as absolute paths; a writer must never have to guess where a rule lives.
 
@@ -87,10 +87,10 @@ skipped read is a skipped rule set.
    bookkeeping, and the mechanical exit suite you run before reporting
    done. Read everything that list names.
 5. <SKILL_DIR>/guidelines/rules/3b-gate-b.md — you own satisfying its
-   substance items by construction and by the exit suite (1 parity,
+   factual items by construction and by the exit suite (1 parity,
    2 grounded code, 3 links, 6 coverage, 7 driver recency, 9 behavioral
    claims); a verify campaign re-runs the whole gate later, and a
-   substance defect found there costs a follow-up round. Gate A and the
+   factual defect found there costs a follow-up round. Gate A and the
    style items stay with the lint-fix stage: do not run style sweeps on
    your own prose.
 6. <SKILL_DIR>/guidelines/reference/subsystems.md — read only the page's

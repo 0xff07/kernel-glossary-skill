@@ -16,12 +16,12 @@ Lane 1 — fix in place. Only candidates whose ruling the 7r registry settles an
 
 - Prose classes with a 7q recipe: em-dashes, label-colon idioms, hedges, banned words, the arm-word ban, negative constructions, anthropomorphic verbs, banned heading shapes, boldface, 7b intro-sentence-plus-list shapes.
 - Bare-span linking (7m): fix a bare kernel-symbol span only after deriving its link target and printing the disk line to confirm the anchor (mechanical-checks item 1 procedure); an ambiguous target escalates.
-- Line-drift correction, under a strict byte-match precondition: when an excerpt unit's bytes match its provenance file exactly but at a shifted line (mechanical-checks item 2 procedure, unique match required), update the cited line in the `/* path:line */` provenance comment and in any prose anchor that cites the same location. Any content difference, or a non-unique match, is a substance finding — escalate, never adjust the number to make it fit.
+- Line-drift correction, under a strict byte-match precondition: when an excerpt unit's bytes match its provenance file exactly but at a shifted line (mechanical-checks item 2 procedure, unique match required), update the cited line in the `/* path:line */` provenance comment and in any prose anchor that cites the same location. Any content difference, or a non-unique match, is a factual finding — escalate, never adjust the number to make it fit.
 - Diagram geometry only: junction alignment, over-80-column lines, ASCII `\|/` connectors replaced with box-drawing — where the fix preserves the figure's content exactly. Anything amounting to a redraw escalates.
 
-Lane 2 — escalate find-only. Everything else: candidates without a settled ruling, 7d superlatives whose in-context judgment is not obvious, heading-truth questions, anything touching the page's mission or boundary, and every suspected substance defect (wrong count, dubious claim, parity hole, excerpt content mismatch) — the last class goes in a SUBSTANCE NOTES section of the report for the verify stage; do not act on it.
+Lane 2 — escalate find-only. Everything else: candidates without a settled ruling, 7d superlatives whose in-context judgment is not obvious, heading-truth questions, anything touching the page's mission or boundary, and every suspected factual defect (wrong count, dubious claim, parity hole, excerpt content mismatch) — the last class goes in a FACT NOTES section of the report for the verify stage; do not act on it.
 
-Hard boundary, inherited unchanged from the old patch stage: the fixer never fixes substance — no excerpt additions or extensions, no coverage or parity closure, no fact, count, or claim edits, no anchor re-derivation beyond the two byte-proved procedures above. Fenced blocks are preserved byte-for-byte except the provenance-comment line of a byte-proved drift fix.
+Hard boundary, inherited unchanged from the old patch stage: the fixer never fixes facts — no excerpt additions or extensions, no coverage or parity closure, no fact, count, or claim edits, no anchor re-derivation beyond the two byte-proved procedures above. Fenced blocks are preserved byte-for-byte except the provenance-comment line of a byte-proved drift fix.
 
 ## Steps
 
@@ -29,7 +29,7 @@ Hard boundary, inherited unchanged from the old patch stage: the fixer never fix
 2. Read-through sweeps for what the greps cannot express: 7b intro-sentence-plus-list shapes, 7d superlatives judged in context, anthropomorphic verbs (`lives`/`sits`/`wants` for code or data placement; `walk` outside data-structure traversal), and heading shape (declarative subject-verb-object, no bare nouns or symbol names; heading truth against section content stays with verification).
 3. Exhaustive 7m span-form pass: every occurrence of every kernel symbol outside fenced blocks is linked, INCLUDING repeats, `CONFIG_*` options, generic primitives, field paths, and named ops-struct members, with `struct`/`enum` keywords kept (7f). Exemptions and rulings come from the 7r registry.
 4. Sort every candidate into its lane and apply lane 1: each fix per its 7q recipe or byte-proved procedure, exactly and minimally. Re-run the Gate A candidate greps over every paragraph you touched (fence-aware) to confirm the edits introduced no new candidates.
-5. Write the report: FIXED items grouped by class with counts and the exact before/after per fix; ESCALATED items each with location, exact current text, and a fix stated precisely enough to apply without judgment; EXEMPT candidates with the ruling applied (state the 7r ruling count as proof of the registry read); SUBSTANCE NOTES last. Anything you persist goes in `progress/<campaign>/` under a unique `<page-slug>.`-prefixed name (shared names have collided between concurrent agents).
+5. Write the report: FIXED items grouped by class with counts and the exact before/after per fix; ESCALATED items each with location, exact current text, and a fix stated precisely enough to apply without judgment; EXEMPT candidates with the ruling applied (state the 7r ruling count as proof of the registry read); FACT NOTES last. Anything you persist goes in `progress/<campaign>/` under a unique `<page-slug>.`-prefixed name (shared names have collided between concurrent agents).
 
 ## Dispatching a fixer (campaign brief)
 
@@ -72,7 +72,7 @@ URL. Nothing else is in scope.>]
 CONSTRAINTS.
 - Fix ONLY lane-1 classes (or, in fix-list mode, only the listed items,
   exactly as briefed); escalate everything unsettled. Never fix
-  substance: no excerpt additions or extensions, no coverage or parity
+  facts: no excerpt additions or extensions, no coverage or parity
   closure, no fact, count, or claim edits. Fenced blocks stay
   byte-for-byte except the provenance line of a byte-proved drift fix.
 - An item that cannot be applied exactly as briefed (text not found,
