@@ -38,7 +38,9 @@ catalog: name, kind, file:line of the DEFINITION, one-line role.
 
 ## USAGE
 Per catalog symbol: at least one concrete caller or user, each with the
-caller name and file:line (feeds the definition-plus-usage depth rule).
+caller name and file:line, recording the exact line range the page will
+excerpt (feeds the definition-plus-usage depth rule and the parity
+checklist of guidelines/passes/02-write.md).
 
 ## ENUMERATIONS
 Per behavior or per counted claim: the full site list with file:line per
