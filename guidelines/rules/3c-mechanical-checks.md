@@ -1,6 +1,6 @@
-# Mechanical checks (by hand)
+# 3c. Mechanical checks (by hand)
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
 The mechanical layer of the gates is executed with an editor and standard shell tools. There is no checker script to run, maintain, or trust; a script's regexes age into false positives and its passes into false confidence, so the checks below are the procedure itself. Work page by page.
 
@@ -33,4 +33,4 @@ Each unit must begin at its cited line and match byte for byte, tabs included. C
 - `grep -nE '^#{2,4} (Why|How|Where|What)|^#{2,4} .*\?$' page.md` — banned heading shapes.
 - `grep -n '\*\*' page.md` — boldface candidates; `/**` kerneldoc openers inside fenced code are exempt.
 
-What no grep can express stays a read-through: 7b prose-list shapes, 7d superlatives judged in context, heading truth (Gate B item 4, 7o), definition-plus-usage parity (Gate B item 1; `guidelines/gates/gate-b.md`), coverage (item 6), figure geometry (item 8), and the whole 7o behavioral-claim audit. Every finding is fixed or recorded as a 7r adjudication with reasoning, never silenced.
+What no grep can express stays a read-through: 7b prose-list shapes, 7d superlatives judged in context, heading truth (Gate B item 4, 7o), definition-plus-usage parity (Gate B item 1; `guidelines/rules/3b-gate-b.md`), coverage (item 6), figure geometry (item 8), and the whole 7o behavioral-claim audit. Every finding is fixed or recorded as a 7r adjudication with reasoning, never silenced.

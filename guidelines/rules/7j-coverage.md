@@ -1,6 +1,6 @@
 # 7j. Behavior and construct coverage (mandatory)
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
 A page documents a mechanism in full, not only the single function path that prompted it. Breadth of coverage (every site that exhibits a behavior, every struct and helper that backs it, the full object lifecycle) is as mandatory as the prose and citation rules (7 through 7f, `guidelines/rules/`).
 

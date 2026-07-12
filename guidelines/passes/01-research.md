@@ -2,11 +2,11 @@
 
 Purpose: locate and record every fact the page will need, before any prose exists.
 Inputs: the resolved parameters from pass 00 (subsystem entry, topic scope, documented version); in a campaign also the catalog row's scope statement and boundary rules.
-Outputs: the research dossier at `progress/<campaign>/<page-slug>.dossier.md`, in the run's artifact directory (`guidelines/campaign/progress-layout.md`), per `guidelines/passes/dossier.md`.
-Run by: the writer by default (single-agent inline, or the campaign writer agent before composing); a dedicated researcher agent (`guidelines/agents/researcher.md`) when a campaign fans research out explicitly.
+Outputs: the research dossier at `progress/<campaign>/<page-slug>.dossier.md`, in the run's artifact directory (SKILL.md ("The progress/ workspace")), per `guidelines/passes/dossier.md`.
+Run by: the writer by default (single-agent inline, or the campaign writer agent before composing); a dedicated researcher agent (brief at the end of this file) when a campaign fans research out explicitly.
 Next: pass 02 (`guidelines/passes/02-write.md`).
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
 ## Search local kernel source code
 
@@ -70,4 +70,34 @@ Record the caller/user function name, file path, and line number for each exampl
 
 When writing the DETAILS section, incorporate these usage examples to show the symbol in context. For example, if `acpi_ev_gpe_dispatch` is listed in LINUX KERNEL, the DETAILS section should show where it is called from (called by `acpi_ev_detect_gpe` at SCI time), what arguments it receives, and what it does with the structs and macros also listed in LINUX KERNEL.
 
-Write or update the dossier before moving to the write pass; the dossier is the recovery point for an interrupted page and the re-derivation hint sheet for the lint and verify passes. Every dossier fact is a hint to re-verify on disk at write time, never a citation.
+Write or update the dossier before moving to the write pass; the dossier is the recovery point for an interrupted page and the re-derivation hint sheet for the lint-fix and verify passes. Every dossier fact is a hint to re-verify on disk at write time, never a citation.
+
+## Dispatching a researcher (optional campaign fan-out)
+
+The campaign default is that the writer researches its own page (SKILL.md ("Modes")); dispatch dedicated researchers only as an explicit opt-in, when research should fan out ahead of writing (pre-building dossiers for a batch) or when a single agent is stepping the passes one at a time across sessions. Model tier: strong enough for research judgment; the dossier's search bases and version-drift notes are what the later passes build on. The researcher writes only the dossier, inside the run's artifact directory; everything else is read-only. Its final message is a two-line summary, never the dossier text. On death, resume the same agent and ask it to flush what it has into the dossier; a partially filled dossier with accurate OPEN GAPS is a valid deliverable.
+
+```
+Research the page <page slug> for the <subsystem> knowledge base; do not
+write the page.
+
+SKILL_DIR: <absolute path to the kernel-glossary-skill checkout>
+
+MANDATORY READING, in order:
+1. <SKILL_DIR>/guidelines/passes/00-prep.md — resolve the parameters;
+   skip the sample reading, which is the writer's job.
+2. <SKILL_DIR>/guidelines/passes/01-research.md — your procedure.
+3. <SKILL_DIR>/guidelines/passes/dossier.md — your deliverable's format.
+4. <SKILL_DIR>/guidelines/reference/subsystems.md — read only the page's subsystem entry.
+
+MISSION. <Scope statement from the catalog row, naming the anchor symbols
+with file:line hints, and the boundary rules for this page's cluster.>
+
+FACTS. Documented tree: <path>, version <tag>, commit <sha>.
+Architecture scope: <arch>. Index line numbers are hints; confirm on disk
+before recording a location.
+
+Write the dossier to <SKILL_DIR>/progress/<campaign>/<slug>.dossier.md,
+and write nowhere else in progress/, which belongs to other runs too.
+Your final message is a two-line summary (symbol count, enumerations
+recorded, open gaps), not the dossier text.
+```

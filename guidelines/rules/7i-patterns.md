@@ -1,6 +1,6 @@
 # 7i. Other ASCII diagram patterns
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
 When a diagram is justified, prefer one of the named patterns below. Each pattern has a use case and a shape; copying the shape and substituting names is usually enough to produce a clean figure. Reach for a new shape only when none of these fits the spatial relationship in question.
 
@@ -371,7 +371,7 @@ Use when a multi-node signal or dependency graph has fan-in and fan-out, plus au
 
 ## Pattern: register / address-offset map
 
-Use when several registers sit at fixed offsets within a block, or one block repeats at base + stride · index, and the addressing is the point (per-stream, per-port, or per-lane blocks). Draw the index ──▶ base-address column on the left, and one representative block expanded as a box of its named registers on the right. Distinct from a single-register bitfield (7h, `guidelines/diagrams/7h-register-bitfield.md`), which plots the bits of one register.
+Use when several registers sit at fixed offsets within a block, or one block repeats at base + stride · index, and the addressing is the point (per-stream, per-port, or per-lane blocks). Draw the index ──▶ base-address column on the left, and one representative block expanded as a box of its named registers on the right. Distinct from a single-register bitfield (7h, `guidelines/rules/7h-register-bitfield.md`), which plots the bits of one register.
 
 ```
        Per-stream SDn register blocks (one per host DMA engine)

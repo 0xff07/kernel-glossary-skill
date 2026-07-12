@@ -1,17 +1,25 @@
 # Samples and measured criteria
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
-The sample pages were produced by this workflow and verified link-by-link and excerpt-by-excerpt against their kernel tree with zero findings. Their measured shape defines concretely what "in-depth, fine-grained" means for this knowledge base:
+The sample pages were produced by this workflow and verified link-by-link and excerpt-by-excerpt against their kernel tree with zero findings. Their measured shape is descriptive calibration for what "in-depth, fine-grained" turned out to measure as — context for a writer's expectations, never a criterion:
 
 | sample | lines | c blocks | Elixir links | figures |
 |---|---|---|---|---|
-| `guidelines/samples/page-overview-mm-struct.md` | 2,940 | 98 | 861 | 1 |
-| `guidelines/samples/page-lifecycle-mm-refcount.md` | 1,743 | 59 | 591 | 1 |
-| `guidelines/samples/page-encoding-pgtable-entries.md` | 3,024 | 141 | 718 | 3 |
-| `guidelines/samples/page-enhanced-vma-overview.md` | 2,922 | 107 | 634 | 1 |
+| `guidelines/reference/samples/page-overview-mm-struct.md` | 2,940 | 98 | 861 | 1 |
+| `guidelines/reference/samples/page-lifecycle-mm-refcount.md` | 1,743 | 59 | 591 | 1 |
+| `guidelines/reference/samples/page-encoding-pgtable-entries.md` | 3,024 | 141 | 718 | 3 |
+| `guidelines/reference/samples/page-enhanced-vma-overview.md` | 2,922 | 107 | 634 | 1 |
 
-Across the thirteen pages of the campaign that produced them, the per-page ranges were 1,468 to 3,270 lines, 46 to 141 code blocks, and 357 to 861 Elixir links. These numbers are outcomes, not targets: they fall out of the depth rules below when applied to a fine-grained topic. Three tripwires convert them into checks that work for any subsystem: a finished fine-grained page below the smallest sample page (1,468 lines); a page with fewer fenced ` ```c ` blocks than LINUX KERNEL catalog entries (conforming pages measure 1.03 to 1.47 blocks per entry, because every symbol needs a definition and a usage excerpt; a deficient derived page measured 0.73); and a catalog that shrank across a rewrite without reported cuts. Any tripped wire forces the Gate B parity audit (item 1; `guidelines/gates/gate-b.md`) and, for a derived page, the 7p disposition list before the page can be called done. The fix for a tripped page is completing coverage per 7j and Gate B, or cutting scope explicitly per 7p; it is never padding prose and never silent thinning. There is no length ceiling; a page ends when coverage is complete, not at a line count.
+Across the thirteen pages of the campaign that produced them, the per-page ranges were 1,468 to 3,270 lines, 46 to 141 code blocks, and 357 to 861 Elixir links. These numbers are outcomes, not targets, and no size number is a criterion in either direction: a page ends when coverage is complete, and a conforming page on a genuinely narrow mechanism can measure below every range above.
+
+The criteria are coverage-shaped. Three tripwires convert the depth rules below into checks that work for any subsystem:
+
+- Blocks per catalog entry below 1.0: fewer fenced ` ```c ` blocks than LINUX KERNEL catalog entries means unpaired symbols, because every symbol needs a definition and a usage excerpt (conforming pages measure 1.03 to 1.47 blocks per entry; a deficient derived page measured 0.73).
+- Catalog coverage of scope (fill-or-descope): every anchor symbol in the page's catalog-row scope statement and every symbol recorded in the dossier's SYMBOLS section is either cataloged or explicitly de-scoped in the writer's report, with the reason. This is the wire the ratio cannot trip: a writer who catalogs twelve symbols on a topic whose scope holds forty scores a clean ratio on a thin page, and only the scope comparison catches it. In a verify campaign the page-table check inventory carries the expected population (`guidelines/passes/04-verify.md`).
+- A catalog that shrank across a rewrite without reported cuts (7p).
+
+Any tripped wire forces the Gate B parity audit (item 1; `guidelines/rules/3b-gate-b.md`) and, for a derived page, the 7p disposition list before the page can be called done. The fix for a tripped page is completing coverage per 7j and Gate B, or cutting scope explicitly per 7p and fill-or-descope; it is never padding prose and never silent thinning.
 
 The depth rules that produce those numbers:
 

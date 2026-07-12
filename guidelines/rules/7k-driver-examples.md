@@ -1,6 +1,6 @@
 # 7k. Driver examples (mandatory)
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
 When a page illustrates a behavior with a concrete driver, both the choice of driver and the way the page keeps that example self-contained matter.
 

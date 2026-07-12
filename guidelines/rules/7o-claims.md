@@ -1,6 +1,6 @@
 # 7o. Behavioral-claim verification (mandatory)
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
 A page is a set of claims about kernel behavior, and each claim class below has a named audit action. The style and linking rules make a page readable and navigable; these actions are what make it true. Perform them while writing, and re-perform them whenever reviewing, enhancing, or reusing a page, because they catch the class of error that reads correctly, links correctly, and survives every mechanical check.
 

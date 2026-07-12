@@ -1,6 +1,6 @@
 # 7c. Forbidden phrases checklist
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
 Before writing any body paragraph, scan for these patterns and rewrite if any appear:
 

@@ -1,7 +1,7 @@
 # 7l. Code-block provenance comments (mandatory)
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
 Every fenced ` ```c ` block opens with a provenance comment naming the on-disk origin of the excerpt, in the exact form `/* path/from/tree/root.c:LINE */` on its own first line, where LINE is the number of the first reproduced line in the file at the documented version. A short annotation may follow the line number inside the comment (`/* mm/vma.c:497 (in __split_vma()) */`). A block that stitches excerpts from several places (a caller plus its callee, two case labels far apart, a struct field plus the helper that writes it) marks each excerpt's start with its own interior `/* path:line */` delimiter line, and marks elided code inside an excerpt with a standalone `...` line. Everything between delimiters is verbatim file content per 7e (tabs preserved, comments retained, no reflowed lines).
 
-The provenance comment is what makes a page checkable. A reviewer opens the named file at the cited line and compares the unit directly (see `guidelines/gates/mechanical-checks.md`), so a missing or wrong provenance line turns an on-disk match into a finding, and a silently drifted excerpt is caught on the first comparison. Non-code fenced blocks (ASCII figures, quoted commit-message tables, shell output) carry no provenance comment and are not diffed.
+The provenance comment is what makes a page checkable. A reviewer opens the named file at the cited line and compares the unit directly (see `guidelines/rules/3c-mechanical-checks.md`), so a missing or wrong provenance line turns an on-disk match into a finding, and a silently drifted excerpt is caught on the first comparison. Non-code fenced blocks (ASCII figures, quoted commit-message tables, shell output) carry no provenance comment and are not diffed.

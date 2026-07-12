@@ -1,8 +1,8 @@
 # Draft-versus-page contrast
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
-`guidelines/samples/draft-original-vma-overview.md` is an earlier-generation draft of the same topic as `guidelines/samples/page-enhanced-vma-overview.md`; the sample page was rebuilt from it. The pair is kept in `guidelines/samples/` so the gap between a plausible draft and a page meeting this standard stays concrete and measurable:
+`guidelines/reference/samples/draft-original-vma-overview.md` is an earlier-generation draft of the same topic as `guidelines/reference/samples/page-enhanced-vma-overview.md`; the sample page was rebuilt from it. The pair is kept in `guidelines/reference/samples/` so the gap between a plausible draft and a page meeting this standard stays concrete and measurable (the size rows are descriptive, never criteria; the criteria are the coverage-shaped tripwires in `guidelines/reference/measured-criteria.md`):
 
 | measure | draft | page |
 |---|---|---|

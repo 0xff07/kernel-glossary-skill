@@ -6,21 +6,21 @@ Outputs: the resolved subsystem entry (tag, dir, kernel_paths, spec, section6_he
 Run by: single-agent mode inline, as the first pass; in a campaign the orchestrator resolves these once per page into the writer brief, and the writer re-reads this file for the samples doctrine.
 Next: pass 01 (`guidelines/passes/01-research.md`).
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
 ## Read the template and the samples
 
-Before generating any content, read `guidelines/templates/TEMPLATE-FULL.md` (relative to `${CLAUDE_SKILL_DIR}`) for the page structure and section order.
+Before generating any content, read `guidelines/reference/TEMPLATE-FULL.md` (relative to `${CLAUDE_SKILL_DIR}`) for the page structure and section order.
 
-Then read the samples under `${CLAUDE_SKILL_DIR}/guidelines/samples/`. These are frozen copies of real pages that met every gate (`guidelines/gates/`) with zero findings under the mechanical checks; they are the concrete standard for structure, prose, diagram style, code-citation density, and depth of coverage. Open the one or two whose archetype most resembles the page about to be written and read them in full before writing:
+Then read the samples under `${CLAUDE_SKILL_DIR}/guidelines/reference/samples/`. These are frozen copies of real pages that met every gate (Gate A and Gate B, mapped in `guidelines/rules/INDEX.md`) with zero findings under the mechanical checks; they are the concrete standard for structure, prose, diagram style, code-citation density, and depth of coverage. Open the one or two whose archetype most resembles the page about to be written and read them in full before writing:
 
-- structure-tour pages (one central struct documented field group by field group, with its accessor and lifecycle catalog): `guidelines/samples/page-overview-mm-struct.md`
-- lifecycle / refcount / locking-protocol pages: `guidelines/samples/page-lifecycle-mm-refcount.md` (also the smallest acceptable depth for a fine-grained page)
-- encoding / bitfield / flag-layout pages (including register-figure style): `guidelines/samples/page-encoding-pgtable-entries.md`
-- pages rebuilt from earlier drafts: `guidelines/samples/page-enhanced-vma-overview.md`, read side by side with the counterexample below
-- `guidelines/samples/draft-original-vma-overview.md` is a COUNTEREXAMPLE, the stale draft the enhanced page was rebuilt from. Do not imitate it. It is kept so the measurable difference between a plausible draft and a page meeting this standard stays visible (see `guidelines/reference/draft-contrast.md`).
+- structure-tour pages (one central struct documented field group by field group, with its accessor and lifecycle catalog): `guidelines/reference/samples/page-overview-mm-struct.md`
+- lifecycle / refcount / locking-protocol pages: `guidelines/reference/samples/page-lifecycle-mm-refcount.md` (also the smallest acceptable depth for a fine-grained page)
+- encoding / bitfield / flag-layout pages (including register-figure style): `guidelines/reference/samples/page-encoding-pgtable-entries.md`
+- pages rebuilt from earlier drafts: `guidelines/reference/samples/page-enhanced-vma-overview.md`, read side by side with the counterexample below
+- `guidelines/reference/samples/draft-original-vma-overview.md` is a COUNTEREXAMPLE, the stale draft the enhanced page was rebuilt from. Do not imitate it. It is kept so the measurable difference between a plausible draft and a page meeting this standard stays visible (see `guidelines/reference/draft-contrast.md`).
 
-If no archetype matches, pick the structurally closest sample page anyway. Do not calibrate against pages elsewhere under `docs/`; they may predate the current rules. Where a sample and a rule in this skill disagree (a sample can predate a later rule), the rules under `guidelines/rules/` and `guidelines/diagrams/` govern; samples are calibration, not license. Samples calibrate form only, never facts: a sample documents its own tree at its own version, and a sample page has carried a false claim found only by a later audit (see `guidelines/reference/draft-contrast.md`). Take zero kernel facts, line numbers, or excerpts from a sample into the page being written; research every fact against the documented tree.
+If no archetype matches, pick the structurally closest sample page anyway. Do not calibrate against pages elsewhere under `docs/`; they may predate the current rules. Where a sample and a rule in this skill disagree (a sample can predate a later rule), the rules under `guidelines/rules/` govern; samples are calibration, not license. Samples calibrate form only, never facts: a sample documents its own tree at its own version, and a sample page has carried a false claim found only by a later audit (see `guidelines/reference/draft-contrast.md`). Take zero kernel facts, line numbers, or excerpts from a sample into the page being written; research every fact against the documented tree.
 
 ## Determine subsystem and output path
 
@@ -38,4 +38,4 @@ If the output directory does not exist, create it.
 
 ## Create the run workspace
 
-For a run outside a campaign, choose the run's short name and create its artifact directory `progress/<campaign>/` now, per `guidelines/campaign/progress-layout.md` (a campaign created its workspace at planning; the writer brief carries the path). Record the name in the dossier HEADER. Existing `progress/` entries belong to other runs: list their names only for the collision check, and read nothing inside them.
+For a run outside a campaign, choose the run's short name and create its artifact directory `progress/<campaign>/` now, per SKILL.md ("The progress/ workspace") (a campaign created its workspace at planning; the writer brief carries the path). Record the name in the dossier HEADER. Existing `progress/` entries belong to other runs: list their names only for the collision check, and read nothing inside them.

@@ -1,6 +1,6 @@
 # 7q. Rephrase recipes (quick reference)
 
-Rule IDs (7, 7a-7r) resolve via `guidelines/rules/INDEX.md`; 7g-7i live under `guidelines/diagrams/`.
+Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
 
 Every ban has a one-line recipe; apply the recipe instead of re-deriving compliant phrasing per hit. The full rules with worked examples are 7 through 7d (`guidelines/rules/INDEX.md` maps each ID to its file); this table is the lookup.
 
