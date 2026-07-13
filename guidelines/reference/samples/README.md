@@ -1,6 +1,6 @@
 # Samples
 
-This directory holds frozen copies of exemplar pages for the kernel-glossary skill. SKILL.md refers to example pages only by their `guidelines/reference/samples/` path, so these files stay findable even after the subsystem directory hierarchy under `docs/` is reorganized. The copies are snapshots taken from the memory-management campaign (kernel v7.0); the live pages under `docs/mm/` may evolve independently.
+This directory holds frozen copies of exemplar pages for the kernel-glossary skill. SKILL.md refers to example pages only by their `guidelines/reference/samples/` path, so these files stay findable even after the subsystem directory hierarchy under `docs/` is reorganized. The page and draft copies are snapshots taken from the memory-management campaign and the plan copy from the DRM/KMS campaign (both at kernel v7.0); the live files they were copied from may evolve or move independently.
 
 Files prefixed `page-` are sample pages: each met every gate (Gate A and Gate B, mapped in `guidelines/rules/INDEX.md`), verified link-by-link and excerpt-by-excerpt against its kernel tree with zero findings. They are the standard to calibrate against when writing any new page, for any subsystem.
 
@@ -11,7 +11,7 @@ Files prefixed `page-` are sample pages: each met every gate (Gate A and Gate B,
 
 The file prefixed `plan-` is a planning artifact, and page gates do not apply to it.
 
-- `plan-mm-campaign.md` is the plan file of the campaign that produced the pages above: the request's constraints, per-area inventory digests, the 87-row page catalog with requested/curated tags, fold-in adjudications, overlap boundary rules with seam symbols, batch orders (current and superseded), and dated user amendments. Its Status section is deliberately reduced to generic entry shapes with placeholders, so the example shows the form a living execution log takes without tying the sample to any one run. It is the worked example for `guidelines/passes/plan.md` (the planning methodology and the plan file's structure).
+- `plan-drm-campaign.md` is the plan file of the DRM/KMS campaign (77-row catalog across ten groups): the request's verbatim constraints, stale-session and draft-corpus input adjudications, six per-area inventory digests (each carrying the campaign-delta seventh tracepoints item and recorded negative findings), the page catalog with requested/curated tags, fold-in and fold-out adjudications, fifteen overlap boundary rules with seam symbols, a cross-subsystem boundary statement, the batch order with its amendment trail, the adversarial review outcome with per-amendment dispositions, a dated pipeline amendment to the redesigned writer→fixer flow, and a draft reuse map downgraded to reference by a recorded user decision. Its Status section is deliberately reduced to generic entry shapes with placeholders, so the example shows the form a living execution log takes without tying the sample to any one run. A few guideline-path references inside it predate the current guidelines layout; where the sample and a current rule or path disagree, the rule governs. It is the worked example for `guidelines/passes/plan.md` (the planning methodology and the plan file's structure).
 
 The file prefixed `draft-` is a counterexample and must not be imitated.
 
