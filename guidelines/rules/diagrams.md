@@ -1,10 +1,168 @@
-# 7i. Other ASCII diagram patterns
+# Diagram rules
 
-Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
+The ASCII-figure rules and their figure catalogs. Read when a page will carry a figure; a page with no figure needs none of this. Rule IDs are stable and never renumber; `INDEX.md` maps every ID to its section here.
+
+## 7g. General ASCII diagram principles (mandatory)
+
+Only include an ASCII diagram when it conveys a spatial or temporal relationship that prose cannot express efficiently. A diagram earns its place when it shows physical layout, parallel structure across multiple lanes, a non-linear graph, an address space, a bit field, a ring/queue with head and tail pointers, or two views of the same data side by side. Concrete examples that justify a diagram include the GPE register block mapped to its per-bit event_info slots, the buddy allocator's per-order freelist columns, a doorbell BAR partitioned across IPs, or a tree of devices with parent/child arrows.
+
+Do not draw a diagram for a simple linear sequence of function calls, a top-down call chain, a state machine with two states, or any flow that reads naturally as a paragraph or as a fenced code block of pseudocode. "Function A calls B which calls C" is prose, not a diagram. A single arrow chain in a box is not a diagram. If a reader would understand the same content faster from one sentence of declarative prose, write the sentence and delete the diagram.
+
+When a diagram is used, follow the style established in the sample pages (for example the page-table-entry bit layouts and slot-map figures in `guidelines/reference/samples/page-encoding-pgtable-entries.md`) and the reference figures in 7h and 7i (`guidelines/rules/7h-register-bitfield.md`, `guidelines/rules/7i-patterns.md`). Use Unicode box-drawing characters (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼`) and `▼ ▲ ◀ ▶` for arrows. Title each sub-diagram with a short heading underlined by a `────` rule. Multiple sub-diagrams may share one fenced block when each has its own titled section. Indent the whole figure 4 spaces inside the fenced block so it reads as a figure, not as text. Keep every line under 80 columns so the figure renders without wrapping in plain-text views.
+
+Pure ASCII `\`, `/`, and `|` are never used as box-drawing or connector characters. The `/` and `|` characters are acceptable inside the figure only as English word separators ("ROOT_PORT / DOWNSTREAM"), as C bitwise expressions (`LBMS | LABS`), or inside reproduced kernel source. All box sides, corners, junctions, and arrows are Unicode.
+
+Diagram annotations (legends, per-bit meanings, code-like pseudocode lines, comments below the figure) live inside the same fenced block as the figure. The forbidden-phrase rules from 7a/7c/7d do not apply to text inside fenced code blocks, including ASCII figure blocks, but the prose surrounding the figure outside the fence still does.
+
+## 7h. Register and bitfield figures (mandatory)
+
+A figure that plots a register, a bitfield, a TRB, a context, a packet header, or another bit-field structure follows the rules and reference figures in this section, on top of the general diagram rules in 7g (`guidelines/rules/7g-principles.md`). It is drawn in one of two named styles, the DWORD-grid style and the L-connector style, chosen by the register-versus-structure test below.
+
+Two things decide how to label the bits, and the two resulting styles have names used throughout this skill. The DWORD-grid style writes each field name inside its cell and stacks the DWORDs as `DW0`, `DW1`, ... rows; the L-connector style draws a single row of one-character cells and calls out each bit's name below on an L-shaped leader.
+
+A register is one value at one address; if it is wider than a DWORD the split is only display width, and all its bits are one field set. A structure is several separate words at successive DWORD offsets, each its own named unit. Quick test: is the thing one value, or several separate words? A register is one value (even a 64-bit register is a single 64-bit number), so all its bits sit on one ruler; a structure is several separate words, so each keeps its own row. Registers include EC_SC, the PCI Command and Status words, a USB4 ADP_CS_x register, a 64-bit MSI address, and an encoded-pointer-plus-flags word; structures include an xHCI TRB, a context, a descriptor, and a TLP or TCP header.
+
+The L-connector style is for registers only. Reach for it when a register is mostly single-bit fields whose names will not fit inside one-character cells: give each bit a one-character cell, then run a dashed L-connector from each named bit's column out to its constant, stacking the labels so each elbow lands on its own trunk (reserved bits get no trunk), with a legend mapping each cell to its constant and value. A register drawn this way is a single row of all its bits, whatever its width — a 64-bit register is one wide row, not two stacked DWORDs. When the upper bits of a wide register are a single uniform field (an encoded pointer above its low flags), you may instead draw just the DWORD that carries the interesting fields and note that the upper bits continue that field.
+
+The DWORD-grid style is for everything else: a structure, or a register whose field names fit in the cells. Keep the names inside the cells and stack the DWORDs as `DW0`, `DW1`, ... rows; the L-connector style does not apply to structures.
+
+This governs a figure whose primary subject is the bit-layout. A bit-strip that is one element of a larger structural figure (a flag nibble inside a struct box, a bitmap strip in a pointer-topology diagram) follows the host figure's style, not the register rules here.
+
+Rules:
+
+- Header rows give the bit index from the high bit down to 0, one bit per two-column slot. Use two rows (a tens-digit row, then a ones-digit row) whenever any index reaches two digits, and one row when every index is a single digit (a byte, or any field set within bits 0 to 9). Reuse the exact ruler and the full per-bit `┌─┬...─┐` top border so every cell stays aligned.
+- Stack the dwords as rows, each labelled `DW0`, `DW1`, ... in a left gutter (the label sits at column 4 and the box left border at column 10). Use `├──┬──┼──┴──┤` divider rows to transition between the differing field layouts of one dword and the next.
+- Each field cell carries the field name, and on a second line for a multi-bit field its `(hi:lo)` bit range, centred in the cell. A single-bit field uses a one-character cell (for example `E` or `R`); when many single-bit fields crowd one register, label each with an L-connector beneath the figure instead (see the single-bit-field example below).
+- Box-drawing is Unicode only (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼`). Never use ASCII `\`, `/`, or `|` as connectors. Keep every line under 80 columns, except a register drawn as a single row with L-connectors, which may run wider when its bit count requires it (a 64-bit register is roughly 130 columns).
+- Add a legend beneath the figure mapping each field to its kernel macro and, where relevant, the cached struct field, as `NAME = MACRO (meaning)`.
+- Verify before saving: every content-row `│` lands on a `┬` or `┴` junction of the border rows above and below it.
+
+For a register that is a single dword, draw just the ruler, the `┌─┬...─┐` top border, one `DW0` content row (field names plus `(hi:lo)` ranges), and the bottom border, then the legend. Use the two-row numbered ruler whenever any bit index reaches two digits; a register whose highest bit index is a single digit may use one header row, as the figure below does.
+
+Draw a figure to scale by default: a complete per-bit numbered ruler, cells in proportion to their bit width, every `(hi:lo)` an exact number. Draw to scale whenever every boundary is a fixed number, because the ruler pins each bit and a reader reads positions straight off it.
+
+When a boundary is not a fixed number — it varies by implementation or mode (the x86-64 PTE address field that ends at MAXPHYADDR), or the figure is a generic pattern where exact positions would be fake precision — draw it schematic instead. Label only the boundaries that matter (the high bit, each variable boundary by name such as `N` or `M`, and the low fixed bits), join the gaps with `...`, and size each cell for its label rather than to scale. Schematic trades exact-position readability for the ability to show a boundary that has no fixed value, so use it only as the fallback. This choice is independent of DWORD-grid versus L-connector: either style can be drawn either way (the PTE figure below is a schematic DWORD-grid register, and the worked example shows the same packed register both to scale and schematic).
+
+Reference figure (a structure, drawn as stacked DWORDs — the DWORD-grid style):
+
+```
+    bit    3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
+           1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+          ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+    DW0   │       device_id (31:16)       │       vendor_id (15:0)        │
+          ├───────────────┬─┬─────┬───────┴───┬───────────┬───────────────┤
+    DW1   │   revision    │R│depth│ max_port  │ upstream  │  cap_offset   │
+          │    (31:24)    │ │22:20│  (19:14)  │  (13:8)   │     (7:0)     │
+          ├───────────────┴─┴─────┴───────────┴───────────┴───────────────┤
+    DW2   │                       route_lo (31:0)                         │
+          ├─┬─────────────────────────────────────────────────────────────┤
+    DW3   │E│                      route_hi (30:0)                        │
+          ├─┴─────────────┬───────────────┬───────────────┬───────────────┤
+    DW4   │  tb_version   │   __unknown4  │     cmuv      │ plug_ev_delay │
+          │    (31:24)    │    (23:16)    │    (15:8)     │     (7:0)     │
+          └───────────────┴───────────────┴───────────────┴───────────────┘
+```
+
+Reference figure (a register of many single-bit fields — the L-connector style):
+
+```
+    bit    7 6 5 4 3 2 1 0
+          ┌─┬─┬─┬─┬─┬─┬─┬─┐
+    DW0   │·│M│S│B│C│·│I│O│
+          └─┴─┴─┴─┴─┴─┴─┴─┘
+             │ │ │ │   │ │
+    SMI_EVT ─┘ │ │ │   │ │
+    SCI_EVT ───┘ │ │   │ │
+      BURST ─────┘ │   │ │
+        CMD ───────┘   │ │
+        IBF ───────────┘ │
+        OBF ─────────────┘
+
+    OBF = ACPI_EC_FLAG_OBF (0x01)      IBF = ACPI_EC_FLAG_IBF (0x02)
+    CMD = ACPI_EC_FLAG_CMD (0x08)      BURST = ACPI_EC_FLAG_BURST (0x10)
+    SCI_EVT = ACPI_EC_FLAG_SCI (0x20)  SMI_EVT = 0x40 (firmware, no macro)
+    bits 2 and 7 reserved (read 0)
+```
+
+Reference figure (a DWORD-grid register, schematic — the address field ends at the variable MAXPHYADDR):
+
+```
+    x86-64 4-KByte-page table entry (PTE)
+    ─────────────────────────────────────────
+    (schematic; M = MAXPHYADDR, the boundary varies by CPU)
+
+     63   62           52 51          M M-1              12 11          0
+    ┌────┬───────────────┬─────────────┬───────────────────┬─────────────┐
+    │ XD │  ignored/MPK  │  reserved   │ physical address  │    flags    │
+    │(63)│    (62:52)    │  (51:M, 0)  │     (M-1:12)      │   (11:0)    │
+    └────┴───────────────┴─────────────┴───────────────────┴─────────────┘
+
+    M = MAXPHYADDR (physical-address width: 36, 39, 46, or 52)
+    flags (8:0): P(0) R/W(1) U/S(2) PWT(3) PCD(4) A(5) D(6) PAT(7) G(8)
+    available (11:9): AVL;  reserved bits (51:M) are 0
+    the address field high bit moves with M
+```
+
+### Worked example: compound packed field (encoded pointer with status flags)
+
+Use when a single struct field is a packed `unsigned long` (or similar word) that combines an encoded pointer to another struct with multiple status flag bits in the low bits, and the page needs to show both halves at once with the decode formula visible. This is common when the kernel reuses alignment-guaranteed low bits of a pointer to encode metadata; the figure shows the bit positions, the per-bit flag constants, and the formula that extracts the embedded pointer.
+
+Draw it in the L-connector style: a single row of the register's bits under the per-bit numbered ruler and a full per-bit `┌─┬...─┐` top border. The encoded pointer and any intermediate field (NID, type) are range cells carrying a name and `(hi:lo)` range; each status flag in the low bits is a one-character cell (`D`, `C`, `B`, `A`) named by an L-connector below. Because the upper bits of this 64-bit register are all pointer, draw just the low dword and note in the heading that the upper bits continue the pointer, rather than a 130-column full row. The total width of the top border, content row, and bottom border must match, and every content-row `│` lands on a `┬`/`┴` junction.
+
+Below the bottom border, drop a vertical trunk (`│`) from each flag bit's column (under its `D`, `C`, `B`, `A` cell). Connect each trunk to its constant name with an L-shaped corner (`────┘`); the constant labels stack as a left-aligned column on the left and the dashes lengthen from line to line so each elbow lands on its trunk. The leftmost (highest-numbered) flag's trunk gets the shortest dashed line; the rightmost (lowest-numbered) flag's trunk gets the longest.
+
+Close the figure with a multi-line pseudocode block showing the decode formula (`Pointer = field & FIELD_PTR_MASK`, `= real_pointer - base_index(slot)`) and a parenthetical note explaining any bias or invariant.
+
+Use the L-connector style when the flag constants are too long to sit inside one-character cells several across, as here; the connectors keep each flag one bit wide while still naming it, and leave room for the decode formula beneath. Reach for this pattern when the packed field is the entry point into another struct (pointer encoding), where the decode formula matters, not when the field is a plain status register.
+
+```
+    struct outer_t.packed_field (encoded pointer + status flags)
+    ────────────────────────────────────────────────────────────
+    (illustrative; bits 63:32 continue the pointer, low dword shown)
+
+    bit    3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
+           1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+          ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+    DW0   │          encoded pointer (31:10)          │ NID (9:4) │D│C│B│A│
+          └───────────────────────────────────────────┴───────────┴─┴─┴─┴─┘
+                                                                   │ │ │ │
+                             FLAG_NAME_D ──────────────────────────┘ │ │ │
+                             FLAG_NAME_C ────────────────────────────┘ │ │
+                             FLAG_NAME_B ──────────────────────────────┘ │
+                             FLAG_NAME_A ────────────────────────────────┘
+
+    Pointer = packed_field & FIELD_PTR_MASK   (mask = bits 63:10)
+            = real_pointer - base_index(slot)
+    (biased so that pointer + idx yields the correct struct target)
+```
+
+The figure above is drawn to scale, with concrete bit boundaries. This pattern is a generic illustration, though, so the boundary between the pointer and the flags is not really a fixed bit. When the boundaries are generic or vary (by implementation or mode), draw it schematic instead: name the variable boundary `N`, elide the middle with `...`, and size cells for their labels rather than to scale, as the to-scale-versus-schematic policy above describes. The schematic version of the same figure:
+
+```
+    struct outer_t.packed_field (encoded pointer + status flags)
+    ────────────────────────────────────────────────────────────
+    (schematic; the pointer occupies bits 63:N, and N varies)
+
+     63                                N      ...   3   2   1   0
+    ┌─────────────────────────────────┬─────┬─────┬───┬───┬───┬───┐
+    │ encoded struct target * pointer │ NID │ ... │ D │ C │ B │ A │
+    └─────────────────────────────────┴─────┴─────┴───┴───┴───┴───┘
+                                                    │   │   │   │
+                                  FLAG_NAME_D ──────┘   │   │   │
+                                  FLAG_NAME_C ──────────┘   │   │
+                                  FLAG_NAME_B ──────────────┘   │
+                                  FLAG_NAME_A ──────────────────┘
+
+    Pointer = packed_field & FIELD_PTR_MASK   (mask = bits 63:N)
+            = real_pointer - base_index(slot)
+    (biased so that pointer + idx yields the correct struct target)
+```
+
+## 7i. Other ASCII diagram patterns
 
 When a diagram is justified, prefer one of the named patterns below. Each pattern has a use case and a shape; copying the shape and substituting names is usually enough to produce a clean figure. Reach for a new shape only when none of these fits the spatial relationship in question.
 
-## Use-case index
+### Use-case index
 
 | pattern | reach for it when |
 |---|---|
@@ -28,7 +186,7 @@ When a diagram is justified, prefer one of the named patterns below. Each patter
 | cyclic ring buffer with position pointers | two pointers chase each other around one wrapping buffer |
 | frame / bandwidth partition grid | one frame of a shared medium divides into slots claimed by entities |
 
-## Pattern: parent + N children fan-out
+### Pattern: parent + N children fan-out
 
 Use when one parent object spawns multiple typed child objects on a different bus / queue / map / list, and the children's identity comes from a field inside the parent. Draw the parent as a wide top box with field-level content, then N children in a row underneath, joined by a single trunk that splits into N branches.
 
@@ -46,7 +204,7 @@ Use when one parent object spawns multiple typed child objects on a different bu
          └────────┘ └────────┘ └────────┘ └────────┘ └────────┘
 ```
 
-## Pattern: sparse slot map with conditional backing
+### Pattern: sparse slot map with conditional backing
 
 Use when an address space, slot table, or fixed-size index set is divided into uniformly-sized regions and each region may or may not have a backing data structure allocated for it. The figure shows which regions are present (have backing) and which are holes (no backing), with the lookup formulas below. Reach for it when the page needs to convey that the lookup is a direct dereference but the backing array is sparse and only allocated for populated slots.
 
@@ -85,7 +243,7 @@ This pattern differs from `parent + N children fan-out` (one parent allocating a
          (base is a virtually contiguous array; only populated slots are mapped)
 ```
 
-## Pattern: truth table (input bits → output)
+### Pattern: truth table (input bits → output)
 
 Use when a function's return value or the chosen branch is a deterministic function of a small number of input bits. Lay out the inputs as boxed columns on the left and the action / return on the right; one row per distinct input pattern. The handler's sequential flow (read, clear, return) lives in prose outside the diagram, not as additional arrows inside it.
 
@@ -98,7 +256,7 @@ Use when a function's return value or the chosen branch is a deterministic funct
        └───────┴─────────┴───────────────────┘
 ```
 
-## Pattern: boxed flowchart with decision nodes
+### Pattern: boxed flowchart with decision nodes
 
 Use when a function has 3+ sequential decision points with side effects and back-edges, and showing each step in its own box adds clarity. Each step gets its own box; each decision node has explicit yes / no labels on outgoing edges; loops draw an explicit back-edge with an arrow. Reserve this for paths with real branching; a 2-state decision should be written as prose instead.
 
@@ -126,7 +284,7 @@ Use when a function has 3+ sequential decision points with side effects and back
        break ─▶ release lock, return
 ```
 
-## Pattern: side-by-side struct comparison
+### Pattern: side-by-side struct comparison
 
 Use when two related types interact via a third operation (match function, encode / decode pair, pack / unpack helpers). Show both struct definitions as boxes side by side with the operation drawn underneath as the convergence point.
 
@@ -146,7 +304,7 @@ Use when two related types interact via a third operation (match function, encod
                          AND (rhs.field_y == ANY || ...)
 ```
 
-## Pattern: linked structs via field-level pointers
+### Pattern: linked structs via field-level pointers
 
 Use when several related structs and arrays connect via pointer fields, encoded pointers, or per-cell bitmap pointers, and the relationship between them is the field-level pointer topology itself. Each struct is drawn as a labeled box: the struct name (with `struct` keyword) sits on a borderless heading line above the box, and field names are listed inside the box one per line with optional type or comment in parentheses. Fields with internal structure (bit-packed words, embedded arrays, fixed bitmaps) get drawn as nested cell strips inside the outer box.
 
@@ -204,7 +362,7 @@ This pattern differs from `parent + N children fan-out` (which shows allocation 
          D = FLAG_NAME_D  (bit 3, early-init)
 ```
 
-## Pattern: N-to-M source/destination mapping
+### Pattern: N-to-M source/destination mapping
 
 Use when several disjoint inputs feed a single tabular destination, with some inputs feeding multiple rows of the destination. Sources go in a column on the left; the destination is a stacked box on the right; arrows cross the gap. Annotation that would otherwise hang off the right edge of the destination box belongs as prose below the figure, not as right-aligned brackets, so the figure stays under 80 columns.
 
@@ -223,7 +381,7 @@ Use when several disjoint inputs feed a single tabular destination, with some in
          file path / spec §         └─────────────────────┘
 ```
 
-## Pattern: queue / ring between two stages
+### Pattern: queue / ring between two stages
 
 Use when a producer and a consumer communicate through a bounded buffer (kfifo, work_struct, list_head ring). Show the buffer as a row of cells in the middle; the two stages flank it; arrows label the put / get operations.
 
@@ -240,7 +398,7 @@ Use when a producer and a consumer communicate through a bounded buffer (kfifo, 
 
 The remaining patterns are each shown with an example figure; copy the shape and relabel it for the subsystem at hand.
 
-## Pattern: data dependency (inputs feed a transform)
+### Pattern: data dependency (inputs feed a transform)
 
 Use when one or more source structs are read by a function that builds or populates a destination struct, and the point is which inputs feed which output (assembling a config, intersecting capabilities, encoding a message). Draw the input struct boxes at the top, the transform function as the labelled junction beneath them, and the produced struct below; the arrows mean feeds / populates / points-to, never call order. The figure is a valid data-dependency picture only because its endpoints are structs: a figure whose nodes are all functions joined by call arrows is the banned code-flow chart. Complements the linked-structs-via-pointers pattern, which shows structs already wired by their fields.
 
@@ -267,7 +425,7 @@ Use when one or more source structs are read by a function that builds or popula
                           ─▶ -EINVAL  "No matching ..."
 ```
 
-## Pattern: signal-timing / waveform
+### Pattern: signal-timing / waveform
 
 Use when the point is where a data bit or sample lands in time relative to a clock or frame edge (a serial-bus frame, a strobe, a sampling instant). Draw each wire as a square-wave trace built from ─ levels and ┌ ┐ └ ┘ │ edges, one trace per line, with a vertical reference column (▼ and │) marking the frame edge so the offset reads straight off the grid; align the data cells under a per-cell clock tick.
 
@@ -288,7 +446,7 @@ Use when the point is where a data bit or sample lands in time relative to a clo
        SD            │MSB │ b14│ b13│ b12│          the edge (no delay)
 ```
 
-## Pattern: swimlane sequence (actors × time)
+### Pattern: swimlane sequence (actors × time)
 
 Use when several actors (userspace, a core layer, a driver, hardware) hand work to each other over time and the cross-actor ordering is the point. Draw one vertical lane per actor separated by │ columns, time running downward, and a cross-lane ──▶ arrow for each step; annotate each lane with the state it reaches. Distinct from queue/ring (a buffer between two stages): this shows N actors over one timeline.
 
@@ -316,7 +474,7 @@ Use when several actors (userspace, a core layer, a driver, hardware) hand work 
        state RUNNING  │             │               │
 ```
 
-## Pattern: state-transition graph
+### Pattern: state-transition graph
 
 Use when an object moves through named states and the legal transitions (including back-edges and self-loops) are the point. Draw each state as a boxed node and each event as a labelled directed ──▶ edge; draw the back-edges explicitly. Distinct from the boxed decision flowchart, which traces control flow through one function; this traces an object's state across its lifetime.
 
@@ -347,7 +505,7 @@ Use when an object moves through named states and the legal transitions (includi
                        └───────────────────────────┘
 ```
 
-## Pattern: directed graph / DAG
+### Pattern: directed graph / DAG
 
 Use when a multi-node signal or dependency graph has fan-in and fan-out, plus auxiliary nodes (supplies, clocks) that attach to the side rather than carry signal. Draw the signal nodes as boxes joined left-to-right by ──▶ edges, mux fan-in with ─┐/─┘ collectors, and side nodes attached with ◀── or a ▲ stem. More general than parent + N children fan-out (one parent, one level).
 
@@ -369,7 +527,7 @@ Use when a multi-node signal or dependency graph has fan-in and fan-out, plus au
          signal; {"HP",NULL,"PDE 47"} ties the supply to the output pin.
 ```
 
-## Pattern: register / address-offset map
+### Pattern: register / address-offset map
 
 Use when several registers sit at fixed offsets within a block, or one block repeats at base + stride · index, and the addressing is the point (per-stream, per-port, or per-lane blocks). Draw the index ──▶ base-address column on the left, and one representative block expanded as a box of its named registers on the right. Distinct from a single-register bitfield (7h, `guidelines/rules/7h-register-bitfield.md`), which plots the bits of one register.
 
@@ -394,7 +552,7 @@ Use when several registers sit at fixed offsets within a block, or one block rep
                   playback = [capture_streams .. num_streams)
 ```
 
-## Pattern: layered stack / membrane
+### Pattern: layered stack / membrane
 
 Use when the point is how layers stack and where one layer calls through to the next across a named API boundary (userspace / core / driver / firmware-or-hardware). Draw each layer as a full-width box stacked above the next, and label each ▼ divider with the boundary it crosses (the ioctl, the ops vector, the message channel). The boundary labels are the point, not the box contents.
 
@@ -412,7 +570,7 @@ Use when the point is how layers stack and where one layer calls through to the 
                DSP hardware (HDA-gen)            DSP firmware (SOF)
 ```
 
-## Pattern: ordered level ladder
+### Pattern: ordered level ladder
 
 Use when a value moves through a small set of strictly-ordered levels and the travel direction matters (power/bias states, D-states, link states). Draw the levels as rows in numeric order, highest at the top, with ▲ (up) and ▼ (down) markers down the side and the per-step rule. Distinct from a state-transition graph: a ladder is monotonic and totally ordered, traversed one step at a time.
 
@@ -432,7 +590,7 @@ Use when a value moves through a small set of strictly-ordered levels and the tr
          down:  ON  ─▶ PREPARE ─▶ STANDBY ─▶ OFF
 ```
 
-## Pattern: refcount with threshold actions
+### Pattern: refcount with threshold actions
 
 Use when a reference count gates a hardware action only at a threshold crossing (first user enables, last user disables; the 0↔1 edge). Draw a small table or column of the ++/-- events with each count transition (0 ─▶ 1, 1 ─▶ 2, ...) and, against each, whether it reaches the hardware or is skipped. The point is that only the edge transitions act.
 
@@ -456,7 +614,7 @@ Use when a reference count gates a hardware action only at a threshold crossing 
        stopper are the only callers that reach the hardware.
 ```
 
-## Pattern: cyclic ring buffer with position pointers
+### Pattern: cyclic ring buffer with position pointers
 
 Use when a single cyclic buffer is split into periods/slots and two pointers (a producer and a consumer, e.g. appl_ptr and hw_ptr) chase each other around it with wrap. Draw the periods as a contiguous row of cells, a ▼ from each pointer onto its cell, and note which span is filled vs free and where the pointers wrap. A specialization of queue/ring for one wrapping buffer with two positions.
 
@@ -479,7 +637,7 @@ Use when a single cyclic buffer is split into periods/slots and two pointers (a 
        both wrap at runtime->boundary; ack op fires when appl_ptr moves
 ```
 
-## Pattern: frame / bandwidth partition grid
+### Pattern: frame / bandwidth partition grid
 
 Use when one frame or period of a shared medium is divided into slots or row/column cells, each claimed by an entity (TDM slots, a bus frame's columns, channel allocations). Draw the frame as a contiguous ┌─┬─┐ strip of equal cells labelled by slot, optionally a second strip showing a wider or narrower division of the same frame. The point is how the fixed bandwidth partitions.
 

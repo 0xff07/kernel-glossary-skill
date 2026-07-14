@@ -1,30 +1,42 @@
-# Writing rules index
+# Rule index
 
-The sample pages under `guidelines/reference/samples/` embody every rule in this directory. The closest-matching sample read in the prep pass (`guidelines/passes/00-prep.md`) is the worked example for a new page; match its structure, diagram style, code-citation density, and depth. The examples in the rule files use ACPI and mm symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem. All generated content must follow these rules.
+Rules are cited by stable ID everywhere in this skill — briefs, lint and verify reports, plan files, journals, and the pass files. **IDs never renumber.** One recorded exception: the gates took IDs 3a-3c in a one-time move from a former `guidelines/gates/` directory, never to be repeated; prose throughout the skill keeps their names — Gate A (3a), Gate B (3b) — alongside the IDs.
 
-Rule IDs are stable identifiers: briefs, lint and verify reports, plan files, and the gates cite rules by ID, and the IDs never renumber. One recorded exception: the gates moved into this directory from a former `guidelines/gates/` directory and took IDs 3a-3c in that one-time move (never to be repeated); prose throughout the skill keeps their names — Gate A (3a), Gate B (3b) — with the IDs for file reference. 7g-7i are the diagram rules; their figure catalogs live inside the rule files.
+Three files hold every rule.
 
-| ID | file | rule |
+| file | holds | who reads it |
 |---|---|---|
-| 3a | `guidelines/rules/3a-gate-a.md` | Gate A: the mechanical grep gate (mandatory) |
-| 3b | `guidelines/rules/3b-gate-b.md` | Gate B: the nine-item review sign-off (mandatory) |
-| 3c | `guidelines/rules/3c-mechanical-checks.md` | The by-hand check procedures both gates use |
-| 7 | `guidelines/rules/7-style-core.md` | Writing rules (mandatory) |
-| 7a | `guidelines/rules/7a-prose-colon.md` | Prose colon idioms (mandatory) |
-| 7b | `guidelines/rules/7b-prose-lists.md` | Prose lists (mandatory) |
-| 7c | `guidelines/rules/7c-forbidden-phrases.md` | Forbidden phrases checklist |
-| 7d | `guidelines/rules/7d-superlatives.md` | Hollow superlatives and unsupported adjectives (mandatory) |
-| 7e | `guidelines/rules/7e-code-citation.md` | Self-contained kernel-source citation (mandatory) |
-| 7f | `guidelines/rules/7f-page-rules.md` | General page rules (mandatory) |
-| 7g | `guidelines/rules/7g-principles.md` | General ASCII diagram principles (mandatory) |
-| 7h | `guidelines/rules/7h-register-bitfield.md` | Register and bitfield figures (mandatory) |
-| 7i | `guidelines/rules/7i-patterns.md` | Other ASCII diagram patterns |
-| 7j | `guidelines/rules/7j-coverage.md` | Behavior and construct coverage (mandatory) |
-| 7k | `guidelines/rules/7k-driver-examples.md` | Driver examples (mandatory) |
-| 7l | `guidelines/rules/7l-provenance.md` | Code-block provenance comments (mandatory) |
-| 7m | `guidelines/rules/7m-linking.md` | Link anchoring and exhaustive span linking (mandatory) |
-| 7n | `guidelines/rules/7n-other-sources.md` | OTHER SOURCES provenance (mandatory) |
-| 7o | `guidelines/rules/7o-claims.md` | Behavioral-claim verification (mandatory) |
-| 7p | `guidelines/rules/7p-derivation.md` | Deriving from an existing page (mandatory) |
-| 7q | `guidelines/rules/7q-rephrase-recipes.md` | Rephrase recipes (quick reference) |
-| 7r | `guidelines/rules/7r-adjudications.md` | Settled adjudications registry (mandatory reading for every brief) |
+| `rules.md` | the writing rules and the gates | everyone |
+| `diagrams.md` | the ASCII-figure rules and their figure catalogs (7g, 7h, 7i) | only an agent whose page will carry a figure |
+| `7r-adjudications.md` | the settled adjudications registry | every agent, first, always |
+
+**Adding a rule touches one file.** A new rule is appended to `rules.md` as a `### <ID>. <Title>` section, unless it is a diagram rule, in which case it goes in `diagrams.md`. Nothing else has to change: no file anywhere carries a rule-range enumeration, and the listing below is a convenience, not an authority — a rule missing from it still resolves by its heading in the file above.
+
+The sample pages under `guidelines/reference/samples/` embody every rule. The closest-matching sample read in the prep pass (`guidelines/passes/00-prep.md`) is the worked example for a new page; match its structure, diagram style, code-citation density, and depth. The examples inside the rule text use ACPI and mm symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem. All generated content must follow these rules.
+
+## Convenience listing
+
+| ID | rule | file |
+|---|---|---|
+| 7 | Writing rules (core) | `rules.md` |
+| 7a | Prose colon idioms | `rules.md` |
+| 7b | Prose lists | `rules.md` |
+| 7c | Forbidden phrases checklist | `rules.md` |
+| 7d | Hollow superlatives and unsupported adjectives | `rules.md` |
+| 7e | Self-contained kernel-source citation | `rules.md` |
+| 7f | General page rules | `rules.md` |
+| 7g | General ASCII diagram principles | `diagrams.md` |
+| 7h | Register and bitfield figures | `diagrams.md` |
+| 7i | Other ASCII diagram patterns | `diagrams.md` |
+| 7j | Behavior and construct coverage | `rules.md` |
+| 7k | Driver examples | `rules.md` |
+| 7l | Code-block provenance comments | `rules.md` |
+| 7m | Link anchoring and exhaustive span linking | `rules.md` |
+| 7n | OTHER SOURCES provenance | `rules.md` |
+| 7o | Behavioral-claim verification | `rules.md` |
+| 7p | Deriving from an existing page | `rules.md` |
+| 7q | Rephrase recipes | `rules.md` |
+| 7r | Settled adjudications registry | `7r-adjudications.md` |
+| 3a | Gate A: the mechanical grep gate | `rules.md` |
+| 3b | Gate B: the nine-item review sign-off | `rules.md` |
+| 3c | The by-hand check procedures both gates use | `rules.md` |

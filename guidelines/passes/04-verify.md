@@ -6,13 +6,13 @@ Outputs: a verify report recording the Gate A and Gate B outcomes — solo: `pro
 Run by: single-agent mode inline, immediately after pass 03 (the same agent runs both gates itself and fixes what it finds). In a campaign this pass is deferred: it runs inside a verify campaign (the section below) per the cadence the user chose at the campaign checkpoint, executed by dispatched find-only verifier agents (briefs at the end of this file) — adjudication and sign-off stay with the verify campaign's orchestrator and are never delegated.
 Next: save per SKILL.md's save and commit policy (solo); the verify campaign's adjudication and fix loop (campaign).
 
-Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
+Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
 ## Procedure (per page)
 
-1. Run Gate B in full (`guidelines/rules/3b-gate-b.md`), performing the named action for each of the nine items and recording the evidence (a count or a list, not "looks fine"). This pass is the pipeline's only independent fact-check: run item 9 deep — re-derive the lead and SUMMARY quantifiers and the page's central counts yourself, with a search basis shaped differently from any basis recorded in the dossier's EVIDENCE section — and audit the parity table independently against the page (item 1); the table and the dossier are hints, never evidence.
-2. Spot re-run the writer's mechanical exit suite (excerpt byte-compares and anchor confirmations per `guidelines/rules/3c-mechanical-checks.md`) and the Gate A greps (`guidelines/rules/3a-gate-a.md`); audit the fixer report's adjudications against the 7r registry (`guidelines/rules/7r-adjudications.md`) and its applied diffs (declared drift fixes must satisfy the byte-match precondition; no other fenced-block change is legitimate).
-3. For a derived page, confirm every 7p cut was reported (and, in a campaign, recorded in the plan file) before the page can be certified (`guidelines/rules/7p-derivation.md`).
+1. Run Gate B in full (`guidelines/rules/rules.md` (3b)), performing the named action for each of the nine items and recording the evidence (a count or a list, not "looks fine"). This pass is the pipeline's only independent fact-check: run item 9 deep — re-derive the lead and SUMMARY quantifiers and the page's central counts yourself, with a search basis shaped differently from any basis recorded in the dossier's EVIDENCE section — and audit the parity table independently against the page (item 1); the table and the dossier are hints, never evidence.
+2. Spot re-run the writer's mechanical exit suite (excerpt byte-compares and anchor confirmations per `guidelines/rules/rules.md` (3c)) and the Gate A greps (`guidelines/rules/rules.md` (3a)); audit the fixer report's adjudications against the 7r registry (`guidelines/rules/7r-adjudications.md`) and its applied diffs (declared drift fixes must satisfy the byte-match precondition; no other fenced-block change is legitimate).
+3. For a derived page, confirm every 7p cut was reported (and, in a campaign, recorded in the plan file) before the page can be certified (`guidelines/rules/rules.md` (7p)).
 4. Findings. Solo: fix and re-check now — the solo agent is the writer, so the facts are in its hands. Verify campaign: record every finding in the report, find-only; the orchestrator adjudicates and routes (settled style and byte-proved drift to a fixer in fix-list mode per `guidelines/passes/03-lint.md`; every factual finding into the delta catalog — a verify campaign never edits facts), then any fixer-touched units are re-checked.
 5. Record the outcome of Gate A and Gate B. Zero unadjudicated findings certifies the page (Status state CERTIFIED, dossier HEADER status `certified` where a dossier exists); any unconfirmable item leaves it uncertified — solo, the page is not written.
 6. Residual false-positive classes are recorded as LESSON entries in the governing plan file and folded into the 7r registry for future briefs.
@@ -62,9 +62,9 @@ MANDATORY READING, in order:
    candidate and every fixer-report audit is judged against it.
 2. <SKILL_DIR>/guidelines/passes/04-verify.md — your procedure (steps
    1-3; you record findings, you do not fix or route them).
-3. <SKILL_DIR>/guidelines/rules/3b-gate-b.md, <SKILL_DIR>/guidelines/rules/3a-gate-a.md,
-   and <SKILL_DIR>/guidelines/rules/3c-mechanical-checks.md — the items and
-   the by-hand procedures.
+3. <SKILL_DIR>/guidelines/rules/rules.md — the writing rules and the
+   gates in one file: Gate B's nine items (3b), Gate A's greps (3a), and
+   the by-hand check procedures both gates use (3c).
 4. <SKILL_DIR>/guidelines/reference/measured-criteria.md — the depth
    tripwires.
 

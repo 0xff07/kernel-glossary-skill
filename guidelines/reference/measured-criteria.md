@@ -1,6 +1,6 @@
 # Samples and measured criteria
 
-Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
+Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
 The sample pages were produced by this workflow and verified link-by-link and excerpt-by-excerpt against their kernel tree with zero findings. Their measured shape is descriptive calibration for what "in-depth, fine-grained" turned out to measure as — context for a writer's expectations, never a criterion:
 
@@ -19,7 +19,7 @@ The criteria are coverage-shaped. Three tripwires convert the depth rules below 
 - Catalog coverage of scope (fill-or-descope): every anchor symbol in the page's catalog-row scope statement and every symbol recorded in the dossier's SYMBOLS section is either cataloged or explicitly de-scoped in the writer's report, with the reason. This is the wire the ratio cannot trip: a writer who catalogs twelve symbols on a topic whose scope holds forty scores a clean ratio on a thin page, and only the scope comparison catches it. In a verify campaign the page-table check inventory carries the expected population (`guidelines/passes/04-verify.md`).
 - A catalog that shrank across a rewrite without reported cuts (7p).
 
-Any tripped wire forces the Gate B parity audit (item 1; `guidelines/rules/3b-gate-b.md`) and, for a derived page, the 7p disposition list before the page can be called done. The fix for a tripped page is completing coverage per 7j and Gate B, or cutting scope explicitly per 7p and fill-or-descope; it is never padding prose and never silent thinning.
+Any tripped wire forces the Gate B parity audit (item 1; `guidelines/rules/rules.md` (3b)) and, for a derived page, the 7p disposition list before the page can be called done. The fix for a tripped page is completing coverage per 7j and Gate B, or cutting scope explicitly per 7p and fill-or-descope; it is never padding prose and never silent thinning.
 
 The depth rules that produce those numbers:
 

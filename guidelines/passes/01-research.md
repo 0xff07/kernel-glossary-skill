@@ -6,7 +6,7 @@ Outputs: the research dossier at `progress/<campaign>/<page-slug>.dossier.md`, i
 Run by: the writer by default (single-agent inline, or the campaign writer agent before composing); a dedicated researcher agent (brief at the end of this file) when a campaign fans research out explicitly.
 Next: pass 02 (`guidelines/passes/02-write.md`).
 
-Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
+Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
 ## Search local kernel source code
 
@@ -33,7 +33,7 @@ If semcode tools are not available (e.g., the MCP server is not running), fall b
 
 Record exact file paths and line numbers for every function, struct, or macro found.
 
-Record every located symbol into the dossier as you go. Elixir URL syntax and anchor selection are governed by rule 7m (`guidelines/rules/7m-linking.md`).
+Record every located symbol into the dossier as you go. Elixir URL syntax and anchor selection are governed by rule 7m (`guidelines/rules/rules.md` (7m)).
 
 ## Identify specifications
 

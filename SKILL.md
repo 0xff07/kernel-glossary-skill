@@ -39,13 +39,13 @@ Everything in this skill lives in one of three top-level directories beside this
 - `docs/` — the knowledge base itself: the generated articles, organized by subsystem.
 - `guidelines/` — all doctrine, split by concern:
   - `guidelines/passes/` — the pipeline, one file per stage (plan, 00-04), each carrying both the procedure and (where a campaign dispatches that stage to a sub-agent) the dispatch brief, plus the dossier spec
-  - `guidelines/rules/` — every stable-ID criterion file: the gates (3a Gate A, 3b Gate B, 3c the by-hand mechanical checks) and the writing rules (7, 7a-7r, including the diagram rules 7g-7i); `INDEX.md` maps every ID
+  - `guidelines/rules/` — every stable-ID criterion, in three files: `rules.md` (the writing rules and the gates — Gate A, Gate B, and the by-hand mechanical checks), `diagrams.md` (the ASCII-figure rules and their figure catalogs, read only when a page carries a figure), and `7r-adjudications.md` (the settled adjudications registry, the mandatory first read for every agent); `INDEX.md` maps every ID to its file
   - `guidelines/reference/` — the Subsystem Map (`subsystems.md`, one entry per subsystem), the measured criteria, the draft-versus-page contrast, the page template (`TEMPLATE-FULL.md`), and the frozen samples with the exemplar campaign plan file (`guidelines/reference/samples/`)
 - `progress/` — per-run workspaces ("The progress/ workspace" below). Progress artifacts are hints and evidence trails; the on-disk kernel tree at the documented version is always ground truth.
 
 All relative paths in this skill resolve against this file's directory, available to the top-level agent as `${CLAUDE_SKILL_DIR}`. Sub-agent briefs carry the absolute skill path instead (a `SKILL_DIR` bracket in every brief template), because sub-agents do not inherit that variable.
 
-Rule IDs (3a-3c, 7, 7a-7r) and Gate B's item numbers (1-9) are stable identifiers: every guideline file cites them by ID, and `guidelines/rules/INDEX.md` maps each ID to its file. The gates keep their prose names — Gate A (3a), Gate B (3b) — alongside the IDs.
+Rule IDs and Gate B's item numbers (1-9) are stable identifiers: every guideline file cites them by ID, and `guidelines/rules/INDEX.md` maps each ID to its file. IDs never renumber, and no file carries a rule-range enumeration, so adding a rule touches only the file that holds it. The gates keep their prose names — Gate A (3a), Gate B (3b) — alongside the IDs.
 
 ## The passes
 
@@ -113,7 +113,9 @@ Entries following neither shape (layouts predating this scheme) are opaque: trea
 
 ## Writing rules and gates
 
-Every criterion is its own rule file, stated once and referenced everywhere: `guidelines/rules/INDEX.md` maps IDs 3a-3c and 7/7a-7r to their files, the diagram rules with their figure catalogs (7g-7i) among them. The gates a page must pass are Gate A (`guidelines/rules/3a-gate-a.md`, the mechanical grep gate), Gate B (`guidelines/rules/3b-gate-b.md`, the nine-item review sign-off, with its ownership/timing split stated in the file), and the by-hand check procedures both gates use (`guidelines/rules/3c-mechanical-checks.md`; there is no checker script). Writers, fixers, and verifiers reference the same rule files, so the criteria cannot diverge between the agent that writes and the agents that check.
+Every criterion is stated once, under a stable ID, and referenced everywhere by that ID; `guidelines/rules/INDEX.md` maps each ID to its file. `guidelines/rules/rules.md` carries the writing rules and the gates together, grouped by who reads them — the prose and style classes a lint pass sweeps, the fact and coverage classes a writer owns, and the gates themselves. `guidelines/rules/diagrams.md` carries the ASCII-figure rules with their figure catalogs (7g-7i), and is read only when a page will carry a figure. `guidelines/rules/7r-adjudications.md` is the settled adjudications registry and is the mandatory first read for every agent.
+
+The gates a page must pass are Gate A (3a, the mechanical grep gate), Gate B (3b, the nine-item review sign-off, with its ownership/timing split stated in the rule), and the by-hand check procedures both gates use (3c; there is no checker script). Writers, fixers, and verifiers read the same rules, so the criteria cannot diverge between the agent that writes and the agents that check.
 
 ## Save and commit policy
 

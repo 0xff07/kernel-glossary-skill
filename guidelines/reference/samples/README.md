@@ -6,7 +6,7 @@ Files prefixed `page-` are sample pages: each met every gate (Gate A and Gate B,
 
 - `page-overview-mm-struct.md` (2,940 lines, 98 code blocks, 861 links, 1 figure) demonstrates the structure-tour archetype, documenting one central struct field group by field group with a full accessor and lifecycle catalog.
 - `page-lifecycle-mm-refcount.md` (1,743 lines, 59 code blocks, 591 links, 1 figure) demonstrates the lifecycle/refcount archetype and the smallest acceptable depth for a fine-grained page.
-- `page-encoding-pgtable-entries.md` (3,024 lines, 141 code blocks, 718 links, 3 figures) demonstrates the encoding/bitfield archetype, including register and bitfield figures drawn to rule 7h (`guidelines/rules/7h-register-bitfield.md`).
+- `page-encoding-pgtable-entries.md` (3,024 lines, 141 code blocks, 718 links, 3 figures) demonstrates the encoding/bitfield archetype, including register and bitfield figures drawn to rule 7h (`guidelines/rules/diagrams.md`).
 - `page-enhanced-vma-overview.md` (2,922 lines, 107 code blocks, 634 links) is a page rebuilt from an earlier-generation draft to the current standard.
 
 The file prefixed `plan-` is a planning artifact, and page gates do not apply to it.

@@ -1,6 +1,6 @@
 # The research dossier
 
-Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
+Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
 The dossier is the durable artifact of the research pass (`guidelines/passes/01-research.md`): everything located for a page, recorded as anchored facts before any prose exists. It exists so that a page's research survives the agent that performed it (an interrupted page resumes from the dossier instead of transcript archaeology or re-research), so that the research and write passes can be run by different agents or in different sessions, and so that the lint and verify passes start their re-derivations from the recorded search bases instead of reconstructing them.
 

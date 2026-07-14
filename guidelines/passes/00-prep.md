@@ -6,7 +6,7 @@ Outputs: the resolved subsystem entry (tag, dir, kernel_paths, spec, section6_he
 Run by: single-agent mode inline, as the first pass; in a campaign the orchestrator resolves these once per page into the writer brief, and the writer re-reads this file for the samples doctrine.
 Next: pass 01 (`guidelines/passes/01-research.md`).
 
-Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
+Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
 ## Read the template and the samples
 

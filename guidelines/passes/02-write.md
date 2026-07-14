@@ -6,18 +6,18 @@ Outputs: the draft page at `docs/<dir>/<topic-slug>.md`; the dossier updated whe
 Run by: single-agent mode inline; in a campaign a dispatched writer agent (brief at the end of this file), on the strongest available model.
 Next: pass 03 (`guidelines/passes/03-lint.md`). A campaign writer finishes this pass by closing the parity table, running the mechanical exit suite below, and persisting its evidence into the dossier — it owns the page's facts end to end — but does not run the style sweeps on its own prose, because a fresh-context lint-fix stage does those better. A solo agent continues into pass 03 itself. Either way the page's state after this pass is WRITTEN: it stays uncertified until a verify pass or verify campaign signs it off (`guidelines/passes/04-verify.md`).
 
-Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
+Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
 ## Reading list (mandatory, in order)
 
 This pass owns the writer's reading list; the writer brief points here instead of restating rules.
 
-1. `guidelines/rules/INDEX.md`, then every rule file it lists: 7, 7a-7f, 7j-7o, 7q, 7r (7p additionally whenever the page derives from existing material).
-2. `guidelines/rules/7g-principles.md` always; `guidelines/rules/7h-register-bitfield.md` and `guidelines/rules/7i-patterns.md` when the page will carry a figure (choose the shape from 7i's use-case index).
+1. `guidelines/rules/7r-adjudications.md`, the settled adjudications registry, then `guidelines/rules/rules.md`, which carries every writing rule and every gate in one file (7p applies additionally whenever the page derives from existing material).
+2. `guidelines/rules/diagrams.md`, but only when the page will carry a figure: 7g's principles always govern one, and 7h and 7i hold the figure catalogs (choose the shape from 7i's use-case index). A page with no figure needs none of it.
 3. `guidelines/reference/measured-criteria.md`: the depth rules and tripwires that define what "in-depth, fine-grained" measures as.
 4. The sample pages chosen in pass 00 (`guidelines/passes/00-prep.md`), under its doctrine that samples calibrate form only, never facts.
 5. The page's subsystem entry in `guidelines/reference/subsystems.md`.
-6. `guidelines/rules/3b-gate-b.md`: the writer satisfies its factual items by construction and by the mechanical exit suite below (1 parity, 2 grounded code, 3 links, 6 coverage, 7 driver recency, 9 behavioral claims); the whole gate is re-run later with fresh eyes — solo in pass 04, in a campaign by a verify campaign (`guidelines/passes/04-verify.md`). Gate A and the style-shaped items stay with the lint-fix stage — the writer never sweeps its own prose.
+6. `guidelines/rules/rules.md` (3b): the writer satisfies its factual items by construction and by the mechanical exit suite below (1 parity, 2 grounded code, 3 links, 6 coverage, 7 driver recency, 9 behavioral claims); the whole gate is re-run later with fresh eyes — solo in pass 04, in a campaign by a verify campaign (`guidelines/passes/04-verify.md`). Gate A and the style-shaped items stay with the lint-fix stage — the writer never sweeps its own prose.
 
 ## Generate the page
 
@@ -55,7 +55,7 @@ Claims that are not disk-settleable (intent, motivation, anything the tree at th
 
 ## Composing stance
 
-The sample pages under `guidelines/reference/samples/` embody every rule. The closest-matching sample read in the prep pass (`guidelines/passes/00-prep.md`) is the worked example; match its structure, diagram style, code-citation density, and depth. The examples in the rule files use ACPI and mm symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem. All generated content must follow the rules as it is composed; the 7q recipes (`guidelines/rules/7q-rephrase-recipes.md`) exist so compliant phrasing never has to be re-derived per hit, and the 7r registry settles the boundary cases in advance.
+The sample pages under `guidelines/reference/samples/` embody every rule. The closest-matching sample read in the prep pass (`guidelines/passes/00-prep.md`) is the worked example; match its structure, diagram style, code-citation density, and depth. The examples in the rule files use ACPI and mm symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem. All generated content must follow the rules as it is composed; the 7q recipes (`guidelines/rules/rules.md` (7q)) exist so compliant phrasing never has to be re-derived per hit, and the 7r registry settles the boundary cases in advance.
 
 ## Dispatching a writer (campaign brief)
 
@@ -86,7 +86,7 @@ skipped read is a skipped rule set.
    <SKILL_DIR>/guidelines/reference/measured-criteria.md), the parity
    bookkeeping, and the mechanical exit suite you run before reporting
    done. Read everything that list names.
-5. <SKILL_DIR>/guidelines/rules/3b-gate-b.md — you own satisfying its
+5. <SKILL_DIR>/guidelines/rules/rules.md — you own satisfying its
    factual items by construction and by the exit suite (1 parity,
    2 grounded code, 3 links, 6 coverage, 7 driver recency, 9 behavioral
    claims); a verify campaign re-runs the whole gate later, and a

@@ -6,7 +6,7 @@ Outputs: the campaign's workspace (the plan file at `progress/<campaign>.md`, st
 Run by: the orchestrator itself (or the human planner), never a dispatchable sub-agent — catalog design is the load-bearing judgment of the campaign. The planner dispatches read-only inventory agents and a plan-review agent (briefs at the end of this file) and makes every catalog decision itself from their outputs. In single-agent mode, the same agent runs this as its first pass for any multi-page task, under the same methodology.
 Next: batched writer → fixer production per SKILL.md ("Modes"); certification per the verify campaign in `guidelines/passes/04-verify.md`.
 
-Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
+Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
 The numbered passes define a single page; this pass defines the set. It is the workflow that produced the sample pages under `guidelines/reference/samples/`, written here in subsystem-independent terms; substitute any subsystem's `kernel_paths`, structures, and syscall surface for the mm examples.
 
@@ -52,16 +52,16 @@ The plan file is the campaign's memory: inventory digests, the catalog, boundary
 5. Directory organization: the group layout with its rationale.
 6. Page catalog: one table per group with columns page | scope (anchor symbols) | tag, followed by the fold-in adjudications, the projected total with tag census, and the overlap boundary rules (one statement per sibling cluster, seam symbols named).
 7. Execution and verification: the per-page procedure and its campaign-specific deltas, project-specific writing bans from the request, gate ownership for the pipeline, write-time rules (line numbers are hints, with the known-drift list), user amendments (dated, explicitly superseding what they replace), the batch order (current, plus any superseded order kept for reference), and the save/commit policy.
-8. Draft reuse map, when prior material exists (next section, with rule 7p, `guidelines/rules/7p-derivation.md`, carrying the per-page mechanics): per source file, a reuse verdict, symbol spot-check results, defect classes with counts, and section-to-page mining pointers, plus an enhancement backlog for already-written pages.
+8. Draft reuse map, when prior material exists (next section, with rule 7p, `guidelines/rules/rules.md` (7p), carrying the per-page mechanics): per source file, a reuse verdict, symbol spot-check results, defect classes with counts, and section-to-page mining pointers, plus an enhancement backlog for already-written pages.
 
 ## Deriving from prior drafts and pages
 
-When earlier-generation drafts or prior revisions exist for topics in the catalog, mine them instead of ignoring them, under these rules (rule 7p, `guidelines/rules/7p-derivation.md`, carries the per-page mechanics):
+When earlier-generation drafts or prior revisions exist for topics in the catalog, mine them instead of ignoring them, under these rules (rule 7p, `guidelines/rules/rules.md` (7p), carries the per-page mechanics):
 
 1. Map first, read once. Spawn research agents to read the draft corpus once and record a reuse map in the plan file: for each draft, a verdict (backbone-reusable, mine-sections-only, or ignore), symbol spot-check results against the documented tree, its defect classes with counts (banned wording, stale symbol names, non-verbatim excerpts), and pointers from draft sections to the catalog pages they feed. All later work consults the map, not the corpus.
 2. Reuse structure, re-verify everything. A draft may contribute its skeleton, section ordering, tables, and figures. Every symbol, line number, code excerpt, and factual claim taken from a draft is re-verified against the on-disk tree at the documented version before it lands. Treat drafts as unverified claims with good structure; the staleness class that survives spot checks is the silently renamed symbol, so re-find each symbol rather than trusting name continuity.
 3. Extend to standard. Reused sections are extended to the definition-plus-usage depth, full enumerations, and lifecycle coverage of the depth rules in `guidelines/reference/measured-criteria.md`. A reused page that stays at draft depth is not done.
-4. Scrub to the rules. Sweep reused prose for every Gate A class (`guidelines/rules/3a-gate-a.md`; drafts predate some rules; branch-metaphor "arm" and label-colon idioms cluster in them), add or correct 7l provenance comments, and rebuild OTHER SOURCES per 7n.
+4. Scrub to the rules. Sweep reused prose for every Gate A class (`guidelines/rules/rules.md` (3a); drafts predate some rules; branch-metaphor "arm" and label-colon idioms cluster in them), add or correct 7l provenance comments, and rebuild OTHER SOURCES per 7n.
 5. Collect across drafts. One catalog page may assemble sections mined from several drafts; the boundary rules decide what belongs where.
 6. Disposition, not disappearance. Every source catalog entry, DETAILS section, behavior, enumeration, figure, and reference gets a 7p disposition (kept, merged, or cut with its reason). Cuts shrink the derived page's catalog and scope statement in the same change and are recorded in the plan file so the orchestrator or the user can veto them; the derived page then passes the Gate B parity audit like a fresh one.
 

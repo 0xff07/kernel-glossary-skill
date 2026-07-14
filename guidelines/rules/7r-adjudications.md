@@ -1,6 +1,6 @@
 # 7r. Settled adjudications registry (mandatory reading for every brief)
 
-Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
+Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
 This registry consolidates the exemptions scattered through 7a-7m plus the adjudications settled across generation batches. Writer and lint briefs name this file as a mandatory first read (never summarize it into a brief), so agents apply the decisions instead of re-litigating them, and two agents in the same batch cannot diverge on a boundary. When a new adjudication is settled during a campaign, record it in the plan file's Status as a LESSON and fold it into this registry.
 

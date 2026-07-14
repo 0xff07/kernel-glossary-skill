@@ -6,7 +6,7 @@ Outputs: the page with lane-1 fixes applied, and a report at `progress/<campaign
 Run by: single-agent mode inline (a solo agent sweeps and fixes its own page the same way, then continues); in a campaign a fixer agent on a different, cheaper model with fresh context (brief at the end of this file).
 Next: the orchestrator checkpoint (campaigns: escalations are adjudicated there and accepted ones applied by re-dispatching a fixer with the reviewed fix list); a solo agent continues into pass 04 (`guidelines/passes/04-verify.md`).
 
-Rule IDs (3a-3c, 7, 7a-7r) resolve via `guidelines/rules/INDEX.md`.
+Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
 Read `guidelines/rules/7r-adjudications.md` before touching the page, and judge every candidate against it BEFORE fixing or proposing anything. A hit on an exempt construct is a false candidate, and rewording a compliant phrase to silence a pattern is itself a defect — the two-lane split below exists precisely so that nothing gets "fixed" on an unsettled judgment.
 
@@ -25,7 +25,7 @@ Hard boundary, inherited unchanged from the old patch stage: the fixer never fix
 
 ## Steps
 
-1. Gate A candidate greps, fence-aware, per `guidelines/rules/3c-mechanical-checks.md` item 3: em-dashes, label-colon shapes, hedges, the arm-word ban, banned words, negative constructions, internal `.md` links, banned heading shapes, boldface.
+1. Gate A candidate greps, fence-aware, per `guidelines/rules/rules.md` (3c) item 3: em-dashes, label-colon shapes, hedges, the arm-word ban, banned words, negative constructions, internal `.md` links, banned heading shapes, boldface.
 2. Read-through sweeps for what the greps cannot express: 7b intro-sentence-plus-list shapes, 7d superlatives judged in context, anthropomorphic verbs (`lives`/`sits`/`wants` for code or data placement; `walk` outside data-structure traversal), and heading shape (declarative subject-verb-object, no bare nouns or symbol names; heading truth against section content stays with verification).
 3. Exhaustive 7m span-form pass: every occurrence of every kernel symbol outside fenced blocks is linked, INCLUDING repeats, `CONFIG_*` options, generic primitives, field paths, and named ops-struct members, with `struct`/`enum` keywords kept (7f). Exemptions and rulings come from the 7r registry.
 4. Sort every candidate into its lane and apply lane 1: each fix per its 7q recipe or byte-proved procedure, exactly and minimally. Re-run the Gate A candidate greps over every paragraph you touched (fence-aware) to confirm the edits introduced no new candidates.
@@ -49,12 +49,13 @@ MANDATORY READING, in order, before touching the page:
    phrase to silence a pattern is itself a defect.
 2. <SKILL_DIR>/guidelines/passes/03-lint.md — your procedure: the two
    lanes and steps 1 through 5. Execute in order.
-3. <SKILL_DIR>/guidelines/rules/3a-gate-a.md and the procedures in
-   <SKILL_DIR>/guidelines/rules/3c-mechanical-checks.md (items 1-3; items 1
+3. <SKILL_DIR>/guidelines/rules/rules.md and the procedures in
+   <SKILL_DIR>/guidelines/rules/rules.md (items 1-3; items 1
    and 2 are the preconditions for span-link and line-drift fixes).
-4. <SKILL_DIR>/guidelines/rules/INDEX.md, then the rule files this pass
-   exercises: 7q (the fix recipes), 7 and 7a-7d and 7f (the prose
-   gates), 7m (span form).
+4. <SKILL_DIR>/guidelines/rules/rules.md — every writing rule and every
+   gate, in one file. This pass exercises its "Style and prose" part (7,
+   7a-7d and 7f, the prose gates; 7m, span form; 7q, the fix recipes)
+   and the gates (3a, and the procedures in 3c).
 5. The frozen samples for catalog-form questions:
    <SKILL_DIR>/guidelines/reference/samples/page-encoding-pgtable-entries.md and
    <SKILL_DIR>/guidelines/reference/samples/page-overview-mm-struct.md — the LINUX
