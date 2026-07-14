@@ -2,9 +2,9 @@
 
 Purpose: compose the complete page, following every writing rule while composing rather than fixing afterward.
 Inputs: the dossier (pass 01) and the resolved parameters (pass 00); every dossier fact is re-verified on disk before it lands, because the tree at the documented version is the only ground truth.
-Outputs: the draft page at `docs/<dir>/<topic-slug>.md`; the dossier updated where the disk disagreed with it; the parity checklist at `progress/<campaign>/<page-slug>.parity.md`.
+Outputs: the draft page at `docs/<dir>/<topic-slug>.md`, and the dossier updated — its PARITY table closed and its EVIDENCE section written, plus any research entry the disk disagreed with corrected. Page state after this pass: WRITTEN.
 Run by: single-agent mode inline; in a campaign a dispatched writer agent (brief at the end of this file), on the strongest available model.
-Next: pass 03 (`guidelines/passes/03-lint.md`). A campaign writer finishes this pass by closing the parity table, running the mechanical exit suite below, and persisting its evidence into the dossier — it owns the page's facts end to end — but does not run the style sweeps on its own prose, because a fresh-context lint-fix stage does those better. A solo agent continues into pass 03 itself. Either way the page's state after this pass is WRITTEN: it stays uncertified until a verify pass or verify campaign signs it off (`guidelines/passes/04-verify.md`).
+Next: pass 03 (`guidelines/passes/03-lint.md`). A campaign writer finishes this pass by closing the dossier's PARITY table, running the mechanical exit suite below, and persisting its evidence into the dossier — it owns the page's facts end to end — but does not run the style sweeps on its own prose, because a fresh-context lint-fix stage does those better. A solo agent continues into pass 03 itself. Either way the page's state after this pass is WRITTEN: it stays uncertified until a verify pass or verify campaign signs it off (`guidelines/passes/04-verify.md`).
 
 Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
@@ -36,7 +36,7 @@ Follow the template structure exactly. The page must contain these sections in o
 
 ## Parity bookkeeping while composing
 
-Maintain the catalog-to-DETAILS parity checklist as the page is composed: one row per LINUX KERNEL catalog symbol, recording where DETAILS reproduces its definition as a fenced ` ```c ` block and where it shows a concrete caller or usage as code — the two evidence columns of Gate B item 1. Persist the table at `progress/<campaign>/<page-slug>.parity.md` in the run's artifact directory (SKILL.md ("The progress/ workspace")) before reporting the page written. Catalog a symbol only when both of its cells can be filled; a symbol the page will not excerpt is mentioned and linked in prose without a catalog bullet. At exit every row is filled or its symbol has been de-cataloged (fill-or-decatalog): there is no deliberately-empty state, and each de-cataloging is named in the writer's final report.
+Maintain the catalog-to-DETAILS parity checklist as the page is composed: one row per LINUX KERNEL catalog symbol, recording where DETAILS reproduces its definition as a fenced ` ```c ` block and where it shows a concrete caller or usage as code — the two evidence columns of Gate B item 1. The table lives in the dossier's PARITY section (`guidelines/passes/dossier.md`); close it before reporting the page written. It is not a file of its own. Catalog a symbol only when both of its cells can be filled; a symbol the page will not excerpt is mentioned and linked in prose without a catalog bullet. At exit every row is filled or its symbol has been de-cataloged (fill-or-decatalog): there is no deliberately-empty state, and each de-cataloging is named in the writer's final report.
 
 This is construction bookkeeping — tracking coverage forward while writing, the same duty class as the 7o enumerations — not a style sweep. The verify pass audits the table independently against the page; a checklist entry is a hint, never evidence (the same relationship the dossier has). The checklist exists because parity holes that survive the writer cost a follow-up round-trip an order of magnitude more expensive than the missing excerpts themselves.
 
@@ -46,10 +46,10 @@ After the page is complete, the writer verifies its own facts with the procedure
 
 1. Excerpts: byte-compare every fenced ` ```c ` unit against its provenance file at the cited line (tabs included; an interior `/* path:line */` delimiter starts a new unit, a standalone `...` line is a declared elision). Every unit begins at its cited line.
 2. Anchors: extract every Elixir link target, print the disk line at each, and confirm a symbol link lands on the definition line and a location link on the exact site the prose describes (7m; the 7r settled rulings govern `CONFIG_*` options, generic primitives, and ops-struct members).
-3. Parity closure: confirm every catalog symbol appears in at least one fenced block and the parity table has zero empty rows (fill-or-decatalog above).
+3. Parity closure: confirm every catalog symbol appears in at least one fenced block and the dossier's PARITY table has zero empty rows (fill-or-decatalog above).
 4. Counts: re-derive every count and every "only"/"never"/"always"/"exactly" enumeration with a search basis shaped differently from the one used during research — a repeated identical grep repeats the same miss — and reconcile, or fix the sentence to what the enumeration shows (7o).
 5. Cited examples: for each driver or consumer file cited as an example, confirm a substantive commit within roughly three years (`git log -1` on the file).
-6. Persist the evidence: append the suite's outcomes to the dossier's EVIDENCE section (`guidelines/passes/dossier.md`) — every count and universal claim with its two derivation bases and reconciled result, plus the excerpt-unit and anchor-confirmation tallies — so a later verify campaign re-derives from recorded bases instead of reconstructing them. Update the dossier HEADER status to `written`.
+6. Persist the evidence: append the suite's outcomes to the dossier's EVIDENCE section (`guidelines/passes/dossier.md`) — every count and universal claim with its two derivation bases and reconciled result, plus the excerpt-unit and anchor-confirmation tallies — so a later verify pass re-derives from recorded bases instead of reconstructing them.
 
 Claims that are not disk-settleable (intent, motivation, anything the tree at the documented version cannot witness) are never left as bare assertions: scope them out, weaken them to what the evidence shows (7o), or state them with their basis disclosed (7l, 7n). The writer's report lists this class explicitly; "could not verify" is reserved for it — a disk-settleable claim is settled or dropped, never reported unverified.
 
@@ -119,10 +119,11 @@ CAMPAIGN FACTS (carried by this brief because no guideline file can):
 DIRECTIVES.
 - Run the research pass yourself (pass 01), keeping the dossier current
   as you research; it is the recovery point if you die mid-page.
-- Everything you persist besides the page itself (the dossier, the
-  parity table, any notes or helper output) goes under
-  <SKILL_DIR>/progress/<campaign>/, named <slug>.<purpose>.<ext>; write
-  nowhere else in progress/, which belongs to other runs too.
+- The ONLY file you write besides the page is your dossier at
+  <SKILL_DIR>/progress/<campaign>/<slug>.dossier.md. The parity table and
+  your exit-suite evidence are SECTIONS OF IT, not files beside it. Write
+  nowhere else in progress/, which belongs to other runs too; helper
+  scripts and scratch go in your own scratchpad directory.
 - Enumerate call-site populations before writing any prose that counts or
   characterizes them (7o).
 - Keep the parity checklist as you compose and close it before you
@@ -130,8 +131,7 @@ DIRECTIVES.
   DETAILS shows its definition excerpt, where it shows a concrete usage
   excerpt. At exit every row is filled or its symbol is de-cataloged to a
   prose mention with a link (fill-or-decatalog; there is no
-  deliberately-empty state). Persist the table at
-  <SKILL_DIR>/progress/<campaign>/<slug>.parity.md.
+  deliberately-empty state). The table is the dossier's PARITY section.
 - Run the mechanical exit suite (02-write.md) after the page is complete
   and fix what it finds before reporting: byte-compare every excerpt
   unit against the tree; print and confirm the disk line behind every

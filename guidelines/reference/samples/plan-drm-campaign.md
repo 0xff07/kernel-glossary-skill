@@ -2,7 +2,7 @@
 
 ## Context
 
-Campaign short name: `drm`. Plan file: `progress/drm.md`; artifact directory: `progress/drm/` (dossiers, lint/verify reports, parity tables, audit reports land there; nothing outside it).
+Campaign short name: `drm`. Campaign file: `progress/drm.md`; artifact directory: `progress/drm/` (dossiers, lint/verify reports, parity tables, audit reports land there; nothing outside it).
 
 Request source: `prompt.md` at the documented tree's root — an in-depth, fine-grained DRM/KMS documentation set for the Linux kernel, output under a new `docs/drm/` of the kernel-glossary skill (`${CLAUDE_SKILL_DIR}/docs/drm/`). The prompt's own words: "The topic list is very rough. Curate new pages where you see fit"; "Prefer finer granularity whenever possible"; "Make sure you cover all the major structures for Linux kernel defined under the files in the 'drivers/gpu/drm/' directory"; "Don't just create pure conceptual pages"; "!!!IMPORTANT!!!: Don't limit yourself to 100-400 lines per page. Do as detailed as you can."
 
@@ -13,13 +13,13 @@ Stale-session inputs (hints only, never evidence):
 - Draft corpus (primary): a prior-generation draft set produced on an earlier working branch of the skill repository, 64 pages under `docs/drm/` (150-1,334 lines each), extracted read-only for audit. Corpus-wide quick census: all 15,442 Elixir links already v7.0; 0 em-dashes; 384 "vtable" hits (banned word); 158 "fbdev" hits (banned scope); provenance comments in single-excerpt form, many marked "kerneldoc elided" (excerpts non-verbatim, fails the byte-compare check); ~202 box-drawing figure blocks.
 - Draft corpus (secondary): an older-generation corpus in a separate checkout at kernel v6.19, 30 primitive pages (82-278 lines). Scaffolding at most; the primary draft corpus supersedes it except possibly OTHER SOURCES links.
 
-NOT inputs: the other campaigns' entries under `progress/` (other runs, isolation per SKILL.md, "The progress/ workspace"); `guidelines/reference/samples/` pages (style/depth calibration only, never kernel facts). The existing `docs/dp/` knowledge base (69 pages: AUX, DPCD, link training, MST) is a boundary constraint, not an input: DP protocol internals stay in dp/, this campaign stops at the KMS↔DP-helper seam.
+NOT inputs: the other campaigns' entries under `progress/` (other runs, isolation per SKILL.md, "The three artifacts and the three states"); `guidelines/reference/samples/` pages (style/depth calibration only, never kernel facts). The existing `docs/dp/` knowledge base (69 pages: AUX, DPCD, link training, MST) is a boundary constraint, not an input: DP protocol internals stay in dp/, this campaign stops at the KMS↔DP-helper seam.
 
 Output root: `docs/drm/`. No `SUMMARY.md`/`mkdocs.yml` edits. No git commits without an explicit user go.
 
 ## Status
 
-The status log of this run lives in its journal, `progress/<campaign>/<campaign>.journal.md` (local scratch): the per-page ticker accumulates there and folds back into this section at batch checkpoints per `guidelines/passes/plan.md`, so the committable plan file stays clean between checkpoints. The entries below are shape illustrations with <placeholders>, not a real log; a live campaign accumulates entries of these shapes, newest appended last:
+This section IS the campaign's log and its only memory (`guidelines/passes/plan.md`): every durable event is appended here at the moment it happens, and nothing else travels — the dossiers under `progress/<campaign>/` are scratch. The entries below are shape illustrations with <placeholders>, not a real log; a live campaign accumulates entries of these shapes, newest appended last:
 
 - [<date>] Campaign started. Name `<campaign>` chosen (existing `progress/` entries listed for the name-collision check only). Workspace created: `progress/<campaign>.md`, `progress/<campaign>/`. Tree pinned `<tag>` @ `<sha>`; Elixir tag confirmed.
 - [<date>] Phase 1 inventory dispatched: <n> parallel read-only agents, one per area.
@@ -28,11 +28,11 @@ The status log of this run lives in its journal, `progress/<campaign>/<campaign>
 - [<date>] Phase 2 review complete: <n> amendments accepted, <n> declined with reasoning (recorded under the review outcome). Catalog now <n> rows.
 - [<date>] Phase 3 user checkpoint: catalog and scope questions presented; decisions recorded under Scope decisions (verification cadence included); explicit go received.
 - [<date>] B<n> dispatched: one writer per page (<slugs>).
-- [<date>] B<n> checkpoint: <done>/<total> pages WRITTEN → LINTED; <n> escalations adjudicated (<accepted>/<declined>); fixer diffs sampled; journal folded into this section.
+- [<date>] B<n> checkpoint: <done>/<total> pages WRITTEN → LINTED; <n> escalations adjudicated (<accepted>/<declined>); fixer diffs sampled; per-page statistics recorded.
 - [<date>] AMENDMENT: <the user's instruction, verbatim where short, and what it supersedes; also recorded in the dated amendments under Execution & verification>.
 - [<date>] CORRECTION: <an earlier recorded claim> is wrong; <the re-verified fact and the measurement that established it>.
-- [<date>] LESSON: <a fixer or verifier false-positive class, a settled linking adjudication, a pipeline fix; folded into 7r or future briefs>.
-- [<date>] Verify campaign `<campaign>-verify` complete: <n> pages CERTIFIED (stamps mirrored into this section); <n> findings deferred into its delta catalog.
+- [<date>] LESSON: <a fixer or verifier false-positive class, a settled linking adjudication, a pipeline fix; surfaced to the user, who alone folds a ruling into 7r>.
+- [<date>] Verify campaign `<campaign>-verify` complete: <n> pages CERTIFIED (stamps mirrored into this section); <n> factual findings recorded in its Status, seeding a repair campaign.
 
 ## Scope decisions
 

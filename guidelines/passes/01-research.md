@@ -2,7 +2,7 @@
 
 Purpose: locate and record every fact the page will need, before any prose exists.
 Inputs: the resolved parameters from pass 00 (subsystem entry, topic scope, documented version); in a campaign also the catalog row's scope statement and boundary rules.
-Outputs: the research dossier at `progress/<campaign>/<page-slug>.dossier.md`, in the run's artifact directory (SKILL.md ("The progress/ workspace")), per `guidelines/passes/dossier.md`.
+Outputs: the research dossier at `progress/<campaign>/<page-slug>.dossier.md`, in the run's dossier directory (SKILL.md ("The three artifacts and the three states")), per `guidelines/passes/dossier.md`.
 Run by: the writer by default (single-agent inline, or the campaign writer agent before composing); a dedicated researcher agent (brief at the end of this file) when a campaign fans research out explicitly.
 Next: pass 02 (`guidelines/passes/02-write.md`).
 
@@ -74,7 +74,7 @@ Write or update the dossier before moving to the write pass; the dossier is the 
 
 ## Dispatching a researcher (optional campaign fan-out)
 
-The campaign default is that the writer researches its own page (SKILL.md ("Modes")); dispatch dedicated researchers only as an explicit opt-in, when research should fan out ahead of writing (pre-building dossiers for a batch) or when a single agent is stepping the passes one at a time across sessions. Model tier: strong enough for research judgment; the dossier's search bases and version-drift notes are what the later passes build on. The researcher writes only the dossier, inside the run's artifact directory; everything else is read-only. Its final message is a two-line summary, never the dossier text. On death, resume the same agent and ask it to flush what it has into the dossier; a partially filled dossier with accurate OPEN GAPS is a valid deliverable.
+The campaign default is that the writer researches its own page (SKILL.md ("Modes")); dispatch dedicated researchers only as an explicit opt-in, when research should fan out ahead of writing (pre-building dossiers for a batch) or when a single agent is stepping the passes one at a time across sessions. Model tier: strong enough for research judgment; the dossier's search bases and version-drift notes are what the later passes build on. The researcher writes only the dossier, inside the run's dossier directory; everything else is read-only. Its final message is a two-line summary, never the dossier text. On death, resume the same agent and ask it to flush what it has into the dossier; a partially filled dossier with accurate OPEN GAPS is a valid deliverable.
 
 ```
 Research the page <page slug> for the <subsystem> knowledge base; do not
