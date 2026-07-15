@@ -4,7 +4,7 @@ Every criterion a generated page is judged against, except the diagram rules (se
 
 ## Style and prose
 
-How a page reads: sentence shape, banned constructions, page structure, and how every kernel symbol is linked. These are the classes the lint-fix pass sweeps.
+How a page reads: sentence shape, banned constructions, page structure, and how every kernel symbol is linked. The writer sweeps these classes itself with 3c's procedure before reporting done, and the check pass reproduces them independently.
 
 ### 7. Writing rules (mandatory)
 
@@ -72,7 +72,7 @@ The H3 catalog lists in LINUX KERNEL (grouped by file or functional area as the 
 
 Before writing any body paragraph, scan for these patterns and rewrite if any appear:
 
-- `^.*: [a-z]` (any line where prose ends in `: ` followed by a lowercase clause)
+- A label-colon anywhere in a prose sentence, not merely at its start. Do NOT scan for this with a line-anchored pattern: 7f puts each paragraph on one unwrapped line, so an anchored pattern sees only a paragraph's first clause and misses the rest of the class. 3c's prose view is the procedure that actually reaches it.
 - `The reasoning` (in any case, with or without colon)
 - `The intent:` / `The asymmetry:` / `The fix:` / `The point is:` / `The takeaway:` / `The pattern is:` / `Two-phase pattern:`
 - `is the key:` / `is essential:` / `is explicit:` / `is significant:` / `is conservative:` / `is deliberate:` / `is the linchpin:` / `is asymmetric:` / `is intentional:` / `is correct:` / `becomes clear here:`
@@ -296,7 +296,7 @@ A page is final only at zero unadjudicated findings. The gate is a manual proced
 
 Verify each item by performing the named action and recording the evidence (a count or a list, not "looks fine"). A page is not done until every item is confirmed; reading the page is not sufficient.
 
-Ownership and timing: the writer satisfies items 1, 2, 3, 6, 7, and 9 by construction and by the mechanical exit suite of `guidelines/passes/02-write.md` at write time; the lint-fix pass (`guidelines/passes/03-lint.md`) sweeps the style-shaped items 4, 5, and 8; the whole gate is then re-run with recorded evidence by the per-page verification of `guidelines/passes/04-verify.md` — immediately by a solo agent, in a campaign by a verify campaign's find-only verifier agents with adjudication and the certification stamp kept by its orchestrator (`guidelines/passes/04-verify.md`).
+Ownership and timing: the writer owns this gate's factual items by construction and by its mechanical exit suite (`guidelines/passes/02-write.md`), and it also runs Gate A (3a/3c) on its own prose — an earlier split that forbade this was withdrawn, because the sweeps are procedure rather than perception and survive self-application (the reasoning is in `guidelines/passes/03-check.md`). The orchestrator then re-runs every mechanical check independently and compares the answers; it adjudicates every residual and never delegates that. A verify campaign re-runs the whole gate later, on a newer tree or under a different model.
 
 1. Catalog-to-DETAILS parity (7e/7j). Build a parity table with one row per LINUX KERNEL catalog symbol and two evidence columns: where DETAILS reproduces its definition (or the exact case label / branch the page describes) as a fenced ` ```c ` block, and where DETAILS shows a concrete caller or usage as code. Every cell must hold a location in the page; an empty cell is a gap, and a catalog symbol that appears nowhere in DETAILS is a hard failure. Check the reverse direction too: a symbol that carries its own DETAILS section belongs in the catalog. When the page names several distinct users or call paths for one symbol, each named one appears as an excerpt or a per-site location link (7m) and the shown-versus-enumerated split is stated. Tripwire before building the table: fewer fenced ` ```c ` blocks than catalog entries means unpaired symbols (every conforming page measured runs 1.03 to 1.47 blocks per entry; a deficient derived page measured 0.73). Record the table; a bare count does not qualify. Sign off only at zero empty cells.
 2. Grounded, non-fabricated code (7e/7l). For every fenced ` ```c ` block, open the on-disk source at its cited `path:line` and confirm the block matches verbatim (tab indentation and comments preserved, `...` only for disclosed elisions). Cross-check with the semcode tools, but the on-disk source at the documented version is ground truth. Print the file's lines at the cited range (`sed -n 'START,ENDp'`) beside each block and compare directly, unit by unit for stitched blocks; the excerpt must begin at the cited line, and content matching elsewhere in the file with a wrong claimed line is a finding. Record the count of code blocks and that every one was confirmed against the file. Sign off only when none is left unverified.
@@ -331,16 +331,60 @@ sed -n 'START,ENDp' path/from/provenance.c
 
 Each unit must begin at its cited line and match byte for byte, tabs included. Content that matches elsewhere in the file with a wrong claimed line number is a finding (7l, 7o).
 
-3. Gate A candidates. Run the candidate greps below fence-aware, then judge EVERY hit against the rule's exemptions and the settled adjudications registry (7r) before touching the page. A hit on an exempt construct is a false candidate, and rewording a compliant phrase to silence a pattern is itself an error: a writer once reworded a correct "32-bit Arm" purely to quiet an arm-word pattern, and that rewording was the only defect introduced. Fix confirmed hits with the 7q recipes.
+3. Gate A candidates. The patterns below GENERATE CANDIDATES; they are not the gate. Judge EVERY hit against the rule's exemptions and the settled adjudications registry (7r) before touching the page. A hit on an exempt construct is a false candidate, and rewording a compliant phrase to silence a pattern is itself an error: a writer once reworded a correct "32-bit Arm" purely to quiet an arm-word pattern, and that rewording was the only defect introduced. Fix confirmed hits with the 7q recipes.
 
-- `grep -n '—' page.md` — em-dashes; no exemption outside fenced blocks.
-- `grep -nE '^[A-Z][^:]{2,80}: [a-z]' page.md` — label-colon candidates; exempt inside double-quoted verbatim text, in catalog bullets, in table rows, and in H3/H4 catalog labels (7a).
-- `grep -niE '(usually|typically|generally|normally|commonly|mostly|often|in practice|tends to)' page.md` — hedges; hyphenated compounds ("read-mostly") and verbatim quotes are exempt.
-- `grep -niE '(^|[^a-z])arms?([^a-z]|$)' page.md` — the branch-metaphor ban; capitalized CPU-architecture names (Arm, ARM64, arm64) and verbatim quotes are exempt.
-- `grep -niE '(contract|tall(y|ies|ied)|canonical|vtable)' page.md` — banned words; verbatim quotes exempt.
-- `grep -nE ', not [a-z]+[.,]' page.md` — negative constructions.
-- `grep -n '](.*\.md)' page.md` — internal cross-link candidates; only non-URL .md targets are violations.
-- `grep -nE '^#{2,4} (Why|How|Where|What)|^#{2,4} .*\?$' page.md` — banned heading shapes.
-- `grep -n '\*\*' page.md` — boldface candidates; `/**` kerneldoc openers inside fenced code are exempt.
+**Build the prose view first.** Every pattern below runs against a prose view of the page, never the raw file. This step is not optional bookkeeping — it is what makes the candidates trustworthy, and skipping it is what let the label-colon class ship for eight consecutive pages. The view strips exactly what 7r already exempts, and it judges nothing:
 
-What no grep can express stays a read-through: 7b prose-list shapes, 7d superlatives judged in context, heading truth (Gate B item 4, 7o), definition-plus-usage parity (Gate B item 1; `guidelines/rules/3b-gate-b.md`), coverage (item 6), figure geometry (item 8), and the whole 7o behavioral-claim audit. Every finding is fixed or recorded as a 7r adjudication with reasoning, never silenced.
+```
+python3 - page.md <<'EOF'
+import re, sys
+CAT = ("## LINUX KERNEL", "## KERNEL DOCUMENTATION", "## OTHER SOURCES", "## SPECIFICATIONS")
+fence = cat = False
+for n, l in enumerate(open(sys.argv[1], encoding="utf-8"), 1):
+    l = l.rstrip("\n")
+    if l.startswith("```"): fence = not fence; continue    # fenced blocks exempt (7f)
+    if fence: continue
+    if l.startswith("## "): cat = l.strip() in CAT; continue
+    if cat: continue                                       # catalog bullets exempt (7r)
+    if l.startswith("#"):                                  # headings are GOVERNED (7, 7d, 7o):
+        print(f"{n}:[H] {l.lstrip('#').strip()}"); continue #   emit them, do not drop them
+    if l.startswith((">", "|")): continue                   # caution block, tables
+    if l.lstrip().startswith(("- ", "* ")): continue       # list items
+    l = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", l)         # [text](url) -> text; kills URL colons
+    l = re.sub(r"`[^`]*`", "\u00a7", l)                      # inline code -> placeholder
+    l = re.sub(r'"[^"]*"', "\u00a7", l)                      # double-quoted verbatim (7r)
+    l = re.sub(r"\b[\w/.-]+\.(c|h|rst|S):\d+", "\u00a7", l)  # file:line citations
+    l = re.sub(r"::|\d+:\d+", "\u00a7", l)                   # scope form, ratios
+    print(f"{n}:{l}")
+EOF
+```
+
+This is a view builder, not a checker: it never reports pass or fail, and every candidate it surfaces is still adjudicated by hand. Run the patterns against its output.
+
+- `—` — em-dashes; no exemption outside fenced blocks.
+- `[^:;.!?]{3,90}:\s+[A-Za-z0-9§]` — label-colon candidates (7a). **Never anchor this to line start.** 7f mandates one unwrapped line per paragraph, so a `^`-anchored pattern can only ever see a colon in a paragraph's FIRST clause, and every mid-paragraph label-colon — which is nearly all of them — is structurally invisible to it. Measured over eleven pages and ninety-nine known hits: the old `^[A-Z][^:]{2,80}: [a-z]` caught **12%**; this pattern over the prose view catches **100%**, at about eleven candidates per page and roughly 81% precision. Adjudicate all eleven; do not re-anchor the pattern to make the list shorter.
+- `(usually|typically|generally|normally|commonly|mostly|often|simply|essentially|basically|arguably|in practice|tends to)` — hedges; hyphenated compounds ("read-mostly", "update-often") are exempt, and the prose view has already removed quoted text and fenced comments, which were the bulk of the old false positives.
+- `(^|[^a-z])arms?([^a-z]|$)` — the branch-metaphor ban; the ban is on arming a BRANCH or a UNION CASE. Capitalized architecture names (Arm, ARM64, arm64) are exempt, and "arms a delayed work item" is the ordinary English verb and is compliant.
+- `(contract|tall(y|ies|ied)|canonical|vtable)` — banned words.
+- `\bis what\b|\bwhat matters\b|\bthe reasoning\b` — hollow clefts (7c/7d). Match the FRAME `is what`, never a list of spellings: a writer produced "is what keeps", "is what put", "is what lets" and "is what the … jumps to", and a three-spelling pattern saw none of them.
+- `\b(live|lives|lived|living|sit|sits|sat|sitting|want|wants|wanted|wanting)\b` — anthropomorphic verbs applied to CODE (Gate B item 5). Grep the LEMMAS, not three inflections: a pass that greps only `lives`/`sits`/`wants` misses the base forms, where real hits have been found. The ban is on anthropomorphizing code or data placement; a userspace process is a real actor ("the reader wants the buffer" is exempt), and the adjective "live" ("the live counter") is not the verb.
+- `(,|\band)\s+(not|never)\s` — negative constructions (asserting X by denying Y). Do NOT require the comma: a writer produced five of these as "X and never Y" / "X and not Y", every one invisible to a comma-anchored pattern. The digit class matters too — ", not 31." was a real finding an alphabetic-only pattern missed.
+- `](.*\.md)` — internal cross-link candidates (run on the RAW file); only non-URL `.md` targets are violations, and 7f forbids them absolutely.
+- `^#{2,4} (Why|How|Where|What)|^#{2,4} .*\?$` — banned heading shapes (run on the RAW file; headings are legitimately line-anchored).
+- `\*\*` — boldface candidates (run on the RAW file); `/**` kerneldoc openers inside fenced code are exempt.
+
+**Then sweep the figures, which the prose view cannot see.** The prose view discards every fenced block, so figure annotations are invisible to every pattern above — yet they are still governed. 7g lifts only the forbidden-PHRASE rules (7a, 7c, 7d) inside a figure; it does not lift rule 7, so the anthropomorphic-verb ban, the em-dash ban, and the negative-construction ban all still bind figure text. That combination — bound by a rule, unreachable by the mechanism — is exactly what let the label-colon class ship for eight pages, so close it explicitly:
+
+```
+awk '/^```/{f=!f; lang=(f? substr($0,4) : ""); next} f && lang!="c"' page.md
+```
+
+Adjudicate what that prints against rule 7 (anthropomorphic verbs, em-dashes, negative constructions). Two exemptions apply and are the common case: a ` ```c ` block is a source excerpt and is never swept (the filter above already excludes it), and a fenced block reproducing a VERBATIM quotation — a commit message, a kernel comment — is exempt like any other verbatim text (7r). What is left is figure annotation the page itself authored, and it is bound.
+
+What no pattern can express stays a read-through: 7b prose-list shapes, 7d superlatives judged in context, heading truth (Gate B item 4, 7o), definition-plus-usage parity (Gate B item 1, 3b), coverage (item 6), figure geometry (item 8), and the whole 7o behavioral-claim audit. Every finding is fixed or recorded as a 7r adjudication with reasoning, never silenced.
+
+**A grep is a candidate generator, never the gate.** THREE classes have now shipped behind a pattern that structurally could not see them: the mid-paragraph label-colon behind a `^`-anchored grep; the figure annotation behind a fence-stripping view; and the heading behind a prose view that dropped every `#` line, even though rule 7, 7d and 7o all bind headings. Each time, the check ran clean and the clean run meant nothing.
+
+So the discipline is not "write better patterns", it is: **when a rule binds a region, confirm some mechanism actually reaches that region.** Enumerate the page's regions — prose, headings, figures, catalog bullets, table cells, fenced excerpts — and for each rule, name the pattern that can fire there. A region no pattern reaches is not clean; it is unexamined, and it reads exactly like clean.
+
+The same trap has a second form, found the same way: **a permissive checker is worse than no checker.** A writer's excerpt verifier resynchronized on any mismatch and reported 44 of 44 units correct while two fabricated comment terminators sat in the page. It was tightened to resync only after a declared elision, and both fabrications surfaced immediately. A check that cannot fail is not a check.

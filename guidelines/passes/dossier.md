@@ -66,6 +66,37 @@ Per constant bounding the mechanism: name or literal, value, file:line
 Symbols renamed, removed, or newly added at the documented version
 relative to widely-documented older kernels; known stale-index hints.
 
+## LINKS
+MACHINE-EMITTED, not hand-authored. The write pass's exit suite (item 2)
+runs the extractor script printed there over the finished page; the
+script emits this table, one fixed six-column row per distinct inline
+span:
+
+| span | region | linked | anchor URL | disk line | kind / reason |
+
+The first five columns are SCRIPT OUTPUT and must not be hand-edited:
+`span` is the backticked text; `region` is `prose` (the lead paragraph,
+SUMMARY, and DETAILS) or `catalog` (the reference sections); `linked` is
+yes/no; `anchor URL` and `disk line` are the URL and the tree line the
+script fetched at it, blank for a bare span. Only the last column is the
+writer's, and it holds either a `kind` (for a linked row: symbol /
+location / config / generated / file) confirming the anchor, or a
+`reason` (for a bare row: the 7r exemption that licenses leaving it
+unlinked). The split is the point — the script owns which spans exist and
+what their anchors are, the writer owns whether each anchor is right.
+
+Two obligations run off this one table. ANCHOR CONFIRMATION is page-wide:
+every `linked` row's disk line is judged against what the prose claims,
+`catalog` rows included, because a wrong URL is a defect anywhere. SPAN
+CLOSURE (exit-suite item 6) is scoped to the prose region: every `prose`
+row must have a non-empty `kind / reason` cell, and an empty one is the
+defect. `catalog` rows are out of closure scope for now (the reference
+sections are covered by PARITY); a bare `catalog` row may be left blank.
+The check pass (guidelines/passes/03-check.md) RE-RUNS THE SAME SCRIPT and
+diffs — because both derive the span set from identical code, the diff
+cannot disagree on which spans exist, only on a judgment cell, which is
+exactly what an independent check should be comparing.
+
 ## PARITY
 Written by the write pass (guidelines/passes/02-write.md) and closed
 before the page is reported written. One row per LINUX KERNEL catalog
@@ -87,11 +118,14 @@ starts its re-derivations here and must use a basis shaped differently
 from the recorded ones; entries are starting points, never proof.
 
 ## LINT
-Written by the lint-fix pass (guidelines/passes/03-lint.md). Every
-candidate found, each FIXED (with the exact before/after), ESCALATED
-(with a proposed fix stated precisely enough to apply without judgment),
-or EXEMPT (with the 7r ruling applied). Suspected factual defects go in
-a FACT NOTES subsection, find-only.
+The Gate A record. The WRITER writes it as part of its exit suite
+(guidelines/passes/02-write.md, item 7): every candidate the prose view
+and the figure sweep surfaced, each FIXED (with the exact before/after),
+ESCALATED (unsure — for the orchestrator), or EXEMPT (with the 7r ruling
+applied). Write the verdict down BEFORE acting on it; that is what stops
+a writer's defence of its own prose from being silent. The check pass
+(guidelines/passes/03-check.md) then appends its own reproduction of
+these classes, and a disagreement is a finding.
 
 ## VERIFY
 Written by the verify pass (guidelines/passes/04-verify.md). Per-item
