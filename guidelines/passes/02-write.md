@@ -103,7 +103,7 @@ The sample pages under `guidelines/reference/samples/` embody every rule. The cl
 
 ## Dispatching a writer (campaign brief)
 
-Role: researches, writes, and fact-verifies one complete page (passes 01 and 02). The writer owns everything disk-settleable on its page — catalog-to-DETAILS parity, excerpt verbatimness, link-anchor correctness, counts, and behavioral claims — and leaves no substantive holes: a page is not reported written until the parity table has zero empty rows (fill-or-decatalog) and the mechanical exit suite above has run clean with its evidence persisted. What the writer does not run are the style sweeps; the lint-fix stage with fresh context does those better. Model tier: the strongest available model; page writing needs research judgment, prose discipline, and figure quality. On death, resume the same agent first ("do not redo the research; write the page now from what you have"); if repeated resumes fail, a fresh agent starts from the page's dossier, its parity table, and the plan file.
+Role: researches, writes, and fact-verifies one complete page (passes 01 and 02). The writer owns everything disk-settleable on its page — catalog-to-DETAILS parity, excerpt verbatimness, link-anchor correctness, counts, and behavioral claims — and leaves no substantive holes: a page is not reported written until the parity table has zero empty rows (fill-or-decatalog) and the mechanical exit suite above has run clean with its evidence persisted. The writer runs the Gate A sweeps on its own prose as part of the exit suite (item 7) — the sweeps are procedure, not perception, and survive self-application (the measurement is in `guidelines/passes/03-check.md`); the orchestrator re-runs every mechanical check independently in pass 03, and a fixer survives only in fix-list mode, applying already-adjudicated lists. Model tier: the strongest available model; page writing needs research judgment, prose discipline, and figure quality. On death, resume the same agent first ("do not redo the research; write the page now from what you have"); if repeated resumes fail, a fresh agent starts from the page's dossier, its parity table, and the plan file.
 
 Fill the brackets from the plan file. The brief names the files that carry every house rule, as absolute paths; a writer must never have to guess where a rule lives.
 
@@ -134,9 +134,10 @@ skipped read is a skipped rule set.
    factual items by construction and by the exit suite (1 parity,
    2 grounded code, 3 links, 6 coverage, 7 driver recency, 9 behavioral
    claims); a verify campaign re-runs the whole gate later, and a
-   factual defect found there costs a follow-up round. Gate A and the
-   style items stay with the lint-fix stage: do not run style sweeps on
-   your own prose.
+   factual defect found there costs a follow-up round. You also run
+   Gate A (3a) on your own prose per 3c's procedure — exit-suite
+   item 7; the orchestrator re-runs every mechanical check
+   independently after you report.
 6. <SKILL_DIR>/guidelines/reference/subsystems.md — read only the page's
    subsystem entry.
 
