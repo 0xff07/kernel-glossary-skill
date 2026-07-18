@@ -103,9 +103,9 @@ The sample pages under `guidelines/reference/samples/` embody every rule. The cl
 
 ## Dispatching a writer (campaign brief)
 
-Role: researches, writes, and fact-verifies one complete page (passes 01 and 02). The writer owns everything disk-settleable on its page — catalog-to-DETAILS parity, excerpt verbatimness, link-anchor correctness, counts, and behavioral claims — and leaves no substantive holes: a page is not reported written until the parity table has zero empty rows (fill-or-decatalog) and the mechanical exit suite above has run clean with its evidence persisted. The writer runs the Gate A sweeps on its own prose as part of the exit suite (item 7) — the sweeps are procedure, not perception, and survive self-application (the measurement is in `guidelines/passes/03-check.md`); the orchestrator re-runs every mechanical check independently in pass 03, and a fixer survives only in fix-list mode, applying already-adjudicated lists. Model tier: the strongest available model; page writing needs research judgment, prose discipline, and figure quality. On death, resume the same agent first ("do not redo the research; write the page now from what you have"); if repeated resumes fail, a fresh agent starts from the page's dossier, its parity table, and the plan file.
+Role: researches, writes, and fact-verifies one complete page (passes 01 and 02). The writer owns everything disk-settleable on its page — catalog-to-DETAILS parity, excerpt verbatimness, link-anchor correctness, counts, and behavioral claims — and leaves no substantive holes: a page is not reported written until the parity table has zero empty rows (fill-or-decatalog) and the mechanical exit suite above has run clean with its evidence persisted. The writer runs the Gate A sweeps on its own prose as part of the exit suite (item 7) — the sweeps are procedure, not perception, and survive self-application (the measurement is in `guidelines/passes/03-check.md`); the orchestrator re-runs every mechanical check independently in pass 03, and a fixer survives only in fix-list mode, applying already-adjudicated lists. Model tier: the strongest available model; page writing needs research judgment, prose discipline, and figure quality. On death, resume the same agent first ("do not redo the research; write the page now from what you have"); if repeated resumes fail, a fresh agent starts from the page's dossier, its parity table, and the campaign spec.
 
-Fill the brackets from the plan file. The brief names the files that carry every house rule, as absolute paths; a writer must never have to guess where a rule lives.
+Fill the brackets from the campaign spec (the spec is machine-portable; the absolute paths below are composed at dispatch time from the local environment). The brief names the files that carry every house rule, as absolute paths; a writer must never have to guess where a rule lives.
 
 ```
 Write the page <output path> for the <subsystem> knowledge base.
@@ -153,7 +153,7 @@ CAMPAIGN FACTS (carried by this brief because no guideline file can):
   truth. Architecture scope: <arch>. State CONFIG assumptions in the page
   where behavior depends on them: <list>.
 - Section 6 heading for this subsystem: <value or "omit">.
-- Project-specific bans and amendments from the plan file: <list, or
+- Project-specific bans and amendments from the campaign spec: <list, or
   "none">.
 - <If an existing draft or prior page feeds this one: the source file(s)
   and sections to mine, the known source defects from the reuse map; rule

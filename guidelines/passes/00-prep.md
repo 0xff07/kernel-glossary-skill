@@ -38,4 +38,4 @@ If the output directory does not exist, create it.
 
 ## Create the run workspace
 
-For a run outside a campaign, choose the run's short name and create its dossier directory `progress/<campaign>/` now, per SKILL.md ("The three artifacts and the three states") (a campaign created its workspace at planning; the writer brief carries the path). Record the name in the dossier HEADER. Existing `progress/` entries belong to other runs: list their names only for the collision check, and read nothing inside them.
+For a run outside a campaign, choose the run's short name and create its workspace directory `progress/<campaign>/` now, per SKILL.md ("The three artifacts and the three states") (a campaign created its workspace at planning; the writer brief carries the path). Record the name in the dossier HEADER. Collision-check the name against both `campaigns/` and `progress/`. Existing `progress/` workspaces belong to other campaigns: list their names only for the collision check, and read nothing inside them.

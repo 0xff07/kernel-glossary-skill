@@ -2,7 +2,7 @@
 
 Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
-This registry consolidates the exemptions scattered through 7a-7m plus the adjudications settled across generation batches. Writer and lint briefs name this file as a mandatory first read (never summarize it into a brief), so agents apply the decisions instead of re-litigating them, and two agents in the same batch cannot diverge on a boundary. When a new adjudication is settled during a campaign, record it in the plan file's Status as a LESSON and fold it into this registry.
+This registry consolidates the exemptions scattered through 7a-7m plus the adjudications settled across generation batches. Writer and lint briefs name this file as a mandatory first read (never summarize it into a brief), so agents apply the decisions instead of re-litigating them, and two agents in the same batch cannot diverge on a boundary. When a new adjudication is settled during a campaign, record it in the run log as a LESSON and surface it to the user, who folds it into this registry (the log is machine-local; only this registry makes a ruling durable).
 
 Exempt (never flag, and never reword a compliant construct to silence a pattern match):
 - Capitalized CPU-architecture names for the arm-word ban: Arm, ARM64, arm64, "32-bit Arm".

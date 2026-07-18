@@ -35,9 +35,9 @@ Applying a finding:
 
 - A finding with an exactly-specified fix (a byte-proved anchor correction, a settled 7q recipe, a figure-geometry adjustment) is applied directly by the orchestrator and re-verified with the command that found it.
 - Volume, or anything needing repeated judgement, goes to a fixer in FIX-LIST mode (`guidelines/passes/03-lint-fixlist.md`) — the fixer role survives only in this form: it applies an already-adjudicated list exactly as briefed, and never sweeps, never derives, and never extends. Derive the fix list from an EXHAUSTIVE grep of the offending construct, not from the sites a report happened to name; a fix list built from a report once missed an identical construct two hundred lines away, and the fixer correctly refused to improvise.
-- A factual finding is never fixed here. It goes back to the writer, whose facts they are, while its transcript lives; otherwise it is recorded in the campaign file's Status for a repair campaign.
+- A factual finding is never fixed here. It goes back to the writer, whose facts they are, while its transcript lives; otherwise it is recorded in the run log, surfaced to the user, and becomes repair-campaign catalog material.
 
-Record the outcome in the dossier's LINT section and the page's state change in the campaign file's Status (WRITTEN → LINTED).
+Record the outcome in the dossier's LINT section and the page's state change in the run log (`progress/<campaign>/log.md`, WRITTEN → LINTED). If the check refuted a claim the campaign spec itself makes (a wrong anchor in a catalog row, a stale boundary), promote that correction into the spec as a dated amendment — the log does not travel.
 
 ## The standing hazard
 

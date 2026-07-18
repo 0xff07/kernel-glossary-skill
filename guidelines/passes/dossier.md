@@ -15,8 +15,8 @@ The dossier is a hint sheet, never a source. It pins the documented version (tag
 - One dossier per page: `progress/<campaign>/<page-slug>.dossier.md`. A single-page run's campaign name is its topic slug.
 - Local scratch, never committed. A run's dossiers are disposable once its campaign closes (keep them until then; gap-fill writers and verify campaigns reuse them). Another run's dossiers are off limits unless the user directs resume, reuse, or verify.
 - Whoever runs the research pass creates it and keeps it current: the writer by default, or a dedicated researcher agent (`guidelines/passes/01-research.md`) when a campaign fans research out. Each later pass appends its own section.
-- Anything durable a dossier records — a correction against the campaign's specification, a lesson, a settled adjudication — is promoted by the orchestrator into the campaign file, which is the only artifact of the two that travels. A finding left only in a dossier is lost when the machine is.
-- When a writer dies mid-page, resuming that same agent stays the first recovery move (its transcript holds the richer context); the dossier is the durable fallback, and a replacement agent starts from the dossier plus the campaign file instead of redoing the research.
+- Anything durable a dossier records — a correction against the campaign's specification, a lesson, a settled adjudication — is promoted by the orchestrator into the campaign spec (`campaigns/<campaign>.md`) as a dated amendment, or surfaced to the user for the 7r registry; the spec is the only artifact here that travels. Run events go to the run log (`progress/<campaign>/log.md`). A finding left only in a dossier or the log is lost when the machine is — by design.
+- When a writer dies mid-page, resuming that same agent stays the first recovery move (its transcript holds the richer context); the dossier is the machine-local fallback, and a replacement agent starts from the dossier plus the campaign spec instead of redoing the research.
 - Helper scripts and working scratch go in the agent's own scratchpad directory, not here.
 
 ## Format
@@ -32,7 +32,7 @@ The research sections mirror the research pass one for one, so a single agent ca
 - subsystem: <name> (entry in guidelines/reference/subsystems.md)
 - documented version: <tag>, commit <sha>
 - architecture / CONFIG scope: <arch>; <CONFIG assumptions>
-- boundary statement: <verbatim from the campaign file, campaigns only>
+- boundary statement: <verbatim from the campaign spec, campaigns only>
 
 ## SYMBOLS
 One line per function, struct, enum, macro, or typedef the page will

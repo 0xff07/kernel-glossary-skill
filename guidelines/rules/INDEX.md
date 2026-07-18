@@ -1,6 +1,6 @@
 # Rule index
 
-Rules are cited by stable ID everywhere in this skill — briefs, dossiers, campaign files, and the pass files. **IDs never renumber.** One recorded exception: the gates took IDs 3a-3c in a one-time move from a former `guidelines/gates/` directory, never to be repeated; prose throughout the skill keeps their names — Gate A (3a), Gate B (3b) — alongside the IDs.
+Rules are cited by stable ID everywhere in this skill — briefs, dossiers, campaign specs, and the pass files. **IDs never renumber.** One recorded exception: the gates took IDs 3a-3c in a one-time move from a former `guidelines/gates/` directory, never to be repeated; prose throughout the skill keeps their names — Gate A (3a), Gate B (3b) — alongside the IDs.
 
 Three files hold every rule.
 

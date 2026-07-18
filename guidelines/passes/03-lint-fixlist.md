@@ -51,7 +51,7 @@ MANDATORY READING, in order, before touching the page:
 
 FACTS. Documented tree: <path>, version <tag>, commit <sha> (the disk is
 ground truth for every byte-match precondition).
-PROJECT-SPECIFIC BANS carried from the campaign file: <list, or "none">.
+PROJECT-SPECIFIC BANS carried from the campaign spec: <list, or "none">.
 [FIX LIST. <One numbered item per reviewed finding: the current text
 (exact), the replacement (exact, or the 7q recipe to apply), and its
 location by section heading. Span-form fixes name the exact link target

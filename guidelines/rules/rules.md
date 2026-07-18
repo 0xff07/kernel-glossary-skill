@@ -1,6 +1,6 @@
 # Writing rules and gates
 
-Every criterion a generated page is judged against, except the diagram rules (see `diagrams.md`) and the settled adjudications registry (see `7r-adjudications.md`, which is the mandatory first read for every agent). Rule IDs are stable identifiers and never renumber: briefs, dossiers, and campaign files cite rules by ID. `INDEX.md` maps every ID to its section here.
+Every criterion a generated page is judged against, except the diagram rules (see `diagrams.md`) and the settled adjudications registry (see `7r-adjudications.md`, which is the mandatory first read for every agent). Rule IDs are stable identifiers and never renumber: briefs, dossiers, and campaign specs cite rules by ID. `INDEX.md` maps every ID to its section here.
 
 ## Style and prose
 
