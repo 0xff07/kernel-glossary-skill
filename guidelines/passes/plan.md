@@ -17,7 +17,7 @@ A campaign starts with a plan the user approves, kept in a durable, committed ca
 Build the plan in this order:
 
 1. Extract the request's constraints before touching the tree. From the request (a prompt file or the conversation), record verbatim into the campaign spec's Context and Scope sections: the documented tree with its version tag and commit pin, the architecture scope, the granularity preference, the emphasis areas the request stresses (lifecycle, state transitions, hard limits, callback semantics), any wording bans or mandatory tools, and the topic list itself. Note where the request is explicitly incomplete ("this list is rough", a blank bullet, an area with no bullets); each such gap is a curation obligation, never an omission to mirror.
-2. Inventory with parallel read-only agents, one per major area. Split the topic into three to six areas along the request's own headings and dispatch one read-only research agent per area, in parallel (read-only inventory agents are safe to parallelize; writers are not). Each brief follows the inventory template at the end of this file: the area, the `kernel_paths` subset to search, the documented tree and version, the toolset (semcode `find_type`, `find_function`, `find_callers`, `grep_functions`, plus Grep and Read), and the six digest deliverables. Demand a COMPACT digest; a compact report survives agent deaths and resumes better than prose chapters, and it lands verbatim in the campaign spec. When an inventory agent dies (rate limit, transient API error), resume that same agent and ask for the compact report of what it has so far instead of restarting the research; spawn a fresh agent only after resuming fails twice.
+2. Inventory with parallel read-only agents, one per major area. Split the topic into three to six areas along the request's own headings and dispatch one read-only research agent per area, in parallel (read-only inventory agents are safe to parallelize; writers are not). Each brief follows the inventory template at the end of this file: the area, the `kernel_paths` subset to search, the documented tree and version, the toolset (semcode `find_type`, `find_function`, `find_callers`, `grep_functions`, plus Grep and Read), and the ten digest deliverables. Demand a COMPACT digest; a compact report survives agent deaths and resumes better than prose chapters, and it lands verbatim in the campaign spec. When an inventory agent dies (rate limit, transient API error), resume that same agent and ask for the compact report of what it has so far instead of restarting the research; spawn a fresh agent only after resuming fails twice. When the subsystem is large or the request stresses observability or asynchrony, add one or two dedicated whole-subsystem sweep areas (one for tracing and debug infrastructure, one for async/deferred designs) on top of the per-area agents — a sweep agent enumerates its dimension across the subsystem's full kernel_paths, while the per-area items 7-10 stay scoped to each area's paths; otherwise the per-area items suffice.
 3. Record the digests in the campaign spec, one Inventory findings subsection per area, before any catalog work — digests are specification (writers consume their drift ledgers), not runtime. Treat every line number in a digest as a hint to re-verify at write time, never as a citation; semcode indexes can lag the tree, and the on-disk source at the documented version is always ground truth. Give the version-specific renames and removals their own prominence; they are the facts that keep pages version-correct.
 4. Curate the catalog yourself; do not delegate it. Catalog design is the load-bearing judgment of the campaign, and the orchestrator (or the human planner) makes it from the digests. Map every bullet of the request to one or more catalog rows; curate gap-fill rows for topics the digests surfaced that the request missed; and for every suggested topic that does NOT get a page, record a fold-in adjudication in the spec naming the page that absorbs it (the fold-in list prevents re-litigating scope later). Each catalog row carries (a) the output path `docs/<dir>/<group>/<slug>.md`, (b) a scope statement naming the anchor symbols the page is built around, each with a file:line hint from the digest, and (c) a tag recording whether the row was explicitly requested or curated. Prefer fine granularity: one mechanism, one page; a request bullet that mixes kinds of page (the object itself, its ops structure, the syscalls that drive it) becomes multiple groups, and a "walkthrough" bullet becomes an overview row plus an algorithm row. Choose the directory organization at the same time (two levels, `docs/<dir>/<group>/`, matching the house layout) and state its rationale in the file.
 5. Write the boundary rules. Self-contained pages overlap by design, so for every cluster of sibling rows write one boundary statement that fixes each page's mission. The useful form names the seam symbol: "page A owns the syscall surface and treats the X machinery as a black box; page B owns X's object pipeline; page C owns the physical teardown; helper Y at file:line is the seam where A's coverage ends and B's opens". These statements go into the campaign spec and later verbatim into each writer brief, so siblings recap each other in at most one short paragraph instead of duplicating walkthroughs.
@@ -35,7 +35,7 @@ A plan is complete when every item below holds; confirm each before presenting i
 - The catalog states the projected page total and the tag census (how many requested, how many curated).
 - Every sibling cluster has a boundary statement naming its seam symbol.
 - The fold-in list records every absorbed topic and its absorbing page.
-- One inventory digest per area is in the file, including the version-specific renames and removals.
+- One inventory digest per area is in the file, including the version-specific renames and removals, and items 7-10 (tracing integration, debug printing, async/deferred/lazy processing, subsystem debugging infrastructure), each populated or closed with a verified negative.
 - The batch order is foundational-to-derived in batches of about five, labeled as the recommended slicing, and the write-time cautions (line numbers are hints, with the known drift examples found so far) are recorded.
 - The adversarial review ran and its accepted amendments are recorded.
 - The user checkpoint happened: the questions, the decisions (including the verification cadence), and the explicit go are in the file.
@@ -52,7 +52,7 @@ A conforming spec carries these elements, and no execution log:
 1. Context: what was asked, where the requirements come from, the campaign short name with the spec's path (`campaigns/<campaign>.md`) and the workspace directory (`progress/<campaign>/`), the documented tree with its version tag and commit pin, what is explicitly not an input, the output root, and the portability rule (no machine-specific information; how a resuming machine gets absolute paths).
 2. Re-entry contract: the standing instructions to a cold executor — confirm the tree pin (and the Elixir tag) before anything else; derive campaign state as the catalog-vs-`docs/` diff; create or reuse `progress/<campaign>/`; execute only the slice the invoker named, under the overwrite guard; record run events in the local log; promote anything durable into this spec as a dated amendment (or surface it for 7r).
 3. Scope decisions: the user-confirmed choices, numbered, including the verification cadence decision from the checkpoint.
-4. Inventory findings: one compact digest per area, from the inventory agents, including the version-specific renames and removals.
+4. Inventory findings: one compact digest per area, from the inventory agents, including the version-specific renames and removals and the items 7-10 enumerations (populated or verified-negative).
 5. Directory organization: the group layout with its rationale.
 6. Page catalog: one table per group with columns page | scope (anchor symbols) | tag, followed by the fold-in adjudications, the projected total with tag census, and the overlap boundary rules (one statement per sibling cluster, seam symbols named).
 7. Execution and verification: the per-page procedure and its campaign-specific deltas, project-specific writing bans from the request, gate ownership for the pipeline, write-time rules (line numbers are hints, with the known-drift list), user amendments (dated, explicitly superseding what they replace), the recommended batch order (current, plus any superseded order kept for reference), and the save/commit policy.
@@ -103,8 +103,51 @@ Return a COMPACT digest (a report of anchored facts, not prose chapters):
    this version relative to widely-documented older kernels.
 6. Suggested page topics the request does not list, each justified by the
    anchor symbols it would be built around.
-Keep every item to one or two lines; the digest lands verbatim in the
-campaign spec. Your final message is the digest itself, nothing else.
+7. Tracing integration: everything in the area's paths that plugs into the
+   kernel's general tracing infrastructure — tracepoint definitions
+   (TRACE_EVENT, DECLARE_EVENT_CLASS/DEFINE_EVENT, bare DECLARE_TRACE) and
+   their CREATE_TRACE_POINTS instantiation sites; every trace_*() call
+   site; probes registered on other subsystems' tracepoints
+   (register_trace_*/tracepoint_probe_register); private ftrace instances
+   (trace_array API); tracers, exporters, and relay-based trace ABIs
+   registered with the tracing core; trace_printk leftovers; and the seams
+   where this area's code fires an adjacent subsystem's events, cited at
+   both ends. Per class: enumerate with file:line, or a verified negative
+   with the search evidence.
+8. Debug and diagnostic printing: the mechanisms in play (subsystem print
+   macros, dev_dbg/pr_debug and their dynamic-debug interplay, WARN/BUG
+   usage), per-file counts for the heavy hitters, every control knob
+   (Kconfig, module params, boot params) with file:line, and the
+   load-bearing sites. Mechanisms-and-counts altitude: exhaustive per-flow
+   call-site listing is write-time work, not digest work; assertion
+   families (VM_BUG_ON-class) are a mechanism entry with counts, never a
+   site enumeration.
+9. Asynchronous, deferred, or lazy processing: every workqueue (name
+   string, flags, creation site), work item, timer and delayed work,
+   irq_work, tasklet, kthread, RCU/SRCU deferral, completion handoff,
+   async_schedule, task_work, and notifier chain (noting synchronous
+   dispatch) in the area — each with queuing site, execution context, and
+   handler at file:line — plus lazy or deferred init/enumeration designs.
+   Absent primitive classes and fully synchronous paths get verified
+   negatives with evidence.
+10. Subsystem-specific debugging infrastructure: dedicated debugfs, sysfs,
+    and procfs diagnostic surfaces; debug chardevs and ioctl interfaces;
+    error- and fault-injection facilities; in-kernel debuggers, dump, or
+    replay facilities; and in-tree userspace tooling — each with file:line
+    and the Kconfig option that gates it. Scope: only facilities this
+    subsystem itself declares (its own Kconfig files and sources);
+    kernel-wide instrumentation (KASAN, KCSAN, lockdep, DEBUG_OBJECTS and
+    kin) is out of scope unless the documented subsystem implements it.
+    Enumerated facilities that transform code paths (KASAN-class) are
+    resolved by catalog decision — dedicated rows or a recorded fold-out —
+    never absorbed as per-page documentation duty.
+Items 7-10 are inventory devices: they demand enumeration (or verified
+negatives) at plan time and gate-naming at write time. They never oblige a
+page to document config-conditional code-path variants; pages document the
+default build and name a config gate in one sentence where a cited path
+sits behind one.
+Keep every enumerated entry to one or two lines; the digest lands verbatim
+in the campaign spec. Your final message is the digest itself, nothing else.
 ```
 
 ## Plan-review brief (planning step 6)
