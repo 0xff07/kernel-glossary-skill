@@ -64,7 +64,7 @@ Each entry's heading is the subsystem name and its `dir` field maps one-to-one o
 - dir: `acpi`
 - kernel_paths: `drivers/acpi/`, `include/acpi/`, `include/linux/acpi.h`
 - spec: ACPI Specification
-- section6_heading: METHODS
+- section6_heading: METHODS (except for the EC protocol pages. Use REGISTERS instead in those pages)
 
 ## USB4
 
