@@ -8,6 +8,8 @@ Only include an ASCII diagram when it conveys a spatial or temporal relationship
 
 Do not draw a diagram for a simple linear sequence of function calls, a top-down call chain, a state machine with two states, or any flow that reads naturally as a paragraph or as a fenced code block of pseudocode. "Function A calls B which calls C" is prose, not a diagram. A single arrow chain in a box is not a diagram. If a reader would understand the same content faster from one sentence of declarative prose, write the sentence and delete the diagram.
 
+The test above rejects gratuitous figures; it is not a budget of one per page, and under-drawing is as real a gap as over-drawing. Where the material holds more than one distinct drawable relationship, draw a figure for each: a struct's field or bit layout, the larger structure it sits in, the shape of an operation that rewrites it, and the states it moves through are four different figures, and a page whose material has all four carries all four (the sample corpus reaches four figures on one page). One case is easy to under-draw and worth naming: an operation that changes the shape of a data structure (a split, a merge, an insertion, a teardown, a fork, an in-place encode) earns a before-and-after or pipeline figure showing the structure on each side of the change (7i's before / after transformation and data dependency patterns), and that figure is usually the most clarifying one on such a page. This does not loosen the restraint above; it says that when real spatial, temporal, or transformational structure is present, the default is to draw it rather than leave it in prose.
+
 When a diagram is used, follow the style established in the sample pages (for example the page-table-entry bit layouts and slot-map figures in `guidelines/reference/samples/page-encoding-pgtable-entries.md`) and the reference figures in 7h and 7i (`guidelines/rules/7h-register-bitfield.md`, `guidelines/rules/7i-patterns.md`). Use Unicode box-drawing characters (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼`) and `▼ ▲ ◀ ▶` for arrows. Title each sub-diagram with a short heading underlined by a `────` rule. Multiple sub-diagrams may share one fenced block when each has its own titled section. Indent the whole figure 4 spaces inside the fenced block so it reads as a figure, not as text. Keep every line under 80 columns so the figure renders without wrapping in plain-text views.
 
 Pure ASCII `\`, `/`, and `|` are never used as box-drawing or connector characters. The `/` and `|` characters are acceptable inside the figure only as English word separators ("ROOT_PORT / DOWNSTREAM"), as C bitwise expressions (`LBMS | LABS`), or inside reproduced kernel source. All box sides, corners, junctions, and arrows are Unicode.
@@ -175,6 +177,7 @@ When a diagram is justified, prefer one of the named patterns below. Each patter
 | N-to-M source/destination mapping | disjoint inputs feed rows of one tabular destination |
 | queue / ring between two stages | producer and consumer communicate through a bounded buffer |
 | data dependency (inputs feed a transform) | source structs are read by a function that populates a destination struct |
+| before / after transformation | an operation reshapes one data structure; show it on each side of the change |
 | signal-timing / waveform | where a bit or sample lands in time relative to a clock or frame edge |
 | swimlane sequence (actors × time) | several actors hand work to each other and cross-actor ordering is the point |
 | state-transition graph | an object moves through named states with back-edges and self-loops |
@@ -423,6 +426,24 @@ Use when one or more source structs are read by a function that builds or popula
                                   ▼  soc_hw_sanity_check
                  !rates  /  !formats  /  empty channels
                           ─▶ -EINVAL  "No matching ..."
+```
+
+### Pattern: before / after transformation
+
+Use when an operation changes the shape of one data structure (a split, a merge, an insert, a remove, a move, an in-place encode) and the point is the structure before versus after. Draw the structure twice in the same cell style, labelled `before` and `after`, with the operation as a labelled `──▶` between them (or the two states stacked, before above after), so the change is read by diffing the two drawings. Keeping the cell style identical across the two sides is what makes the diff legible. Distinct from data dependency, which feeds inputs through a transform into a *different* destination struct: here the *same* structure is shown reshaped on both sides.
+
+```
+    __split_vma at boundary S: one maple-tree interval before and after
+    ───────────────────────────────────────────────────────────────────
+
+    before                          after
+    ┌─────────────────────────┐     ┌────────────┬────────────┐
+    │ node  [vm_start, vm_end)│ ──▶ │ [vm_start, │ [S,        │
+    │ one interval            │     │  S)        │  vm_end)   │
+    └─────────────────────────┘     └────────────┴────────────┘
+
+    one node becomes two, the covered range is unchanged, and the
+    new node is a vm_area_dup copy of the original with its own range
 ```
 
 ### Pattern: signal-timing / waveform
