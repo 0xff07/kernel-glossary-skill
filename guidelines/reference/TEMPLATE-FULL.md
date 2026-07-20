@@ -29,3 +29,5 @@ The title doesn't have to be "REGISTERS". It can be category-dependent. For exam
 
 ## DETAILS
 
+(Organize this section as a journey or around the model (7u): its subsections are the phases of a process traced in order, or the facets of the model (roles, states, classes), with each cataloged symbol shown inside the phase or facet where it acts, alongside its definition and usage excerpts. Not one section per symbol in catalog order. Every catalog symbol still appears here (parity, 3b item 1); journey or model organization changes where a symbol is shown, not whether.)
+

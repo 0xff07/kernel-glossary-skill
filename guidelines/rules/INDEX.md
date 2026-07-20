@@ -39,6 +39,7 @@ The sample pages under `guidelines/reference/samples/` embody every rule. The cl
 | 7r | Settled adjudications registry | `7r-adjudications.md` |
 | 7s | Domain-model layer | `rules.md` |
 | 7t | Semantics tables for state sets and taxonomies | `rules.md` |
+| 7u | Journey- or model-first organization | `rules.md` |
 | 3a | Gate A: the mechanical grep gate | `rules.md` |
 | 3b | Gate B: the nine-item review sign-off | `rules.md` |
 | 3c | The by-hand check procedures both gates use | `rules.md` |
