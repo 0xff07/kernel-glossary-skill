@@ -36,14 +36,12 @@ MANDATORY READING, in order, before touching the page:
    every candidate against it BEFORE fixing or proposing; a hit on an
    exempt construct is a false candidate, and rewording a compliant
    phrase to silence a pattern is itself a defect.
-2. <SKILL_DIR>/guidelines/passes/03-lint.md — your procedure: the two
-   lanes and steps 1 through 5. Execute in order.
-3. <SKILL_DIR>/guidelines/rules/rules.md — every writing rule and every
+2. <SKILL_DIR>/guidelines/rules/rules.md — every writing rule and every
    gate, in one file. This pass exercises its "Style and prose" part (7,
    7a-7d and 7f, the prose gates; 7m, span form; 7q, the fix recipes),
    Gate A's greps (3a), and the by-hand procedures in 3c (items 1 and 2
    are the preconditions for span-link and line-drift fixes).
-5. The frozen samples for catalog-form questions:
+3. The frozen samples for catalog-form questions:
    <SKILL_DIR>/guidelines/reference/samples/page-encoding-pgtable-entries.md and
    <SKILL_DIR>/guidelines/reference/samples/page-overview-mm-struct.md — the LINUX
    KERNEL bullet display form they use is the house convention, not
@@ -58,8 +56,8 @@ location by section heading. Span-form fixes name the exact link target
 URL. Nothing else is in scope.>]
 
 CONSTRAINTS.
-- Fix ONLY lane-1 classes (or, in fix-list mode, only the listed items,
-  exactly as briefed); escalate everything unsettled. Never fix
+- Fix ONLY the listed items, exactly as briefed; escalate everything
+  unsettled. Never fix
   facts: no excerpt additions or extensions, no coverage or parity
   closure, no fact, count, or claim edits. Fenced blocks stay
   byte-for-byte except the provenance line of a byte-proved drift fix.

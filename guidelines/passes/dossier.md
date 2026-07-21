@@ -17,7 +17,7 @@ The dossier is a hint sheet, never a source. It pins the documented version (tag
 - Whoever runs the research pass creates it and keeps it current: the writer by default, or a dedicated researcher agent (`guidelines/passes/01-research.md`) when a campaign fans research out. Each later pass appends its own section.
 - Anything durable a dossier records — a correction against the campaign's specification, a lesson, a settled adjudication — is promoted by the orchestrator into the campaign spec (`campaigns/<campaign>.md`) as a dated amendment, or surfaced to the user for the 7r registry; the spec is the only artifact here that travels. Run events go to the run log (`progress/<campaign>/log.md`). A finding left only in a dossier or the log is lost when the machine is — by design.
 - When a writer dies mid-page, resuming that same agent stays the first recovery move (its transcript holds the richer context); the dossier is the machine-local fallback, and a replacement agent starts from the dossier plus the campaign spec instead of redoing the research.
-- Helper scripts and working scratch go in the agent's own scratchpad directory, not here.
+- Helper scripts and working scratch go in the agent's scratchpad directory, not here — under a per-page subdirectory named for the page slug, because the session scratchpad is shared between concurrently dispatched agents and generically named files collide across pages.
 
 ## Format
 

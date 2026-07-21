@@ -12,7 +12,7 @@ The test above rejects gratuitous figures; it is not a budget of one per page, a
 
 A figure depicts a journey or a model, never a catalog (7u). It shows a process (a pipeline, a sequence, a before-and-after, a lifecycle) or a structure and its relationships (a state machine, an object topology, a taxonomy, a memory or bit layout). On a page organized around a journey or a model, the primary figure shows that spine whole, so the reader holds a map of the same shape the prose traces. A figure that only lists symbols in boxes with no process or relationship among them is a catalog in visual form; redraw it to show the relationship or drop it.
 
-When a diagram is used, follow the style established in the sample pages (for example the page-table-entry bit layouts and slot-map figures in `guidelines/reference/samples/page-encoding-pgtable-entries.md`) and the reference figures in 7h and 7i (`guidelines/rules/7h-register-bitfield.md`, `guidelines/rules/7i-patterns.md`). Use Unicode box-drawing characters (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼`) and `▼ ▲ ◀ ▶` for arrows. Title each sub-diagram with a short heading underlined by a `────` rule. Multiple sub-diagrams may share one fenced block when each has its own titled section. Indent the whole figure 4 spaces inside the fenced block so it reads as a figure, not as text. Keep every line under 80 columns so the figure renders without wrapping in plain-text views.
+When a diagram is used, follow the style established in the sample pages (for example the page-table-entry bit layouts and slot-map figures in `guidelines/reference/samples/page-encoding-pgtable-entries.md`) and the reference figures in the 7h and 7i catalogs below. Use Unicode box-drawing characters (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼`) and `▼ ▲ ◀ ▶` for arrows. Title each sub-diagram with a short heading underlined by a `────` rule. Multiple sub-diagrams may share one fenced block when each has its own titled section. Indent the whole figure 4 spaces inside the fenced block so it reads as a figure, not as text. Keep every line under 80 columns so the figure renders without wrapping in plain-text views.
 
 Pure ASCII `\`, `/`, and `|` are never used as box-drawing or connector characters. The `/` and `|` characters are acceptable inside the figure only as English word separators ("ROOT_PORT / DOWNSTREAM"), as C bitwise expressions (`LBMS | LABS`), or inside reproduced kernel source. All box sides, corners, junctions, and arrows are Unicode.
 
@@ -20,7 +20,7 @@ Diagram annotations (legends, per-bit meanings, code-like pseudocode lines, comm
 
 ## 7h. Register and bitfield figures (mandatory)
 
-A figure that plots a register, a bitfield, a TRB, a context, a packet header, or another bit-field structure follows the rules and reference figures in this section, on top of the general diagram rules in 7g (`guidelines/rules/7g-principles.md`). It is drawn in one of two named styles, the DWORD-grid style and the L-connector style, chosen by the register-versus-structure test below.
+A figure that plots a register, a bitfield, a TRB, a context, a packet header, or another bit-field structure follows the rules and reference figures in this section, on top of the general diagram rules in 7g in this file. It is drawn in one of two named styles, the DWORD-grid style and the L-connector style, chosen by the register-versus-structure test below.
 
 Two things decide how to label the bits, and the two resulting styles have names used throughout this skill. The DWORD-grid style writes each field name inside its cell and stacks the DWORDs as `DW0`, `DW1`, ... rows; the L-connector style draws a single row of one-character cells and calls out each bit's name below on an L-shaped leader.
 
@@ -552,7 +552,7 @@ Use when a multi-node signal or dependency graph has fan-in and fan-out, plus au
 
 ### Pattern: register / address-offset map
 
-Use when several registers sit at fixed offsets within a block, or one block repeats at base + stride · index, and the addressing is the point (per-stream, per-port, or per-lane blocks). Draw the index ──▶ base-address column on the left, and one representative block expanded as a box of its named registers on the right. Distinct from a single-register bitfield (7h, `guidelines/rules/7h-register-bitfield.md`), which plots the bits of one register.
+Use when several registers sit at fixed offsets within a block, or one block repeats at base + stride · index, and the addressing is the point (per-stream, per-port, or per-lane blocks). Draw the index ──▶ base-address column on the left, and one representative block expanded as a box of its named registers on the right. Distinct from a single-register bitfield (the 7h catalog in this file), which plots the bits of one register.
 
 ```
        Per-stream SDn register blocks (one per host DMA engine)
