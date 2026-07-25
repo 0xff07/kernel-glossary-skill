@@ -7,39 +7,42 @@
 Every [`struct mm_struct`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/mm_types.h#L1123) carries two reference counters with two different meanings. [`mm_users`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/mm_types.h#L1171) counts users of the address space contents (the VMAs, the user page tables, the mapped pages), is moved by [`mmget()`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/sched/mm.h#L131), [`mmget_not_zero()`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/sched/mm.h#L136), and [`mmput()`](https://elixir.bootlin.com/linux/v7.0/source/kernel/fork.c#L1193), and its 1 to 0 edge fires [`__mmput()`](https://elixir.bootlin.com/linux/v7.0/source/kernel/fork.c#L1167), which dismantles the address space through [`exit_mmap()`](https://elixir.bootlin.com/linux/v7.0/source/mm/mmap.c#L1275). [`mm_count`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/mm_types.h#L1137) counts references to the [`struct mm_struct`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/mm_types.h#L1123) object itself (including the page-global directory it points to), is moved by [`mmgrab()`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/sched/mm.h#L35) and [`mmdrop()`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/sched/mm.h#L47), and its 1 to 0 edge fires [`__mmdrop()`](https://elixir.bootlin.com/linux/v7.0/source/kernel/fork.c#L718), which frees the pgd and returns the struct to [`mm_cachep`](https://elixir.bootlin.com/linux/v7.0/source/kernel/fork.c#L479). The whole nonzero [`mm_users`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/mm_types.h#L1171) population collectively owns exactly one [`mm_count`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/mm_types.h#L1137) reference, which the last [`mmput()`](https://elixir.bootlin.com/linux/v7.0/source/kernel/fork.c#L1193) releases at the end of [`__mmput()`](https://elixir.bootlin.com/linux/v7.0/source/kernel/fork.c#L1167). On x86-64 the scheduler's lazy-TLB borrowing (a kernel thread running on a user task's page tables through [`task_struct.active_mm`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/sched.h)) takes real [`mm_count`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/mm_types.h#L1137) references through [`mmgrab_lazy_tlb()`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/sched/mm.h#L88) and [`mmdrop_lazy_tlb()`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/sched/mm.h#L94), because [`CONFIG_MMU_LAZY_TLB_REFCOUNT`](https://elixir.bootlin.com/linux/v7.0/source/arch/Kconfig#L553) is `def_bool y` and x86 leaves [`CONFIG_MMU_LAZY_TLB_SHOOTDOWN`](https://elixir.bootlin.com/linux/v7.0/source/arch/Kconfig#L568) unselected. This page covers the counters, every get/put variant, the caller populations, and the [`active_mm`](https://elixir.bootlin.com/linux/v7.0/source/init/init_task.c#L115) borrowing story including [`kthread_use_mm()`](https://elixir.bootlin.com/linux/v7.0/source/kernel/kthread.c#L1615); the internal ordering of the [`__mmput()`](https://elixir.bootlin.com/linux/v7.0/source/kernel/fork.c#L1167) teardown callees is covered at call-name level only, and their deep internals fall outside this page.
 
 ```
-    Two counters, four edges: what each transition fires
-    ─────────────────────────────────────────────────────
-    (mm_init() starts both counters at 1; the whole nonzero
-     mm_users population owns exactly one mm_count reference)
+    Two counters, and the one edge on each that acts
+    ──────────────────────────────────────────────────────────────────
+    (mm_init() seeds both at 1; the whole nonzero mm_users population
+     owns exactly one mm_count reference between them)
 
-      mm_users event                 transition    action at the edge
-      ┌────────────────────────────┬─────────────┬─────────────────────────┐
-      │ mmget / get_task_mm        │  n ─▶ n+1   │ none (pure pin)         │
-      │ mmget_not_zero, mm live    │  n ─▶ n+1   │ none (pure pin)         │
-      │ mmget_not_zero, mm dead    │  0 ─▶ 0     │ returns false           │
-      │ mmput, other users left    │  n ─▶ n-1   │ skip (n-1 > 0)          │
-      │ mmput, last user           │  1 ─▶ 0     │ __mmput(): exit_mmap()  │
-      │                            │             │ etc., then mmdrop()     │
-      │ mmput_async, last user     │  1 ─▶ 0     │ schedule_work ─▶        │
-      │                            │             │ __mmput() on a kworker  │
-      └────────────────────────────┴─────────────┴─────────────────────────┘
+    mm_users
+      n  ─────────────────────────────────────────────────────────────
+           ▲  mmget and get_task_mm,     │  mmput while other users
+           │  and mmget_not_zero on a    │  remain, skipped because
+           │  live mm: a pure pin        ▼  n-1 is still above 0
+      1  ─────────────────────────────────────────────────────────────
+           ▲  mm_init seeds the count    │  the last mmput: __mmput
+           │  here; mmget_not_zero on    │  runs exit_mmap and the
+           │  a dead mm reads 0 and      │  rest, then mmdrop.
+           │  returns false instead      ▼  mmput_async defers the
+      0  ─────────────────────────────────  same work to a kworker
+                                         │
+                            this edge releases the population's
+                            single mm_count reference
+                                         │
+                                         ▼
+    mm_count
+      n  ─────────────────────────────────────────────────────────────
+           ▲  mmgrab, and on x86-64      │  mmdrop while references
+           │  mmgrab_lazy_tlb under      │  remain, skipped because
+           │  MMU_LAZY_TLB_REFCOUNT=y    ▼  n-1 is still above 0
+      1  ─────────────────────────────────────────────────────────────
+           ▲  mm_init seeds this count   │  the last mmdrop: __mmdrop
+           │  here as well               │  frees the pgd, the ids and
+           │                             │  the cid, then free_mm.
+           │                             ▼  mmdrop_sched defers through
+      0  ─────────────────────────────────  call_rcu, mmdrop_async to
+                                            a kworker
 
-      mm_count event                 transition    action at the edge
-      ┌────────────────────────────┬─────────────┬─────────────────────────┐
-      │ mmgrab                     │  n ─▶ n+1   │ none (pure pin)         │
-      │ mmgrab_lazy_tlb (x86-64)   │  n ─▶ n+1   │ none (REFCOUNT=y)       │
-      │ mmdrop, references left    │  n ─▶ n-1   │ skip (n-1 > 0)          │
-      │ mmdrop, last reference     │  1 ─▶ 0     │ __mmdrop(): free pgd,   │
-      │                            │             │ ids, cid; free_mm()     │
-      │ mmdrop_sched, last (RT)    │  1 ─▶ 0     │ call_rcu ─▶ __mmdrop()  │
-      │ mmdrop_async, last         │  1 ─▶ 0     │ schedule_work ─▶        │
-      │                            │             │ __mmdrop() on a kworker │
-      └────────────────────────────┴─────────────┴─────────────────────────┘
-
-      the mm_users 1 ─▶ 0 edge releases the population's single mm_count
-      reference, so the last mmput() runs __mmput() and then mmdrop();
-      a lazy-TLB borrower or an mmgrab() holder keeps the struct (and the
-      pgd) alive past that point, as a "zombie" address space
+    a lazy-TLB borrower or an mmgrab holder keeps the struct and its
+    pgd alive past the mm_users 1 to 0 edge, as a zombie address space
 ```
 
 ## SUMMARY

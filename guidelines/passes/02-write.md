@@ -13,7 +13,7 @@ Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its f
 This pass owns the writer's reading list; the writer brief points here instead of restating rules.
 
 1. `guidelines/rules/7r-adjudications.md`, the settled adjudications registry, then `guidelines/rules/rules.md`, which carries every writing rule and every gate in one file (7p applies additionally whenever the page derives from existing material).
-2. `guidelines/rules/diagrams.md`, but only when the page will carry a figure: 7g's principles always govern one, and 7h and 7i hold the figure catalogs (choose the shape from 7i's use-case index). A page with no figure needs none of it.
+2. `guidelines/rules/diagrams.md`, but only when the page will carry a figure: 7g's principles and 7v's banned shapes always govern one, and 7h and 7i hold the figure catalogs (choose the shape from 7i's use-case index). A page with no figure needs none of it.
 3. `guidelines/reference/measured-criteria.md`: the depth rules and tripwires that define what "in-depth, fine-grained" measures as.
 4. The sample pages chosen in pass 00 (`guidelines/passes/00-prep.md`), under its doctrine that samples calibrate form only, never facts.
 5. The page's subsystem entry in `guidelines/reference/subsystems.md`.
@@ -155,7 +155,7 @@ skipped read is a skipped rule set.
    the dossier you keep at <SKILL_DIR>/progress/<campaign>/<slug>.dossier.md.
 4. <SKILL_DIR>/guidelines/passes/02-write.md — the composition procedure,
    the full writer reading list (the rules via
-   <SKILL_DIR>/guidelines/rules/INDEX.md, the diagram rules 7g-7i among
+   <SKILL_DIR>/guidelines/rules/INDEX.md, the diagram rules 7g, 7v, 7h, 7i among
    them, the depth rules in
    <SKILL_DIR>/guidelines/reference/measured-criteria.md), the parity
    bookkeeping, and the mechanical exit suite you run before reporting

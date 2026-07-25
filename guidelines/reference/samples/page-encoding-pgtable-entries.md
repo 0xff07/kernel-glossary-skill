@@ -1981,22 +1981,37 @@ With CET shadow stacks (CONFIG_X86_USER_SHADOW_STACK, hardware [`X86_FEATURE_SHS
 
 ```
     Write/Dirty/SavedDirty states of a present leaf entry
-    ──────────────────────────────────────────────────────
-    (X86_FEATURE_SHSTK hardware; SavedDirty is bit 58)
+    ──────────────────────────────────────────────────────────────────
+    (X86_FEATURE_SHSTK hardware; SavedDirty is bit 58. Each node is the
+     RW/D/SD triple the entry carries; only the labelled edges are
+     drawn, and the two clean states have no transition of their own.)
 
-      _PAGE_RW   _PAGE_DIRTY   _PAGE_SAVED_DIRTY   meaning
-     ┌──────────┬─────────────┬───────────────────┬──────────────────┐
-     │    1     │      0      │         0         │ writable, clean  │
-     │    1     │      1      │         0         │ writable, dirty  │
-     │    0     │      0      │         0         │ read-only, clean │
-     │    0     │      0      │         1         │ read-only, dirty │
-     │    0     │      1      │         0         │ shadow stack     │
-     └──────────┴─────────────┴───────────────────┴──────────────────┘
+       ┌────────────────────────┐        ┌────────────────────────┐
+       │ writable, clean        │        │ read-only, clean       │
+       │  RW 1   D 0   SD 0     │        │  RW 0   D 0   SD 0     │
+       └────────────────────────┘        └────────────────────────┘
 
-      pte_wrprotect():   RW 1─▶0, Dirty parks in SavedDirty
-      pte_mkwrite(vma):  RW 0─▶1, SavedDirty returns to Dirty
-      pte_mkwrite_shstk: RW─▶0 and Dirty─▶1 (VM_SHADOW_STACK only)
-      pte_dirty() reads Dirty and SavedDirty as one mask
+       ┌────────────────────────┐
+    ┌─▶│ writable, dirty        │
+    │  │  RW 1   D 1   SD 0     │
+    │  └───────────┬────────────┘
+    │              │ pte_wrprotect()
+    │              │ RW 1 to 0, and D parks in SD
+    │              ▼
+    │  ┌────────────────────────┐
+    │  │ read-only, dirty       │
+    │  │  RW 0   D 0   SD 1     │
+    │  └───────────┬────────────┘
+    └──────────────┘ pte_mkwrite(vma)
+                     RW 0 to 1, and SD returns to D
+
+       ┌────────────────────────┐   reached only by pte_mkwrite_shstk,
+       │ shadow stack           │   which drives RW to 0 and D to 1,
+       │  RW 0   D 1   SD 0     │   and only on a VM_SHADOW_STACK vma
+       └────────────────────────┘
+
+    pte_dirty() reads Dirty and SavedDirty as one mask, so the
+    read-only-dirty node and the writable-dirty node both report dirty
 ```
 
 The shifting core is branchless. [`mksaveddirty_shift()`](https://elixir.bootlin.com/linux/v7.0/source/arch/x86/include/asm/pgtable.h#L373) computes a condition bit from inverted RW, copies Dirty into SavedDirty under that condition, and clears Dirty; [`clear_saveddirty_shift()`](https://elixir.bootlin.com/linux/v7.0/source/arch/x86/include/asm/pgtable.h#L383) is the mirror image keyed on RW being set. According to the comment above them, the shifting is done only when needed, Dirty-to-SavedDirty when the entry is Write=0 and SavedDirty-to-Dirty when it is Write=1.

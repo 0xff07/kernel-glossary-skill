@@ -18,6 +18,21 @@ Pure ASCII `\`, `/`, and `|` are never used as box-drawing or connector characte
 
 Diagram annotations (legends, per-bit meanings, code-like pseudocode lines, comments below the figure) live inside the same fenced block as the figure. The forbidden-phrase rules from 7a/7c/7d do not apply to text inside fenced code blocks, including ASCII figure blocks, but the prose surrounding the figure outside the fence still does.
 
+Four shapes are banned outright whatever the material; 7v below states them, and it overrides any pattern in the 7h and 7i catalogs that a figure would otherwise be drawn to.
+
+## 7v. Banned figure shapes (mandatory)
+
+Four shapes fail as figures however accurate their content is. A figure that is one of them is redrawn into a shape that carries structure, or deleted with its content folded into the surrounding prose. This rule outranks the catalogs: where a pattern in 7h or 7i would produce one of these shapes, the pattern is wrong and is not followed.
+
+1. **A plain table.** A `┌─┬─┐` grid of text cells, with or without a header row, whose rows are records and whose columns are attributes. Drawing an arrow inside a cell does not rescue it, and neither does a `──▶` in a line of annotation beneath it. A fixed state set, a flag taxonomy, or a member-meaning-construct census belongs in a Markdown table (7t), which is required rather than banned; what 7v forbids is redrawing that table in box characters and calling the result a figure. When a grid is genuinely the point, it is because the cells partition something (a frame into slots, a word into bit ranges, an index space into regions), and the figure shows the partition, not the records.
+2. **A plain function-flow graph.** Nodes that are all function names joined by edges that all mean "calls", including the bare top-down chain `A ──▶ B ──▶ C` and the `├─` bullet tree of call sites. 7g already rejects the call chain; 7v extends that to any figure whose entire semantic content is call order. Edges that mean feeds, points at, transitions to, is claimed by, narrows, gates, carries signal to, or is written by are structure and are welcome; an edge that means "and then calls" is not. A swimlane (7i) escapes this only because its axis is time across separate actors and its cells name the state each actor reaches; a swimlane that collapses to one column of function names is this banned shape wearing lanes.
+3. **A plain listing of struct members.** One box enumerating fields, ops members, or steps with nothing leaving it. A struct box earns its place when something exits it: a pointer field descending to the object it addresses, a field feeding a transform, the same box drawn twice around an operation that reshapes it, or a nested cell strip whose cells drop individual trunks. A box that only names what the reproduced `struct` definition already names is a catalog in visual form, which 7u bans in words and 7v bans in shape.
+4. **Plain text in a fence.** Indented prose, a numbered step list, or a bullet list under a title rule. Box-drawing characters in the title rule do not make the block a figure.
+
+The test to apply to every figure before saving it: **strip every label and read what is left.** A figure survives when the remaining skeleton still asserts something (this contains that, this becomes that, these two ends meet here, this partitions into those, time runs this way across these actors). It fails when what remains is an empty grid, a stack of unconnected boxes, or nothing at all.
+
+Two fenced blocks are not figures and 7v does not reach them: a ` ```c ` source excerpt, and a block reproducing a verbatim quotation whose formatting must survive (a commit message, a `Documentation/` passage, a Kconfig help text) per 7e. Both are exempt from this rule and from the strip-the-labels test.
+
 ## 7h. Register and bitfield figures (mandatory)
 
 A figure that plots a register, a bitfield, a TRB, a context, a packet header, or another bit-field structure follows the rules and reference figures in this section, on top of the general diagram rules in 7g in this file. It is drawn in one of two named styles, the DWORD-grid style and the L-connector style, chosen by the register-versus-structure test below.
@@ -172,7 +187,7 @@ When a diagram is justified, prefer one of the named patterns below. Each patter
 |---|---|
 | parent + N children fan-out | one parent spawns multiple typed children; identity comes from a parent field |
 | sparse slot map with conditional backing | a uniform index space where each slot may or may not have a backing object |
-| truth table (input bits → output) | a return value or branch is a deterministic function of a few input bits |
+| input decode tree | a return value or branch is a deterministic function of a few input bits |
 | boxed flowchart with decision nodes | 3+ sequential decision points with side effects and back-edges |
 | side-by-side struct comparison | two related types meet at a third operation (match, encode/decode) |
 | linked structs via field-level pointers | the field-level pointer topology between existing structs is the point |
@@ -187,7 +202,7 @@ When a diagram is justified, prefer one of the named patterns below. Each patter
 | register / address-offset map | registers at fixed offsets, or a block repeating at base + stride · index |
 | layered stack / membrane | layers stack and call through named API boundaries |
 | ordered level ladder | a value moves through strictly-ordered levels and travel direction matters |
-| refcount with threshold actions | a refcount gates hardware action only at the 0↔1 edge transitions |
+| refcount rung ladder | a refcount gates hardware action only at the 0↔1 edge transitions |
 | cyclic ring buffer with position pointers | two pointers chase each other around one wrapping buffer |
 | frame / bandwidth partition grid | one frame of a shared medium divides into slots claimed by entities |
 
@@ -248,22 +263,33 @@ This pattern differs from `parent + N children fan-out` (one parent allocating a
          (base is a virtually contiguous array; only populated slots are mapped)
 ```
 
-### Pattern: truth table (input bits → output)
+### Pattern: input decode tree
 
-Use when a function's return value or the chosen branch is a deterministic function of a small number of input bits. Lay out the inputs as boxed columns on the left and the action / return on the right; one row per distinct input pattern. The handler's sequential flow (read, clear, return) lives in prose outside the diagram, not as additional arrows inside it.
+Use when a function's return value or the chosen branch is a deterministic function of a small number of input bits or fields. Draw it as a tree that consumes one input at a time: the tested input on a trunk, one labelled edge per value, and the outcome at each leaf. The reader follows a path rather than scanning rows, and the shape shows which inputs are read only on some paths.
+
+Do NOT draw this as a grid of input columns against an outcome column. That is the plain table 7v bans, and it was the form this catalog carried until 7v retired it. When the material really is a flat product of every input against every outcome with no nesting, it is a semantics table and belongs in Markdown under 7t, with no figure at all.
 
 ```
-       input_a   input_b   result
-       ┌───────┬─────────┬───────────────────┐
-       │  0    │   X     │ OUTCOME_NONE      │
-       │  1    │   0     │ OUTCOME_HANDLED   │
-       │  1    │   1     │ OUTCOME_WAKE ──▶  followup_handler
-       └───────┴─────────┴───────────────────┘
+       input_a ?
+          │
+          ├─ 0 ──────────────────────▶ OUTCOME_NONE
+          │      (input_b is not read on this path)
+          │
+          └─ 1 ──▶ input_b ?
+                      │
+                      ├─ 0 ─────────▶ OUTCOME_HANDLED
+                      │
+                      └─ 1 ─────────▶ OUTCOME_WAKE
+                                        │
+                                        ▼
+                                      followup_handler
 ```
 
 ### Pattern: boxed flowchart with decision nodes
 
 Use when a function has 3+ sequential decision points with side effects and back-edges, and showing each step in its own box adds clarity. Each step gets its own box; each decision node has explicit yes / no labels on outgoing edges; loops draw an explicit back-edge with an arrow. Reserve this for paths with real branching; a 2-state decision should be written as prose instead.
+
+The boxes name conditions and effects, never callees. A chart whose boxes are function names and whose edges mean "calls" is the banned flow graph of 7v however many decision diamonds are drawn around it; the test is whether removing every function name would leave a decision structure behind.
 
 ```
        ┌─────────────────┐
@@ -473,6 +499,8 @@ Use when the point is where a data bit or sample lands in time relative to a clo
 
 Use when several actors (userspace, a core layer, a driver, hardware) hand work to each other over time and the cross-actor ordering is the point. Draw one vertical lane per actor separated by │ columns, time running downward, and a cross-lane ──▶ arrow for each step; annotate each lane with the state it reaches. Distinct from queue/ring (a buffer between two stages): this shows N actors over one timeline.
 
+The cells carry the state each actor reaches, not the next function it calls. A walkthrough page is where this goes wrong most often: a lane diagram of one call stack, with every cell a callee and every arrow a call, is the banned flow graph of 7v with lane rules drawn on it. If the figure would survive deleting all but one lane, it was never a swimlane.
+
 ```
        trigger START fan-out across the soc_pcm_trigger[][] rows
        ──────────────────────────────────────────────────────────
@@ -615,26 +643,29 @@ Use when a value moves through a small set of strictly-ordered levels and the tr
 
 ### Pattern: refcount with threshold actions
 
-Use when a reference count gates a hardware action only at a threshold crossing (first user enables, last user disables; the 0↔1 edge). Draw a small table or column of the ++/-- events with each count transition (0 ─▶ 1, 1 ─▶ 2, ...) and, against each, whether it reaches the hardware or is skipped. The point is that only the edge transitions act.
+Use when a reference count gates a hardware action only at a threshold crossing (first user enables, last user disables; the 0↔1 edge). Draw the count as horizontal rungs, the raising events climbing one side and the lowering events descending the other, and mark the one rung crossing that reaches the hardware. The shape puts the acting edge next to the inert ones, so the asymmetry is read off the picture rather than counted out of rows.
+
+Do NOT draw this as a grid of events against transitions against actions. That is the plain table 7v bans, and it was the form this catalog carried until 7v retired it.
 
 ```
-       be_start refcount: a shared BE starts once and stops once
-       ─────────────────────────────────────────────────────────
-       (two FEs trigger the same BE; only the edges touch hardware)
+       be_start: the hardware sees only the edges next to 0
+       ─────────────────────────────────────────────────────────────
+       (two FEs sharing one BE; START climbs the left side, STOP
+        descends the right)
 
-         command       be_start       hardware action (soc_pcm_trigger)
-         ┌───────────┬─────────────┬──────────────────────────────────┐
-         │ START     │  0 ─▶ 1     │ soc_pcm_trigger(START); →START   │
-         │ START     │  1 ─▶ 2     │ (skip: be_start != 1)            │
-         ├───────────┼─────────────┼──────────────────────────────────┤
-         │ STOP      │  2 ─▶ 1     │ (skip: be_start != 0)            │
-         │ STOP      │  1 ─▶ 0     │ soc_pcm_trigger(STOP);  →STOP    │
-         └───────────┴─────────────┴──────────────────────────────────┘
+         2  ─────────────────────────────────────────────────────
+              ▲  a second FE joins.        │  one of the two FEs
+              │  be_start reads 1 first,   │  leaves. be_start does
+              │  so no trigger is sent     ▼  not reach 0, no trigger
+         1  ─────────────────────────────────────────────────────
+              ▲  the first FE starts.      │  the last FE leaves.
+              │  soc_pcm_trigger(START)    │  soc_pcm_trigger(STOP)
+              │  reaches the BE            ▼  reaches the BE
+         0  ─────────────────────────────────────────────────────
 
-       START is also gated on state ∈ {PREPARE, STOP, PAUSED};
-       STOP is gated on state ∈ {START, PAUSED}, and decrements
-       be_start only from STATE_START.  First starter and last
-       stopper are the only callers that reach the hardware.
+         START acts only from BE state PREPARE, STOP or PAUSED;
+         STOP acts only from START or PAUSED, and lowers be_start
+         only when the BE was in START
 ```
 
 ### Pattern: cyclic ring buffer with position pointers

@@ -7,60 +7,54 @@
 [`struct mm_struct`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/mm_types.h#L1123) is the per-process address-space descriptor of the Linux kernel, defined in [`include/linux/mm_types.h`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/mm_types.h#L1123). One instance describes one user address space; every thread created with [`CLONE_VM`](https://elixir.bootlin.com/linux/v7.0/source/include/uapi/linux/sched.h#L11) shares the same instance through [`task_struct->mm`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/sched.h#L958), and kernel threads borrow a foreign instance through [`task_struct->active_mm`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/sched.h#L959). The structure aggregates state owned by many subsystems (the VMA maple tree and its locks for the mm core, the [`pgd`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/mm_types.h#L1150) root for the x86-64 paging hardware, RSS and virtual-size accounting for `/proc` and rlimits, plus per-subsystem fields for futexes, uprobes, KSM, MGLRU, NUMA balancing, membarrier, AIO, IOMMU PASIDs and the scheduler's concurrency IDs) and ends in a flexible array that is sized at boot for the machine's CPU count. The figure below maps the field groups in declaration order, with each group's owning subsystem and serialization on the right.
 
 ```
-    struct mm_struct field-group map (include/linux/mm_types.h:1123)
-    ──────────────────────────────────────────────────────────────────
-    (offset 0 at the top; every group except the flexible_array tail
-     is inside one anonymous struct marked __randomize_layout;
-     right column = owning subsystem · serializing discipline)
+    Where struct mm_struct sits in memory (include/linux/mm_types.h:1123)
+    ─────────────────────────────────────────────────────────────────────
+    (offset 0 at the left; the three regions differ in how the compiler
+     is allowed to place what is inside them)
 
-    ┌────────────────────────────────────────────────────────────────────┐
-    │ mm_count  (own cache line,              lifetime refcount · atomic │
-    │   ____cacheline_aligned_in_smp)                mmgrab() / mmdrop() │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ mm_mt · mmap_base · mmap_legacy_base       address space · mm core │
-    │ task_size · pgd · membarrier_state      mmap_lock; switch_mm reads │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ mm_users · mm_cid · pgtables_bytes      users refcount · scheduler │
-    │ map_count · page_table_lock               CIDs · page-table counts │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ mmap_lock  (rw_semaphore)                  top-level VMA-tree lock │
-    │ mmlist                                  swapoff walk · mmlist_lock │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ vma_writer_wait · mm_lock_seq         per-VMA locks (PER_VMA_LOCK) │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ futex_hash_lock · futex_phash                   private futex hash │
-    │ futex_phash_new · futex_batches               (FUTEX_PRIVATE_HASH) │
-    │ futex_rcu · futex_atomic · futex_ref      RCU + per-CPU references │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ hiwater_rss · hiwater_vm · total_vm        VM accounting · mm core │
-    │ locked_vm · pinned_vm · data_vm               mmap_lock write side │
-    │ exec_vm · stack_vm · def_flags           (pinned_vm is atomic64_t) │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ write_protect_seq                             fork COW vs GUP-fast │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ arg_lock · start_code..end_data         exec image · binfmt, prctl │
-    │ start_brk · brk · start_stack           arg_lock guards the ranges │
-    │ arg/env ranges · saved_auxv                 saved_auxv is lockless │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ rss_stat[NR_MM_COUNTERS]                       percpu RSS counters │
-    │ binfmt · context (mm_context_t)        loader ref · x86-64 TLB/LDT │
-    │ flags  (mm_flags_t, 64 MMF bits)           atomic bitmap accessors │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ ioctx_lock · ioctx_table  (AIO)             in-flight AIO contexts │
-    │ owner (MEMCG) · user_ns · exe_file       identity references · RCU │
-    │ notifier_subscriptions                               MMU notifiers │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ numa_next_scan/scan_offset/scan_seq         NUMA-balancing scanner │
-    │ tlb_flush_pending · tlb_flush_batched        flush vs PTL ordering │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ uprobes_state · hugetlb_usage          uprobes XOL · hugetlb pages │
-    │ async_put_work · iommu_mm                     deferred put · PASID │
-    │ ksm_* counters · lru_gen · mm_id         KSM · MGLRU · folio owner │
-    ├────────────────────────────────────────────────────────────────────┤
-    │ flexible_array[]  (tail, dynamically sized at boot)                │
-    │   mm_cpumask() · mm_cpus_allowed() · mm_cidmask()  per-CPU bitmaps │
-    └────────────────────────────────────────────────────────────────────┘
+    offset 0                                              sizeof(mm_struct)
+    ┌──────────────┬───────────────────────────────────┬─────────────────┐
+    │ mm_count     │ one anonymous struct marked       │ flexible_array  │
+    │ alone on its │ __randomize_layout: every other   │ tail, sized at  │
+    │ own cache    │ field group, in an order the      │ boot rather     │
+    │ line         │ compiler may permute              │ than at compile │
+    └──────┬───────┴─────────────────┬─────────────────┴────────┬────────┘
+           │                         │                          │
+           ▼                         ▼                          ▼
+    ____cacheline_          declaration order is not     three bitmaps
+    aligned_in_smp,         address order here, so       carved out by
+    with padding after      no field group may be        accessors, one
+    it only                 reached by offset            after another
+                                                                │
+      the mm_count read and         ┌─────────────────┬─────────┴───────┐
+      written by every context      ▼                 ▼                 ▼
+      switch is kept off the   mm_cpumask()   mm_cpus_allowed()  mm_cidmask()
+      line the read-mostly
+      fields share
+
+    commit c1753fd02a00 moved mm_count to the first field for exactly this
+    reason, so the padding it needs is added once, after it, rather than
+    on both sides
 ```
+
+The field-group census the layout permutes is a member-meaning-construct set, so it is carried as a table (7t) rather than redrawn in box characters (7v).
+
+| field group | owning subsystem | serializing discipline |
+|---|---|---|
+| `mm_count` | lifetime reference count | atomic; `mmgrab()` / `mmdrop()` |
+| `mm_mt`, `mmap_base`, `mmap_legacy_base`, `task_size`, `pgd`, `membarrier_state` | address space, mm core | `mmap_lock`; `switch_mm` reads |
+| `mm_users`, `mm_cid`, `pgtables_bytes`, `map_count`, `page_table_lock` | users reference count, scheduler CIDs, page-table counts | atomic; `page_table_lock` |
+| `mmap_lock`, `mmlist` | the top-level VMA-tree lock, the swapoff walk | `rw_semaphore`; `mmlist_lock` |
+| `vma_writer_wait`, `mm_lock_seq` | per-VMA locks (`PER_VMA_LOCK`) | sequence count plus wait queue |
+| `futex_hash_lock`, `futex_phash`, `futex_phash_new`, `futex_batches`, `futex_rcu`, `futex_atomic`, `futex_ref` | the private futex hash (`FUTEX_PRIVATE_HASH`) | RCU plus per-CPU references |
+| `hiwater_rss`, `hiwater_vm`, `total_vm`, `locked_vm`, `pinned_vm`, `data_vm`, `exec_vm`, `stack_vm`, `def_flags` | VM accounting, mm core | `mmap_lock` write side; `pinned_vm` is `atomic64_t` |
+| `write_protect_seq` | fork COW against GUP-fast | sequence count |
+| `arg_lock`, `start_code` through `end_data`, `start_brk`, `brk`, `start_stack`, the arg and env ranges, `saved_auxv` | the exec image, binfmt and prctl | `arg_lock` guards the ranges; `saved_auxv` is lockless |
+| `rss_stat[NR_MM_COUNTERS]`, `binfmt`, `context`, `flags` | percpu RSS counters, the loader reference, x86-64 TLB and LDT state, the 64 MMF bits | percpu; atomic bitmap accessors |
+| `ioctx_lock`, `ioctx_table`, `owner`, `user_ns`, `exe_file`, `notifier_subscriptions` | in-flight AIO contexts, identity references, MMU notifiers | `ioctx_lock`; RCU |
+| `numa_next_scan`, `numa_scan_offset`, `numa_scan_seq`, `tlb_flush_pending`, `tlb_flush_batched` | the NUMA-balancing scanner, flush against PTL ordering | atomic |
+| `uprobes_state`, `hugetlb_usage`, `async_put_work`, `iommu_mm`, the KSM counters, `lru_gen`, `mm_id` | uprobes XOL, hugetlb pages, the deferred put, PASID, KSM, MGLRU, the folio owner | per-subsystem |
+| `flexible_array[]` | the per-CPU bitmaps reached through `mm_cpumask()`, `mm_cpus_allowed()` and `mm_cidmask()` | sized at boot; accessor-only |
 
 ## SUMMARY
 

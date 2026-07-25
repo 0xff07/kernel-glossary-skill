@@ -7,7 +7,7 @@ Three files hold every rule.
 | file | holds | who reads it |
 |---|---|---|
 | `rules.md` | the writing rules and the gates | everyone |
-| `diagrams.md` | the ASCII-figure rules and their figure catalogs (7g, 7h, 7i) | only an agent whose page will carry a figure |
+| `diagrams.md` | the ASCII-figure rules, the banned shapes, and their figure catalogs (7g, 7v, 7h, 7i) | only an agent whose page will carry a figure |
 | `7r-adjudications.md` | the settled adjudications registry | every agent, first, always |
 
 **Adding a rule touches one file.** A new rule is appended to `rules.md` as a `### <ID>. <Title>` section, unless it is a diagram rule, in which case it goes in `diagrams.md`. Nothing else has to change: no file anywhere carries a rule-range enumeration, and the listing below is a convenience, not an authority — a rule missing from it still resolves by its heading in the file above.
@@ -40,6 +40,7 @@ The sample pages under `guidelines/reference/samples/` embody every rule. The cl
 | 7s | Domain-model layer | `rules.md` |
 | 7t | Semantics tables for state sets and taxonomies | `rules.md` |
 | 7u | Journey- or model-first organization | `rules.md` |
+| 7v | Banned figure shapes | `diagrams.md` |
 | 3a | Gate A: the mechanical grep gate | `rules.md` |
 | 3b | Gate B: the nine-item review sign-off | `rules.md` |
 | 3c | The by-hand check procedures both gates use | `rules.md` |
