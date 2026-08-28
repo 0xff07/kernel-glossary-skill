@@ -1,446 +1,329 @@
 # Writing rules and gates
 
-Every criterion a generated page is judged against, except the diagram rules (see `diagrams.md`) and the settled adjudications registry (see `7r-adjudications.md`, which is the mandatory first read for every agent). Rule IDs are stable identifiers and never renumber: briefs, dossiers, and campaign specs cite rules by ID. `INDEX.md` maps every ID to its section here.
+Every criterion a generated page is judged against, except the diagram rules (see `diagrams.md`) and the settled adjudications registry (see `7r-adjudications.md`, which is the mandatory first read for every agent). Rule IDs are stable identifiers and never renumber: briefs, dossiers, and campaign specs cite rules by ID. `INDEX.md` maps every ID to its section here. Each rule below states the problem or the requirement, lists the words to watch where a fixed list exists, and shows the fix as a Before/After pair. Example text sits in fenced blocks so it stays byte-greppable; a trailing paragraph names what not to flag.
 
 ## Style and prose
 
-How a page reads: sentence shape, banned constructions, page structure, and how every kernel symbol is linked. The writer sweeps these classes itself with 3c's procedure before reporting done, and the check pass reproduces them independently.
+How a page reads: sentence shape, banned constructions, and page structure. The writer sweeps these classes itself with 3c's procedure before reporting done, and the check pass reproduces them independently.
 
-### 7. Writing rules (mandatory)
+### 7. Core writing bans
 
-The composing preamble and the map of every rule ID are in `guidelines/rules/INDEX.md`.
+Six bans that bind every sentence of every page.
 
-- No em-dashes. Use parentheses instead: "CC (Command Completed)" not "CC --- Command Completed"
+**Em dashes.** Do not use them. Write parentheses or two sentences: "CC (Command Completed)", not "CC --- Command Completed".
 
-- No boldface (`**...**`)
+**Boldface.** Do not use `**...**` in page prose.
 
-- No negative constructions. Write "It is synchronous" not "It is synchronous, not asynchronous"
+**Negative constructions.** State what a thing is, not what it is not. Write "It is synchronous", not "It is synchronous, not asynchronous".
 
-- No anthropomorphic or casual placement verbs. Code does not "live" anywhere: a symbol "is defined in" a file, a value "is held in" or "is represented by" a struct. Do not use "walk" for a scalar or state field changing value; a state field "transitions through" or "advances through" its values. Reserve "walk" for traversing a data structure (walk a list, the tree, the page tables, or the ACPI namespace), which is its established kernel meaning.
+**Anthropomorphic placement verbs.** Code does not "live" anywhere: a symbol "is defined in" a file, a value "is held in" or "is represented by" a struct. Reserve "walk" for traversing a data structure (a list, the tree, the page tables, the ACPI namespace), which is its established kernel meaning; a scalar or state field "transitions through" or "advances through" its values.
 
-- No "vtable". A struct that aggregates function pointers is a "function pointer struct" (or its concrete type name, e.g. `struct file_operations`), never a "vtable". "vtable" is a C++ term and is not kernel terminology.
+**"vtable".** A struct that aggregates function pointers is a "function pointer struct" or its concrete type name (`struct file_operations`). "vtable" is a C++ term, not kernel terminology.
 
-- No question-style or "Why X does Y" / "How X works" / "Where X happens" framings as H3 or H4 headings in DETAILS, SUMMARY, or any body section. Write declarative statements. The H3 catalog labels in LINUX KERNEL (e.g., `### Detection and dispatch (evgpe.c)`, `### _Lxx: level-triggered GPE method`) are fine and should be kept; this rule only forbids question/explanation framings.
+**Question-style headings.** No "Why X does Y" / "How X works" / "Where X happens" framings as H3 or H4 headings in DETAILS, SUMMARY, or any body section. Write declarative statements.
 
-  - **BAD:**
+**Before:**
 
-    ```
-    ### Why _Exx clears status before the method
-    ```
+```
+### Why _Exx clears status before the method
+```
 
-  - **GOOD:**
+**After:**
 
-    ```
-    ### _Exx clears status before the method runs
-    ```
+```
+### _Exx clears status before the method runs
+```
 
-  - **BAD:**
+**Before:**
 
-    ```
-    ### How acpi_ev_gpe_dispatch routes the event
-    ```
+```
+### How acpi_ev_gpe_dispatch routes the event
+```
 
-  - **GOOD:**
+**After:**
 
-    ```
-    ### acpi_ev_gpe_dispatch routes by dispatch type
-    ```
+```
+### acpi_ev_gpe_dispatch routes by dispatch type
+```
 
-  - **BAD:**
+**Before:**
 
-    ```
-    ### Why the EC uses a raw handler
-    ```
+```
+### Why the EC uses a raw handler
+```
 
-  - **GOOD:**
+**After:**
 
-    ```
-    ### EC installs a raw GPE handler
-    ```
+```
+### EC installs a raw GPE handler
+```
 
-- Every DETAILS H3/H4 heading is a declarative "what-does-what" statement (a subject performing an action on an object), never a bare noun or a bare symbol name. A reader should learn what the symbol does from the heading alone. This applies to DETAILS subsection headings; the H3 catalog labels in LINUX KERNEL (grouped by file or functional area, for example `### Tree store primitives (vma.h)`) stay as noun-phrase labels and are exempt.
+**Bare-noun DETAILS headings.** Every DETAILS H3/H4 is a declarative "what-does-what" statement (a subject performing an action on an object), never a bare noun or a bare symbol name. A reader should learn what the symbol does from the heading alone.
 
-  - **BAD:**
+**Before:**
 
-    ```
-    ### vma_state_init
-    ```
+```
+### vma_state_init
+```
 
-    or
+or
 
-    ```
-    ### The slab cache
-    ```
+```
+### The slab cache
+```
 
-  - **GOOD:**
+**After:**
 
-    ```
-    ### vma_state_init creates the vm_area_cachep slab
-    ```
+```
+### vma_state_init creates the vm_area_cachep slab
+```
 
-  - **BAD:**
+**Before:**
 
-    ```
-    ### vm_refcnt
-    ```
+```
+### vm_refcnt
+```
 
-  - **GOOD:**
+**After:**
 
-    ```
-    ### vm_refcnt encodes attach state and the per-VMA lock in six values
-    ```
+```
+### vm_refcnt encodes attach state and the per-VMA lock in six values
+```
 
-### 7a. Prose colon idioms (mandatory)
+Do not flag the H3 catalog labels in LINUX KERNEL (`### Detection and dispatch (evgpe.c)`, `### _Lxx: level-triggered GPE method`, `### Tree store primitives (vma.h)`): grouped noun-phrase labels are correct there. Both heading bans govern DETAILS, SUMMARY, and body sections only.
 
-Body prose (everything outside H1, H2, H3, H4 headings, fenced code blocks, ASCII diagrams, list bullets, table cells, and Elixir links) must never use the "label-colon-explanation" idiom. The colon-followed-by-clause pattern in prose is banned. State the same content as a plain declarative sentence.
+### 7a. Label-colon prose
 
-This applies to forms like:
+**Problem:** Generated prose leans on the "label: explanation" idiom — a noun phrase, a colon, then the clause that should have been the sentence. Body prose (everything outside H1–H4 headings, fenced code blocks, ASCII diagrams, list bullets, table cells, and Elixir links) must never use it. State the same content as a plain declarative sentence.
 
-- "X: Y." where X is a noun phrase and Y is the explanation.
+The banned forms, each with its fix:
 
-  - **BAD:**
+**"X: Y." — Before:**
 
-    ```
-    Two-phase handshake: a status read, then a gated write.
-    ```
+```
+Two-phase handshake: a status read, then a gated write.
+```
 
-  - **GOOD:**
+**After:**
 
-    ```
-    The handshake has two phases. advance_transaction reads EC_SC first, and writes the next byte only when IBF is clear.
-    ```
+```
+The handshake has two phases. advance_transaction reads EC_SC first, and writes the next byte only when IBF is clear.
+```
 
-- "X is Y: Z."
+**"X is Y: Z." — Before:**
 
-  - **BAD:**
+```
+The asymmetry: an edge GPE clears status before the method, a level GPE after.
+```
 
-    ```
-    The asymmetry: an edge GPE clears status before the method, a level GPE after.
-    ```
+**After:**
 
-  - **GOOD:**
+```
+An edge-triggered GPE clears its status before the method runs; a level-triggered GPE clears it after.
+```
 
-    ```
-    An edge-triggered GPE clears its status before the method runs; a level-triggered GPE clears it after.
-    ```
+**The "is the key:" family** ("X is the key: Y" / "X is essential: Y" / "X is explicit: Y" / "X is significant: Y" / "X is conservative: Y" / "X is deliberate: Y" / "X is the linchpin: Y" / "X is asymmetric: Y" / "X is intentional: Y" / "X is correct: Y" / "X becomes clear here: Y") — **Before:**
 
-- "X is the key: Y" / "X is essential: Y" / "X is explicit: Y" / "X is significant: Y" / "X is conservative: Y" / "X is deliberate: Y" / "X is the linchpin: Y" / "X is asymmetric: Y" / "X is intentional: Y" / "X is correct: Y" / "X becomes clear here: Y".
+```
+The IBF gate is essential: IBF stays 1 until the EC consumes the byte just written.
+```
 
-  - **BAD:**
+**After:**
 
-    ```
-    The IBF gate is essential: IBF stays 1 until the EC consumes the byte just written.
-    ```
+```
+IBF stays 1 until the EC consumes the byte just written, so advance_transaction sends the next byte only when IBF reads 0.
+```
 
-  - **GOOD:**
+**The "The intent:" family** ("The intent: Y" / "The reasoning: Y" / "The result: Y" / "The fix: Y" / "The condition is: Y" / "The order of operations matters: Y" / "The pattern is: Y" / "The point is: Y" / "The takeaway is: Y") — **Before:**
 
-    ```
-    IBF stays 1 until the EC consumes the byte just written, so advance_transaction sends the next byte only when IBF reads 0.
-    ```
+```
+The reasoning: a level source stays asserted until the AML quiesces it.
+```
 
-- "The intent: Y" / "The reasoning: Y" / "The result: Y" / "The fix: Y" / "The condition is: Y" / "The order of operations matters: Y" / "The pattern is: Y" / "The point is: Y" / "The takeaway is: Y".
+**After:**
 
-  - **BAD:**
+```
+A level-triggered source stays asserted until the AML quiesces the device.
+```
 
-    ```
-    The reasoning: a level source stays asserted until the AML quiesces it.
-    ```
+**Colon-introduced quotes** ("X says: <quote>" / "X makes Y explicit: <quote>" / "X spells this out: <quote>" / "Comment: <quote>") — **Before:**
 
-  - **GOOD:**
+```
+The comment "Note: disables and clears all GPEs in the block" is the key: events only flow after an explicit enable.
+```
 
-    ```
-    A level-triggered source stays asserted until the AML quiesces the device.
-    ```
+**After:**
 
-- "X says: <quote>" / "X makes Y explicit: <quote>" / "X spells this out: <quote>" / "Comment: <quote>" introducing direct quotes.
+```
+According to the comment "Note: disables and clears all GPEs in the block", events only flow after an explicit enable.
+```
 
-  - **BAD:**
+**Colon-introduced lists** ("X is called from N places: A, B, C."). Replace with "X is called from N places. A does ..., B does ..., C does ...". The list-after-colon shape is banned even when the items are short.
 
-    ```
-    The comment "Note: disables and clears all GPEs in the block" is the key: events only flow after an explicit enable.
-    ```
+Never editorialise with "The reasoning:" or any synonym ("The rationale is", "The motivation:") that asserts authorial reasoning: the page describes what the code does, and a rationale exists only where a comment or commit message states one, quoted via "According to the comment <quote>, ...". When removing a colon-label, state the underlying mechanic as a plain declarative sentence; swapping the colon for "X matters because Y" or "X is what makes Y" asserts importance the same way and is banned by 7d.
 
-  - **GOOD:**
+Do not flag the colon inside H3/H4 headings (catalog labels like `### _Lxx: level-triggered GPE method`), Elixir link titles, code blocks, URLs, ratios (`M:N`), or after Markdown list bullets when the item is a catalog entry in the LINUX KERNEL or KERNEL DOCUMENTATION section. The ban binds flowing prose paragraphs and the lead summary paragraph.
 
-    ```
-    According to the comment "Note: disables and clears all GPEs in the block", events only flow after an explicit enable.
-    ```
+### 7b. Intro sentence + list
 
-- "X is called from N places: A, B, C." Replace with "X is called from N places. A does ..., B does ..., C does ...". The list-after-colon shape is banned even when the items are short.
+**Problem:** Generated prose presents an explanation as an intro sentence followed by a bullet or numbered list. In DETAILS, SUMMARY, and the lead summary paragraph, fold the items into a single flowing paragraph. The forbidden shape is "<noun phrase ending in a period or colon> + <bullet/numbered list>" used as exposition; phrases that head such lists ("Two notable details.", "Three layers stack.", "Four cases run from strongest to weakest.", "Concrete uses.", "Five upfront refusals.") are banned even with a period.
 
-Never editorialise with "The reasoning:" or any synonym ("The rationale is", "The motivation:", etc.) that asserts authorial reasoning. The page describes what the code does; if a comment or commit message states a rationale, quote it via "According to the comment <quote>, ..." instead. When you remove a colon-label, state the underlying mechanic as a plain declarative sentence; do not swap the colon for "X matters because Y" or "X is what makes Y", which asserts importance the same way and is banned by 7d.
+**Before:**
 
-#### Exemptions
+```
+Two details deserve attention.
 
-The colon is acceptable inside H3/H4 headings (catalog labels like `### _Lxx: level-triggered GPE method`), inside Elixir link titles, inside code blocks, inside URLs, inside ratios (`M:N`), and after Markdown list bullets when the item is a catalog entry in the LINUX KERNEL or KERNEL DOCUMENTATION section. It is banned in flowing prose paragraphs and in the lead summary paragraph.
+- advance_transaction writes EC_DATA only while IBF is clear.
+- It reads EC_DATA only while OBF is set.
+```
 
-### 7b. Prose lists (mandatory)
+**After:**
 
-Body prose in DETAILS, SUMMARY, and the lead summary paragraph must not use the "intro sentence + list" pattern when the list is explanatory. Fold the items into a single flowing paragraph.
+```
+advance_transaction writes the next byte to EC_DATA only while IBF reads 0, and reads a result byte only while OBF reads 1, so the host never races the controller.
+```
 
-The forbidden shape is "<noun phrase ending in a period or colon> + <bullet/numbered list>" used as exposition. Phrases that head such lists ("Two notable details.", "Three layers stack.", "Four cases run from strongest to weakest.", "Concrete uses.", "Five upfront refusals.") are banned even with a period. Restate as a paragraph.
+Do not flag the H3 catalog lists in LINUX KERNEL (grouped by file or functional area as the sample pages do: `EC_SC status bit macros`, `Port accessors`, `Transaction state machine`) or the bullet lists in KERNEL DOCUMENTATION and OTHER SOURCES: those are reference catalogs and remain as lists. Tables remain as tables. The ban covers prose-explanation lists only.
 
-#### Examples
+### 7d. Hollow superlatives
 
-- **BAD:**
+**Words to watch:** the most invasive, the most fragmenting, the most aggressive, the most consequential, the most preferred, the least preferred, the most expensive, the cheapest, the cheap path, the slow path, the fast path, the strongest guarantee, the weakest guarantee, the strongest anti-fragmentation guarantee, the worst outcome, the best outcome, the entire performance benefit, the entire correctness benefit, the key invariant, the key difference, the key innovation, the key role, the design assumption, the design intent, X matters, X matters because Y, X is what makes Y, what makes X work, the only mode that, elaborate, elegant, fundamental, cornerstone, linchpin, crucial, critical
 
-  ```
-  Two details deserve attention.
-  
-  - advance_transaction writes EC_DATA only while IBF is clear.
-  - It reads EC_DATA only while OBF is set.
-  ```
+**Problem:** Generated prose ranks a kernel construct ("the most invasive handler path", "the key difference") without naming the mechanic that would justify the ranking. Each kernel symbol, mode, or path is unique by definition, so the unexplained superlative adds zero information. "X matters" and "X is what makes Y" assert importance instead of stating the mechanic. "Fast path" and "slow path" are acceptable only where the kernel itself defines them (the fast path of a specific lock implementation). "The only mode that ..." fails when the same is trivially true of every other mode under some other framing.
 
-- **GOOD:**
+The test for any adjective in body prose: would the sentence still convey the mechanic with the adjective deleted? If yes, delete it. If no, replace the adjective with the actual mechanic. A superlative that cannot be reduced to a concrete code-level fact does not appear at all.
 
-  ```
-  advance_transaction writes the next byte to EC_DATA only while IBF reads 0, and reads a result byte only while OBF reads 1, so the host never races the controller.
-  ```
+**Before:**
 
-#### Exemptions
+```
+acpi_ev_gpe_dispatch is the most invasive handler path.
+```
 
-The H3 catalog lists in LINUX KERNEL (grouped by file or functional area as the sample pages do, for example `EC_SC status bit macros`, `Port accessors`, `Transaction state machine`) and the bullet lists in KERNEL DOCUMENTATION and OTHER SOURCES are reference catalogs and remain as lists. Tables remain as tables. This rule applies only to prose-explanation lists, not to reference catalogs.
+**After:**
+
+```
+acpi_ev_gpe_dispatch disables the GPE with acpi_hw_low_set_gpe(), clears edge-triggered status with acpi_hw_clear_gpe(), then routes by dispatch type.
+```
+
+**Before:**
+
+```
+A raw handler is the cheap path through acpi_ev_detect_gpe().
+```
+
+**After:**
+
+```
+acpi_ev_detect_gpe() invokes the raw handler directly at interrupt level, skipping the disable/clear/re-enable protocol that acpi_ev_gpe_dispatch() runs.
+```
+
+**Before:**
+
+```
+This is the strongest guarantee against a lost edge.
+```
+
+**After:**
+
+```
+Clearing an edge-triggered GPE's status before queueing the method ensures an edge arriving during servicing re-latches instead of being lost.
+```
+
+**Before:**
+
+```
+the key difference from a method GPE
+```
+
+**After:**
+
+```
+a method GPE queues acpi_ev_asynch_execute_gpe_method() via acpi_os_execute(); a raw-handler GPE calls the handler synchronously at interrupt level.
+```
+
+Keep direct quotes from kernel source comments, commit messages, and LKML threads verbatim even when they contain superlatives this rule would otherwise forbid.
 
 ### 7c. Forbidden phrases checklist
 
+The sweep list for the classes above and the two ban classes that live here. Scan every body paragraph for these before writing on, and rewrite hits as plain declarative sentences; quote comments with "According to the comment <quote>, ..." or "The comment reads <quote>." instead of label-colon framing.
+
 #### Scan patterns
 
-Before writing any body paragraph, scan for these patterns and rewrite if any appear:
+**Words to watch:** The reasoning (any case, with or without colon), The intent:, The asymmetry:, The fix:, The point is:, The takeaway:, The pattern is:, Two-phase pattern:, is the key:, is essential:, is explicit:, is significant:, is conservative:, is deliberate:, is the linchpin:, is asymmetric:, is intentional:, is correct:, becomes clear here:, says: ", spells this out: ", makes explicit: ", makes the trade-off explicit: ", Comment: "
 
-- A label-colon anywhere in a prose sentence, not merely at its start. Do NOT scan for this with a line-anchored pattern: 7f puts each paragraph on one unwrapped line, so an anchored pattern sees only a paragraph's first clause and misses the rest of the class. 3c's prose view is the procedure that actually reaches it.
-- `The reasoning` (in any case, with or without colon)
-- `The intent:` / `The asymmetry:` / `The fix:` / `The point is:` / `The takeaway:` / `The pattern is:` / `Two-phase pattern:`
-- `is the key:` / `is essential:` / `is explicit:` / `is significant:` / `is conservative:` / `is deliberate:` / `is the linchpin:` / `is asymmetric:` / `is intentional:` / `is correct:` / `becomes clear here:`
-- `Comment: "` introducing a quote in prose (different from the LINUX KERNEL bullet form `[symbol]: bit 0xN. Comment: "..."` which is a catalog entry and acceptable)
-- `says: "` / `spells this out: "` / `makes explicit: "` / `makes the trade-off explicit: "` introducing a direct quote in prose
-- `X is called from N places: A, B, C` (intro-colon list)
-- Any `"intro sentence." + bullet/numbered list` shape in DETAILS, SUMMARY, or lead summary paragraphs
-
-If any of these appear in body prose, rewrite the paragraph as plain declarative sentences. Quote comments with "According to the comment <quote>, ..." or "The comment reads <quote>." instead of label-colon framing.
+**Problem:** These are the grep-shaped tells of 7a and 7d. Two need care: a label-colon can sit anywhere in a prose sentence, not merely at its start, and 7f puts each paragraph on one unwrapped line, so a line-anchored pattern sees only a paragraph's first clause and misses the rest of the class (3c's prose view is the procedure that actually reaches it). `Comment: "` in prose differs from the LINUX KERNEL bullet form `[symbol]: bit 0xN. Comment: "..."`, which is a catalog entry and acceptable. The "intro sentence + list" shape of 7b and the colon-introduced list ("X is called from N places: A, B, C") belong on the same sweep.
 
 #### Banned words
 
-Do not use these words in body prose; each asserts a framing without naming a mechanism. Replace each with the concrete rule, count, or helper it stands in for.
+**Words to watch:** contract, tally, tallied, tallies, tallying, canonical, arm, arms (for a branch or union case)
 
-- "contract" (including "the X, Y, Z contract"): name the actual precondition, guarantee, rule, or invariant.
+**Problem:** Each of these asserts a framing without naming a mechanism. Replace each with the concrete rule, count, or helper it stands in for.
 
-  - **BAD:**
+**"contract"** (including "the X, Y, Z contract") — name the actual precondition, guarantee, rule, or invariant. **Before:**
 
-    ```
-    The reset, duplicate, destroy contract spans every per-object state.
-    ```
+```
+The reset, duplicate, destroy contract spans every per-object state.
+```
 
-  - **GOOD:** state the reset rule, the duplicate rule, and the destroy rule each path follows.
+**After:** state the reset rule, the duplicate rule, and the destroy rule each path follows.
 
-- "tally": use "count" or "running count".
+**"tally"** — use "count" or "running count". **Before:**
 
-  - **BAD:**
+```
+the running tally of VMAs
+```
 
-    ```
-    the running tally of VMAs
-    ```
+**After:**
 
-  - **GOOD:**
+```
+the running count of VMAs
+```
 
-    ```
-    the running count of VMAs
-    ```
+**"canonical"** — name the helper or path plainly. **Before:**
 
-- "canonical": name the helper or path plainly.
+```
+the canonical helper is vma_link() in mm/vma.c
+```
 
-  - **BAD:**
+**After:**
 
-    ```
-    the canonical helper is vma_link() in mm/vma.c
-    ```
+```
+the helper that performs it is vma_link() in mm/vma.c
+```
 
-  - **GOOD:**
+**"arm" / "arms"** for a case of a union, a branch of a conditional, a side of a split, or one member of a pair of code paths — use "branch", "case", "side", "leg", "half", or the concrete symbol name. **Before:**
 
-    ```
-    the helper that performs it is vma_link() in mm/vma.c
-    ```
+```
+the write-fault arm of do_wp_page
+```
 
-- "arm" / "arms" for a case of a union, a branch of a conditional, a side of a split, or one member of a pair of code paths: use "branch", "case", "side", "leg", "half", or the concrete symbol name instead.
+**After:**
 
-  - **BAD:**
+```
+the write-fault branch of do_wp_page
+```
 
-    ```
-    the write-fault arm of do_wp_page
-    ```
-
-  - **GOOD:**
-
-    ```
-    the write-fault branch of do_wp_page
-    ```
-
-  CPU-architecture names (Arm, ARM64, arm64) and verbatim quotes from kernel source or commit messages are exempt.
+Do not flag CPU-architecture names (Arm, ARM64, arm64) or verbatim quotes from kernel source or commit messages.
 
 #### Hedges
 
-Do not hedge with vague frequency or generality words in prose ("usually", "typically", "generally", "often", "normally", "commonly", "mostly", "in practice", "tends to", "on a hot cpu"). Each dodges the actual condition the code tests. Name that condition instead.
+**Words to watch:** usually, typically, generally, often, normally, commonly, mostly, in practice, tends to, on a hot cpu
 
-- **BAD:**
+**Problem:** Each hedge dodges the actual condition the code tests. Name that condition instead.
 
-  ```
-  A vm_area_alloc() on a hot cpu usually takes a ready object from the per-cpu sheaf without locking a shared slab.
-  ```
+**Before:**
 
-- **GOOD:**
-
-  ```
-  A vm_area_alloc() takes a ready object from the per-cpu main sheaf without locking a shared slab while that sheaf is non-empty, and reaches the shared slab only to refill an empty sheaf.
-  ```
-
-A frequency word reproduced verbatim from kernel source inside a fenced block, or a genuine measured statistic that cites a counter or benchmark, is exempt.
-
-### 7d. Hollow superlatives and unsupported adjectives (mandatory)
-
-Never characterize a kernel construct with a ranking adjective unless the same sentence (or the next one) names the concrete mechanic that justifies the ranking. Each kernel symbol, mode, or path is unique by definition; saying it is "the most X" or "the least Y" or "the strongest Z" without explaining the comparison adds zero information and is banned.
-
-Test for any adjective in body prose: ask "would the sentence still convey the mechanic if I deleted this adjective?" If yes, delete it. If no, replace the adjective with the actual mechanic. Hollow superlatives that cannot be reduced to a concrete code-level fact must not appear in body prose at all.
-
-Banned phrasings (when not immediately followed by the supporting mechanic):
-
-- "the most invasive" / "the most fragmenting" / "the most aggressive" / "the most consequential" / "the most preferred" / "the least preferred" / "the most expensive" / "the cheapest"
-- "the cheap path" / "the slow path" / "the fast path" used as standalone characterization (use only when "fast" or "slow" is a defined kernel term, e.g. "fast path" of a specific lock implementation)
-- "the strongest guarantee" / "the weakest guarantee" / "the strongest anti-fragmentation guarantee"
-- "the worst outcome" / "the best outcome"
-- "the entire performance benefit" / "the entire correctness benefit"
-- "the key invariant" / "the key difference" / "the key innovation" / "the key role" / "the design assumption" / "the design intent"
-- "X matters" / "X matters because Y" / "X is what makes Y" / "what makes X work" (asserts importance instead of stating the mechanic)
-- "the only mode that ..." (when the same is trivially true of every other mode under some other framing)
-- "elaborate", "elegant", "fundamental", "cornerstone", "linchpin", "crucial", "critical" used as standalone characterizations
-
-#### Acceptable forms
-
-- **BAD:**
-
-  ```
-  acpi_ev_gpe_dispatch is the most invasive handler path.
-  ```
-
-- **GOOD:**
-
-  ```
-  acpi_ev_gpe_dispatch disables the GPE with acpi_hw_low_set_gpe(), clears edge-triggered status with acpi_hw_clear_gpe(), then routes by dispatch type.
-  ```
-
-- **BAD:**
-
-  ```
-  A raw handler is the cheap path through acpi_ev_detect_gpe().
-  ```
-
-- **GOOD:**
-
-  ```
-  acpi_ev_detect_gpe() invokes the raw handler directly at interrupt level, skipping the disable/clear/re-enable protocol that acpi_ev_gpe_dispatch() runs.
-  ```
-
-- **BAD:**
-
-  ```
-  This is the strongest guarantee against a lost edge.
-  ```
-
-- **GOOD:**
-
-  ```
-  Clearing an edge-triggered GPE's status before queueing the method ensures an edge arriving during servicing re-latches instead of being lost.
-  ```
-
-- **BAD:**
-
-  ```
-  the key difference from a method GPE
-  ```
-
-- **GOOD:**
-
-  ```
-  a method GPE queues acpi_ev_asynch_execute_gpe_method() via acpi_os_execute(); a raw-handler GPE calls the handler synchronously at interrupt level.
-  ```
-
-#### Exemptions
-
-The two legitimate exceptions are direct quotes from kernel source comments and direct quotes from commit messages or LKML threads, which are reproduced verbatim even when they contain superlatives the rule would otherwise forbid.
-
-### 7f. General page rules (mandatory)
-
-These apply to every page regardless of subsystem.
-
-- H1 is always the topic name only
-
-- Immediately below the H1, before the summary paragraph, every generated page carries this exact AI-generated-content caution blockquote, reproduced verbatim (including the repeated final line):
-
-  ```
-  > CAUTION: AI-GENERATED CONTENT
-  >
-  > STRICTLY DO NOT SUBMIT THIS UPSTREAM UNLESS YOU ARE AN EXPERT INTIMATELY FAMILIAR WITH THIS SUBSYSTEM.
-  ```
-
-- `Documentation/` references go in KERNEL DOCUMENTATION, never in OTHER SOURCES
-
-- If an existing page has `Documentation/` links in OTHER SOURCES (or using `docs.kernel.org` / `kernel.org/doc` URLs), move them to KERNEL DOCUMENTATION. Do not convert existing URLs; instead, add a new Elixir cross referencer reference entry pointing to the same in-tree kernel doc file.
-
-- No hard line wrapping in prose. Each paragraph of prose text must be a single long line, with line breaks only between paragraphs. Do not wrap lines at 80 or any other column width. Code blocks (between ` ``` ` markers), ASCII diagrams (indented lines), list items, and table rows are exempt from this rule.
-
-- Every mention of a kernel symbol (function, macro, struct, enum, typedef) must be an Elixir cross referencer link. No exceptions. This applies to every inline code span (`` ` `` ... `` ` ``) in every section of the page: SUMMARY, LINUX KERNEL, INTERFACES, DETAILS, and prose paragraphs. This includes inline code with arguments such as `` `func(arg1, arg2)` `` in INTERFACES sections.
-
-  - Write [`function_name()`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.c#L123) instead of bare `function_name()`.
-  - Write [`func(arg1, arg2)`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.c#L123) instead of bare `func(arg1, arg2)`.
-  - Write [`struct foo`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.h#L45) instead of bare `struct foo`.
-  - Write [`MACRO_NAME`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.h#L78) instead of bare `MACRO_NAME`.
-
-  The only place bare symbol names are acceptable is inside fenced code blocks (` ``` `) that show code snippets or struct definitions. If a symbol appears multiple times on the same page, every occurrence outside a code block must be linked (repeat the link). If you cannot determine the file and line number for a symbol, look it up before writing it. If it truly cannot be found in the kernel source (e.g., it is a spec-defined ACPI method name like `_PS0` or a hardware register name like `SLP_EN`), it may remain unlinked, but add a comment noting it is a spec/hardware name.
-
-- When referencing a struct or enum type, always include the `struct` or `enum` keyword (e.g., `struct acpi_gpe_event_info`, `enum ec_command`). Do not omit the keyword unless the type is a typedef. This applies everywhere: LINUX KERNEL entries, SUMMARY, INTERFACES, DETAILS, and inline prose. For LINUX KERNEL section entries using the `'\<...\>'` format, the keyword goes inside the angle brackets: `'\<struct acpi_gpe_register_info\>'`, `'\<enum ec_command\>'`.
-
-- Do not reference internal pages. Do not add cross-links to other pages in the knowledge base (e.g., `[Page Title](other-page.md)`). Each page must be self-contained.
-
-- When citing kernel source code in Markdown code blocks, preserve the exact indentation style from the kernel source. The kernel uses tabs (8-space width) for indentation. Do not convert tabs to spaces. This includes function bodies, switch/case statements, and multi-line expressions.
-
-- Use markdown link format `[Title](URL)` for all entries in the OTHER SOURCES section. Do not use bare URLs or `Title — URL` style.
-
-- The DETAILS section must include detailed kernel code walkthroughs: step-by-step traces through function call chains, real driver API usage examples, and lifecycle coverage for key objects. For every function/struct/enum in the LINUX KERNEL section, find at least one concrete driver usage and show it in DETAILS. When elaborating on kernel code paths, always cite the actual implementation as fenced Markdown code blocks (` ```c `) rather than only describing it in prose. Show the relevant code, then explain it.
-
-### 7m. Link anchoring and exhaustive span linking (mandatory)
-
-#### Constructing Elixir cross referencer URLs
-
-Use the base URL `https://elixir.bootlin.com/linux/<version>/source/`, where `<version>` is the documented kernel version from SKILL.md's Input section (for campaigns, the version pinned in the plan file's Context). One page never mixes versions. The examples below use `v7.0`:
-
-For file references:
 ```
-[`path/to/file.c`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.c)
+A vm_area_alloc() on a hot cpu usually takes a ready object from the per-cpu sheaf without locking a shared slab.
 ```
 
-For function references (include line number). The `\<...\>` word-boundary markers make these references compatible with `git log -L`:
-```
-[`'\<function_name\>':'path/to/file.c'`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.c#L1234)
-```
+**After:**
 
-For kernel documentation files:
 ```
-[`Documentation/subsystem/file.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/subsystem/file.rst): brief description
+A vm_area_alloc() takes a ready object from the per-cpu main sheaf without locking a shared slab while that sheaf is non-empty, and reaches the shared slab only to refill an empty sheaf.
 ```
 
-Which line a link anchors at, and which symbol occurrences must be linked, is governed by the anchoring rules below (definition-line anchoring, file-location links for call sites, and the exhaustive span-linking pass).
-
-#### Anchoring and exhaustiveness
-
-This rule extends the every-symbol-linked rule in 7f with anchor selection and exhaustiveness. It is what the numbers in `guidelines/reference/measured-criteria.md` ("Samples and measured criteria") call links per page.
-
-- A link whose text is a symbol name (`` `vma_start_read()` ``, `` `struct mm_struct` ``, `` `VM_LOCKED` ``, and the LINUX KERNEL `` `'\<sym\>':'path'` `` form) anchors at the symbol's DEFINITION line, so the reference stays valid for `git log -L` and survives unrelated churn elsewhere in the file. It does not anchor at a call site, a comment mention, or a line inside some other function's body, even when that line is what the surrounding prose discusses.
-
-- A reference to a specific non-definition place in code (a call site, one branch, one field assignment) is written as a file-location link whose text is the path and line, for example [`mm/vma.c:717`](https://elixir.bootlin.com/linux/v7.0/source/mm/vma.c#L717). Prose that enumerates call sites uses one location link per site, so every count in the page is checkable one click deep.
-
-- Every occurrence of every kernel symbol outside fenced blocks is linked, including repeats of the same symbol on the same page. The exhaustive pass includes the classes that are easiest to skip: `CONFIG_*` options link to the `config X` line of the Kconfig file that declares them; generic primitives (`READ_ONCE()`, `memcpy()`, `rcu_read_lock()`, `atomic_read()`, and the like) link to the definition relevant to the documented architecture; a field path written as `a->b` or `foo.bar` links to the field's declaration line inside the struct definition; an ops-struct member named in prose ("the `fault` hook") links to that member's line in the ops struct definition.
-
-- Settled exemptions (spans that may stay bare): C keywords and operators; local variables, parameters, and goto labels quoted from an excerpt; literal and error values (`-EINVAL`, `NULL` as a value); `/proc`, `/sys`, and sysctl path strings; Kconfig syntax fragments (`=y`); tracepoint field names; a wildcard family name (`VM_*`) when the members it stands for are linked nearby; commit hashes; the `name(2)` man-page notation when the page links the syscall's kernel entry point elsewhere; and symbols verified absent from the documented tree (state the absence in prose).
-
-- Precedent never overrides the rule. "Other pages leave `CONFIG_FOO` bare" or "this page already has thirty bare `READ_ONCE()` spans" is not a reason to leave the next one bare; the rule wins, and the pre-existing in-family spans get fixed in the same pass.
+Do not flag a frequency word reproduced verbatim from kernel source inside a fenced block, or a genuine measured statistic that cites a counter or benchmark.
 
 ### 7q. Rephrase recipes (quick reference)
 
@@ -464,161 +347,191 @@ Every ban has a one-line recipe; apply the recipe instead of re-deriving complia
 | "vtable" | "function pointer struct" or the concrete type name |
 | bare kernel-symbol span | Elixir link anchored at the definition line (7m) |
 
+### 7f. General page rules
+
+Page-shape requirements that apply to every page regardless of subsystem.
+
+**Rule:** H1 is always the topic name only. Immediately below the H1, before the summary paragraph, every generated page carries this exact AI-generated-content caution blockquote, reproduced verbatim (including the repeated final line):
+
+```
+> CAUTION: AI-GENERATED CONTENT
+>
+> STRICTLY DO NOT SUBMIT THIS UPSTREAM UNLESS YOU ARE AN EXPERT INTIMATELY FAMILIAR WITH THIS SUBSYSTEM.
+```
+
+**Rule:** `Documentation/` references go in KERNEL DOCUMENTATION, never in OTHER SOURCES. When an existing page has `Documentation/` links in OTHER SOURCES (or `docs.kernel.org` / `kernel.org/doc` URLs), move them to KERNEL DOCUMENTATION; do not convert the existing URLs, add a new Elixir cross referencer reference entry pointing to the same in-tree kernel doc file.
+
+**Rule:** No hard line wrapping in prose. Each paragraph is a single long line, with line breaks only between paragraphs, at no column width. Code blocks (between ` ``` ` markers), ASCII diagrams (indented lines), list items, and table rows are exempt.
+
+**Rule:** Every mention of a kernel symbol (function, macro, struct, enum, typedef) is an Elixir cross referencer link. No exceptions. This covers every inline code span (`` ` `` ... `` ` ``) in every section — SUMMARY, LINUX KERNEL, INTERFACES, DETAILS, and prose paragraphs — including inline code with arguments such as `` `func(arg1, arg2)` `` in INTERFACES sections.
+
+- Write [`function_name()`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.c#L123) instead of bare `function_name()`.
+- Write [`func(arg1, arg2)`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.c#L123) instead of bare `func(arg1, arg2)`.
+- Write [`struct foo`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.h#L45) instead of bare `struct foo`.
+- Write [`MACRO_NAME`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.h#L78) instead of bare `MACRO_NAME`.
+
+The only place bare symbol names are acceptable is inside fenced code blocks (` ``` `) that show code snippets or struct definitions. A symbol appearing several times on the same page is linked at every occurrence outside code blocks (repeat the link). A symbol whose file and line cannot be determined is looked up before it is written; a name that truly is not in the kernel source (a spec-defined ACPI method like `_PS0`, a hardware register like `SLP_EN`) may stay unlinked with a comment noting it is a spec/hardware name.
+
+**Rule:** A struct or enum type always carries its `struct` or `enum` keyword (`struct acpi_gpe_event_info`, `enum ec_command`) unless the type is a typedef. This applies everywhere: LINUX KERNEL entries, SUMMARY, INTERFACES, DETAILS, and inline prose. In the LINUX KERNEL `'\<...\>'` entry format the keyword goes inside the angle brackets: `'\<struct acpi_gpe_register_info\>'`, `'\<enum ec_command\>'`.
+
+**Rule:** No internal cross-links. Do not link to other pages in the knowledge base (`[Page Title](other-page.md)`); each page is self-contained.
+
+**Rule:** Kernel source cited in Markdown code blocks keeps the exact indentation of the kernel source: tabs (8-space width), never converted to spaces — function bodies, switch/case statements, and multi-line expressions alike.
+
+**Rule:** Every OTHER SOURCES entry uses the markdown link format `[Title](URL)`; no bare URLs, no `Title — URL` style.
+
+**Rule:** The DETAILS section includes detailed kernel code walkthroughs: step-by-step traces through function call chains, real driver API usage examples, and lifecycle coverage for key objects. Every function/struct/enum in the LINUX KERNEL section gets at least one concrete driver usage shown in DETAILS. Kernel code paths are cited as fenced ` ```c ` blocks, then explained — never described in prose alone.
+
 ---
 
 ## Facts, code, and coverage
 
 What a page must prove and how it must prove it: excerpts, provenance, enumeration, claim verification. These are the classes the writer owns end to end and the exit suite checks.
 
-### 7e. Self-contained kernel-source citation (mandatory)
+### 7e. Self-contained kernel-source citation
 
-Every page must read as a self-contained source. A reader who never opens the kernel tree must still finish the page knowing exactly what the relevant code does. Whenever the page explains how a function works, what a struct looks like, how a macro is used, or how a call site invokes a callee, the actual code goes inline as a fenced ` ```c ` block before or alongside the explanation. Linking to Elixir is not a substitute for showing the code; the link is for navigation, the code block is for comprehension.
+**Problem:** A page that describes code without showing it forces the reader into the tree. Every page reads as a self-contained source: a reader who never opens the kernel tree still finishes the page knowing exactly what the relevant code does. Wherever the page explains how a function works, what a struct looks like, how a macro is used, or how a call site invokes a callee, the actual code goes inline as a fenced ` ```c ` block before or alongside the explanation. The Elixir link is for navigation; the code block is for comprehension. "See [`func()`](https://elixir...)" does not count as showing the code.
 
-#### Concrete requirements
+**Rule:** Never fabricate, paraphrase, or approximate kernel source. Every ` ```c ` block is the real code, located and verified with the semcode tools (`find_function`, `find_type`, `grep_functions`) and by reading the on-disk source file, then reproduced verbatim: exact text, all comments, tab indentation. Confirm the symbol exists at the documented version and the lines match the file before citing them; a symbol whose real code cannot be located gets no code block. Where a semcode index disagrees with the working tree, the on-disk source at the documented version is ground truth.
 
-- **Never fabricate, paraphrase, or approximate kernel source.** Every fenced ` ```c ` block must be the real code, located and verified with the semcode tools (`find_function`, `find_type`, `grep_functions`) and by reading the on-disk source file, then reproduced verbatim (exact text, all comments, and tab indentation). Confirm the symbol exists at the documented version and that the reproduced lines match the file before citing them; if you cannot locate the real code for a symbol, do not show a code block for it. Where a semcode index is stale or disagrees with the working tree, the on-disk source at the documented version is the ground truth.
+**Rule:** Every function in LINUX KERNEL gets at least one ` ```c ` block in DETAILS: its full body when small, or the body of the case label / branch / inner block the page actually describes. A function whose body fits in a screen of code is shown, not described. Every struct or enum in LINUX KERNEL gets its type definition reproduced (comments and `#ifdef` regions included), so the reader sees the exact field list without leaving the page. Every macro or static array referenced in body prose (`fallbacks[][]`, `__used` lookup tables) is reproduced where the prose first depends on it.
 
-- **For every function listed in LINUX KERNEL, the DETAILS section must contain at least one fenced ` ```c ` block showing either its full body (when it is small) or the body of the case label / branch / inner block that the page is actually describing.** Do not describe a function's behavior in prose alone when the body would fit in a screen of code.
+**Rule:** A call-chain walk shows both ends: the caller's invocation site as one block, the callee's body as another. A switch, conditional, or loop whose structure is the point is reproduced verbatim, never paraphrased. A kernel comment is quoted inside the fenced block that contains its surrounding code and referenced in prose via "According to the comment <quote>, ...". A commit message carrying a benchmark table or ASCII figure is reproduced in a plain ` ``` ` fence so the formatting survives.
 
-- **For every struct or enum listed in LINUX KERNEL, the DETAILS section must contain a fenced ` ```c ` block reproducing the type definition (including comments and `#ifdef` regions).** The reader must see the exact field list and any decorative comments without leaving the page.
+Each block stays as close to the source as practical: tabs preserved, comments retained, `...` elision only for irrelevant intermediate code that changes nothing for the reader. A body too long to reproduce in full is split across blocks at natural boundaries (one per case label, loop, or error-handling tail) with prose between, never truncated.
 
-- For every macro or static array (e.g. `fallbacks[][]`, `__used` lookup tables) referenced in body prose, reproduce the definition as a fenced block at the point where the prose first depends on it.
+The sufficiency test: with the page open in one window and no terminal, no other tab, no kernel tree, could the reader describe in their own words exactly which lines run on the documented path? If not, more code blocks are needed. DETAILS is the place for bulk citation; SUMMARY may carry a short snippet when a single line of code conveys the topic best.
 
-- **When walking a call chain, show the caller's invocation site as a code block as well as (separately) the callee's body.** The reader has to see both ends of the call, not just one.
+### 7l. Code-block provenance comments
 
-- **When explaining a switch statement, conditional, or loop whose structure is the point of the explanation, the code block must reproduce that structure verbatim.** Paraphrasing the control flow in prose is forbidden when the actual code would convey it more directly.
+**Rule:** Every fenced ` ```c ` block opens with a provenance comment naming the on-disk origin of the excerpt, in the exact form `/* path/from/tree/root.c:LINE */` on its own first line, where LINE is the number of the first reproduced line in the file at the documented version. A short annotation may follow the line number (`/* mm/vma.c:497 (in __split_vma()) */`). A block that stitches excerpts from several places (a caller plus its callee, two distant case labels, a struct field plus the helper that writes it) marks each excerpt's start with its own interior `/* path:line */` delimiter, and marks elided code with a standalone `...` line. Everything between delimiters is verbatim file content per 7e.
 
-- When citing a kernel comment, quote the comment text inside the same fenced code block that contains the surrounding code, and refer to it via "According to the comment <quote>, ..." in the prose.
+The provenance comment is what makes a page checkable: a reviewer opens the named file at the cited line and compares the unit directly (the 3c procedures), so a missing or wrong provenance line turns an on-disk match into a finding, and a silently drifted excerpt is caught on the first comparison. Non-code fences (ASCII figures, quoted commit-message tables, shell output) carry no provenance comment and are not diffed.
 
-- When citing a commit message that contains a benchmark table, ASCII figure, or other formatted text, reproduce it inside a fenced code block (use ` ``` ` without a language hint) so the formatting survives.
+### 7m. Link anchoring and exhaustive span linking
 
-Each fenced code block stays as close to the kernel source as practical: tab indentation preserved, all original comments retained, no truncation other than `...` to elide irrelevant intermediate code (and only when the elided code would not change the reader's understanding). When a function body is too long to reproduce in full, split it across multiple code blocks at natural boundaries (one per case label, one per loop, one per error-handling tail) rather than truncating, and explain each block in the prose between them.
+This rule extends the every-symbol-linked rule in 7f with URL construction, anchor selection, and exhaustiveness. It is what the numbers in `guidelines/reference/measured-criteria.md` call links per page.
 
-The test for whether enough code has been cited: assume the reader has the page open in one window with no other terminals, no other browser tabs, and no kernel tree. Could they still describe in their own words exactly which lines run on the path the page is documenting? If not, more code blocks are needed. Adding a sentence "see [`func()`](https://elixir...)" does not count as showing the code; the link is for the reader who wants to verify or explore further, not for understanding the page.
+**Rule:** URLs use the base `https://elixir.bootlin.com/linux/<version>/source/`, where `<version>` is the documented kernel version from SKILL.md's Input section (for campaigns, the version pinned in the plan file's Context). One page never mixes versions. The examples below use `v7.0`.
 
-The DETAILS section is the canonical place for this. SUMMARY may include short snippets when a single line of code is the cleanest way to convey the topic, but bulk code citation belongs in DETAILS, interleaved with the prose that walks through it.
+For file references:
+```
+[`path/to/file.c`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.c)
+```
 
-### 7j. Behavior and construct coverage (mandatory)
+For function references (include the line number; the `\<...\>` word-boundary markers keep the reference compatible with `git log -L`):
+```
+[`'\<function_name\>':'path/to/file.c'`](https://elixir.bootlin.com/linux/v7.0/source/path/to/file.c#L1234)
+```
 
-A page documents a mechanism in full, not only the single function path that prompted it. Breadth of coverage (every site that exhibits a behavior, every struct and helper that backs it, the full object lifecycle) is as mandatory as the prose and citation rules (7 through 7f, `guidelines/rules/`).
+For kernel documentation files:
+```
+[`Documentation/subsystem/file.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/subsystem/file.rst): brief description
+```
 
-- **Cite every site that matches a behavior, not one.** For each behavior the page describes, find all the places in the kernel source that implement or exhibit it, and cite each one with its file path and line number, as an inline Elixir cross referencer link at the mention and as a fenced ` ```c ` block in the DETAILS section reproducing the relevant lines. When a behavior recurs across many call sites or drivers, cite as many as is practical rather than stopping at the first match. Enumerate the full set with `find_callers`, `grep_functions`, and Grep before writing. If the set is too large to cite exhaustively, cite a representative spread (the core implementation plus several users) and state how many sites exist, rather than silently narrowing to one.
+**Rule:** A link whose text is a symbol name (`` `vma_start_read()` ``, `` `struct mm_struct` ``, `` `VM_LOCKED` ``, the LINUX KERNEL `` `'\<sym\>':'path'` `` form) anchors at the symbol's DEFINITION line, so the reference stays valid for `git log -L` and survives unrelated churn — never at a call site, a comment mention, or a line inside some other function's body, even when that line is what the prose discusses. A reference to a specific non-definition place (a call site, one branch, one field assignment) is a file-location link whose text is the path and line: [`mm/vma.c:717`](https://elixir.bootlin.com/linux/v7.0/source/mm/vma.c#L717). Prose that enumerates call sites carries one location link per site, so every count is checkable one click deep.
 
-- **Cover the data structures and their helpers, not only entry-point functions.** Identify the kernel's internal data structures for the topic (the structs, enums, and typedefs that hold the state) together with the helper functions and accessor macros that allocate, initialize, read, modify, and destroy them. List them in the LINUX KERNEL section, reproduce their definitions as fenced ` ```c ` blocks in the DETAILS section, and show the accessors in use there. A page that names a behavior but omits the struct that records the state, or the helper that changes it, is incomplete.
+**Rule:** Every occurrence of every kernel symbol outside fenced blocks is linked, repeats included. The exhaustive pass covers the classes easiest to skip: `CONFIG_*` options link to the `config X` line of the declaring Kconfig file; generic primitives (`READ_ONCE()`, `memcpy()`, `rcu_read_lock()`, `atomic_read()`, and the like) link to the definition relevant to the documented architecture; a field path written `a->b` or `foo.bar` links to the field's declaration line inside the struct definition; an ops-struct member named in prose ("the `fault` hook") links to that member's line in the ops struct definition.
 
-- **Draw the structure, do not only describe it.** A mechanism with spatial, temporal, or transformational structure (a data or bit layout, an object topology, an operation that reshapes a structure, a state machine, a sequence of steps across actors) is usually clearer as a figure than as prose, and identifying those figures is part of covering the mechanism, not a later styling choice. Draw them per the diagram rules (7g, 7v, 7h, 7i in `guidelines/rules/diagrams.md`), using as many figures as the material earns rather than a default of one, and never in one of 7v's banned shapes. A page that walks an operation reshaping a data structure (a split, merge, insertion, teardown, or fork) without showing that structure before and after has a coverage gap, not a stylistic economy. The restraint in 7g still decides which candidates are real: no figure for a plain call chain, a two-state toggle, or anything a single declarative sentence conveys.
+Do not flag these settled bare spans: C keywords and operators; local variables, parameters, and goto labels quoted from an excerpt; literal and error values (`-EINVAL`, `NULL` as a value); `/proc`, `/sys`, and sysctl path strings; Kconfig syntax fragments (`=y`); tracepoint field names; a wildcard family name (`VM_*`) when the members it stands for are linked nearby; commit hashes; the `name(2)` man-page notation when the page links the syscall's kernel entry point elsewhere; symbols verified absent from the documented tree (state the absence in prose). Precedent never overrides the rule: "other pages leave `CONFIG_FOO` bare" or "this page already has thirty bare `READ_ONCE()` spans" is not a reason to leave the next one bare — the rule wins, and pre-existing in-family spans get fixed in the same pass.
 
-- **Cover the object lifecycle and asynchronous behavior, not only static call sites.** For each key object, document its life cycle: allocation, initialization, freeing, the locks that serialize access to it, and its reference counting (`kref` / `refcount_t` get and put, and the put that drops the last reference and frees it). Document the dynamic behavior as well: state transitions (which field advances through which states, and what drives each transition), notification mechanisms (notifier chains, `struct completion`, wait queues, eventfd, uevents), and deferred or asynchronous work (`work_struct` and `delayed_work` on a workqueue, tasklets, timers, threaded IRQs, RCU callbacks), along with the ordering and concurrency rules between them. Tracing only "function A calls function B" misses the lifecycle and asynchronous behavior the page exists to explain.
+### 7n. OTHER SOURCES provenance
 
-- **Call out hard-coded limit values explicitly.** Search the code for the constants that bound the mechanism: timeouts, retry and attempt counts, maximum allowable error counts, buffer and queue sizes, poll and backoff intervals, and similar thresholds, whether defined as a macro, an enum value, or a bare literal. Find as many as exist rather than stopping at the first; name each one in the page with its value and the macro or literal that holds it, cite its file and line, and reproduce the defining line in a fenced ` ```c ` block where the value governs a code path the page walks. A page that describes a timeout, a retry loop, or an error threshold without stating the actual number is incomplete.
+**Rule:** Every OTHER SOURCES entry is a mailing-list URL taken byte-exactly from a `Link:` trailer in `git log` output for a commit the page discusses (both `https://lore.kernel.org/...` and `https://lkml.kernel.org/r/<message-id>` trailer forms qualify), or a lore.kernel.org URL returned by the semcode `dig` tool for that commit. Never construct, guess, or "normalize" a URL: no hand-built `git.kernel.org/.../commit/?id=` links, no reconstructed lore paths, no search-result URLs. Format each entry as `[<commit subject> (commit <abbreviated sha>)](<trailer URL>)`. A relevant commit with no `Link:` trailer is cited in prose by sha and subject and gets no OTHER SOURCES entry.
 
-- **The catalog and the scope statement define done-ness.** A page is complete when every symbol in its LINUX KERNEL catalog and every behavior in its scope statement is covered to the rules above; "the core API is documented" is not a completion test, and importance ranking never shrinks coverage. When the material outgrows one page, split it along a boundary statement into finer sibling pages; never thin any page's coverage to shorten it.
+### 7j. Behavior and construct coverage
 
-- **Compression may remove words, never coverage.** Shortening or rewriting a page must not remove cataloged symbols, documented behaviors, call-site enumerations, figures that carry layout facts, or KERNEL DOCUMENTATION / OTHER SOURCES entries. Removing any of those is a scope change made deliberately: the catalog and the scope statement shrink in the same edit, and the cut is reported. Rule 7p governs the procedure when the shortening happens while deriving from existing material.
+**Problem:** A page that documents only the single function path that prompted it is incomplete. Breadth of coverage — every site that exhibits a behavior, every struct and helper that backs it, the full object lifecycle — is as mandatory as the prose and citation rules (7 through 7f).
 
-- **Order DETAILS from generic to specific.** Within DETAILS, present the subsystem-generic mechanism first (the core data structures, the shared code path, the framework behavior), then the vendor-, channel-, or driver-specific instances built on top of it. The reader should understand the general mechanism before reading how a particular driver specializes it.
+**Rule:** Cite every site that matches a behavior, not one. Enumerate the full set with `find_callers`, `grep_functions`, and Grep before writing; cite each site with an inline Elixir link at the mention and a ` ```c ` block in DETAILS. When the set is too large to cite exhaustively, cite a representative spread (the core implementation plus several users) and state how many sites exist — never silently narrow to one.
 
-### 7k. Driver examples (mandatory)
+**Rule:** Cover the data structures and their helpers, not only entry-point functions: the structs, enums, and typedefs that hold the state, plus the helpers and accessor macros that allocate, initialize, read, modify, and destroy them — listed in LINUX KERNEL, defined as ` ```c ` blocks in DETAILS, and shown in use. A page that names a behavior but omits the struct that records the state, or the helper that changes it, is incomplete.
 
-When a page illustrates a behavior with a concrete driver, both the choice of driver and the way the page keeps that example self-contained matter.
+**Rule:** Draw the structure, not only describe it. A mechanism with spatial, temporal, or transformational structure (a data or bit layout, an object topology, a reshaping operation, a state machine, a sequence across actors) is drawn per the diagram rules (7g, 7v, 7h, 7i in `guidelines/rules/diagrams.md`), with as many figures as the material earns and never in one of 7v's banned shapes. A page that walks a split, merge, insertion, teardown, or fork without showing the structure before and after has a coverage gap. 7g's restraint still decides which candidates are real: no figure for a plain call chain, a two-state toggle, or anything one declarative sentence conveys.
 
-- **Cite only actively-maintained drivers.** When choosing a driver as a usage example, pick one with major activity in the three years leading up to the documented version's release (for a v7.0 tree, roughly 2023 onward). Confirm this before citing: run `git log` on the driver's file, or semcode `find_commit` with `path_patterns` for the driver's path, and check for substantive commits within the last three years (ignore treewide renames, whitespace, and other mechanical churn). Do not illustrate current behavior with a driver whose only recent commits are trivial or whose last real change is years old; a dormant driver may use deprecated patterns that misrepresent how the mechanism is used today. If no recently-active driver exercises the behavior, say so rather than reaching for a stale one.
+**Rule:** Cover the object lifecycle and asynchronous behavior: allocation, initialization, freeing, the serializing locks, reference counting (`kref` / `refcount_t` get and put, and the put that frees), state transitions (which field advances through which states and what drives each edge), notification mechanisms (notifier chains, `struct completion`, wait queues, eventfd, uevents), deferred work (`work_struct` and `delayed_work`, tasklets, timers, threaded IRQs, RCU callbacks), and the ordering and concurrency rules between them. Tracing only "function A calls function B" misses what the page exists to explain.
 
-- **Describe a driver example from its own kernel source, and keep the explanation on this page.** Give the driver's role (vendor, bus, device class) and cite its file and the relevant function or callback inline, so the reader needs nothing beyond this page to understand it. Do not point the reader to another driver or another page as a substitute for the explanation, and do not explain the driver by analogy to one documented elsewhere; everything the reader needs is stated here, from this driver's own code.
+**Rule:** Call out hard-coded limits explicitly: timeouts, retry and attempt counts, maximum error counts, buffer and queue sizes, poll and backoff intervals — macro, enum value, or bare literal. Find as many as exist; name each with its value and the symbol or literal that holds it, cite its file and line, and reproduce the defining line where the value governs a walked path. A described timeout, retry loop, or threshold without its actual number is incomplete.
 
-  - **BAD:**
+**Rule:** The catalog and the scope statement define done-ness. A page is complete when every LINUX KERNEL symbol and every scoped behavior is covered to the rules above; "the core API is documented" is not a completion test, and importance ranking never shrinks coverage. Material that outgrows one page splits along a boundary statement into sibling pages; no page thins its coverage to shorten itself. Compression may remove words, never coverage: shortening must not drop cataloged symbols, behaviors, call-site enumerations, layout-bearing figures, or KERNEL DOCUMENTATION / OTHER SOURCES entries — any such cut is a deliberate scope change (catalog and scope shrink in the same edit, and the cut is reported; 7p governs derivation). Within DETAILS, order generic to specific: the shared mechanism first, then the vendor-, channel-, or driver-specific instances.
 
-    ```
-    The cs35l56 driver registers a jack-detect callback, just like the codec documented elsewhere in this knowledge base.
-    ```
+### 7k. Driver examples
 
-  - **GOOD:**
+**Rule:** Cite only actively-maintained drivers. A driver used as a usage example has major activity in the three years before the documented version's release (for a v7.0 tree, roughly 2023 onward), confirmed before citing via `git log` on its file or semcode `find_commit` with `path_patterns`, ignoring treewide renames, whitespace, and mechanical churn. A dormant driver may use deprecated patterns that misrepresent current usage; if no recently-active driver exercises the behavior, say so rather than reaching for a stale one.
 
-    ```
-    The cs35l56 driver (a Cirrus Logic amplifier in sound/soc/codecs/cs35l56.c) registers a jack-detect callback through its set_jack component op.
-    ```
+**Rule:** Describe a driver from its own kernel source, on this page: its role (vendor, bus, device class) and its file and relevant callback cited inline. Do not point the reader to another driver or page as a substitute, and do not explain by analogy to a driver documented elsewhere.
 
-### 7l. Code-block provenance comments (mandatory)
+**Before:**
 
-Every fenced ` ```c ` block opens with a provenance comment naming the on-disk origin of the excerpt, in the exact form `/* path/from/tree/root.c:LINE */` on its own first line, where LINE is the number of the first reproduced line in the file at the documented version. A short annotation may follow the line number inside the comment (`/* mm/vma.c:497 (in __split_vma()) */`). A block that stitches excerpts from several places (a caller plus its callee, two case labels far apart, a struct field plus the helper that writes it) marks each excerpt's start with its own interior `/* path:line */` delimiter line, and marks elided code inside an excerpt with a standalone `...` line. Everything between delimiters is verbatim file content per 7e (tabs preserved, comments retained, no reflowed lines).
+```
+The cs35l56 driver registers a jack-detect callback, just like the codec documented elsewhere in this knowledge base.
+```
 
-The provenance comment is what makes a page checkable. A reviewer opens the named file at the cited line and compares the unit directly (see the 3c check procedures in this file), so a missing or wrong provenance line turns an on-disk match into a finding, and a silently drifted excerpt is caught on the first comparison. Non-code fenced blocks (ASCII figures, quoted commit-message tables, shell output) carry no provenance comment and are not diffed.
+**After:**
 
-### 7n. OTHER SOURCES provenance (mandatory)
+```
+The cs35l56 driver (a Cirrus Logic amplifier in sound/soc/codecs/cs35l56.c) registers a jack-detect callback through its set_jack component op.
+```
 
-Every OTHER SOURCES entry is a mailing-list URL taken byte-exactly from a `Link:` trailer in `git log` output for a commit the page discusses (both `https://lore.kernel.org/...` and `https://lkml.kernel.org/r/<message-id>` trailer forms qualify), or a lore.kernel.org URL returned by the semcode `dig` tool for that commit. Never construct, guess, or "normalize" a URL: no hand-built `git.kernel.org/.../commit/?id=` links, no reconstructed lore paths, no search-result URLs. Format each entry as `[<commit subject> (commit <abbreviated sha>)](<trailer URL>)`. A relevant commit that has no `Link:` trailer is cited in prose by sha and subject and gets no OTHER SOURCES entry.
+### 7o. Behavioral-claim verification
 
-### 7o. Behavioral-claim verification (mandatory)
+**Problem:** A page is a set of claims about kernel behavior, and the class of error that reads correctly, links correctly, and survives every mechanical check is the unverified claim. Each claim class below has a named audit action: perform them while writing, and re-perform them when reviewing, enhancing, or reusing a page.
 
-A page is a set of claims about kernel behavior, and each claim class below has a named audit action. The style and linking rules make a page readable and navigable; these actions are what make it true. Perform them while writing, and re-perform them whenever reviewing, enhancing, or reusing a page, because they catch the class of error that reads correctly, links correctly, and survives every mechanical check.
+**Rule:** Universal quantifiers are enumerations. A sentence containing "only", "never", "always", "all", "every", "exactly N", "the single", or "once" asserts the size or uniformity of a set: enumerate that set first (semcode `find_callers` plus a tree-wide grep that includes headers), then cite every member with location links or weaken the sentence to what the enumeration shows. History: a page asserted a helper "is invoked from exactly one place" while the tree held four callers (the plain store helper, its gfp variant, the fork-path bulk store, an error-path rollback); only re-running the enumeration catches this class.
 
-- **Universal quantifiers are enumerations.** Every sentence containing "only", "never", "always", "all", "every", "exactly N", "the single", or "once" asserts the size or uniformity of a set. Enumerate that set before writing the sentence (semcode `find_callers` plus a tree-wide grep that includes headers), then either cite every member with location links or weaken the sentence to what the enumeration shows. A page in this knowledge base asserted a helper "is invoked from exactly one place" while the tree held four callers (the plain store helper, its gfp variant, the fork-path bulk store, and an error-path rollback); only re-running the enumeration catches this class.
+**Rule:** A per-member claim is as many claims as the family has members. "Each X ..." / "every X ..." over a family ("each wrapper forwards to exactly one underlying primitive", "every callback runs under the lock", "each descriptor slot maps to one register") is verified by building the member-to-property mapping first; one exception falsifies the sentence. When an exception exists, restate to what the mapping shows, restrict the family explicitly ("every read-side helper ..."), or name the classifier and what falls outside it ("one primary primitive, plus cursor-bookkeeping helpers") — an unstated classifier is how a strictly-false claim reads as true. History: a lead sentence claimed each wrapper "forwards to exactly one" primitive while the page's own per-helper table showed one wrapper calling a range-setup helper plus the store primitive.
 
-- **A per-member claim is as many claims as the family has members.** A sentence of the form "each X ..." or "every X ..." that asserts a property or a one-to-one relationship over a family ("each wrapper forwards to exactly one underlying primitive", "every callback runs under the lock", "each descriptor slot maps to one register") is verified by building the member-to-property mapping first: list every member of the family and, for each member, everything the property names for it. One exception falsifies the sentence. When an exception exists, restate the sentence to what the mapping shows, restrict the family explicitly ("every read-side helper ..."), or name the classifier that makes the claim true and say what falls outside it ("one primary primitive, plus cursor-bookkeeping helpers"); an unstated classifier is how a strictly-false claim reads as true and survives review. A lead sentence in this knowledge base asserted that each wrapper helper "forwards to exactly one" underlying primitive while the page's own per-helper table showed one wrapper calling a range-setup helper plus the store primitive; the mapping audit catches this, and the heading failure under "Headings are claims" below is the same shape applied to a section.
+**Rule:** Lead and SUMMARY compression gets no precision waiver. Quantified, universal, and per-member claims there are audited exactly like DETAILS claims and must agree with the DETAILS evidence on the same page; cross-check every lead and SUMMARY quantifier against the page's own tables and enumerations at sign-off. Compression may drop detail, never trade accuracy for sweep.
 
-- **Lead and SUMMARY compression gets no precision waiver.** Quantified, universal, and per-member claims in the lead paragraph and in SUMMARY are audited exactly like DETAILS claims, and each must agree with the DETAILS evidence that carries it (the section, table, or enumeration on the same page). Cross-check every lead and SUMMARY quantifier against the page's own tables and enumerations at sign-off; a summary that contradicts the page's own table is the first inconsistency a reader finds. Compression may drop detail; it may never trade accuracy for sweep.
+**Rule:** Every enumeration states its search basis inline — directories searched, headers included or not, definition sites excluded, architecture and CONFIG filter: "a grep across mm/, fs/, kernel/, drivers/, arch/x86/, and include/ at this tree finds 118 call sites of ... outside their definitions". A count without its basis cannot be re-verified and does not qualify; a count that holds only under the page's CONFIG assumptions (a caller compiled out without `CONFIG_MMU`) says so at the claim. Counts are re-derived at every review, never trusted — a re-count on a live page corrected a written 119 to the 118 on disk.
 
-- **Every enumeration states its search basis inline.** Give the scope with the number (directories searched, headers included or not, definition sites excluded, the architecture and CONFIG filter): "a grep across mm/, fs/, kernel/, drivers/, arch/x86/, and include/ at this tree finds 118 call sites of ... outside their definitions". A count whose basis is unstated cannot be re-verified and does not qualify. When a count holds only under the page's CONFIG assumptions (a caller compiled out without `CONFIG_MMU`), say so at the claim, not only in the page preamble.
+**Rule:** A restated condition is derived, not paraphrased. Prose restating a guard or threshold ("requires map_count + 2 < sysctl_max_map_count - 3") is derived from the reproduced code by exact negation of its operator, keeps the exact constants, and shows the guard as a code block beside the sentence so the reader can repeat the derivation.
 
-- **Counts are re-derived at review, never trusted.** Whoever reviews, lints, or enhances the page re-runs every enumeration and corrects drift; a re-count on a live page corrected a written 119 to the 118 actually on disk.
+**Rule:** Headings are claims. A DETAILS heading must be true of everything in its section, and a heading edit is a claim edit; verify each heading against its section's excerpts after writing and after every rewording. History: a polish pass strengthened "the accessors mediate every flag change" into "the accessors take the write lock before every flag change" directly above an excerpt whose own kernel comment reads "needs no locking".
 
-- **A restated condition is derived, not paraphrased.** When prose restates a guard or threshold in words ("requires map_count + 2 < sysctl_max_map_count - 3"), derive the restatement from the reproduced code by exact negation of its operator, keep the exact constants, and show the guard as a code block beside the sentence so a reader can repeat the derivation.
+**Rule:** Prose does not outrun its excerpt. Read each behavioral sentence against the adjacent code line by line. Semantics carried by a primitive's own name are behavior and are stated: an ordering suffix (`refcount_set_release()` orders the preceding field writes before the count becomes visible to an acquiring reader), a `_locked`/`_unlocked` variant, an RCU flavor, saturation semantics. The one licensed exception is the disclosed domain-model synthesis of 7s — assembled from named on-disk materials with every fact under it still individually cited; it never licenses an undisclosed, unsourced, or guessed assertion, and 7c and 7d bind it in full.
 
-- **Headings are claims.** A DETAILS heading must be true of everything in its section, and a heading edit is a claim edit. One polish pass strengthened "the accessors mediate every flag change" into "the accessors take the write lock before every flag change" directly above an excerpt whose own kernel comment reads "needs no locking"; the stronger heading was false. Verify each heading against the section's excerpts after writing it and after every rewording.
+**Rule:** Invariant claims get a counterexample search. Before asserting "set once and never changes", "always called under lock L", or "freed only through F", search explicitly: every assignment site, every lock-less caller, every free path. Cite the kernel's own enforcement where it exists (`lockdep_assert_held()`, `VM_WARN_ON()`, a `const` qualifier) — an assertion line is stronger evidence than a grep that found nothing. Provenance line numbers are claims too (7l): content matching does not validate them; open the file and confirm the excerpt begins at the cited line.
 
-- **Prose does not outrun its excerpt.** Read each behavioral sentence against the adjacent code line by line. Semantics carried by the primitive's own name are behavior and are stated, not dropped: an ordering suffix (`refcount_set_release()` orders the preceding field writes before the count becomes visible to an acquiring reader), a `_locked`/`_unlocked` variant, an RCU flavor, saturation semantics.
+### 7s. Domain-model layer
 
-- **Invariant claims get a counterexample search.** Before asserting a lifecycle invariant ("set once and never changes", "always called under lock L", "freed only through F"), search for the counterexample explicitly: every assignment site of the field, every caller that lacks the lock, every free path. Cite the kernel's own enforcement when it exists (a `lockdep_assert_held()`, a `VM_WARN_ON()`, a `const` qualifier), because an assertion line is stronger evidence than a grep that found nothing.
+**Problem:** A page that opens straight into per-symbol definitions leaves the reader to reverse-engineer the model the page exists to convey — the difference between a reference catalog and an explanation. A page teaches the subsystem's model of its topic: the states an object moves through and their transitions, the phases of a process, the taxonomy its parts fall into, and the rules that govern these. State the model as a model, in the lead and SUMMARY and ahead of the DETAILS walkthroughs, and let it organize the body (7u) rather than sit as a preamble to a per-symbol catalog.
 
-- **Provenance line numbers are claims too (7l).** Content matching does not validate them; open the file and confirm the excerpt begins at the cited line.
+**Rule:** The model's source decides how it is written. When a normative specification fixes it (an ACPI, PCIe, USB, or hardware-manual definition of a register layout, state set, or protocol), cite the spec in SPECIFICATIONS, present the model as the spec defines it, and map the kernel's constructs onto it (the spec-semantics-paired-with-kernel-slots form), so the reader learns a state's specified meaning and the constant that carries it together. When no specification defines it — the common case for pure-software subsystems — the model is a synthesis assembled from the kernel's own materials: the code, the enumerating comments and struct doc-comments, the relevant `Documentation/` pages, and the commit messages of the introducing series. This is the one place a page states more than a single excerpt witnesses, licensed only under disclosure: name the materials ("Assembled from the type comment, `Documentation/mm/process_addrs.rst`, and the series that introduced the per-VMA lock, the model is ..."), keep every fact under the model separately cited per 7e and 7m, and weaken or scope anything the materials do not support per 7o. 7c and 7d bind in full: plain declaratives naming mechanics, no hollow superlatives, no importance-framing, no label-colons. The frozen mm samples (`guidelines/reference/samples/`) show the synthesis stated up front.
 
-- **The one licensed exception to "prose does not outrun its excerpt" is the disclosed domain-model synthesis of 7s: a model assembled from named on-disk materials (the code, enumerating comments, `Documentation/`, and the introducing commits), with every fact under it still individually cited.** It never licenses an undisclosed, unsourced, or guessed assertion, and 7c and 7d bind it in full.
+A model the tree's own materials do not support is never invented to fill the section: state what the sources establish and stop. A guessed model ("the design is presumably ...") is worse than none.
 
-### 7p. Deriving from an existing page (mandatory)
+### 7t. Semantics tables for state sets and taxonomies
 
-These rules govern producing a page from existing material of any provenance, in any subsystem: an earlier-generation draft, a prior revision of the same page, or pages being compressed, merged, or split.
+**Rule:** A fixed set of states or modes, or a classification of parts (a device power-state set, a page-fault-type set, a flag taxonomy, an error-code family, an ops struct's callback set), is presented as a table, not a bare list of constants: one row per member, a meaning column stating what the member is in the model (7s), and a construct column linking the defining code (7m). The encoding and lifecycle archetypes among the frozen samples show this member-meaning-construct shape for bitfields and object states.
 
-1. **Inventory the source first.** List the source's LINUX KERNEL catalog entries, its DETAILS sections, the distinct behaviors and call-site enumerations it documents, its figures, and its KERNEL DOCUMENTATION and OTHER SOURCES entries.
+**Rule:** A state set additionally documents its legal transitions — which member advances to which, and what drives each edge — as a transition table or, where the transitions carry spatial or temporal structure, an ASCII state figure under 7g, 7v, and the 7i catalog. The table stays Markdown; 7v bans redrawing it in box characters. A taxonomy documents its classifying axis: what distinguishes each class from its siblings, not only that the classes exist.
 
-2. **Give every inventory item an explicit disposition: kept (and where it now lands), merged (into which section), or cut (with the reason).** No item disappears without a disposition; a coverage loss that happens as a side effect of rewriting is the failure mode this rule exists to prevent.
+### 7u. Journey- or model-first organization
 
-3. **A cut is a scope decision, not an edit.** It removes the item from the LINUX KERNEL catalog and from the scope statement in the same change, and it is reported in the final message (and recorded in the campaign plan file) so the orchestrator or the user can veto it. A symbol that stays in the catalog cannot have its DETAILS coverage cut.
+**Problem:** The catalog-first page — one DETAILS heading per symbol, walked in declaration order — is a reference catalog wearing an explanation's clothes. A page is organized as a journey or around a model, never as a catalog of its symbols: LINUX KERNEL is the reference catalog, where a list is correct; DETAILS is not. Its sections are the chapters of a journey (the phases of a process traced start to end) or the facets of a model (the roles, states, or classes of the mechanism), and each cataloged symbol appears inside the chapter or facet where it does its work, shown there with its definition and usage excerpts.
 
-4. **The derived page passes the same Gate B parity audit (item 1; Gate B (3b) in this file) as a fresh page.** Coverage in the source is not coverage in the derived page; "the source covered it" fails the audit.
+**Rule:** Choose the spine from the topic. An operation or pipeline (a syscall path, a page fault, a split or merge, a device probe, an on-disk or on-wire translation) is a JOURNEY: organize DETAILS by its phases in run order. A static object or state space (a struct, a flag set, a lock's states, a power-state set) is a MODEL: organize by roles, states, or classes. An object with an operation on it leads with the model, then traces the operation as a journey through it.
 
-A measured failure of exactly this kind motivates the rule: a 2,645-line page compressed to 1,268 lines kept its iterator-helper symbols in the LINUX KERNEL catalog while silently dropping their DETAILS sections, kept one catalog symbol with no DETAILS mention at all, and landed at 0.73 fenced blocks per catalog entry where every conforming page measures at least 1.0. The parity audit catches the desync mechanically; the disposition list is what makes any removal legitimate.
+**Rule:** The test is the DETAILS headings. Headings one-per-symbol in catalog order are the catalog-first failure and are reorganized, every symbol re-homed inside the phase or facet where it acts. Headings naming phases ("the boot table is parsed before the namespace exists") or facets ("the per-VMA lock state") are journey- or model-first. Reorganization never weakens coverage: every cataloged symbol still appears in DETAILS with definition and usage excerpts (3b item 1) — organization changes WHERE a symbol is shown, not WHETHER. A symbol that fits no phase or facet signals wrong organization or wrong catalog membership, never license for a stray per-symbol section.
 
-### 7s. Domain-model layer (mandatory)
+**Rule:** Diagrams obey the same spine (7g): a figure depicts the page's journey (pipeline, sequence, before-and-after, lifecycle) or its model (state machine, topology, taxonomy); where the journey or model is large enough to carry the page, one figure shows it whole as the reader's map. A figure that is only symbols in boxes with no process or relationship is a catalog in visual form — redrawn to show the relationship, or dropped.
 
-A page teaches the subsystem's model of its topic, not only an annotated catalog of the symbols that implement it. The model is the abstraction the code realizes: the states an object moves through and the transitions between them, the phases of a process, the taxonomy its parts fall into, and the rules that govern these. State the model as a model, in the lead and SUMMARY and ahead of the DETAILS walkthroughs, so a reader understands what the thing is before reading how each symbol serves it, and let it organize the body rather than sit as a preamble to a per-symbol catalog (7u). A page that opens straight into per-symbol definitions leaves the reader to reverse-engineer the model the page exists to convey, which is the difference between a reference catalog and an explanation.
+This rule and 7s are a pair: 7s puts the model at the top of the page, 7u organizes the body around it.
 
-The model's source decides how it is written.
+### 7p. Deriving from an existing page
 
-- When a normative specification fixes it (an ACPI, PCIe, USB, or hardware-manual definition of a register layout, a state set, or a protocol), cite the spec in SPECIFICATIONS, present the model as the spec defines it, and map the kernel's constructs onto it (the spec-semantics-paired-with-kernel-slots form), so the reader learns a state's specified meaning and the constant that carries it together.
+**Rule:** Producing a page from existing material of any provenance — an earlier-generation draft, a prior revision, pages being compressed, merged, or split — follows four steps:
 
-- When no specification defines it, which is the common case for a pure-software subsystem, the model is a synthesis the writer assembles from the kernel's own materials: the code, the enumerating comments and struct doc-comments, the relevant `Documentation/` pages, and the commit messages of the series that introduced the mechanism. This is the one place a page states more than a single excerpt witnesses, and it is licensed only under disclosure. Name the materials the model is drawn from ("Assembled from the type comment, `Documentation/mm/process_addrs.rst`, and the series that introduced the per-VMA lock, the model is ..."), keep every fact under the model separately cited per 7e and 7m, and weaken or scope any part the materials do not support per 7o rather than asserting it. 7c and 7d bind in full, so the model is stated in plain declaratives that name mechanics, never in hollow superlatives, importance-framing, or label-colon idioms. The frozen mm samples (`guidelines/reference/samples/`) show this synthesis stated up front.
+1. **Inventory the source first.** List its LINUX KERNEL catalog entries, DETAILS sections, distinct behaviors and call-site enumerations, figures, and KERNEL DOCUMENTATION and OTHER SOURCES entries.
 
-A model the tree's own materials do not support is never invented to fill the section. If it cannot be grounded in named on-disk sources, state what those sources establish and stop; a guessed model ("the design is presumably ...") is worse than none.
+2. **Give every inventory item an explicit disposition:** kept (and where it lands), merged (into which section), or cut (with the reason). No item disappears without a disposition — silent coverage loss during rewriting is the failure mode this rule exists to prevent.
 
-### 7t. Semantics tables for state sets and taxonomies (mandatory)
+3. **A cut is a scope decision, not an edit.** It removes the item from the LINUX KERNEL catalog and the scope statement in the same change, and is reported in the final message (and the campaign plan file) so the orchestrator or user can veto it. A symbol that stays in the catalog cannot have its DETAILS coverage cut.
 
-When a topic carries a fixed set of states or modes, or a classification its parts fall into (a device power-state set, a page-fault-type set, a flag taxonomy, an error-code family, the callback set of an ops struct), present it as a table rather than a bare list of constants. One row per member, with a meaning column stating what the member is in the model (7s) and a construct column linking the defining code (7m). The encoding and lifecycle archetypes among the frozen samples (`guidelines/reference/samples/`) show this member-meaning-construct shape for bitfields and for object states.
+4. **The derived page passes the same Gate B parity audit (item 1) as a fresh page.** Coverage in the source is not coverage in the derived page; "the source covered it" fails the audit.
 
-A state set additionally documents its legal transitions: which member advances to which, and what drives each edge, as a transition table or, where the transitions carry spatial or temporal structure, an ASCII state figure under 7g, 7v and the 7i catalog. The table stays Markdown; 7v bans redrawing it in box characters. A taxonomy documents its classifying axis: state what distinguishes each class from its siblings, not only that the classes exist.
-
-### 7u. Journey- or model-first organization (mandatory)
-
-A page is organized as a journey or around a model, never as a catalog of its symbols. The LINUX KERNEL section is the reference catalog, where a list is correct; DETAILS is not a catalog. Its sections are the chapters of a journey (the phases of a process traced from start to end) or the facets of a model (the roles, states, or classes the mechanism has), and each cataloged symbol appears inside the chapter or facet where it does its work, shown there with its definition and usage excerpts, rather than getting its own section walked in catalog or declaration order.
-
-Choose the spine from the topic. An operation or a pipeline (a syscall path, a page fault, a split or a merge, a device probe, a translation from an on-disk or on-wire form into a kernel structure) is a JOURNEY: organize DETAILS by its phases in the order they run. A static object or a state space (a struct, a flag set, a lock's states, a power-state set) is a MODEL: organize DETAILS by its roles, states, or classes. A page that is an object with an operation on it leads with the model and then traces the operation as a journey through it.
-
-The catalog-first anti-pattern is the failure this rule names, and the test for it is the DETAILS headings. Headings that are one-per-symbol, named for each function or field and walked in the order the catalog lists them, are catalog-first and are reorganized. Headings that name the phases of a process ("the boot table is parsed before the namespace exists", "the handler is wired to the address space") or the facets of a model ("the range and identity fields", "the per-VMA lock state"), with the symbols shown inside, are journey- or model-first.
-
-This never weakens coverage. Every cataloged symbol still appears in DETAILS with its definition and usage excerpts (3b item 1); journey- or model-first organization changes WHERE a symbol is shown (inside the phase or facet where it acts), not WHETHER it is shown. A cataloged symbol that fits no phase or facet is a signal that the organization is wrong or that the symbol does not belong in the catalog, never license to append a stray per-symbol section.
-
-Diagrams obey the same rule (7g). A figure depicts the page's journey (a pipeline, a sequence, a before-and-after transformation, a lifecycle) or its model (a state machine, an object topology, a taxonomy), so the figure is the visual form of the same spine the prose traces; where the journey or the model is large enough to carry the page, one figure shows it whole as the reader's map. A figure that is only an inventory of symbols in boxes, with no process or relationship among them, is a catalog in visual form and is redrawn to show the relationship or dropped.
-
-This rule and 7s are a pair: 7s puts the model at the top of the page, 7u organizes the body around it. Together they retire the catalog-first page, whose lead announces a member-by-member tour and whose DETAILS delivers one.
+History, and the measured failure that motivates the rule: a 2,645-line page compressed to 1,268 lines kept its iterator-helper symbols in the catalog while silently dropping their DETAILS sections, kept one catalog symbol with no DETAILS mention at all, and landed at 0.73 fenced blocks per catalog entry where every conforming page measures at least 1.0. The parity audit catches the desync mechanically; the disposition list is what makes any removal legitimate.
 
 ---
 
@@ -643,7 +556,7 @@ Confirm zero hits for each, and re-run after every edit including your own hand-
 
 The grep list above is the gate. Run it by hand, fence-aware, using the candidate greps in the 3c check procedures below, and judge every hit against the exemptions and the 7r registry before editing; never reword an exempt construct to silence a pattern.
 
-**Match case-insensitively when sweeping, then use case as evidence when judging.** The phrases above are written lowercase, and a case-sensitive sweep silently misses every sentence-initial occurrence — a writer hit exactly this, its "What matters here is that…" surviving the cleft pattern because `what matters` was matched literally, and it surfaced only under an unrelated superlative grep. Case still carries meaning at the judging step, which is where it belongs: the arm-word ban exempts the capitalized CPU-architecture names (`Arm`, `ARM64`) per 7r, so a case-insensitive sweep is expected to surface those and the adjudication is expected to clear them. Sweep wide, judge narrow; a pattern that cannot see a candidate cannot be adjudicated at all.
+**Match case-insensitively when sweeping, then use case as evidence when judging.** The phrases above are written lowercase, and a case-sensitive sweep silently misses every sentence-initial occurrence. History: a writer's "What matters here is that…" survived the cleft pattern because `what matters` was matched literally, surfacing only under an unrelated superlative grep. Case still carries meaning at the judging step, where it belongs: the arm-word ban exempts the capitalized CPU-architecture names (`Arm`, `ARM64`) per 7r, so a case-insensitive sweep is expected to surface those and the adjudication is expected to clear them. Sweep wide, judge narrow; a pattern that cannot see a candidate cannot be adjudicated at all.
 
 The same reasoning applies to word boundaries: `\b` treats `_` as a word character, so a banned token inside an identifier (`TRB_NEC_GET_FW`) is invisible to `\bnec\b` — sweep such tokens with letters as the only delimiter. Boldface and the 7b prose-list shapes are read-through checks.
 

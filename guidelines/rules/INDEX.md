@@ -18,11 +18,11 @@ The sample pages under `guidelines/reference/samples/` embody every rule. The cl
 
 | ID | rule | file |
 |---|---|---|
-| 7 | Writing rules (core) | `rules.md` |
-| 7a | Prose colon idioms | `rules.md` |
-| 7b | Prose lists | `rules.md` |
+| 7 | Core writing bans | `rules.md` |
+| 7a | Label-colon prose | `rules.md` |
+| 7b | Intro sentence + list | `rules.md` |
 | 7c | Forbidden phrases checklist | `rules.md` |
-| 7d | Hollow superlatives and unsupported adjectives | `rules.md` |
+| 7d | Hollow superlatives | `rules.md` |
 | 7e | Self-contained kernel-source citation | `rules.md` |
 | 7f | General page rules | `rules.md` |
 | 7g | General ASCII diagram principles | `diagrams.md` |
