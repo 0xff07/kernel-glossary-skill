@@ -1,6 +1,6 @@
-# SUITE-06: The one-pass pipeline
+# ROUTINE-06: The one-pass pipeline
 
-> Companion to SUITE-03: where SUITE-03 is the checking walkthrough (and re-runs its mechanical steps after any edit), SUITE-06 is the build-and-fix order. It visits every rule exactly once, and it is scheduled so that every stage's fixes land only on surface that later stages check, never on a guarantee already issued. A page built or repaired in this order needs no stage revisited because of the pipeline's own fixes. SUITE-01's independence contract is untouched: the checker still re-verifies the finished page; re-verification of an unchanged page is not a re-run forced by a fix.
+> Companion to ROUTINE-03: where ROUTINE-03 is the checking walkthrough (and re-runs its mechanical steps after any edit), ROUTINE-06 is the build-and-fix order. It visits every rule exactly once, and it is scheduled so that every stage's fixes land only on surface that later stages check, never on a guarantee already issued. A page built or repaired in this order needs no stage revisited because of the pipeline's own fixes. ROUTINE-01's independence contract is untouched: the checker still re-verifies the finished page; re-verification of an unchanged page is not a re-run forced by a fix.
 
 ## The one-pass contract
 
@@ -134,4 +134,4 @@ Three cross-stage constraints the recipes must honor:
 
 ## The limit
 
-The pipeline is re-run-free under the contract, and the contract's weak point is discovery, not fixing: a missing call site surfacing in Step 20's counterexample search is a Step 2 coverage failure arriving late, and no ordering rescues a pass whose early stage did wrong work. What the ordering eliminates is the churn SUITE-03 tolerates by design: every pipeline fix lands on not-yet-checked surface, so the re-run-after-every-edit trigger remains necessary only for hand-edits made outside this order.
+The pipeline is re-run-free under the contract, and the contract's weak point is discovery, not fixing: a missing call site surfacing in Step 20's counterexample search is a Step 2 coverage failure arriving late, and no ordering rescues a pass whose early stage did wrong work. What the ordering eliminates is the churn ROUTINE-03 tolerates by design: every pipeline fix lands on not-yet-checked surface, so the re-run-after-every-edit trigger remains necessary only for hand-edits made outside this order.

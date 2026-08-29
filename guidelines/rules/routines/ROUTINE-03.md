@@ -1,10 +1,10 @@
-# SUITE-03: The walkthrough
+# ROUTINE-03: The walkthrough
 
-> Companion to SUITE-01 (the protocol): the order in which an agent walks a page through every rule. The inter-rule wiring formerly kept in SUITE-02 is folded in: every dependency, carve-out, pairing, precedence, and fix route between rules lives in the step that exercises it, the fix-routing table under Step 4, and the legacy ID map in Appendix B. A rule file states its own requirement and nothing else; references run in one direction only, from the harness into the rules. Appendix A maps the old gates (rules.md 3a/3b/3c) onto the steps.
+> Companion to ROUTINE-01 (the protocol): the order in which an agent walks a page through every rule. The inter-rule wiring formerly kept in SUITE-02 is folded in: every dependency, carve-out, pairing, precedence, and fix route between rules lives in the step that exercises it, the fix-routing table under Step 4, and the legacy ID map in Appendix B. A rule file states its own requirement and nothing else; references run in one direction only, from the harness into the rules. Appendix A maps the old gates (rules.md 3a/3b/3c) onto the steps.
 
 ## Step 1: Load the harness and take your role
 
-1. Read SUITE-01, `../7r-adjudications.md`, and the PASS CRITERIA of every rule file under `../bans/`, `../page/`, `../facts/`, `../plots/`, and `../diagrams/`.
+1. Read ROUTINE-01, `../7r-adjudications.md`, and the PASS CRITERIA of every rule file under `../bans/`, `../page/`, `../facts/`, `../plots/`, and `../diagrams/`.
 2. Know your role: the writer runs Steps 2 through 13 on its own work first; the checker later re-runs them independently and compares answers; the orchestrator adjudicates every residual and never delegates adjudication; a verify campaign re-runs everything later on a newer tree or model.
 3. There is no checker script; the steps run by hand, and a check that cannot fail is not a check.
 4. Work page by page; record evidence at every step (a count or a list, never "looks fine"); reading the page is not sufficient.
@@ -12,7 +12,7 @@
 
 ## Step 2: Build the prose view
 
-1. Run SUITE-01's view builder over the page.
+1. Run ROUTINE-01's view builder over the page.
 2. Confirm the `[C]` tagging of catalog bullets, list items, and table cells: only the label-colon shape is exempt on `[C]` rows, and every other ban still binds there.
 3. SPECIFICATIONS entries are list bullets in a mandated format; never reword them to silence a pattern.
 4. Sweep nothing against the raw file except what Step 5 lists.
@@ -27,14 +27,14 @@
    5. BAN-07: the hedge tokens.
 2. Sweep case-insensitively and fence-aware; use case as evidence when judging.
 3. Judge negative and anthropomorphic candidates by reading each in context, never by the grep alone.
-4. SUITE-04's criteria audit this step itself: the sweep ran over the view, unanchored, and carried BAN-03's intro-sentence-plus-list shape and the colon-introduced list on the same pass.
-5. SUITE-04's scan patterns are the grep-shaped tells of BAN-02 and BAN-04; the one-unwrapped-line paragraph shape that blinds anchored patterns is PAGE-01's no-hard-wrapping rule.
+4. ROUTINE-04's criteria audit this step itself: the sweep ran over the view, unanchored, and carried BAN-03's intro-sentence-plus-list shape and the colon-introduced list on the same pass.
+5. ROUTINE-04's scan patterns are the grep-shaped tells of BAN-02 and BAN-04; the one-unwrapped-line paragraph shape that blinds anchored patterns is PAGE-01's no-hard-wrapping rule.
 
 ## Step 4: Adjudicate and fix
 
 1. Judge every candidate from Steps 3, 5, and 6 against the owning rule's exemptions and `../7r-adjudications.md`.
 2. Never reword an exempt construct to silence a pattern.
-3. Fix each confirmed hit with the matching SUITE-05 recipe per the fix-routing table below, never by ad-hoc rephrasing.
+3. Fix each confirmed hit with the matching ROUTINE-05 recipe per the fix-routing table below, never by ad-hoc rephrasing.
 4. Confirm no fix introduced another banned shape: swapping a label-colon for "X matters because Y" trades a BAN-02 hit for a BAN-04 hit.
 5. Every finding ends fixed or recorded as a registry adjudication with reasoning, never silenced.
 
@@ -61,8 +61,8 @@ The recipe rows map to their rules:
 
 ## Step 6: Sweep and judge the figures
 
-1. Run SUITE-01's figure sweep (the awk over non-C fences).
-2. Adjudicate the annotations: the phrase classes (BAN-02, BAN-04, and the SUITE-04/BAN-06/BAN-07 sweeps) are lifted inside a figure fence; BAN-01's bans still bind the text.
+1. Run ROUTINE-01's figure sweep (the awk over non-C fences).
+2. Adjudicate the annotations: the phrase classes (BAN-02, BAN-04, and the ROUTINE-04/BAN-06/BAN-07 sweeps) are lifted inside a figure fence; BAN-01's bans still bind the text.
 3. Per figure, in precedence order:
    1. DIAG-01's criteria: justification in both directions, geometry, and the prose paragraph above the opening fence;
    2. DIAG-02's criteria: strip-the-labels and the four banned shapes; DIAG-02 outranks the catalogs, with DIAG-04's retired input-grid and event-grid forms as the precedent; the exempt fences include the verbatim-quote blocks PAGE-02 mandates;
@@ -108,7 +108,7 @@ The recipe rows map to their rules:
    1. re-run and record every behavior enumeration;
    2. confirm structs and helpers, lifecycle and asynchronous behavior, and every hard-coded limit with its value and defining line;
    3. check done-ness against the catalog and scope statement; every cut is a reported scope decision governed by PLOT-04;
-   4. FACT-01's breadth mandate ranks with the prose and citation rules (the bans, the SUITE-04 sweep classes, PAGE-01, and PAGE-02); its figure mandate was executed in Step 6.
+   4. FACT-01's breadth mandate ranks with the prose and citation rules (the bans, the ROUTINE-04 sweep classes, PAGE-01, and PAGE-02); its figure mandate was executed in Step 6.
 2. Run FACT-02's criteria: recency evidence per cited driver, each described from its own source.
 3. Run PAGE-05's criteria: every OTHER SOURCES entry traced byte-exactly to its Link: trailer or dig output.
 4. When the page derives from existing material, run PLOT-04's criteria: the inventory, per-item dispositions, reported cuts, and the derived page's own parity audit, the same audit Step 8 ran.
@@ -130,7 +130,7 @@ The recipe rows map to their rules:
 
 1. Run PLOT-01's criteria:
    1. the model stated in the lead and SUMMARY before DETAILS, spec-mapped or a disclosed synthesis naming its materials;
-   2. the prose bans bind the synthesis in full: BAN-02's label-colon ban, BAN-04's superlative and importance bans, and the SUITE-04/BAN-06/BAN-07 classes;
+   2. the prose bans bind the synthesis in full: BAN-02's label-colon ban, BAN-04's superlative and importance bans, and the ROUTINE-04/BAN-06/BAN-07 classes;
    3. every fact under the synthesis keeps its own citation per PAGE-02's excerpt rules and PAGE-04's linking rules; anything unsupported is weakened or scoped per FACT-03;
    4. record the model's sources.
 2. Run PLOT-02's criteria:
@@ -207,7 +207,7 @@ The canonical originals (`../rules.md`, `../diagrams.md`) cite rules by their ol
 | 7 | BAN-01 |
 | 7a | BAN-02 |
 | 7b | BAN-03 |
-| 7c | the bans sweep set (`../bans/README.md` + SUITE-04/BAN-06/BAN-07) |
+| 7c | the bans sweep set (`../bans/README.md` + ROUTINE-04/BAN-06/BAN-07) |
 | 7d | BAN-04 |
 | 7e | PAGE-02 |
 | 7f | PAGE-01 |
@@ -221,12 +221,12 @@ The canonical originals (`../rules.md`, `../diagrams.md`) cite rules by their ol
 | 7n | PAGE-05 |
 | 7o | FACT-03 |
 | 7p | PLOT-04 |
-| 7q | SUITE-05 |
+| 7q | ROUTINE-05 |
 | 7r | `../7r-adjudications.md` (unchanged) |
 | 7s | PLOT-01 |
 | 7t | PLOT-02 |
 | 7u | PLOT-03 |
 | 7v | DIAG-02 |
-| 3a, 3b, 3c | SUITE-01 |
+| 3a, 3b, 3c | ROUTINE-01 |
 
 - Range phrases in the originals expand in ID order: "7 through 7d" is 7, 7a, 7b, 7c, 7d, and "7 through 7f" adds 7e and 7f.

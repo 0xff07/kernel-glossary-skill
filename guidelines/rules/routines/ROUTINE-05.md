@@ -1,4 +1,4 @@
-# SUITE-05: Rephrase recipes (quick reference)
+# ROUTINE-05: Rephrase recipes (quick reference)
 
 > Was: 7q. Rephrase recipes (quick reference); then bans/BAN-QUICKFIX.md. Harness, not a rule: a page cannot violate this file; it is the fix lookup the sweeps route confirmed hits through.
 

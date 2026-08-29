@@ -1,4 +1,4 @@
-# SUITE-01: The checking protocol
+# ROUTINE-01: The checking protocol
 
 > Was: the cross-cutting protocol of the gates 3a (Gate A), 3b (Gate B), and 3c (mechanical checks), rules.md:542-715; the per-rule checks themselves now live in each rule file's PASS CRITERIA.
 
@@ -8,7 +8,7 @@ A page passes when every PASS CRITERIA in every rule file under `../bans/`, `../
 
 **Re-run trigger and terminal condition** (was rules.md:544, 563, 571, 611). Re-run the mechanical criteria after every edit, your own hand-edits included. A page is final only at zero unadjudicated findings across every rule file. There is no checker script to run, maintain, or trust: a script's regexes age into false positives and its passes into false confidence, so the criteria are executed by hand with an editor and standard shell tools, and a check that cannot fail is not a check.
 
-**The batched sweep and the prose view** (was rules.md:636-679). Run the mechanical sweeps of BAN-01, BAN-02, BAN-04, BAN-06, and BAN-07 as one batched pass, per SUITE-04's watch list and execution audit, against a prose view of the page, never the raw file; only the checks their criteria mark as raw-file runs go against the raw file (BAN-01's heading and boldface greps, PAGE-01's internal-link greps). The patterns generate candidates; they are not the gate. Judge every hit against the rule's own exemptions and the settled adjudications registry (`../7r-adjudications.md`) before editing, and never reword an exempt construct to silence a pattern. BAN-07's criteria carry the full hedge token list for the batched sweep.
+**The batched sweep and the prose view** (was rules.md:636-679). Run the mechanical sweeps of BAN-01, BAN-02, BAN-04, BAN-06, and BAN-07 as one batched pass, per ROUTINE-04's watch list and execution audit, against a prose view of the page, never the raw file; only the checks their criteria mark as raw-file runs go against the raw file (BAN-01's heading and boldface greps, PAGE-01's internal-link greps). The patterns generate candidates; they are not the gate. Judge every hit against the rule's own exemptions and the settled adjudications registry (`../7r-adjudications.md`) before editing, and never reword an exempt construct to silence a pattern. BAN-07's criteria carry the full hedge token list for the batched sweep.
 
 The view builder (was rules.md:640-664; the canonical copy's output line, rules.md:661, drops the computed `[C]` tag it just built, a defect corrected here):
 
@@ -39,7 +39,7 @@ EOF
 
 Rows tagged `[C]` are catalog bullets, list items, and table cells. The registry exempts the label-colon shape there and nothing else: skip BAN-02 candidates on `[C]` rows and adjudicate every other pattern on them exactly as on flowing prose. SPECIFICATIONS entries are list bullets whose `<spec name>, section <N.N>: <section title>` format is mandated by `../../passes/01-research.md`; rewording them to silence a pattern breaks a format another guideline requires (was rules.md:667-673).
 
-**The figure sweep** (was rules.md:699-705). The prose view discards every fenced block, so figure annotations are invisible to every pattern above, yet they are still governed: the diagram rules lift only the phrase classes inside a figure (BAN-02, BAN-04, and the SUITE-04/BAN-06/BAN-07 sweeps), and BAN-01's bans (anthropomorphic verbs, em dashes, negative constructions) still bind figure text. Close the region explicitly:
+**The figure sweep** (was rules.md:699-705). The prose view discards every fenced block, so figure annotations are invisible to every pattern above, yet they are still governed: the diagram rules lift only the phrase classes inside a figure (BAN-02, BAN-04, and the ROUTINE-04/BAN-06/BAN-07 sweeps), and BAN-01's bans (anthropomorphic verbs, em dashes, negative constructions) still bind figure text. Close the region explicitly:
 
 ```
 awk '/^```/{f=!f; lang=(f? substr($0,4) : ""); next} f && lang!="c"' page.md

@@ -1,4 +1,4 @@
-# SUITE-04: Scan patterns
+# ROUTINE-04: Scan patterns
 
 > Was: the Scan patterns section of 7c; then bans/BAN-05.md. Harness, not a rule: a page cannot violate this file; it is the watch list and execution audit for the batched sweep.
 
