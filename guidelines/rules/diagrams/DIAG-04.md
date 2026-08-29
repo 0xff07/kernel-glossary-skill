@@ -91,7 +91,7 @@ This pattern differs from `parent + N children fan-out` (one parent allocating a
 
 Use when a function's return value or the chosen branch is a deterministic function of a small number of input bits or fields. Draw it as a tree that consumes one input at a time: the tested input on a trunk, one labelled edge per value, and the outcome at each leaf. The reader follows a path rather than scanning rows, and the shape shows which inputs are read only on some paths.
 
-Do NOT draw this as a grid of input columns against an outcome column. That is the plain table 7v bans, and it was the form this catalog carried until 7v retired it. When the material really is a flat product of every input against every outcome with no nesting, it is a semantics table and belongs in Markdown under 7t, with no figure at all.
+Do NOT draw this as a grid of input columns against an outcome column. That is the banned plain table, and it was the form this catalog carried until the ban retired it. When the material really is a flat product of every input against every outcome with no nesting, it is a semantics table and belongs in Markdown, with no figure at all.
 
 ```
        input_a ?
@@ -113,7 +113,7 @@ Do NOT draw this as a grid of input columns against an outcome column. That is t
 
 Use when a function has 3+ sequential decision points with side effects and back-edges, and showing each step in its own box adds clarity. Each step gets its own box; each decision node has explicit yes / no labels on outgoing edges; loops draw an explicit back-edge with an arrow. Reserve this for paths with real branching; a 2-state decision should be written as prose instead.
 
-The boxes name conditions and effects, never callees. A chart whose boxes are function names and whose edges mean "calls" is the banned flow graph of 7v however many decision diamonds are drawn around it; the test is whether removing every function name would leave a decision structure behind.
+The boxes name conditions and effects, never callees. A chart whose boxes are function names and whose edges mean "calls" is the banned flow graph however many decision diamonds are drawn around it; the test is whether removing every function name would leave a decision structure behind.
 
 ```
        ┌─────────────────┐
@@ -323,7 +323,7 @@ Use when the point is where a data bit or sample lands in time relative to a clo
 
 Use when several actors (userspace, a core layer, a driver, hardware) hand work to each other over time and the cross-actor ordering is the point. Draw one vertical lane per actor separated by │ columns, time running downward, and a cross-lane ──▶ arrow for each step; annotate each lane with the state it reaches. Distinct from queue/ring (a buffer between two stages): this shows N actors over one timeline.
 
-The cells carry the state each actor reaches, not the next function it calls. A walkthrough page is where this goes wrong most often: a lane diagram of one call stack, with every cell a callee and every arrow a call, is the banned flow graph of 7v with lane rules drawn on it. If the figure would survive deleting all but one lane, it was never a swimlane.
+The cells carry the state each actor reaches, not the next function it calls. A walkthrough page is where this goes wrong most often: a lane diagram of one call stack, with every cell a callee and every arrow a call, is the banned flow graph with lane rules drawn on it. If the figure would survive deleting all but one lane, it was never a swimlane.
 
 ```
        trigger START fan-out across the soc_pcm_trigger[][] rows
@@ -404,7 +404,7 @@ Use when a multi-node signal or dependency graph has fan-in and fan-out, plus au
 
 ### Pattern: register / address-offset map
 
-Use when several registers sit at fixed offsets within a block, or one block repeats at base + stride · index, and the addressing is the point (per-stream, per-port, or per-lane blocks). Draw the index ──▶ base-address column on the left, and one representative block expanded as a box of its named registers on the right. Distinct from a single-register bitfield (the 7h catalog in this file), which plots the bits of one register.
+Use when several registers sit at fixed offsets within a block, or one block repeats at base + stride · index, and the addressing is the point (per-stream, per-port, or per-lane blocks). Draw the index ──▶ base-address column on the left, and one representative block expanded as a box of its named registers on the right. Distinct from a single-register bitfield figure, which plots the bits of one register.
 
 ```
        Per-stream SDn register blocks (one per host DMA engine)
@@ -469,7 +469,7 @@ Use when a value moves through a small set of strictly-ordered levels and the tr
 
 Use when a reference count gates a hardware action only at a threshold crossing (first user enables, last user disables; the 0↔1 edge). Draw the count as horizontal rungs, the raising events climbing one side and the lowering events descending the other, and mark the one rung crossing that reaches the hardware. The shape puts the acting edge next to the inert ones, so the asymmetry is read off the picture rather than counted out of rows.
 
-Do NOT draw this as a grid of events against transitions against actions. That is the plain table 7v bans, and it was the form this catalog carried until 7v retired it.
+Do NOT draw this as a grid of events against transitions against actions. That is the banned plain table, and it was the form this catalog carried until the ban retired it.
 
 ```
        be_start: the hardware sees only the edges next to 0
@@ -537,4 +537,4 @@ Use when one frame or period of a shared medium is divided into slots or row/col
           set_tdm_slot assigns each codec channel a slot mask (N > 2)
 ```
 
-**PASS CRITERIA:** For each justified figure, choose the pattern from the use-case index by matching its "reach for it when" column, and record the pattern name at sign-off; reach for a new shape only when no listed pattern fits the relationship, and record why. Confirm the figure matches its pattern's stated shape and distinguishing notes: a sparse slot map is neither a fan-out (one trunk allocating children) nor an N-to-M mapping (disjoint inputs feeding a tabular destination); swimlane cells carry the state each actor reaches, never the next callee, and a swimlane that would survive deleting all but one lane fails; data-dependency endpoints are structs and its arrows mean feeds or populates, never call order; a before/after keeps the identical cell style on both sides so the change reads as a diff; flowchart boxes name conditions and effects, never callees; annotation that would hang off the destination's right edge moves to prose below the figure so every line stays under 80 columns. Honor the two retired forms this catalog once carried: input-decode material is drawn as a decode tree, never as a grid of input columns against an outcome column, and threshold-refcount material as a rung ladder, never as a grid of events against transitions against actions (both grids are DIAG-02's plain table, and DIAG-02 outranks this catalog). A flat input-to-outcome product with no nesting is a Markdown semantics table per PLOT-02 and gets no figure at all. Pass per figure with the pattern named.
+**PASS CRITERIA:** For each justified figure, choose the pattern from the use-case index by matching its "reach for it when" column, and record the pattern name at sign-off; reach for a new shape only when no listed pattern fits the relationship, and record why. Confirm the figure matches its pattern's stated shape and distinguishing notes: a sparse slot map is neither a fan-out (one trunk allocating children) nor an N-to-M mapping (disjoint inputs feeding a tabular destination); swimlane cells carry the state each actor reaches, never the next callee, and a swimlane that would survive deleting all but one lane fails; data-dependency endpoints are structs and its arrows mean feeds or populates, never call order; a before/after keeps the identical cell style on both sides so the change reads as a diff; flowchart boxes name conditions and effects, never callees; annotation that would hang off the destination's right edge moves to prose below the figure so every line stays under 80 columns. Honor the two retired forms this catalog once carried: input-decode material is drawn as a decode tree, never as a grid of input columns against an outcome column, and threshold-refcount material as a rung ladder, never as a grid of events against transitions against actions (both grids are the banned plain table, and the ban outranks this catalog). A flat input-to-outcome product with no nesting is a Markdown semantics table and gets no figure at all. Pass per figure with the pattern named.

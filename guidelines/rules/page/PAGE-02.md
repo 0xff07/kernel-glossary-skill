@@ -17,7 +17,8 @@ The sufficiency test: with the page open in one window and no terminal, no other
 **PASS CRITERIA:**
 
 - Build the catalog-to-DETAILS parity table: one row per LINUX KERNEL symbol, one evidence column for where DETAILS reproduces its definition (or the exact case label or branch the page describes) as a fenced C block, one for where DETAILS shows a concrete caller or usage. Record the table, not a bare count. Pass only at zero empty cells; a catalog symbol appearing nowhere in DETAILS is a hard failure.
+- Check the reverse direction too: a symbol that carries its own DETAILS section belongs in the catalog. When the page names several distinct users or call paths for one symbol, each named one appears as an excerpt or a per-site location link, and the shown-versus-enumerated split is stated.
 - Tripwire before building the table: fewer fenced C blocks than catalog entries guarantees unpaired symbols (every conforming page measured runs 1.03 to 1.47 blocks per entry; a deficient derived page measured 0.73).
 - Confirm every struct and enum definition is reproduced with comments and `#ifdef` regions, every macro or static array the prose depends on is reproduced at first dependence, and every call-chain walk shows the invocation site and the callee body as separate excerpts.
-- Confirm every block was located and verified against the on-disk source at the documented version before citing (semcode finds it; the disk is ground truth), and that a symbol whose real code could not be located has no block. Byte-level verification is PAGE-03's check.
+- Confirm every block was located and verified against the on-disk source at the documented version before citing (semcode finds it; the disk is ground truth), and that a symbol whose real code could not be located has no block.
 - Apply the sufficiency test to the main documented path and record the result: with only the page open, the reader can say exactly which lines run.

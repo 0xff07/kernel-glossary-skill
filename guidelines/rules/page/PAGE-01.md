@@ -45,4 +45,4 @@ The only place bare symbol names are acceptable is inside fenced code blocks (` 
 - Zero internal cross-links: `](.*\.md)` on the raw file finds no non-URL `.md` target, and no page path or other non-symbol span carries any link target at all (a resolving source anchor on a page path passes every mechanical check and is caught only by reading).
 - Cited code keeps tab indentation exactly; spot-compare at least one block against the source file.
 - Every OTHER SOURCES entry is `[Title](URL)`; zero bare URLs or "Title, URL" forms.
-- DETAILS carries the walkthroughs: every LINUX KERNEL symbol shows at least one concrete driver usage, cited as fenced C blocks and then explained, never prose alone (the block-level checks live in PAGE-02 and PAGE-03).
+- DETAILS carries the walkthroughs: every LINUX KERNEL symbol shows at least one concrete driver usage, cited as fenced C blocks and then explained, never prose alone.

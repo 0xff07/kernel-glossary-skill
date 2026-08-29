@@ -95,4 +95,4 @@ Do not flag the H3 catalog labels in LINUX KERNEL (`### Detection and dispatch (
 - "vtable": zero occurrences in authored prose.
 - Question headings: zero hits for `^#{2,4} (Why|How|Where|What)` and for trailing-`?` headings on the raw file (headings are legitimately line-anchored).
 - Bare-noun headings: read every H3/H4 in DETAILS, SUMMARY, and body sections and confirm each is a declarative what-does-what statement, never a bare noun or symbol; LINUX KERNEL catalog labels are exempt.
-- Sweep case-insensitively and fence-aware, then use case as evidence when judging. The page passes at zero unadjudicated findings, with confirmed hits fixed by the BAN-QUICKFIX recipes and exempt constructs left unreworded.
+- Sweep case-insensitively and fence-aware, then use case as evidence when judging. The page passes at zero unadjudicated findings, with exempt constructs left unreworded.

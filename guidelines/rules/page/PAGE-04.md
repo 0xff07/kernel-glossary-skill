@@ -2,7 +2,7 @@
 
 > Was: 7m. Link anchoring and exhaustive span linking
 
-This rule extends the every-symbol-linked rule in 7f with URL construction, anchor selection, and exhaustiveness. It is what the numbers in `guidelines/reference/measured-criteria.md` call links per page.
+This rule extends the every-symbol-linked rule with URL construction, anchor selection, and exhaustiveness. It is what the numbers in `guidelines/reference/measured-criteria.md` call links per page.
 
 **Rule:** URLs use the base `https://elixir.bootlin.com/linux/<version>/source/`, where `<version>` is the documented kernel version from SKILL.md's Input section (for campaigns, the version pinned in the plan file's Context). One page never mixes versions. The examples below use `v7.0`.
 

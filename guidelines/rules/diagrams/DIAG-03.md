@@ -3,7 +3,7 @@
 > Was: 7h. Register and bitfield figures (mandatory)
 
 
-A figure that plots a register, a bitfield, a TRB, a context, a packet header, or another bit-field structure follows the rules and reference figures in this section, on top of the general diagram rules in 7g in this file. It is drawn in one of two named styles, the DWORD-grid style and the L-connector style, chosen by the register-versus-structure test below.
+A figure that plots a register, a bitfield, a TRB, a context, a packet header, or another bit-field structure follows the rules and reference figures in this section, on top of the general diagram rules. It is drawn in one of two named styles, the DWORD-grid style and the L-connector style, chosen by the register-versus-structure test below.
 
 Two things decide how to label the bits, and the two resulting styles have names used throughout this skill. The DWORD-grid style writes each field name inside its cell and stacks the DWORDs as `DW0`, `DW1`, ... rows; the L-connector style draws a single row of one-character cells and calls out each bit's name below on an L-shaped leader.
 
@@ -152,4 +152,4 @@ The figure above is drawn to scale, with concrete bit boundaries. This pattern i
 - Verify the geometry against the rules above: ruler from the high bit down to 0 at one bit per two-column slot, with the two-row ruler whenever any index reaches two digits; the full per-bit `┌─┬...─┐` top border; `DW0`, `DW1`, ... labels in the left gutter; divider rows between differing field layouts; each multi-bit cell carrying its name and exact `(hi:lo)`; the legend beneath mapping each field as `NAME = MACRO (meaning)`; and the rule's own pre-save check, every content-row `│` landing on a `┬` or `┴` junction of the border rows above and below it.
 - For an L-connector figure, confirm each named bit descends on its own trunk from its own column, each elbow lands on its own trunk, reserved bits carry no trunk, and a packed-pointer figure closes with its decode-formula block.
 - Confirm the scale choice matches the material: to scale by default, with a complete per-bit ruler, cells in proportion, and every `(hi:lo)` exact; schematic only where a boundary has no fixed number, with the variable boundary named, the gaps joined by `...`, and cells sized for their labels. Exact positions on a generic pattern are fake precision, and fixed boundaries drawn schematic are an unforced downgrade.
-- Every bit range, constant, and macro in the figure and its legend is a behavioral claim: verify each against the reproduced definition or spec excerpt per FACT-03.
+- Every bit range, constant, and macro in the figure and its legend is a behavioral claim: verify each against the reproduced definition or spec excerpt.
