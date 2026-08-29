@@ -1,6 +1,6 @@
 # PIPELINE-01: The walkthrough
 
-> Companion to ROUTINE-01 (the protocol): the order in which an agent walks a page through every rule. The inter-rule wiring formerly kept in SUITE-02 is folded in: every dependency, carve-out, pairing, precedence, and fix route between rules lives in the step that exercises it, the fix-routing table under Step 4, and the legacy ID map in Appendix B. A rule file states its own requirement and nothing else; references run in one direction only, from the harness into the rules. Appendix A maps the old gates (rules.md 3a/3b/3c) onto the steps.
+> Companion to ROUTINE-01 (the protocol): the order in which an agent walks a page through every rule. The inter-rule wiring formerly kept in SUITE-02 is folded in: every dependency, carve-out, pairing, precedence, and fix route between rules lives in the step that exercises it, the fix-routing table under Step 4, and the legacy ID map in Appendix B. A rule file states its own requirement and nothing else; references run in one direction only, from the harness into the rules. Appendix A maps the old gates (was rules.md 3a/3b/3c) onto the steps.
 
 ## Step 1: Load the harness and take your role
 
@@ -169,7 +169,7 @@ The recipe rows map to their rules:
 
 ## Appendix A: the old gates map onto the steps
 
-| gate (rules.md) | step |
+| gate (was rules.md, line numbers at the git pin) | step |
 |---|---|
 | 3a re-run after every edit (544) | 14 |
 | 3a em-dashes, label-colon, superlatives, banned words, hedges, vtable, arm (546-553) | 3, 4 |
@@ -200,7 +200,7 @@ The recipe rows map to their rules:
 
 ## Appendix B: the legacy ID map
 
-The canonical originals (`../rules.md`, `../diagrams.md`) cite rules by their old stable IDs. They resolve here as:
+The canonical originals cite rules by their old stable IDs — `../diagrams.md` (on disk, frozen) and the retired `rules.md` (removed from the live tree; retrieve it with `git show e68a891:guidelines/rules/rules.md`, see `tests/TEST-05.md`). They resolve here as:
 
 | old ID | resolves to |
 |---|---|
