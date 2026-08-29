@@ -2,6 +2,10 @@
 
 > Was: 7v. Banned figure shapes (mandatory)
 
+**INPUT:** Every figure on the page (source excerpts and verbatim-quotation fences excluded), with its labels strippable for the test.
+
+**OUTPUT:** Zero figures in the four banned shapes, every surviving figure's skeleton still asserting structure after label-stripping, and failed material redrawn or folded into a table or the surrounding prose; delivered with the per-figure strip-test record.
+
 
 Four shapes fail as figures however accurate their content is. A figure that is one of them is redrawn into a shape that carries structure, or deleted with its content folded into the surrounding prose. This rule outranks the catalogs: where a catalog pattern would produce one of these shapes, the pattern is wrong and is not followed.
 

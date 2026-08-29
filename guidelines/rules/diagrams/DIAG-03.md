@@ -2,6 +2,10 @@
 
 > Was: 7h. Register and bitfield figures (mandatory)
 
+**INPUT:** Every figure whose primary subject is a bit layout (a register, TRB, context, descriptor, packet header), the defining kernel macros and structs, and the governing specification where one applies.
+
+**OUTPUT:** Each such figure in the correct named style per the register-versus-structure test, its geometry verified (ruler, borders, junctions, legend), its scale choice matching the material (to scale by default, schematic only for unfixed boundaries), and every bit range, constant, and macro verified against the reproduced definitions.
+
 
 A figure that plots a register, a bitfield, a TRB, a context, a packet header, or another bit-field structure follows the rules and reference figures in this section, on top of the general diagram rules. It is drawn in one of two named styles, the DWORD-grid style and the L-connector style, chosen by the register-versus-structure test below.
 

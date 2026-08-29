@@ -2,6 +2,10 @@
 
 > Was: 7a. Label-colon prose
 
+**INPUT:** The flowing prose paragraphs and the lead summary paragraph, presented as a prose view of the page (fenced blocks dropped, links resolved to their text, inline code, double-quoted text, and file:line citations masked); headings, catalog bullets, table cells, URLs, ratios, and code are out of scope.
+
+**OUTPUT:** Body prose whose every sentence is a plain declarative, with quotes introduced as "According to the comment <quote>, ..."; delivered with the adjudicated label-colon candidate list at zero unadjudicated hits.
+
 **Problem:** Generated prose leans on the "label: explanation" idiom — a noun phrase, a colon, then the clause that should have been the sentence. Body prose (everything outside H1–H4 headings, fenced code blocks, ASCII diagrams, list bullets, table cells, and Elixir links) must never use it. State the same content as a plain declarative sentence.
 
 The banned forms, each with its fix:

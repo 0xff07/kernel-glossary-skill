@@ -2,6 +2,10 @@
 
 > Was: 7j. Behavior and construct coverage
 
+**INPUT:** The page's scope statement and LINUX KERNEL catalog, plus the enumeration tooling over the documented tree (`find_callers`, `grep_functions`, and a grep that includes headers) and its git history where limits or lifecycles need tracing.
+
+**OUTPUT:** Recorded enumerations proving every documented behavior's sites are cited (or a representative spread plus a stated count), the backing structs and helpers, lifecycle and asynchronous behavior, and every hard-coded limit covered with its value and defining line; done-ness confirmed against the catalog and scope statement, with any cut a reported scope decision.
+
 **Problem:** A page that documents only the single function path that prompted it is incomplete. Breadth of coverage — every site that exhibits a behavior, every struct and helper that backs it, the full object lifecycle — is as mandatory as the prose and citation rules.
 
 **Rule:** Cite every site that matches a behavior, not one. Enumerate the full set with `find_callers`, `grep_functions`, and Grep before writing; cite each site with an inline Elixir link at the mention and a ` ```c ` block in DETAILS. When the set is too large to cite exhaustively, cite a representative spread (the core implementation plus several users) and state how many sites exist — never silently narrow to one.

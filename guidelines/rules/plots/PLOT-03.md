@@ -2,6 +2,10 @@
 
 > Was: 7u. Journey- or model-first organization
 
+**INPUT:** The DETAILS section's H3/H4 headings and the page's catalog, read against the topic's shape (an operation or pipeline, a static object or state space, or an object with an operation on it).
+
+**OUTPUT:** A DETAILS body organized as a journey or a model, every cataloged symbol re-homed inside the phase or facet where it acts with coverage preserved; delivered with the heading count and the spine named at sign-off.
+
 **Problem:** The catalog-first page — one DETAILS heading per symbol, walked in declaration order — is a reference catalog wearing an explanation's clothes. A page is organized as a journey or around a model, never as a catalog of its symbols: LINUX KERNEL is the reference catalog, where a list is correct; DETAILS is not. Its sections are the chapters of a journey (the phases of a process traced start to end) or the facets of a model (the roles, states, or classes of the mechanism), and each cataloged symbol appears inside the chapter or facet where it does its work, shown there with its definition and usage excerpts.
 
 **Rule:** Choose the spine from the topic. An operation or pipeline (a syscall path, a page fault, a split or merge, a device probe, an on-disk or on-wire translation) is a JOURNEY: organize DETAILS by its phases in run order. A static object or state space (a struct, a flag set, a lock's states, a power-state set) is a MODEL: organize by roles, states, or classes. An object with an operation on it leads with the model, then traces the operation as a journey through it.

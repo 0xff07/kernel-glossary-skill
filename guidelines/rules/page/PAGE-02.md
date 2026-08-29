@@ -2,6 +2,10 @@
 
 > Was: 7e. Self-contained kernel-source citation
 
+**INPUT:** The LINUX KERNEL catalog, the DETAILS section's fenced C blocks, and the on-disk kernel tree at the documented version (the semcode tools find code; the disk is ground truth).
+
+**OUTPUT:** The catalog-to-DETAILS parity table (a definition column and a usage column per catalog symbol, zero empty cells, both directions checked, the shown-versus-enumerated split stated) and a page that passes the sufficiency test: the real code inline for everything it explains.
+
 **Problem:** A page that describes code without showing it forces the reader into the tree. Every page reads as a self-contained source: a reader who never opens the kernel tree still finishes the page knowing exactly what the relevant code does. Wherever the page explains how a function works, what a struct looks like, how a macro is used, or how a call site invokes a callee, the actual code goes inline as a fenced ` ```c ` block before or alongside the explanation. The Elixir link is for navigation; the code block is for comprehension. "See [`func()`](https://elixir...)" does not count as showing the code.
 
 **Rule:** Never fabricate, paraphrase, or approximate kernel source. Every ` ```c ` block is the real code, located and verified with the semcode tools (`find_function`, `find_type`, `grep_functions`) and by reading the on-disk source file, then reproduced verbatim: exact text, all comments, tab indentation. Confirm the symbol exists at the documented version and the lines match the file before citing them; a symbol whose real code cannot be located gets no code block. Where a semcode index disagrees with the working tree, the on-disk source at the documented version is ground truth.

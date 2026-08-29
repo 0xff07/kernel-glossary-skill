@@ -2,6 +2,10 @@
 
 > Was: 7f. General page rules
 
+**INPUT:** The whole raw page: the H1, the caution blockquote and its template, section placement, paragraph line structure, every inline code span outside fences, the indentation of cited code, and the OTHER SOURCES entries.
+
+**OUTPUT:** A page with the mandated skeleton: topic-name H1, byte-exact caution blockquote, Documentation references in KERNEL DOCUMENTATION, one unwrapped line per paragraph, every kernel-symbol span an Elixir link with the struct/enum keyword kept, zero internal cross-links, tab-preserved excerpts, link-formatted OTHER SOURCES, and DETAILS carrying code walkthroughs; delivered with the bare-span fix record at zero remaining.
+
 Page-shape requirements that apply to every page regardless of subsystem.
 
 **Rule:** H1 is always the topic name only. Immediately below the H1, before the summary paragraph, every generated page carries this exact AI-generated-content caution blockquote, reproduced verbatim (including the repeated final line):

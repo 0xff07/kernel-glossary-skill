@@ -2,6 +2,10 @@
 
 > Was: 7o. Behavioral-claim verification
 
+**INPUT:** Every quantified, universal, per-member, restated-guard, and lifecycle-invariant claim on the page (lead and SUMMARY included), the excerpts adjacent to each, and the enumeration tooling to re-derive every count and mapping.
+
+**OUTPUT:** Every claim re-verified against a recorded search or derivation, every heading true of its section, prose agreeing with its adjacent excerpts, and every provenance line number confirmed; delivered as the claim list with per-claim evidence.
+
 **Problem:** A page is a set of claims about kernel behavior, and the class of error that reads correctly, links correctly, and survives every mechanical check is the unverified claim. Each claim class below has a named audit action: perform them while writing, and re-perform them when reviewing, enhancing, or reusing a page.
 
 **Rule:** Universal quantifiers are enumerations. A sentence containing "only", "never", "always", "all", "every", "exactly N", "the single", or "once" asserts the size or uniformity of a set: enumerate that set first (semcode `find_callers` plus a tree-wide grep that includes headers), then cite every member with location links or weaken the sentence to what the enumeration shows. History: a page asserted a helper "is invoked from exactly one place" while the tree held four callers (the plain store helper, its gfp variant, the fork-path bulk store, an error-path rollback); only re-running the enumeration catches this class.

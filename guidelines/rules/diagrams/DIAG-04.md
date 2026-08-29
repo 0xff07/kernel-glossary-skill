@@ -2,6 +2,10 @@
 
 > Was: 7i. Other ASCII diagram patterns
 
+**INPUT:** Every justified figure that is not a bit layout, matched against the use-case index's "reach for it when" column.
+
+**OUTPUT:** Each figure following a named catalog pattern and its distinguishing notes (or carrying a recorded reason no pattern fits); delivered with the pattern named per figure at sign-off.
+
 
 When a diagram is justified, prefer one of the named patterns below. Each pattern has a use case and a shape; copying the shape and substituting names is usually enough to produce a clean figure. Reach for a new shape only when none of these fits the spatial relationship in question.
 

@@ -2,6 +2,10 @@
 
 > Was: 7b. Intro sentence + list
 
+**INPUT:** Every bullet and numbered list in DETAILS, SUMMARY, and the lead summary paragraph, read in place (this is a read-through; no pattern expresses the shape); catalog lists and tables are out of scope.
+
+**OUTPUT:** Exposition carried in flowing paragraphs only: no intro-sentence-plus-list remains outside the catalog sections.
+
 **Problem:** Generated prose presents an explanation as an intro sentence followed by a bullet or numbered list. In DETAILS, SUMMARY, and the lead summary paragraph, fold the items into a single flowing paragraph. The forbidden shape is "<noun phrase ending in a period or colon> + <bullet/numbered list>" used as exposition; phrases that head such lists ("Two notable details.", "Three layers stack.", "Four cases run from strongest to weakest.", "Concrete uses.", "Five upfront refusals.") are banned even with a period.
 
 **Before:**

@@ -2,6 +2,10 @@
 
 > Was: Banned words
 
+**INPUT:** Body prose and catalog cells, swept case-insensitively and fence-aware for the banned tokens, with letters as the only delimiter for the arm pattern; CPU-architecture names and verbatim quotes are out of scope.
+
+**OUTPUT:** Prose in which every banned token is replaced by the concrete rule, count, helper, or branch word it stood in for; delivered with the adjudicated hit list at zero unadjudicated findings.
+
 **Words to watch:** contract, tally, tallied, tallies, tallying, canonical, arm, arms (for a branch or union case)
 
 **Problem:** Each of these asserts a framing without naming a mechanism. Replace each with the concrete rule, count, or helper it stands in for.

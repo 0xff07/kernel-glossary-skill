@@ -2,6 +2,10 @@
 
 > Was: 7m. Link anchoring and exhaustive span linking
 
+**INPUT:** Every inline code span and every cited URL on the page, the documented kernel version, and the on-disk tree for confirming each link's target line.
+
+**OUTPUT:** One Elixir version across the page, symbol-text links anchored at definition lines, non-definition references as path:line location links (one per enumerated call site), the easy-to-skip classes linked, and the settled bare spans cleared without rewording; delivered with the opened-and-confirmed anchor record at zero bare kernel-symbol spans.
+
 This rule extends the every-symbol-linked rule with URL construction, anchor selection, and exhaustiveness. It is what the numbers in `guidelines/reference/measured-criteria.md` call links per page.
 
 **Rule:** URLs use the base `https://elixir.bootlin.com/linux/<version>/source/`, where `<version>` is the documented kernel version from SKILL.md's Input section (for campaigns, the version pinned in the plan file's Context). One page never mixes versions. The examples below use `v7.0`.

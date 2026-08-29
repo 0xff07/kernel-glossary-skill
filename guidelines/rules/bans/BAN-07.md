@@ -2,6 +2,10 @@
 
 > Was: Hedges
 
+**INPUT:** Body prose via the case-insensitive hedge-token sweep over the prose view; hyphenated compounds, verbatim quotes, and measured statistics that cite their counter or benchmark are out of scope.
+
+**OUTPUT:** Prose in which every frequency word is replaced by the exact condition the code tests; delivered with the adjudicated hit list at zero unadjudicated hedges.
+
 **Words to watch:** usually, typically, generally, often, normally, commonly, mostly, in practice, tends to, on a hot cpu
 
 **Problem:** Each hedge dodges the actual condition the code tests. Name that condition instead.

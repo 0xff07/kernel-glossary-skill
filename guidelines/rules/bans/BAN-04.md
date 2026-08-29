@@ -2,6 +2,10 @@
 
 > Was: 7d. Hollow superlatives
 
+**INPUT:** Every adjective and ranking phrase in body prose, reached by the case-insensitive sweep of the words-to-watch list and the cleft frames over the prose view, plus an in-context read; verbatim quotes are out of scope.
+
+**OUTPUT:** Prose in which every ranking is replaced by the concrete mechanic that would justify it (the deletion test applied to each adjective); delivered with the adjudicated candidate list at zero unadjudicated rankings or importance assertions.
+
 **Words to watch:** the most invasive, the most fragmenting, the most aggressive, the most consequential, the most preferred, the least preferred, the most expensive, the cheapest, the cheap path, the slow path, the fast path, the strongest guarantee, the weakest guarantee, the strongest anti-fragmentation guarantee, the worst outcome, the best outcome, the entire performance benefit, the entire correctness benefit, the key invariant, the key difference, the key innovation, the key role, the design assumption, the design intent, X matters, X matters because Y, X is what makes Y, what makes X work, the only mode that, elaborate, elegant, fundamental, cornerstone, linchpin, crucial, critical
 
 **Problem:** Generated prose ranks a kernel construct ("the most invasive handler path", "the key difference") without naming the mechanic that would justify the ranking. Each kernel symbol, mode, or path is unique by definition, so the unexplained superlative adds zero information. "X matters" and "X is what makes Y" assert importance instead of stating the mechanic. "Fast path" and "slow path" are acceptable only where the kernel itself defines them (the fast path of a specific lock implementation). "The only mode that ..." fails when the same is trivially true of every other mode under some other framing.

@@ -2,6 +2,10 @@
 
 > Was: 7p. Deriving from an existing page
 
+**INPUT:** The source material the page derives from (an earlier-generation draft, a prior revision, pages being compressed, merged, or split) and a full inventory of it.
+
+**OUTPUT:** The inventory, an explicit disposition for every inventory item, every cut reported with the catalog and scope statement shrunk in the same change, and the derived page's own parity audit passed; zero silent drops.
+
 **Rule:** Producing a page from existing material of any provenance — an earlier-generation draft, a prior revision, pages being compressed, merged, or split — follows four steps:
 
 1. **Inventory the source first.** List its LINUX KERNEL catalog entries, DETAILS sections, distinct behaviors and call-site enumerations, figures, and KERNEL DOCUMENTATION and OTHER SOURCES entries.

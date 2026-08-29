@@ -2,6 +2,10 @@
 
 > Was: 7g. General ASCII diagram principles (mandatory)
 
+**INPUT:** Every figure fence on the page, and the material's drawable relationships (layouts, topologies, reshaping operations, state sets) for the justification test in both directions.
+
+**OUTPUT:** Figures exactly where a spatial, temporal, or transformational relationship earns them (over-drawing deleted, under-drawing filled), each in the mandated geometry (Unicode box-drawing only, titled sub-diagrams, 4-space indent, under 80 columns, junction-aligned rows) with a prose paragraph above its fence; delivered with per-figure sign-off naming the relationship conveyed and the catalog pattern followed.
+
 
 Only include an ASCII diagram when it conveys a spatial or temporal relationship that prose cannot express efficiently. A diagram earns its place when it shows physical layout, parallel structure across multiple lanes, a non-linear graph, an address space, a bit field, a ring/queue with head and tail pointers, or two views of the same data side by side. Concrete examples that justify a diagram include the GPE register block mapped to its per-bit event_info slots, the buddy allocator's per-order freelist columns, a doorbell BAR partitioned across IPs, or a tree of devices with parent/child arrows.
 

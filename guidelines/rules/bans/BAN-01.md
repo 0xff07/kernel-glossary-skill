@@ -2,6 +2,10 @@
 
 > Was: 7. Core writing bans
 
+**INPUT:** Every body sentence and every H3/H4 heading of DETAILS, SUMMARY, and body sections on the finished page: a prose view of the page for the sentence-level sweeps, the raw file for the heading and boldface checks, and the figure-annotation text inside fences for the placement-verb, em-dash, and negative-construction bans.
+
+**OUTPUT:** Prose with zero em dashes, boldface, negative constructions, anthropomorphic placement verbs, and "vtable", and headings that are declarative what-does-what statements; delivered with an adjudicated candidate list (every hit fixed or recorded exempt) at zero unadjudicated findings.
+
 Six bans that bind every sentence of every page.
 
 **Em dashes.** Do not use them. Write parentheses or two sentences: "CC (Command Completed)", not "CC --- Command Completed".
