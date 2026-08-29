@@ -33,7 +33,7 @@ If semcode tools are not available (e.g., the MCP server is not running), fall b
 
 Record exact file paths and line numbers for every function, struct, or macro found.
 
-Record every located symbol into the dossier as you go. Elixir URL syntax and anchor selection are governed by rule 7m (`guidelines/rules/rules.md` (7m)).
+Record every located symbol into the dossier as you go. Elixir URL syntax and anchor selection are governed by PAGE-04 (`guidelines/rules/page/PAGE-04.md`).
 
 ## Identify specifications
 

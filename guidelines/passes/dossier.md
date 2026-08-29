@@ -8,7 +8,7 @@ It exists so that a page's work survives the agent that did it — an interrupte
 
 ## Ground truth
 
-The dossier is a hint sheet, never a source. It pins the documented version (tag plus commit) in its HEADER, and every fact taken from it — a line number, a caller list, a count, a spec section — is re-verified against the on-disk tree at that version before it lands in the page (7e). The lint and verify passes never accept a dossier entry as evidence; they use it only as the starting point for their own re-derivations (7o). A dossier that disagrees with the disk is corrected to match the disk, at the moment the disagreement is found.
+The dossier is a hint sheet, never a source. It pins the documented version (tag plus commit) in its HEADER, and every fact taken from it — a line number, a caller list, a count, a spec section — is re-verified against the on-disk tree at that version before it lands in the page (PAGE-02). The lint and verify passes never accept a dossier entry as evidence; they use it only as the starting point for their own re-derivations (FACT-03). A dossier that disagrees with the disk is corrected to match the disk, at the moment the disagreement is found.
 
 ## Location and lifecycle
 
@@ -47,7 +47,7 @@ table below).
 ## ENUMERATIONS
 Per behavior or per counted claim: the full site list with file:line per
 site, AND the search basis used (tool, pattern, directories searched,
-headers included or excluded). The basis is what a later pass re-runs (7o).
+headers included or excluded). The basis is what a later pass re-runs (FACT-03).
 
 ## SPECIFICATIONS
 One line per spec reference: <spec name>, section <N.N>: <title>, and
@@ -56,11 +56,11 @@ where in the code or commit history it was found.
 ## COMMITS AND LORE
 Per relevant commit: sha, subject, and the byte-exact Link: trailer URL
 from git log (or the dig result), marked usable/unusable for OTHER
-SOURCES per 7n.
+SOURCES per PAGE-05.
 
 ## HARD LIMITS
 Per constant bounding the mechanism: name or literal, value, file:line
-(feeds 7j's limit coverage).
+(feeds FACT-01's limit coverage).
 
 ## VERSION DRIFT
 Symbols renamed, removed, or newly added at the documented version
@@ -102,7 +102,7 @@ Written by the write pass (guidelines/passes/02-write.md) and closed
 before the page is reported written. One row per LINUX KERNEL catalog
 symbol, two cells: where DETAILS shows its DEFINITION as a fenced c
 block, and where it shows a concrete USAGE as code — the two evidence
-columns of Gate B item 1. At exit every row is filled or its symbol is
+columns of the parity criteria (PAGE-02; was Gate B item 1). At exit every row is filled or its symbol is
 de-cataloged to a linked prose mention with a one-line reason
 (fill-or-decatalog; there is no deliberately-empty state). Record the
 final blocks-per-catalog-entry ratio; below 1.0 means unpaired symbols,
@@ -118,7 +118,7 @@ starts its re-derivations here and must use a basis shaped differently
 from the recorded ones; entries are starting points, never proof.
 
 ## LINT
-The Gate A record. The WRITER writes it as part of its exit suite
+The sweep record (was the Gate A record). The WRITER writes it as part of its exit suite
 (guidelines/passes/02-write.md, item 7): every candidate the prose view
 and the figure sweep surfaced, each FIXED (with the exact before/after),
 ESCALATED (unsure — for the orchestrator), or EXEMPT (with the 7r ruling
@@ -128,10 +128,10 @@ a writer's defence of its own prose from being silent. The check pass
 these classes, and a disagreement is a finding.
 
 ## VERIFY
-Written by the verify pass (guidelines/passes/04-verify.md). Per-item
-Gate A and Gate B outcomes with their evidence (a count or a list, never
-"looks fine"), and every finding: gate item, class, location, exact
-text, what the tree shows.
+Written by the verify pass (guidelines/passes/04-verify.md). Per-rule
+sweep and criteria outcomes (was Gate A and Gate B) with their evidence
+(a count or a list, never "looks fine"), and every finding: rule, class,
+location, exact text, what the tree shows.
 
 ## OPEN GAPS
 Anything not yet located or verified, so a resuming agent knows exactly

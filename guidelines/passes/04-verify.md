@@ -1,8 +1,8 @@
 # Pass 04: verify (one page)
 
-Purpose: the independent per-page fact-check. A page is certified only when both gates hold with zero unadjudicated findings; reading the page is not sufficient, and evidence is recorded per item. This pass defines the unit of verification work; when it runs and who runs it is mode-dependent.
+Purpose: the independent per-page fact-check. A page is certified only when every rule's PASS CRITERIA holds with zero unadjudicated findings; reading the page is not sufficient, and evidence is recorded per item. This pass defines the unit of verification work; when it runs and who runs it is mode-dependent.
 Inputs: the page after lint-fix; the kernel tree at the documented version (ground truth); and, as hints when they exist, the dossier's PARITY, EVIDENCE and LINT sections. A foreign corpus arrives with no dossier: regenerate the check inventory from the page itself (pages are self-contained by design).
-Outputs: the dossier's VERIFY section, recording the Gate A and Gate B outcomes with their evidence, plus the CERTIFIED entry the orchestrator stamps into the verify run's log. No report file (a durable, committed certification record exists only on an explicit user go).
+Outputs: the dossier's VERIFY section, recording the sweep and criteria outcomes (was Gate A and Gate B) with their evidence, plus the CERTIFIED entry the orchestrator stamps into the verify run's log. No report file (a durable, committed certification record exists only on an explicit user go).
 Run by: a verify campaign (the section below), executed by dispatched find-only verifier agents; adjudication and sign-off stay with its orchestrator and are never delegated.
 
 WHEN it runs, and why NOT in the writing session. The writer verifies its own work mechanically and the orchestrator reproduces those checks (`guidelines/passes/03-check.md`), so a verify campaign run immediately afterwards, in the same session, on the same tree, under the same model, buys almost nothing: its errors are CORRELATED with the ones already made, and it re-derives the same facts with the same blind spots. Its value comes from breaking exactly that correlation, so run it when at least one of these is true:
@@ -16,11 +16,11 @@ Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its f
 
 ## Procedure (per page)
 
-1. Run Gate B in full (`guidelines/rules/rules.md` (3b)), performing the named action for each of the nine items and recording the evidence (a count or a list, not "looks fine"). This pass is the pipeline's only independent fact-check: run item 9 deep — re-derive the lead and SUMMARY quantifiers and the page's central counts yourself, with a search basis shaped differently from any basis recorded in the dossier's EVIDENCE section — and audit the dossier's PARITY table independently against the page (item 1); the table and the dossier are hints, never evidence.
-2. Spot re-run the writer's mechanical exit suite (excerpt byte-compares and anchor confirmations per `guidelines/rules/rules.md` (3c)) and the Gate A greps (`guidelines/rules/rules.md` (3a)); audit the dossier's LINT section — its adjudications against the 7r registry (`guidelines/rules/7r-adjudications.md`), and its applied diffs (declared drift fixes must satisfy the byte-match precondition; no other fenced-block change is legitimate).
-3. For a derived page, confirm every 7p cut was reported (and, in a campaign, recorded in the campaign spec) before the page can be certified (`guidelines/rules/rules.md` (7p)).
+1. Run the full PASS CRITERIA review under the checking protocol (`guidelines/rules/routines/ROUTINE-01.md`; `guidelines/rules/INDEX.md` maps the retired nine-item sign-off onto the owning rules), performing each rule's named checks and recording the evidence (a count or a list, not "looks fine"). This pass is the pipeline's only independent fact-check: run FACT-03's claim audit deep — re-derive the lead and SUMMARY quantifiers and the page's central counts yourself, with a search basis shaped differently from any basis recorded in the dossier's EVIDENCE section — and audit the dossier's PARITY table independently against the page (PAGE-02's parity criteria); the table and the dossier are hints, never evidence.
+2. Spot re-run the writer's mechanical exit suite (excerpt byte-compares and anchor confirmations per ROUTINE-01's procedures) and the candidate greps (ROUTINE-04); audit the dossier's LINT section — its adjudications against the 7r registry (`guidelines/rules/7r-adjudications.md`), and its applied diffs (declared drift fixes must satisfy the byte-match precondition; no other fenced-block change is legitimate).
+3. For a derived page, confirm every PLOT-04 cut was reported (and, in a campaign, recorded in the campaign spec) before the page can be certified (`guidelines/rules/plots/PLOT-04.md`).
 4. Findings. Solo: fix and re-check now — the solo agent is the writer, so the facts are in its hands. Verify campaign: record every finding in the dossier's VERIFY section, find-only; the orchestrator adjudicates and routes (settled style and byte-proved drift to a fixer in fix-list mode per `guidelines/passes/03-lint-fixlist.md`; every factual finding into the verify run's log and the user-facing report — a verify campaign never edits facts), then any fixer-touched units are re-checked.
-5. Record the outcome of Gate A and Gate B in the dossier's VERIFY section. Zero unadjudicated findings certifies the page (state CERTIFIED in the verify run's log); any unconfirmable item leaves it uncertified — solo, the page is not written.
+5. Record the sweep and criteria outcomes (was Gate A and Gate B) in the dossier's VERIFY section. Zero unadjudicated findings certifies the page (state CERTIFIED in the verify run's log); any unconfirmable item leaves it uncertified — solo, the page is not written.
 6. Residual false-positive classes are recorded as LESSON entries in the verify run's log and surfaced to the user, who alone folds a ruling into the 7r registry.
 
 ## The verify campaign
@@ -65,9 +65,11 @@ MANDATORY READING, in order:
    candidate and every fixer-report audit is judged against it.
 2. <SKILL_DIR>/guidelines/passes/04-verify.md — your procedure (steps
    1-3; you record findings, you do not fix or route them).
-3. <SKILL_DIR>/guidelines/rules/rules.md — the writing rules and the
-   gates in one file: Gate B's nine items (3b), Gate A's greps (3a), and
-   the by-hand check procedures both gates use (3c).
+3. The rule corpus under <SKILL_DIR>/guidelines/rules/ — one rule per
+   file: INDEX.md (the map, first), every rule under bans/, page/,
+   facts/, plots/ (and diagrams/ when the page carries a figure), and
+   the checking protocol with its patterns and recipes under routines/
+   (ROUTINE-01, ROUTINE-04, ROUTINE-05).
 4. <SKILL_DIR>/guidelines/reference/measured-criteria.md — the depth
    tripwires.
 
@@ -79,7 +81,7 @@ shaped differently from any recorded in EVIDENCE.
 PROJECT-SPECIFIC BANS from the parent campaign spec: <list, or "none">.
 
 REPORT. Write per-item evidence and the findings list (each finding:
-gate item, class, location, exact text, what the tree shows) into the
+rule, class, location, exact text, what the tree shows) into the
 VERIFY section of <SKILL_DIR>/progress/<verify-run>/<slug>.dossier.md.
 Your final message is the summary: items passed with their evidence
 counts, findings by class and severity, and the 7r ruling count you

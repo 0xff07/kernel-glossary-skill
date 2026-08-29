@@ -2,7 +2,7 @@
 
 Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
-The full fresh-eyes lint sweep is RETIRED. The writer now runs the Gate A sweeps on its own
+The full fresh-eyes lint sweep is RETIRED. The writer now runs the mechanical sweeps (ROUTINE-01; was Gate A) on its own
 prose (`guidelines/passes/02-write.md`, exit-suite items 6-8), and the orchestrator re-runs them
 mechanically in the check pass (`guidelines/passes/03-check.md`). The reasoning is recorded in
 03-check.md and is not repeated here.
@@ -36,11 +36,12 @@ MANDATORY READING, in order, before touching the page:
    every candidate against it BEFORE fixing or proposing; a hit on an
    exempt construct is a false candidate, and rewording a compliant
    phrase to silence a pattern is itself a defect.
-2. <SKILL_DIR>/guidelines/rules/rules.md — every writing rule and every
-   gate, in one file. This pass exercises its "Style and prose" part (7,
-   7a-7d and 7f, the prose gates; 7m, span form; 7q, the fix recipes),
-   Gate A's greps (3a), and the by-hand procedures in 3c (items 1 and 2
-   are the preconditions for span-link and line-drift fixes).
+2. The rule corpus under <SKILL_DIR>/guidelines/rules/ — one rule per
+   file; INDEX.md maps every ID. This pass exercises the prose rules
+   (BAN-01, BAN-02, BAN-03, BAN-04, BAN-06, BAN-07, and PAGE-01),
+   PAGE-04's span form, the ROUTINE-05 fix recipes, ROUTINE-04's
+   candidate patterns, and ROUTINE-01's link-target and excerpt
+   procedures (the preconditions for span-link and line-drift fixes).
 3. The frozen samples for catalog-form questions:
    <SKILL_DIR>/guidelines/reference/samples/page-encoding-pgtable-entries.md and
    <SKILL_DIR>/guidelines/reference/samples/page-overview-mm-struct.md — the LINUX
@@ -51,7 +52,7 @@ FACTS. Documented tree: <path>, version <tag>, commit <sha> (the disk is
 ground truth for every byte-match precondition).
 PROJECT-SPECIFIC BANS carried from the campaign spec: <list, or "none">.
 [FIX LIST. <One numbered item per reviewed finding: the current text
-(exact), the replacement (exact, or the 7q recipe to apply), and its
+(exact), the replacement (exact, or the ROUTINE-05 recipe to apply), and its
 location by section heading. Span-form fixes name the exact link target
 URL. Nothing else is in scope.>]
 
@@ -64,7 +65,7 @@ CONSTRAINTS.
 - An item that cannot be applied exactly as briefed (text not found,
   ambiguous placement, needs a decision) is returned in the report with
   what you found; never improvise.
-- Re-run the Gate A candidate greps over the paragraphs you touched
+- Re-run the ROUTINE-04 candidate greps over the paragraphs you touched
   (fence-aware) to confirm no new candidates.
 - Anything you persist goes under <SKILL_DIR>/progress/<campaign>/ with a
   unique <slug>.-prefixed name; write nowhere else in progress/, which

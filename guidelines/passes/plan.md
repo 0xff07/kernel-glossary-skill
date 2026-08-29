@@ -56,26 +56,26 @@ A conforming spec carries these elements, and no execution log:
 5. Directory organization: the group layout with its rationale.
 6. Page catalog: one table per group with columns page | scope (anchor symbols) | tag, followed by the fold-in adjudications, the projected total with tag census, and the overlap boundary rules (one statement per sibling cluster, seam symbols named).
 7. Execution and verification: the per-page procedure and its campaign-specific deltas, project-specific writing bans from the request, gate ownership for the pipeline, write-time rules (line numbers are hints, with the known-drift list), user amendments (dated, explicitly superseding what they replace), the recommended batch order (current, plus any superseded order kept for reference), and the save/commit policy.
-8. Draft reuse map, when prior material exists (next section, with rule 7p, `guidelines/rules/rules.md` (7p), carrying the per-page mechanics): per source file, a reuse verdict, symbol spot-check results, defect classes with counts, and section-to-page mining pointers, plus an enhancement backlog for already-written pages.
+8. Draft reuse map, when prior material exists (next section, with PLOT-04, `guidelines/rules/plots/PLOT-04.md`, carrying the per-page mechanics): per source file, a reuse verdict, symbol spot-check results, defect classes with counts, and section-to-page mining pointers, plus an enhancement backlog for already-written pages.
 
 Per-page pipeline states (WRITTEN → LINTED → CERTIFIED) are recorded only in run logs, never in the spec; a verify run stamps CERTIFIED in its own log, and a durable certification record exists only on an explicit user go (SKILL.md, "The three artifacts and the three states").
 
 ## Deriving from prior drafts and pages
 
-When earlier-generation drafts or prior revisions exist for topics in the catalog, mine them instead of ignoring them, under these rules (rule 7p, `guidelines/rules/rules.md` (7p), carries the per-page mechanics):
+When earlier-generation drafts or prior revisions exist for topics in the catalog, mine them instead of ignoring them, under these rules (PLOT-04, `guidelines/rules/plots/PLOT-04.md`, carries the per-page mechanics):
 
 1. Map first, read once. Spawn research agents to read the draft corpus once and record a reuse map in the campaign spec: for each draft, a verdict (backbone-reusable, mine-sections-only, or ignore), symbol spot-check results against the documented tree, its defect classes with counts (banned wording, stale symbol names, non-verbatim excerpts), and pointers from draft sections to the catalog pages they feed. All later work consults the map, not the corpus.
 2. Reuse structure, re-verify everything. A draft may contribute its skeleton, section ordering, tables, and figures. Every symbol, line number, code excerpt, and factual claim taken from a draft is re-verified against the on-disk tree at the documented version before it lands. Treat drafts as unverified claims with good structure; the staleness class that survives spot checks is the silently renamed symbol, so re-find each symbol rather than trusting name continuity.
 3. Extend to standard. Reused sections are extended to the definition-plus-usage depth, full enumerations, and lifecycle coverage of the depth rules in `guidelines/reference/measured-criteria.md`. A reused page that stays at draft depth is not done.
-4. Scrub to the rules. Sweep reused prose for every Gate A class (`guidelines/rules/rules.md` (3a); drafts predate some rules; branch-metaphor "arm" and label-colon idioms cluster in them), add or correct 7l provenance comments, and rebuild OTHER SOURCES per 7n.
+4. Scrub to the rules. Sweep reused prose for every candidate class on ROUTINE-04's watch list (drafts predate some rules; branch-metaphor "arm" and label-colon idioms cluster in them), add or correct PAGE-03 provenance comments, and rebuild OTHER SOURCES per PAGE-05.
 5. Collect across drafts. One catalog page may assemble sections mined from several drafts; the boundary rules decide what belongs where.
-6. Disposition, not disappearance. Every source catalog entry, DETAILS section, behavior, enumeration, figure, and reference gets a 7p disposition (kept, merged, or cut with its reason). Cuts shrink the derived page's catalog and scope statement in the same change and are recorded in the campaign spec so the orchestrator or the user can veto them; the derived page then passes the Gate B parity audit like a fresh one.
+6. Disposition, not disappearance. Every source catalog entry, DETAILS section, behavior, enumeration, figure, and reference gets a PLOT-04 disposition (kept, merged, or cut with its reason). Cuts shrink the derived page's catalog and scope statement in the same change and are recorded in the campaign spec so the orchestrator or the user can veto them; the derived page then passes the parity audit (PAGE-02) like a fresh one.
 
 ## Repair campaigns (seeded by a verify run)
 
 A repair campaign is an ordinary write campaign whose catalog comes ready-made: the confirmed factual findings a verify campaign recorded in its run log and surfaced to the user (`guidelines/passes/04-verify.md`). There is no separate plan format and no separate artifact — planning collapses to lifting those findings into a catalog (a spec at `campaigns/<name>.md` like any other), one row per page to repair, carrying each finding with its evidence and, where the verifier derived one, its exact fix specification. The tree pin, the boundary statements, and the project-specific bans come from the parent campaign spec.
 
-Writers in a repair campaign run in the derivation form (rule 7p, "Deriving from prior drafts and pages" above): the source is the current page plus its finding list, every touched claim is re-verified on disk, and every cut is reported. The page's dossier, where one survives, is the starting evidence — never proof.
+Writers in a repair campaign run in the derivation form (PLOT-04, "Deriving from prior drafts and pages" above): the source is the current page plus its finding list, every touched claim is re-verified on disk, and every cut is reported. The page's dossier, where one survives, is the starting evidence — never proof.
 
 ## Inventory brief (planning step 2)
 

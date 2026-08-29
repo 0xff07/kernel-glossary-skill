@@ -12,7 +12,7 @@ Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its f
 
 Before generating any content, read `guidelines/reference/TEMPLATE-FULL.md` (relative to `${CLAUDE_SKILL_DIR}`) for the page structure and section order.
 
-Then read the samples under `${CLAUDE_SKILL_DIR}/guidelines/reference/samples/`. These are frozen copies of real pages that met every gate (Gate A and Gate B, mapped in `guidelines/rules/INDEX.md`) with zero findings under the mechanical checks; they are the concrete standard for structure, prose, diagram style, code-citation density, and depth of coverage. Open the one or two whose archetype most resembles the page about to be written and read them in full before writing:
+Then read the samples under `${CLAUDE_SKILL_DIR}/guidelines/reference/samples/`. These are frozen copies of real pages that met the full rule set — every PASS CRITERIA under the ROUTINE-01 checking protocol (was Gate A and Gate B; `guidelines/rules/INDEX.md` maps every rule) — with zero findings under the mechanical checks; they are the concrete standard for structure, prose, diagram style, code-citation density, and depth of coverage. Open the one or two whose archetype most resembles the page about to be written and read them in full before writing:
 
 - structure-tour pages (one central struct documented field group by field group, with its accessor and lifecycle catalog): `guidelines/reference/samples/page-overview-mm-struct.md`
 - lifecycle / refcount / locking-protocol pages: `guidelines/reference/samples/page-lifecycle-mm-refcount.md` (also the smallest acceptable depth for a fine-grained page)
