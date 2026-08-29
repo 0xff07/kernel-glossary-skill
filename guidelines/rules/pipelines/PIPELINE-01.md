@@ -1,4 +1,4 @@
-# ROUTINE-03: The walkthrough
+# PIPELINE-01: The walkthrough
 
 > Companion to ROUTINE-01 (the protocol): the order in which an agent walks a page through every rule. The inter-rule wiring formerly kept in SUITE-02 is folded in: every dependency, carve-out, pairing, precedence, and fix route between rules lives in the step that exercises it, the fix-routing table under Step 4, and the legacy ID map in Appendix B. A rule file states its own requirement and nothing else; references run in one direction only, from the harness into the rules. Appendix A maps the old gates (rules.md 3a/3b/3c) onto the steps.
 
