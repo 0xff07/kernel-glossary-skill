@@ -1,4 +1,4 @@
-# BAN-07
+# BAN-07: Hedges
 
 > Was: Hedges
 

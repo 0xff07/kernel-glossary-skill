@@ -1,4 +1,4 @@
-# BAN-06
+# BAN-06: Banned words
 
 > Was: Banned words
 
