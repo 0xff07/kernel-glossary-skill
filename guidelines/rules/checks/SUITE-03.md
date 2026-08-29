@@ -31,8 +31,8 @@
    5. BAN-07: the hedge tokens.
 2. Sweep case-insensitively and fence-aware; use case as evidence when judging.
 3. Judge negative and anthropomorphic candidates by reading each in context, never by the grep alone.
-4. BAN-05's criteria audit this step itself: the sweep ran over the view, unanchored, and carried BAN-03's intro-sentence-plus-list shape and the colon-introduced list on the same pass.
-5. BAN-05's scan patterns are the grep-shaped tells of BAN-02 and BAN-04; the one-unwrapped-line paragraph shape that blinds anchored patterns is PAGE-01's no-hard-wrapping rule.
+4. SUITE-04's criteria audit this step itself: the sweep ran over the view, unanchored, and carried BAN-03's intro-sentence-plus-list shape and the colon-introduced list on the same pass.
+5. SUITE-04's scan patterns are the grep-shaped tells of BAN-02 and BAN-04; the one-unwrapped-line paragraph shape that blinds anchored patterns is PAGE-01's no-hard-wrapping rule.
 
 *Wiring: Sweep aggregation (all bullets).*
 
@@ -40,7 +40,7 @@
 
 1. Judge every candidate from Steps 3, 5, and 6 against the owning rule's exemptions and `../7r-adjudications.md`.
 2. Never reword an exempt construct to silence a pattern.
-3. Fix each confirmed hit with the matching BAN-QUICKFIX recipe per SUITE-02's Fix routing table.
+3. Fix each confirmed hit with the matching SUITE-05 recipe per SUITE-02's Fix routing table.
 4. Confirm no fix introduced another banned shape: swapping a label-colon for "X matters because Y" trades a BAN-02 hit for a BAN-04 hit.
 5. Every finding ends fixed or recorded as a registry adjudication with reasoning, never silenced.
 
@@ -57,7 +57,7 @@
 ## Step 6: Sweep and judge the figures
 
 1. Run SUITE-01's figure sweep (the awk over non-C fences).
-2. Adjudicate the annotations: the phrase classes (BAN-02, BAN-04, and the BAN-05/BAN-06/BAN-07 sweeps) are lifted inside a figure fence; BAN-01's bans still bind the text.
+2. Adjudicate the annotations: the phrase classes (BAN-02, BAN-04, and the SUITE-04/BAN-06/BAN-07 sweeps) are lifted inside a figure fence; BAN-01's bans still bind the text.
 3. Per figure, in precedence order:
    1. DIAG-01's criteria: justification in both directions, geometry, and the prose paragraph above the opening fence;
    2. DIAG-02's criteria: strip-the-labels and the four banned shapes; DIAG-02 outranks the catalogs, with DIAG-04's retired input-grid and event-grid forms as the precedent; the exempt fences include the verbatim-quote blocks PAGE-02 mandates;
@@ -135,7 +135,7 @@
 
 1. Run PLOT-01's criteria:
    1. the model stated in the lead and SUMMARY before DETAILS, spec-mapped or a disclosed synthesis naming its materials;
-   2. the prose bans bind the synthesis in full: BAN-02's label-colon ban, BAN-04's superlative and importance bans, and the BAN-05/BAN-06/BAN-07 classes;
+   2. the prose bans bind the synthesis in full: BAN-02's label-colon ban, BAN-04's superlative and importance bans, and the SUITE-04/BAN-06/BAN-07 classes;
    3. every fact under the synthesis keeps its own citation per PAGE-02's excerpt rules and PAGE-04's linking rules; anything unsupported is weakened or scoped per FACT-03;
    4. record the model's sources.
 2. Run PLOT-02's criteria:

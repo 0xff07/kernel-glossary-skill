@@ -4,7 +4,7 @@
 
 ## Fix routing
 
-Every confirmed hit from a ban sweep is fixed with the matching BAN-QUICKFIX recipe, never by ad-hoc rephrasing. The recipe rows map to their rules:
+Every confirmed hit from a ban sweep is fixed with the matching SUITE-05 recipe, never by ad-hoc rephrasing. The recipe rows map to their rules:
 
 | recipe row | rule |
 |---|---|
@@ -23,8 +23,8 @@ Every confirmed hit from a ban sweep is fixed with the matching BAN-QUICKFIX rec
 
 ## Sweep aggregation
 
-- BAN-05's batched sweep also carries BAN-03's intro-sentence-plus-list shape and the colon-introduced list on the same pass.
-- BAN-05's scan patterns are the grep-shaped tells of BAN-02 and BAN-04.
+- SUITE-04's batched sweep also carries BAN-03's intro-sentence-plus-list shape and the colon-introduced list on the same pass.
+- SUITE-04's scan patterns are the grep-shaped tells of BAN-02 and BAN-04.
 - The one-unwrapped-line paragraph shape that makes line-anchored patterns blind to mid-paragraph hits is PAGE-01's no-hard-wrapping rule.
 - The batched execution, the prose view, and the figure sweep are SUITE-01's.
 - Adjudication for every sweep goes against the rule's own exemptions and `../7r-adjudications.md`.
@@ -36,13 +36,13 @@ Every confirmed hit from a ban sweep is fixed with the matching BAN-QUICKFIX rec
 - PAGE-02 establishes that every fenced C block is real and located; PAGE-03 then byte-compares each block at its cited line.
 - PAGE-03's "verbatim between delimiters" requirement is PAGE-02's verbatimness rule applied to stitched blocks.
 - FACT-03's "provenance line numbers are claims too" audit executes on PAGE-03's provenance comments.
-- FACT-01's breadth mandate ("as mandatory as the prose and citation rules") resolves to BAN-01 through BAN-07 (the BAN-05/BAN-06/BAN-07 sweep classes included), PAGE-01, and PAGE-02.
+- FACT-01's breadth mandate ("as mandatory as the prose and citation rules") resolves to BAN-01 through BAN-07 (the SUITE-04/BAN-06/BAN-07 sweep classes included), PAGE-01, and PAGE-02.
 
 ## Model and organization
 
 - PLOT-01 and PLOT-03 are a pair: PLOT-01 puts the model at the top of the page, PLOT-03 organizes the body around it.
 - FACT-03's one licensed exception (prose stating more than a single excerpt witnesses) is exactly PLOT-01's disclosed synthesis.
-- The prose bans bind that synthesis in full: BAN-02's label-colon ban, BAN-04's superlative and importance bans, and the BAN-05/BAN-06/BAN-07 sweep classes.
+- The prose bans bind that synthesis in full: BAN-02's label-colon ban, BAN-04's superlative and importance bans, and the SUITE-04/BAN-06/BAN-07 sweep classes.
 - Under the synthesis every fact keeps its own citation, per PAGE-02's excerpt rules and PAGE-04's linking rules; anything the named materials do not support is weakened or scoped per FACT-03.
 - PLOT-03's reorganizations preserve coverage; the evidence is PAGE-02's parity table.
 - PLOT-04's derived-page audit is that same PAGE-02 parity audit.
@@ -58,7 +58,7 @@ Every confirmed hit from a ban sweep is fixed with the matching BAN-QUICKFIX rec
 - DIAG-03's bit ranges, constants, and macros are behavioral claims audited under FACT-03.
 - Material that fails DIAG-02's strip-the-labels test routes to a Markdown semantics table under PLOT-02 or into the surrounding prose.
 - A catalog in visual form is banned twice over: PLOT-03 bans it in words, DIAG-02 in shape.
-- Inside a figure fence the phrase classes (BAN-02, BAN-04, and the BAN-05/BAN-06/BAN-07 sweeps) are lifted; BAN-01's bans (anthropomorphic verbs, em dashes, negative constructions) still bind figure text. SUITE-01's figure sweep is the mechanism that reaches it.
+- Inside a figure fence the phrase classes (BAN-02, BAN-04, and the SUITE-04/BAN-06/BAN-07 sweeps) are lifted; BAN-01's bans (anthropomorphic verbs, em dashes, negative constructions) still bind figure text. SUITE-01's figure sweep is the mechanism that reaches it.
 - DIAG-01's under-80-columns rule has one exception: DIAG-03's single-row L-connector register.
 - Per-figure sign-off names the DIAG-03 or DIAG-04 pattern the figure follows.
 - PLOT-03's journey-or-model spine and DIAG-01's figure spine are the same spine: a figure depicts the page's journey or model, and the primary figure shows it whole.
@@ -76,7 +76,7 @@ The canonical originals (`../rules.md`, `../diagrams.md`) cite rules by their ol
 | 7 | BAN-01 |
 | 7a | BAN-02 |
 | 7b | BAN-03 |
-| 7c | the bans sweep set (`../bans/README.md` + BAN-05/BAN-06/BAN-07) |
+| 7c | the bans sweep set (`../bans/README.md` + SUITE-04/BAN-06/BAN-07) |
 | 7d | BAN-04 |
 | 7e | PAGE-02 |
 | 7f | PAGE-01 |
@@ -90,7 +90,7 @@ The canonical originals (`../rules.md`, `../diagrams.md`) cite rules by their ol
 | 7n | PAGE-05 |
 | 7o | FACT-03 |
 | 7p | PLOT-04 |
-| 7q | BAN-QUICKFIX |
+| 7q | SUITE-05 |
 | 7r | `../7r-adjudications.md` (unchanged) |
 | 7s | PLOT-01 |
 | 7t | PLOT-02 |
