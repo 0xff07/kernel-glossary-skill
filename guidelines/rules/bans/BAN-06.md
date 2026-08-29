@@ -51,3 +51,9 @@ the write-fault branch of do_wp_page
 ```
 
 Do not flag CPU-architecture names (Arm, ARM64, arm64) or verbatim quotes from kernel source or commit messages.
+
+**PASS CRITERIA:**
+
+- Zero unadjudicated hits for `contract`, `tally` (also `tallied`/`tallies`/`tallying`), and `canonical` in body prose, swept case-insensitively and fence-aware; each confirmed hit is replaced by the concrete rule, count, or helper it stands in for, per the BAN-QUICKFIX recipes.
+- Sweep `(^|[^a-z])arms?([^a-z]|$)` with letters as the only delimiter: `\b` treats `_` as a word character, so a banned token inside an identifier is invisible to a `\b`-bounded pattern. A hit is "arm"/"arms" for a union case, conditional branch, split side, or one of a pair of code paths. The capitalized architecture names (Arm, ARM64, arm64, "32-bit Arm"), verbatim quotes, and the ordinary English verb ("arms a delayed work item") are exempt per the settled adjudications registry (`../7r-adjudications.md`).
+- An exempt hit is cleared, never reworded: a writer once reworded a correct "32-bit Arm" purely to quiet the arm-word pattern, and that rewording was the only defect introduced.

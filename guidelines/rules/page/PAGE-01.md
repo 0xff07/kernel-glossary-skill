@@ -34,3 +34,15 @@ The only place bare symbol names are acceptable is inside fenced code blocks (` 
 **Rule:** Every OTHER SOURCES entry uses the markdown link format `[Title](URL)`; no bare URLs, no `Title — URL` style.
 
 **Rule:** The DETAILS section includes detailed kernel code walkthroughs: step-by-step traces through function call chains, real driver API usage examples, and lifecycle coverage for key objects. Every function/struct/enum in the LINUX KERNEL section gets at least one concrete driver usage shown in DETAILS. Kernel code paths are cited as fenced ` ```c ` blocks, then explained — never described in prose alone.
+
+**PASS CRITERIA:**
+
+- The H1 is the topic name only, and the caution blockquote sits immediately below it, byte-identical to the template above, repeated final line included: diff it against the template, do not eyeball it.
+- Zero `Documentation/` references (and zero `docs.kernel.org` / `kernel.org/doc` URLs) in OTHER SOURCES; each lives in KERNEL DOCUMENTATION as an Elixir reference entry.
+- Every prose paragraph is a single unwrapped line; only fences, ASCII diagrams, list items, and table rows break lines. Check for mid-paragraph line breaks.
+- Scan every inline code span outside fences and confirm every kernel-symbol mention (function, macro, struct, enum, typedef, argument forms included) is an Elixir link, repeats included; only a verified spec or hardware name stays bare, with a comment saying so. Record bare spans found and fixed; sign off at zero remaining.
+- Every struct and enum keeps its `struct`/`enum` keyword everywhere, the `'\<...\>'` catalog form included.
+- Zero internal cross-links: `](.*\.md)` on the raw file finds no non-URL `.md` target, and no page path or other non-symbol span carries any link target at all (a resolving source anchor on a page path passes every mechanical check and is caught only by reading).
+- Cited code keeps tab indentation exactly; spot-compare at least one block against the source file.
+- Every OTHER SOURCES entry is `[Title](URL)`; zero bare URLs or "Title, URL" forms.
+- DETAILS carries the walkthroughs: every LINUX KERNEL symbol shows at least one concrete driver usage, cited as fenced C blocks and then explained, never prose alone (the block-level checks live in PAGE-02 and PAGE-03).

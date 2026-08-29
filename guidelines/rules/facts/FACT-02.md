@@ -17,3 +17,5 @@ The cs35l56 driver registers a jack-detect callback, just like the codec documen
 ```
 The cs35l56 driver (a Cirrus Logic amplifier in sound/soc/codecs/cs35l56.c) registers a jack-detect callback through its set_jack component op.
 ```
+
+**PASS CRITERIA:** For every driver cited as an example, run `git log` on its file (or semcode `find_commit` with `path_patterns`) and confirm substantive commits within roughly three years of the documented version's release, ignoring treewide renames, whitespace, and mechanical churn; record the newest substantive commit per driver. Confirm each driver is described from its own source on this page: vendor, bus or device class, its file, and the relevant callback cited inline, with no pointer to another driver or page as a substitute and no explanation by analogy. Where no recently-active driver exercises the behavior, confirm the page says so instead of citing a stale one. Pass with recency evidence recorded for every cited driver and zero by-analogy descriptions.

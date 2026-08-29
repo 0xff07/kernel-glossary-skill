@@ -57,3 +57,10 @@ a method GPE queues acpi_ev_asynch_execute_gpe_method() via acpi_os_execute(); a
 ```
 
 Keep direct quotes from kernel source comments, commit messages, and LKML threads verbatim even when they contain superlatives this rule would otherwise forbid.
+
+**PASS CRITERIA:**
+
+- Sweep the words-to-watch list case-insensitively over the prose view (a case-sensitive sweep silently misses every sentence-initial occurrence; a writer's "What matters here is that..." shipped exactly that way), plus the cleft frames `\bis what\b`, `\bwhat matters\b`, `\bthe reasoning\b`. Match the frame, not a list of spellings: "is what keeps", "is what put", "is what lets" were all real hits a three-spelling pattern missed.
+- Apply the deletion test to every candidate adjective in body prose: if the sentence still conveys the mechanic with the adjective deleted, delete it; if not, replace the adjective with the actual mechanic. A ranking that cannot be reduced to a concrete code-level fact must not appear at all.
+- "Fast path" and "slow path" pass only where the kernel itself defines them; direct quotes keep their superlatives and are never reworded.
+- Superlatives are also judged in context by reading, since no pattern expresses them all. Pass at zero unadjudicated rankings or importance assertions, with confirmed hits fixed by the BAN-QUICKFIX recipe (name the mechanic in the same clause, drop the ranking).

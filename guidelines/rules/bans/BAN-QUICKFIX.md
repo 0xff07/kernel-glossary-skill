@@ -21,3 +21,5 @@ Every ban has a one-line recipe; apply the recipe instead of re-deriving complia
 | Why/How/Where or question headings | declarative subject-verb-object heading |
 | "vtable" | "function pointer struct" or the concrete type name |
 | bare kernel-symbol span | Elixir link anchored at the definition line (7m) |
+
+**PASS CRITERIA:** This table imposes no page-level check of its own; a page cannot fail it directly. It passes through use: every confirmed hit from the ban sweeps is fixed with the matching recipe above instead of ad-hoc rephrasing, and no fix introduces another banned shape (swapping a label-colon for "X matters because Y" trades a BAN-02 hit for a BAN-04 hit). When reviewing a finished page, spot-confirm that applied fixes match the recipes' target forms.

@@ -20,3 +20,5 @@ advance_transaction writes the next byte to EC_DATA only while IBF reads 0, and 
 ```
 
 Do not flag the H3 catalog lists in LINUX KERNEL (grouped by file or functional area as the sample pages do: `EC_SC status bit macros`, `Port accessors`, `Transaction state machine`) or the bullet lists in KERNEL DOCUMENTATION and OTHER SOURCES: those are reference catalogs and remain as lists. Tables remain as tables. The ban covers prose-explanation lists only.
+
+**PASS CRITERIA:** This is a read-through check; no grep expresses the shape. Read every bullet and numbered list in DETAILS, SUMMARY, and the lead summary paragraph: a list preceded by an intro noun-phrase sentence or colon and used as exposition is a hit (the banned header phrases like "Two details deserve attention." included), and the fix folds the items into one flowing paragraph. The LINUX KERNEL catalog lists, the KERNEL DOCUMENTATION and OTHER SOURCES bullets, and tables are exempt. Pass when no prose-explanation list remains outside the catalog sections.

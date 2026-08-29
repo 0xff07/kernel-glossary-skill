@@ -85,3 +85,14 @@ or
 ```
 
 Do not flag the H3 catalog labels in LINUX KERNEL (`### Detection and dispatch (evgpe.c)`, `### _Lxx: level-triggered GPE method`, `### Tree store primitives (vma.h)`): grouped noun-phrase labels are correct there. Both heading bans govern DETAILS, SUMMARY, and body sections only.
+
+**PASS CRITERIA:**
+
+- Em dashes: zero hits for the em-dash character outside fenced blocks; no exemption applies there.
+- Boldface: zero `**` in page prose on the raw file (`/**` kerneldoc openers inside fenced code are exempt).
+- Negative constructions: sweep `(,|\band)\s+(not|never)\s` over the prose (do not require the comma, and keep digits in scope: ", not 31." was a real finding), then judge each candidate in context; a sentence asserting X by denying Y is a hit.
+- Anthropomorphic placement verbs: sweep the lemma sets `live/lives/lived/living`, `sit/sits/sat/sitting`, `want/wants/wanted/wanting` (base forms included, not just three inflections) and judge each: banned for code, data, and physical devices alike in authored prose per the settled adjudications registry (`../7r-adjudications.md`); a userspace process as a real actor is exempt ("the reader wants the buffer"), the adjective "live" ("the live counter") is not the verb, and verbatim quotes keep their verbs. Confirm "walk" appears only for traversing a data structure.
+- "vtable": zero occurrences in authored prose.
+- Question headings: zero hits for `^#{2,4} (Why|How|Where|What)` and for trailing-`?` headings on the raw file (headings are legitimately line-anchored).
+- Bare-noun headings: read every H3/H4 in DETAILS, SUMMARY, and body sections and confirm each is a declarative what-does-what statement, never a bare noun or symbol; LINUX KERNEL catalog labels are exempt.
+- Sweep case-insensitively and fence-aware, then use case as evidence when judging. The page passes at zero unadjudicated findings, with confirmed hits fixed by the BAN-QUICKFIX recipes and exempt constructs left unreworded.
