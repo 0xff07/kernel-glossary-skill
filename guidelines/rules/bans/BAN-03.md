@@ -1,0 +1,22 @@
+# BAN-03: Intro sentence + list
+
+> Was: 7b. Intro sentence + list
+
+**Problem:** Generated prose presents an explanation as an intro sentence followed by a bullet or numbered list. In DETAILS, SUMMARY, and the lead summary paragraph, fold the items into a single flowing paragraph. The forbidden shape is "<noun phrase ending in a period or colon> + <bullet/numbered list>" used as exposition; phrases that head such lists ("Two notable details.", "Three layers stack.", "Four cases run from strongest to weakest.", "Concrete uses.", "Five upfront refusals.") are banned even with a period.
+
+**Before:**
+
+```
+Two details deserve attention.
+
+- advance_transaction writes EC_DATA only while IBF is clear.
+- It reads EC_DATA only while OBF is set.
+```
+
+**After:**
+
+```
+advance_transaction writes the next byte to EC_DATA only while IBF reads 0, and reads a result byte only while OBF reads 1, so the host never races the controller.
+```
+
+Do not flag the H3 catalog lists in LINUX KERNEL (grouped by file or functional area as the sample pages do: `EC_SC status bit macros`, `Port accessors`, `Transaction state machine`) or the bullet lists in KERNEL DOCUMENTATION and OTHER SOURCES: those are reference catalogs and remain as lists. Tables remain as tables. The ban covers prose-explanation lists only.
