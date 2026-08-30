@@ -48,6 +48,7 @@ Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-W
 | ROUTINE-01 | The checking protocol | `routines/ROUTINE-01.md` |
 | ROUTINE-04 | Scan patterns | `routines/ROUTINE-04.md` |
 | ROUTINE-05 | Rephrase recipes | `routines/ROUTINE-05.md` |
+| ROUTINE-07 | Figure repair | `routines/ROUTINE-07.md` |
 | — | Waivers and settled rulings (was the 7r registry) | one `<PREFIX>-WAIVERS.md` per rule directory |
 
 Retired numbers stay retired: BAN-05, ROUTINE-02, ROUTINE-03, ROUTINE-06, PIPELINE-01, PIPELINE-02 (and the SUITE-XX/CHECK-XX/FLOW-XX schemes) are never reissued. The pipelines/ directory itself is retired (ledger: `tests/TEST-09.md`); its fix-routing map lives in ROUTINE-05 and its legacy tables live here.
