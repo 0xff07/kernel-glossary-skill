@@ -6,7 +6,7 @@ The sweep list for the classes above and the two ban classes that live here. Sca
 
 ## Reference boundary
 
-**Reference direction is one-way, and it is enforced.** A rule file here states its own requirement and references no other rule and no shared file: nothing in this directory or in diagrams/, facts/, page/, plots/ — not by name, not by path, not even a sibling one file over — and never routines/ or pipelines/. Rules are referenced from above (routines/ and pipelines/), never the reverse. The directory's `BAN-WAIVERS.md` is harness, not a rule — its waivers and settled rulings modify how these rules apply, and the checking protocol routes adjudication to it: rules never cite it, and it may name this directory's rules only, never a foreign directory's.
+**Reference direction is one-way, and it is enforced.** A rule file here states its own requirement and references no other rule and no shared file: nothing in this directory or in diagrams/, facts/, page/, plots/ — not by name, not by path, not even a sibling one file over — and never routines/ or pipelines/. Rules are referenced from above (the routines, and the passes over them), never the reverse. The directory's `BAN-WAIVERS.md` is harness, not a rule — its waivers and settled rulings modify how these rules apply, and the checking protocol routes adjudication to it: rules never cite it, and it may name this directory's rules only, never a foreign directory's.
 
 The boundary is grep-checkable from `guidelines/rules/`:
 

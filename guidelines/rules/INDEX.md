@@ -14,11 +14,10 @@ Rules are cited by stable ID everywhere in this skill — briefs, dossiers, camp
 | `plots/` | domain model, semantics tables, organization, derivation | writers and verifiers |
 | `diagrams/` | the ASCII-figure rules and their catalogs | only an agent whose page will carry a figure |
 | `routines/` | the checking harness: protocol, patterns, recipes | everyone who checks |
-| `pipelines/` | the walkthrough and construction orders over the rules | orchestrators |
 | `<dir>/<PREFIX>-WAIVERS.md` (one per rule directory) | waivers and settled rulings, harness routed by ROUTINE-01 | every agent, first, always |
 | `tests/` | the corpus migration suite | corpus maintainers |
 
-Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-WAIVERS.md` is harness (it may name only its own directory's rules, and the checking protocol routes adjudication to it); routines may reference rules and the waivers files; pipelines may reference all of them; nothing references pipelines or tests.
+Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-WAIVERS.md` is harness (it may name only its own directory's rules, and the checking protocol routes adjudication to it); routines may reference rules and the waivers files, and are referenced only from the passes above the rules tree; nothing references tests.
 
 ## Current rules
 
@@ -49,11 +48,9 @@ Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-W
 | ROUTINE-01 | The checking protocol | `routines/ROUTINE-01.md` |
 | ROUTINE-04 | Scan patterns | `routines/ROUTINE-04.md` |
 | ROUTINE-05 | Rephrase recipes | `routines/ROUTINE-05.md` |
-| PIPELINE-01 | The walkthrough (verification order) | `pipelines/PIPELINE-01.md` |
-| PIPELINE-02 | One-pass construction | `pipelines/PIPELINE-02.md` |
 | — | Waivers and settled rulings (was the 7r registry) | one `<PREFIX>-WAIVERS.md` per rule directory |
 
-Retired numbers stay retired: BAN-05, ROUTINE-02, ROUTINE-03, ROUTINE-06 (and the SUITE-XX/CHECK-XX/FLOW-XX schemes) are never reissued.
+Retired numbers stay retired: BAN-05, ROUTINE-02, ROUTINE-03, ROUTINE-06, PIPELINE-01, PIPELINE-02 (and the SUITE-XX/CHECK-XX/FLOW-XX schemes) are never reissued. The pipelines/ directory itself is retired (ledger: `tests/TEST-09.md`); its fix-routing map lives in ROUTINE-05 and its legacy tables live here.
 
 The sample pages under `guidelines/reference/samples/` embody every rule. The closest-matching sample read in the prep pass (`guidelines/passes/00-prep.md`) is the worked example; match its structure, diagram style, code-citation density, and depth. The examples inside the rule text use ACPI and mm symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem.
 
@@ -61,7 +58,7 @@ The sample pages under `guidelines/reference/samples/` embody every rule. The cl
 
 `rules.md` is retired: removed from the live tree, pinned in git history — 715 lines, sha256 `86bd23c9a99ed0d3d87b820f573f0ed65cf912de581350ec8bd65d470319cf8f`, retrievable with `git show e68a891:guidelines/rules/rules.md` (`tests/TEST-05.md` holds the line-by-line disposition ledger). `diagrams.md` stays on disk, frozen. The gates took IDs 3a-3c in a one-time move from a former `guidelines/gates/` directory, never repeated.
 
-Old rule IDs resolve as (also in PIPELINE-01 Appendix B):
+Old rule IDs resolve as:
 
 | old | new | old | new |
 |---|---|---|---|
@@ -76,7 +73,7 @@ Old rule IDs resolve as (also in PIPELINE-01 Appendix B):
 | 7h | DIAG-03 | 7u | PLOT-03 |
 | 7i | DIAG-04 | 7v | DIAG-02 |
 | 7j | FACT-01 | 3a, 3b, 3c | ROUTINE-01 (protocol) + per-rule PASS CRITERIA |
-| 7k | FACT-02 | | |
+| 7k | FACT-02 | 7l | PAGE-03 |
 
 Range phrases in historical text expand in ID order before resolving: "7 through 7d" is 7, 7a, 7b, 7c, 7d.
 
