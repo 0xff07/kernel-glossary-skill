@@ -8,7 +8,10 @@
 
 **Words to watch:** usually, typically, generally, often, normally, commonly, mostly, in practice, tends to, on a hot cpu
 
-**Problem:** Each hedge dodges the actual condition the code tests. Name that condition instead.
+**Problem:**
+
+1. Each hedge dodges the actual condition the code tests.
+2. Name that condition instead.
 
 **Before:**
 
@@ -24,4 +27,9 @@ A vm_area_alloc() takes a ready object from the per-cpu main sheaf without locki
 
 Do not flag a frequency word reproduced verbatim from kernel source inside a fenced block, or a genuine measured statistic that cites a counter or benchmark.
 
-**PASS CRITERIA:** Sweep the words-to-watch list case-insensitively over the prose view, with `simply`, `essentially`, `basically`, `arguably` added to the same pass. Every confirmed hit is rewritten to name the exact condition the code tests, so no frequency word stands in for a testable predicate. Exempt: hyphenated compounds embedding a hedge word ("read-mostly", "update-often"), frequency words inside verbatim quotes or fenced source, and a genuine measured statistic that cites its counter or benchmark. Pass at zero unadjudicated hedges in body prose.
+**PASS CRITERIA:**
+
+1. Sweep the words-to-watch list case-insensitively over the prose view, with `simply`, `essentially`, `basically`, `arguably` added to the same pass.
+2. Every confirmed hit is rewritten to name the exact condition the code tests, so no frequency word stands in for a testable predicate.
+3. Exempt: hyphenated compounds embedding a hedge word ("read-mostly", "update-often"), frequency words inside verbatim quotes or fenced source, and a genuine measured statistic that cites its counter or benchmark.
+4. Pass at zero unadjudicated hedges in body prose.

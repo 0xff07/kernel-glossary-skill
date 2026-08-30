@@ -6,7 +6,11 @@
 
 **OUTPUT:** Body prose whose every sentence is a plain declarative, with quotes introduced as "According to the comment <quote>, ..."; delivered with the adjudicated label-colon candidate list at zero unadjudicated hits.
 
-**Problem:** Generated prose leans on the "label: explanation" idiom — a noun phrase, a colon, then the clause that should have been the sentence. Body prose (everything outside H1–H4 headings, fenced code blocks, ASCII diagrams, list bullets, table cells, and Elixir links) must never use it. State the same content as a plain declarative sentence.
+**Problem:**
+
+1. Generated prose leans on the "label: explanation" idiom — a noun phrase, a colon, then the clause that should have been the sentence.
+2. Body prose (everything outside H1–H4 headings, fenced code blocks, ASCII diagrams, list bullets, table cells, and Elixir links) must never use it.
+3. State the same content as a plain declarative sentence.
 
 The banned forms, each with its fix:
 
@@ -78,8 +82,8 @@ Do not flag the colon inside H3/H4 headings (catalog labels like `### _Lxx: leve
 
 **PASS CRITERIA:**
 
-- Sweep label-colon candidates with `[^:;.!?]{3,90}:\s+[A-Za-z0-9§]` over a prose view of the page (fenced blocks dropped, links resolved to their text, inline code and double-quoted text masked, file:line citations masked). Never anchor the pattern to line start: each paragraph is one unwrapped line, so a line-anchored pattern sees only the first clause; measured over eleven pages the anchored form caught 12% of known hits, the unanchored form 100% at roughly eleven candidates per page. Adjudicate every candidate.
-- A candidate is a hit when a noun phrase, a colon, and its explanation sit in flowing body prose or the lead: the "X: Y" and "X is Y: Z" shapes, the "is the key:" family, the "The intent:" family, colon-introduced quotes, and colon-introduced lists. Editorializing labels asserting authorial reasoning ("The reasoning:", "The rationale is") are hits with or without the colon.
-- Exempt, and never reworded to silence the pattern: colons inside H3/H4 headings and catalog labels, Elixir link titles, code blocks, URLs, ratios, list bullets and table cells (the scope sentence above puts them outside body prose), and double-quoted verbatim text.
-- Confirm every quote is introduced as "According to the comment <quote>, ..." (or "The comment reads <quote>."), and that no removed colon-label was replaced with "X matters because Y" or "X is what makes Y", which assert importance the same way.
-- Pass at zero unadjudicated label-colon shapes in body prose.
+1. Sweep label-colon candidates with `[^:;.!?]{3,90}:\s+[A-Za-z0-9§]` over a prose view of the page (fenced blocks dropped, links resolved to their text, inline code and double-quoted text masked, file:line citations masked). Never anchor the pattern to line start: each paragraph is one unwrapped line, so a line-anchored pattern sees only the first clause; measured over eleven pages the anchored form caught 12% of known hits, the unanchored form 100% at roughly eleven candidates per page. Adjudicate every candidate.
+2. A candidate is a hit when a noun phrase, a colon, and its explanation sit in flowing body prose or the lead: the "X: Y" and "X is Y: Z" shapes, the "is the key:" family, the "The intent:" family, colon-introduced quotes, and colon-introduced lists. Editorializing labels asserting authorial reasoning ("The reasoning:", "The rationale is") are hits with or without the colon.
+3. Exempt, and never reworded to silence the pattern: colons inside H3/H4 headings and catalog labels, Elixir link titles, code blocks, URLs, ratios, list bullets and table cells (the scope sentence above puts them outside body prose), and double-quoted verbatim text.
+4. Confirm every quote is introduced as "According to the comment <quote>, ..." (or "The comment reads <quote>."), and that no removed colon-label was replaced with "X matters because Y" or "X is what makes Y", which assert importance the same way.
+5. Pass at zero unadjudicated label-colon shapes in body prose.

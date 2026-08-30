@@ -8,7 +8,10 @@
 
 **Words to watch:** contract, tally, tallied, tallies, tallying, canonical, arm, arms (for a branch or union case)
 
-**Problem:** Each of these asserts a framing without naming a mechanism. Replace each with the concrete rule, count, or helper it stands in for.
+**Problem:**
+
+1. Each of these asserts a framing without naming a mechanism.
+2. Replace each with the concrete rule, count, or helper it stands in for.
 
 **"contract"** (including "the X, Y, Z contract") — name the actual precondition, guarantee, rule, or invariant. **Before:**
 
@@ -58,6 +61,6 @@ Do not flag CPU-architecture names (Arm, ARM64, arm64) or verbatim quotes from k
 
 **PASS CRITERIA:**
 
-- Zero unadjudicated hits for `contract`, `tally` (also `tallied`/`tallies`/`tallying`), and `canonical` in body prose, swept case-insensitively and fence-aware; each confirmed hit is replaced by the concrete rule, count, or helper it stands in for.
-- Sweep `(^|[^a-z])arms?([^a-z]|$)` with letters as the only delimiter: `\b` treats `_` as a word character, so a banned token inside an identifier is invisible to a `\b`-bounded pattern. A hit is "arm"/"arms" for a union case, conditional branch, split side, or one of a pair of code paths. The capitalized architecture names (Arm, ARM64, arm64, "32-bit Arm"), verbatim quotes, and the ordinary English verb ("arms a delayed work item") are exempt per the settled waiver.
-- An exempt hit is cleared, never reworded: a writer once reworded a correct "32-bit Arm" purely to quiet the arm-word pattern, and that rewording was the only defect introduced.
+1. Zero unadjudicated hits for `contract`, `tally` (also `tallied`/`tallies`/`tallying`), and `canonical` in body prose, swept case-insensitively and fence-aware; each confirmed hit is replaced by the concrete rule, count, or helper it stands in for.
+2. Sweep `(^|[^a-z])arms?([^a-z]|$)` with letters as the only delimiter: `\b` treats `_` as a word character, so a banned token inside an identifier is invisible to a `\b`-bounded pattern. A hit is "arm"/"arms" for a union case, conditional branch, split side, or one of a pair of code paths. The capitalized architecture names (Arm, ARM64, arm64, "32-bit Arm"), verbatim quotes, and the ordinary English verb ("arms a delayed work item") are exempt per the settled waiver.
+3. An exempt hit is cleared, never reworded: a writer once reworded a correct "32-bit Arm" purely to quiet the arm-word pattern, and that rewording was the only defect introduced.
