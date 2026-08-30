@@ -67,7 +67,7 @@ awk '/^```/{f=!f; lang=(f? substr($0,4) : ""); next} f && lang!="c"' page.md
 
 After it prints:
 
-1. Adjudicate the output against BAN-01 and against the banned figure shapes of `../diagrams/DIAG-02.md` (was 7v; the four diagram rules are split verbatim into `../diagrams/DIAG-01.md` through `../diagrams/DIAG-04.md`, each carrying its own PASS CRITERIA; `../diagrams.md` remains canonical).
+1. Adjudicate the output against BAN-01 and against the banned figure shapes of `../diagrams/DIAG-02.md` (was 7v; the four diagram rules are split verbatim into `../diagrams/DIAG-01.md` through `../diagrams/DIAG-04.md`, each carrying its own PASS CRITERIA; the original was retired to its git pin).
 2. A ` ```c ` block is a source excerpt and is never swept; a fenced block reproducing a verbatim quotation (a commit message, a kernel comment) is exempt like any other verbatim text.
 3. Judge the geometry mechanically rather than by eye, and repair what it rejects per `ROUTINE-07.md`.
 

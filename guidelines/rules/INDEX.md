@@ -48,7 +48,7 @@ Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-W
 | ROUTINE-01 | The checking protocol | `routines/ROUTINE-01.md` |
 | ROUTINE-04 | Scan patterns | `routines/ROUTINE-04.md` |
 | ROUTINE-05 | Rephrase recipes | `routines/ROUTINE-05.md` |
-| ROUTINE-07 | Figure repair | `routines/ROUTINE-07.md` |
+| ROUTINE-07 | Figure geometry check and repair | `routines/ROUTINE-07.md` |
 | — | Waivers and settled rulings (was the 7r registry) | one `<PREFIX>-WAIVERS.md` per rule directory |
 
 Retired numbers stay retired: BAN-05, ROUTINE-02, ROUTINE-03, ROUTINE-06, PIPELINE-01, PIPELINE-02 (and the SUITE-XX/CHECK-XX/FLOW-XX schemes) are never reissued. The pipelines/ directory itself is retired (ledger: `tests/TEST-09.md`); its fix-routing map lives in ROUTINE-05 and its legacy tables live here.
@@ -57,7 +57,7 @@ The sample pages under `guidelines/reference/samples/` embody every rule. The cl
 
 ## Legacy: the retired ID scheme
 
-`rules.md` is retired: removed from the live tree, pinned in git history — 715 lines, sha256 `86bd23c9a99ed0d3d87b820f573f0ed65cf912de581350ec8bd65d470319cf8f`, retrievable with `git show fe98d23:guidelines/rules/rules.md` (`tests/TEST-05.md` holds the line-by-line disposition ledger). `diagrams.md` stays on disk, frozen. The gates took IDs 3a-3c in a one-time move from a former `guidelines/gates/` directory, never repeated.
+`rules.md` is retired: removed from the live tree, pinned in git history — 715 lines, sha256 `86bd23c9a99ed0d3d87b820f573f0ed65cf912de581350ec8bd65d470319cf8f`, retrievable with `git show fe98d23:guidelines/rules/rules.md` (`tests/TEST-05.md` holds the line-by-line disposition ledger). `diagrams.md` is retired the same way: 714 lines, sha256 `0f0c5b072d29c350d10d80e7af7cb6365717c653c514b1e0936f1ffb954af2bd`, retrievable with `git show 4039106:guidelines/rules/diagrams.md`. The gates took IDs 3a-3c in a one-time move from a former `guidelines/gates/` directory, never repeated.
 
 Old rule IDs resolve as:
 

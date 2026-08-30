@@ -1,6 +1,6 @@
 # diagrams/
 
-The figure rules, split from the canonical `../diagrams.md` (which stays authoritative during the migration): DIAG-01 (general ASCII diagram principles), DIAG-02 (banned figure shapes), DIAG-03 (register and bitfield figures), DIAG-04 (the pattern catalog).
+The figure rules, one per file (was `../diagrams.md`, retired to its git pin): DIAG-01 (general ASCII diagram principles), DIAG-02 (banned figure shapes), DIAG-03 (register and bitfield figures), DIAG-04 (the pattern catalog).
 
 ## Reference boundary
 

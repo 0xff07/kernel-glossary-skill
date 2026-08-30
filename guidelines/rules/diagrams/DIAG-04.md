@@ -32,7 +32,7 @@
 | register / address-offset map | registers at fixed offsets, or a block repeating at base + stride · index |
 | layered stack / membrane | layers stack and call through named API boundaries |
 | ordered level ladder | a value moves through strictly-ordered levels and travel direction matters |
-| refcount rung ladder | a refcount gates hardware action only at the 0↔1 edge transitions |
+| refcount with threshold actions | a refcount gates hardware action only at the 0↔1 edge transitions |
 | cyclic ring buffer with position pointers | two pointers chase each other around one wrapping buffer |
 | frame / bandwidth partition grid | one frame of a shared medium divides into slots claimed by entities |
 
@@ -190,7 +190,7 @@
 
 4. Pointer fields exit the bottom border of the box (via `┼` or `─┐`), descend as vertical trunks (`│`), and terminate in a `▼` arrow that lands on the target box below.
 5. When a nested bitmap has per-cell pointing relationships (one bit per subsection, one entry per slot), each cell descends via its own vertical trunk and `▼` to its target in a parallel array drawn underneath.
-6. Length-bracket annotations of the form `|<── span ──>|` mark total spans beneath arrays.
+6. Length-bracket annotations mark total spans beneath arrays: a `├───┤` bar spanning the columns of the strip it measures, with the label on its own line beneath when it does not fit inside the bar.
 7. Close the figure with a legend block beneath the diagram listing flag and constant meanings as `NAME = MEANING` columns.
 
 8. This pattern differs from `parent + N children fan-out` (which shows allocation or registration of typed children) and from `side-by-side struct comparison` (which shows two peer structs meeting at one operation): here the structs already exist and the visible shape of the figure is the chain of pointer fields linking them together.
