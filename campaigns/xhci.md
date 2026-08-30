@@ -53,7 +53,7 @@ Standing instructions to any executor, on any machine, cold or warm:
 3. Create or reuse the machine-local workspace `progress/xhci/` (run log `log.md`, dossiers). It is never committed.
 4. Execute ONLY the slice the invoker named — a batch from this spec's batch order (its recommended slicing), or an explicit page list. Given a bare "run xhci" with no slice: report the derived state and ask; never pick a slice autonomously. Overwrite guard, rewrite-in-place form: this spec licenses exactly one fresh write over each old-corpus page; when it is ambiguous whether a file on disk is the old corpus page or this campaign's finished output, stop and ask instead of overwriting.
 5. Run the slice per SKILL.md "Modes": one writer per page, briefed per `guidelines/passes/02-write.md` with the page's catalog row, its cluster's boundary rules, and the project-specific bans and write-time cautions from this spec's Execution & verification section; then the orchestrator check per page (`guidelines/passes/03-check.md`); events go to the run log.
-6. Promote anything durable — a spec claim the tree refuted, a user amendment, a settled adjudication — into this spec as a dated amendment (or surface it for the 7r registry). The run log does not travel.
+6. Promote anything durable — a spec claim the tree refuted, a user amendment, a settled adjudication — into this spec as a dated amendment (or surface it for the waivers files). The run log does not travel.
 7. Verification: on demand only (user decision 3) — run `xhci-verify` only when the user asks (`guidelines/passes/04-verify.md`); CERTIFIED stamps land in the verify run's log.
 
 ## Scope decisions
