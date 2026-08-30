@@ -27,7 +27,7 @@ Standing instructions to any executor, on any machine, cold or warm:
 3. Create or reuse the machine-local workspace `progress/acpi/` (run log `log.md`, one dossier per page). It is never committed.
 4. Execute ONLY the slice the invoker named — a batch from this spec's batch order (its recommended slicing), or an explicit page list. Given a bare "run acpi" with no slice: report the derived state and ask; never pick a slice autonomously. Overwrite guard: a catalog page that already exists on disk is never overwritten silently — stop and surface it ("already exists — repair, skip, or rewrite?").
 5. Run the slice per SKILL.md "Modes": one writer per page, briefed per `guidelines/passes/02-write.md` with the page's catalog row, its cluster's boundary rules, and the project-specific bans and write-time rules from this spec's Execution & verification section (including the per-page instrumentation/async enumeration rule); then the orchestrator check per page (`guidelines/passes/03-check.md`); events go to the run log. Sub-agent briefs get absolute paths composed at dispatch time from the local environment; this spec never carries them.
-6. Promote anything durable — a spec claim the tree refuted, a user amendment, a settled adjudication — into this spec as a dated amendment (or surface it for the 7r registry). The run log does not travel.
+6. Promote anything durable — a spec claim the tree refuted, a user amendment, a settled adjudication — into this spec as a dated amendment (or surface it for the waivers files). The run log does not travel.
 7. Verification cadence: per the checkpoint decision recorded under Scope decisions (pending below until the user answers).
 
 ## Scope decisions
