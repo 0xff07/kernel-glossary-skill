@@ -30,7 +30,7 @@ Standing instructions to any executor, on any machine, cold or warm:
 3. Create or reuse the machine-local workspace `progress/bluetooth/` (run log `log.md`, dossiers). It is never committed.
 4. Execute ONLY the slice the invoker named — a batch from this spec's batch order (its recommended slicing), or an explicit page list. Given a bare "run bluetooth" with no slice: report the derived state and ask; never pick a slice autonomously. Overwrite guard: a catalog page that already exists on disk is never overwritten silently — stop and surface it.
 5. Run the slice per SKILL.md "Modes": one writer per page, briefed per `guidelines/passes/02-write.md` with the page's catalog row, its cluster's boundary rules, and the project-specific bans and write-time cautions from this spec's Execution & verification section; then the orchestrator check per page (`guidelines/passes/03-check.md`); events go to the run log.
-6. Promote anything durable — a spec claim the tree refuted, a user amendment, a settled adjudication — into this spec as a dated amendment (or surface it for the 7r registry). The run log does not travel.
+6. Promote anything durable — a spec claim the tree refuted, a user amendment, a settled adjudication — into this spec as a dated amendment (or surface it for the waivers files). The run log does not travel.
 7. Verification: on demand only (Scope decision 2) — run `bluetooth-verify` only when the user asks (`guidelines/passes/04-verify.md`); CERTIFIED stamps land in the verify run's log.
 
 ## Scope decisions
