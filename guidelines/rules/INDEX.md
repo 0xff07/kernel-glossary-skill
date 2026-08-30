@@ -15,10 +15,10 @@ Rules are cited by stable ID everywhere in this skill — briefs, dossiers, camp
 | `diagrams/` | the ASCII-figure rules and their catalogs | only an agent whose page will carry a figure |
 | `routines/` | the checking harness: protocol, patterns, recipes | everyone who checks |
 | `pipelines/` | the walkthrough and construction orders over the rules | orchestrators |
-| `7r-adjudications.md` | the settled adjudications registry | every agent, first, always |
+| `<dir>/<PREFIX>-WAIVERS.md` (one per rule directory) | waivers and settled rulings, harness routed by ROUTINE-01 | every agent, first, always |
 | `tests/` | the corpus migration suite | corpus maintainers |
 
-Reference boundary: rules reference nothing except `7r-adjudications.md`; routines may reference rules; pipelines may reference both; nothing references pipelines or tests.
+Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-WAIVERS.md` is harness (it may name only its own directory's rules, and the checking protocol routes adjudication to it); routines may reference rules and the waivers files; pipelines may reference all of them; nothing references pipelines or tests.
 
 ## Current rules
 
@@ -51,7 +51,7 @@ Reference boundary: rules reference nothing except `7r-adjudications.md`; routin
 | ROUTINE-05 | Rephrase recipes | `routines/ROUTINE-05.md` |
 | PIPELINE-01 | The walkthrough (verification order) | `pipelines/PIPELINE-01.md` |
 | PIPELINE-02 | One-pass construction | `pipelines/PIPELINE-02.md` |
-| 7r | Settled adjudications registry | `7r-adjudications.md` (name unchanged) |
+| — | Waivers and settled rulings (was the 7r registry) | one `<PREFIX>-WAIVERS.md` per rule directory |
 
 Retired numbers stay retired: BAN-05, ROUTINE-02, ROUTINE-03, ROUTINE-06 (and the SUITE-XX/CHECK-XX/FLOW-XX schemes) are never reissued.
 
@@ -70,7 +70,7 @@ Old rule IDs resolve as (also in PIPELINE-01 Appendix B):
 | 7b | BAN-03 | 7o | FACT-03 |
 | 7c | ROUTINE-04 + BAN-06 + BAN-07 | 7p | PLOT-04 |
 | 7d | BAN-04 | 7q | ROUTINE-05 |
-| 7e | PAGE-02 | 7r | `7r-adjudications.md` (unchanged) |
+| 7e | PAGE-02 | 7r | the per-directory `<PREFIX>-WAIVERS.md` files (retired file `7r-adjudications.md`; entry ledger in `tests/TEST-08.md`) |
 | 7f | PAGE-01 | 7s | PLOT-01 |
 | 7g | DIAG-01 | 7t | PLOT-02 |
 | 7h | DIAG-03 | 7u | PLOT-03 |

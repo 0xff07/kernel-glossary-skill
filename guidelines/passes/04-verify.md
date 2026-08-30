@@ -17,11 +17,11 @@ Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its f
 ## Procedure (per page)
 
 1. Run the full PASS CRITERIA review under the checking protocol (`guidelines/rules/routines/ROUTINE-01.md`; `guidelines/rules/INDEX.md` maps the retired nine-item sign-off onto the owning rules), performing each rule's named checks and recording the evidence (a count or a list, not "looks fine"). This pass is the pipeline's only independent fact-check: run FACT-03's claim audit deep — re-derive the lead and SUMMARY quantifiers and the page's central counts yourself, with a search basis shaped differently from any basis recorded in the dossier's EVIDENCE section — and audit the dossier's PARITY table independently against the page (PAGE-02's parity criteria); the table and the dossier are hints, never evidence.
-2. Spot re-run the writer's mechanical exit suite (excerpt byte-compares and anchor confirmations per ROUTINE-01's procedures) and the candidate greps (ROUTINE-04); audit the dossier's LINT section — its adjudications against the 7r registry (`guidelines/rules/7r-adjudications.md`), and its applied diffs (declared drift fixes must satisfy the byte-match precondition; no other fenced-block change is legitimate).
+2. Spot re-run the writer's mechanical exit suite (excerpt byte-compares and anchor confirmations per ROUTINE-01's procedures) and the candidate greps (ROUTINE-04); audit the dossier's LINT section — its adjudications against the waivers files (the `<PREFIX>-WAIVERS.md` in each rule directory), and its applied diffs (declared drift fixes must satisfy the byte-match precondition; no other fenced-block change is legitimate).
 3. For a derived page, confirm every PLOT-04 cut was reported (and, in a campaign, recorded in the campaign spec) before the page can be certified (`guidelines/rules/plots/PLOT-04.md`).
 4. Findings. Solo: fix and re-check now — the solo agent is the writer, so the facts are in its hands. Verify campaign: record every finding in the dossier's VERIFY section, find-only; the orchestrator adjudicates and routes (settled style and byte-proved drift to a fixer in fix-list mode per `guidelines/passes/03-lint-fixlist.md`; every factual finding into the verify run's log and the user-facing report — a verify campaign never edits facts), then any fixer-touched units are re-checked.
 5. Record the sweep and criteria outcomes (was Gate A and Gate B) in the dossier's VERIFY section. Zero unadjudicated findings certifies the page (state CERTIFIED in the verify run's log); any unconfirmable item leaves it uncertified — solo, the page is not written.
-6. Residual false-positive classes are recorded as LESSON entries in the verify run's log and surfaced to the user, who alone folds a ruling into the 7r registry.
+6. Residual false-positive classes are recorded as LESSON entries in the verify run's log and surfaced to the user, who alone folds a ruling into the owning directory's waivers file.
 
 ## The verify campaign
 
@@ -44,7 +44,7 @@ Planning is orchestrator-owned — the same rule as catalog design. The verify c
 Execution:
 
 - Dispatch find-only verifier agents per the catalog — one per page and one cross-page agent, briefs below — about five per batch, with the same death and resume rules as every campaign agent.
-- The orchestrator adjudicates every reported finding itself: style classes against the 7r registry, facts against the disk. It never delegates adjudication or the certification stamp.
+- The orchestrator adjudicates every reported finding itself: style classes against the waivers files, facts against the disk. It never delegates adjudication or the certification stamp.
 - The only in-place edits are registry-settled style fixes and byte-proved drift corrections, applied by a fixer in fix-list mode (`guidelines/passes/03-lint-fixlist.md`) and re-checked before any page's state changes. Every FACTUAL finding — a parity hole, a false count, a drifted excerpt, a wrong model, a scope breach — is recorded in the run log, surfaced to the user, and the page stays uncertified; facts are repaired only by a follow-up write campaign whose catalog is those findings, never in place and never by resuming a writer transcript.
 - A page with zero unadjudicated findings is stamped CERTIFIED in the run log; a durable certification record (committed verify report, or a dated certification amendment in the parent spec) is produced only on an explicit user go.
 - The campaign is complete when every page is CERTIFIED, deferred with its findings recorded, or explicitly waived by the user. Those findings become the next write campaign's catalog, and the next verify campaign scopes to the still-uncertified pages by default, so the write → verify → repair → verify loop shrinks every round.
@@ -61,8 +61,10 @@ Verify the page <path> against the tree, find-only; do not edit anything.
 SKILL_DIR: <absolute path to the kernel-glossary-skill checkout>
 
 MANDATORY READING, in order:
-1. <SKILL_DIR>/guidelines/rules/7r-adjudications.md — every style
-   candidate and every fixer-report audit is judged against it.
+1. The five waivers files — <SKILL_DIR>/guidelines/rules/bans/BAN-WAIVERS.md,
+   page/PAGE-WAIVERS.md, facts/FACT-WAIVERS.md, plots/PLOT-WAIVERS.md,
+   diagrams/DIAG-WAIVERS.md — every style candidate and every
+   fixer-report audit is judged against them.
 2. <SKILL_DIR>/guidelines/passes/04-verify.md — your procedure (steps
    1-3; you record findings, you do not fix or route them).
 3. The rule corpus under <SKILL_DIR>/guidelines/rules/ — one rule per
@@ -84,7 +86,7 @@ REPORT. Write per-item evidence and the findings list (each finding:
 rule, class, location, exact text, what the tree shows) into the
 VERIFY section of <SKILL_DIR>/progress/<verify-run>/<slug>.dossier.md.
 Your final message is the summary: items passed with their evidence
-counts, findings by class and severity, and the 7r ruling count you
+counts, findings by class and severity, and the waiver ruling count you
 applied.
 ```
 

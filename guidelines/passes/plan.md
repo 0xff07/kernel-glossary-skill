@@ -41,7 +41,7 @@ A plan is complete when every item below holds; confirm each before presenting i
 - The user checkpoint happened: the questions, the decisions (including the verification cadence), and the explicit go are in the file.
 - The save and commit policy is stated (where pages land, no navigation-file edits, no git commits without a user go).
 
-The campaign spec is the campaign's durable memory: inventory digests, the catalog, boundary rules, dated amendments, and the draft-reuse map. Execution history is deliberately NOT in it: run events live in each machine's run log, per-page pipeline states live only there, and campaign progress is derived — the catalog is the checklist, `docs/` is the state. After any interruption, the spec plus the pages on disk are sufficient to continue on any machine without redoing research; this machine's run log and dossiers add crash recovery for in-flight pages, and lessons that settle adjudications reach the 7r registry through the user.
+The campaign spec is the campaign's durable memory: inventory digests, the catalog, boundary rules, dated amendments, and the draft-reuse map. Execution history is deliberately NOT in it: run events live in each machine's run log, per-page pipeline states live only there, and campaign progress is derived — the catalog is the checklist, `docs/` is the state. After any interruption, the spec plus the pages on disk are sufficient to continue on any machine without redoing research; this machine's run log and dossiers add crash recovery for in-flight pages, and lessons that settle adjudications reach the waivers files through the user.
 
 ## The campaign spec's structure
 
@@ -50,7 +50,7 @@ The campaign spec is the campaign's durable memory: inventory digests, the catal
 A conforming spec carries these elements, and no execution log:
 
 1. Context: what was asked, where the requirements come from, the campaign short name with the spec's path (`campaigns/<campaign>.md`) and the workspace directory (`progress/<campaign>/`), the documented tree with its version tag and commit pin, what is explicitly not an input, the output root, and the portability rule (no machine-specific information; how a resuming machine gets absolute paths).
-2. Re-entry contract: the standing instructions to a cold executor — confirm the tree pin (and the Elixir tag) before anything else; derive campaign state as the catalog-vs-`docs/` diff; create or reuse `progress/<campaign>/`; execute only the slice the invoker named, under the overwrite guard; record run events in the local log; promote anything durable into this spec as a dated amendment (or surface it for 7r).
+2. Re-entry contract: the standing instructions to a cold executor — confirm the tree pin (and the Elixir tag) before anything else; derive campaign state as the catalog-vs-`docs/` diff; create or reuse `progress/<campaign>/`; execute only the slice the invoker named, under the overwrite guard; record run events in the local log; promote anything durable into this spec as a dated amendment (or surface it for the waivers).
 3. Scope decisions: the user-confirmed choices, numbered, including the verification cadence decision from the checkpoint.
 4. Inventory findings: one compact digest per area, from the inventory agents, including the version-specific renames and removals and the items 7-10 enumerations (populated or verified-negative).
 5. Directory organization: the group layout with its rationale.

@@ -4,7 +4,7 @@ The harness's protocol and tools, one file each: ROUTINE-01 (the checking protoc
 
 ## Reference boundary
 
-**Reference direction is one-way, and it is enforced.** A routine may reference every rule directory (bans/, diagrams/, facts/, page/, plots/), the settled adjudications registry (`../7r-adjudications.md`), and its siblings here — never pipelines/ or any PIPELINE-XX, by name or by path. Routines are referenced from pipelines/ only; no rule file references a routine.
+**Reference direction is one-way, and it is enforced.** A routine may reference every rule directory (bans/, diagrams/, facts/, page/, plots/), each directory's `<PREFIX>-WAIVERS.md` harness file, and its siblings here — never pipelines/ or any PIPELINE-XX, by name or by path. Routines are referenced from pipelines/ only; no rule file references a routine.
 
 The boundary is grep-checkable from `guidelines/rules/`:
 

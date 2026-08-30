@@ -15,7 +15,7 @@ The dossier is a hint sheet, never a source. It pins the documented version (tag
 - One dossier per page: `progress/<campaign>/<page-slug>.dossier.md`. A single-page run's campaign name is its topic slug.
 - Local scratch, never committed. A run's dossiers are disposable once its campaign closes (keep them until then; gap-fill writers and verify campaigns reuse them). Another run's dossiers are off limits unless the user directs resume, reuse, or verify.
 - Whoever runs the research pass creates it and keeps it current: the writer by default, or a dedicated researcher agent (`guidelines/passes/01-research.md`) when a campaign fans research out. Each later pass appends its own section.
-- Anything durable a dossier records — a correction against the campaign's specification, a lesson, a settled adjudication — is promoted by the orchestrator into the campaign spec (`campaigns/<campaign>.md`) as a dated amendment, or surfaced to the user for the 7r registry; the spec is the only artifact here that travels. Run events go to the run log (`progress/<campaign>/log.md`). A finding left only in a dossier or the log is lost when the machine is — by design.
+- Anything durable a dossier records — a correction against the campaign's specification, a lesson, a settled adjudication — is promoted by the orchestrator into the campaign spec (`campaigns/<campaign>.md`) as a dated amendment, or surfaced to the user for the waivers files; the spec is the only artifact here that travels. Run events go to the run log (`progress/<campaign>/log.md`). A finding left only in a dossier or the log is lost when the machine is — by design.
 - When a writer dies mid-page, resuming that same agent stays the first recovery move (its transcript holds the richer context); the dossier is the machine-local fallback, and a replacement agent starts from the dossier plus the campaign spec instead of redoing the research.
 - Helper scripts and working scratch go in the agent's scratchpad directory, not here — under a per-page subdirectory named for the page slug, because the session scratchpad is shared between concurrently dispatched agents and generically named files collide across pages.
 
@@ -81,7 +81,7 @@ yes/no; `anchor URL` and `disk line` are the URL and the tree line the
 script fetched at it, blank for a bare span. Only the last column is the
 writer's, and it holds either a `kind` (for a linked row: symbol /
 location / config / generated / file) confirming the anchor, or a
-`reason` (for a bare row: the 7r exemption that licenses leaving it
+`reason` (for a bare row: the waiver that licenses leaving it
 unlinked). The split is the point — the script owns which spans exist and
 what their anchors are, the writer owns whether each anchor is right.
 
@@ -121,8 +121,8 @@ from the recorded ones; entries are starting points, never proof.
 The sweep record (was the Gate A record). The WRITER writes it as part of its exit suite
 (guidelines/passes/02-write.md, item 7): every candidate the prose view
 and the figure sweep surfaced, each FIXED (with the exact before/after),
-ESCALATED (unsure — for the orchestrator), or EXEMPT (with the 7r ruling
-applied). Write the verdict down BEFORE acting on it; that is what stops
+ESCALATED (unsure — for the orchestrator), or EXEMPT (with the waiver
+ruling applied). Write the verdict down BEFORE acting on it; that is what stops
 a writer's defence of its own prose from being silent. The check pass
 (guidelines/passes/03-check.md) then appends its own reproduction of
 these classes, and a disagreement is a finding.

@@ -4,12 +4,13 @@ The page-structure rules: PLOT-01 (domain-model layer), PLOT-02 (semantics table
 
 ## Reference boundary
 
-**Reference direction is one-way, and it is enforced.** A rule file here states its own requirement and references no other rule: nothing in this directory or in bans/, diagrams/, facts/, page/ — not by name, not by path, not even a sibling one file over — and never routines/ or pipelines/. The one allowed shared reference is the settled adjudications registry, `../7r-adjudications.md`. Rules are referenced from above (routines/ and pipelines/), never the reverse.
+**Reference direction is one-way, and it is enforced.** A rule file here states its own requirement and references no other rule and no shared file: nothing in this directory or in bans/, diagrams/, facts/, page/ — not by name, not by path, not even a sibling one file over — and never routines/ or pipelines/. Rules are referenced from above (routines/ and pipelines/), never the reverse. The directory's `PLOT-WAIVERS.md` is harness, not a rule — its waivers and settled rulings modify how these rules apply, and the checking protocol routes adjudication to it: rules never cite it, and it may name this directory's rules only, never a foreign directory's.
 
 The boundary is grep-checkable from `guidelines/rules/`:
 
 ```
-grep -rnE '(BAN|PAGE|FACT|PLOT|DIAG|ROUTINE|PIPELINE)-[0-9]|routines/|pipelines/' plots/PLOT-*.md | awk -F: '$2+0 != 1'
+grep -rnE '(BAN|PAGE|FACT|PLOT|DIAG|ROUTINE|PIPELINE)-[0-9]|routines/|pipelines/|WAIVERS' plots/PLOT-[0-9]*.md | awk -F: '$2+0 != 1'
+grep -rnE '(BAN|PAGE|FACT|DIAG|ROUTINE|PIPELINE)-[0-9]|routines/|pipelines/' plots/PLOT-WAIVERS.md
 ```
 
-must print nothing (line 1 is each file's own title; the glob keeps this README out of the sweep).
+must print nothing (line 1 is each file's own title; the `[0-9]` glob keeps this README and the waivers file out of the rule sweep).

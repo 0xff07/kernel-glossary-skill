@@ -32,8 +32,10 @@ sweeps entirely; every constraint still applies.]
 SKILL_DIR: <absolute path to the kernel-glossary-skill checkout>
 
 MANDATORY READING, in order, before touching the page:
-1. <SKILL_DIR>/guidelines/rules/7r-adjudications.md — first action. Judge
-   every candidate against it BEFORE fixing or proposing; a hit on an
+1. The five waivers files — <SKILL_DIR>/guidelines/rules/bans/BAN-WAIVERS.md,
+   page/PAGE-WAIVERS.md, facts/FACT-WAIVERS.md, plots/PLOT-WAIVERS.md,
+   diagrams/DIAG-WAIVERS.md — first action, all five. Judge every
+   candidate against them BEFORE fixing or proposing; a hit on an
    exempt construct is a false candidate, and rewording a compliant
    phrase to silence a pattern is itself a defect.
 2. The rule corpus under <SKILL_DIR>/guidelines/rules/ — one rule per
@@ -73,7 +75,7 @@ CONSTRAINTS.
 
 REPORT. Write the dossier's LINT section and summarize it as your
 final message: FIXED by class with counts and before/after, ESCALATED
-with proposed fixes, EXEMPT with the 7r ruling count applied, SUBSTANCE
+with proposed fixes, EXEMPT with the waiver ruling count applied, SUBSTANCE
 NOTES, and confirmation that touched paragraphs re-grep clean and no
 fenced block changed (beyond declared drift fixes).
 ```

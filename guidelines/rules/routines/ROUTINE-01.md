@@ -21,7 +21,7 @@ A page passes when every PASS CRITERIA in every rule file under `../bans/`, `../
 
 1. Run the mechanical sweeps of BAN-01, BAN-02, BAN-04, BAN-06, and BAN-07 as one batched pass, per ROUTINE-04's watch list and execution audit, against a prose view of the page, never the raw file.
 2. Only the checks their criteria mark as raw-file runs go against the raw file (BAN-01's heading and boldface greps, PAGE-01's internal-link greps).
-3. The patterns generate candidates; they are not the gate. Judge every hit against the rule's own exemptions and the settled adjudications registry (`../7r-adjudications.md`) before editing, and never reword an exempt construct to silence a pattern.
+3. The patterns generate candidates; they are not the gate. Judge every hit against the rule's own exemptions and its directory's waivers file (each rule directory carries one, `<PREFIX>-WAIVERS.md`; for this batched sweep that is `../bans/BAN-WAIVERS.md`) before editing, and never reword an exempt construct to silence a pattern.
 4. BAN-07's criteria carry the full hedge token list for the batched sweep.
 
 The view builder (was rules.md:640-664; the canonical copy's output line, rules.md:661, drops the computed `[C]` tag it just built, a defect corrected here):
@@ -39,12 +39,12 @@ for n, l in enumerate(open(sys.argv[1], encoding="utf-8"), 1):
     if l.startswith("#"):                                  # headings are GOVERNED (BAN-01, BAN-04, FACT-03):
         print(f"{n}:[H] {l.lstrip('#').strip()}"); continue #   emit them, do not drop them
     if l.startswith(">"): continue                          # caution blockquote
-    tag = ""                                               # [C] = label-colon exempt (7r) ONLY;
+    tag = ""                                               # [C] = label-colon exempt (waiver) ONLY;
     if cat or l.startswith("|") or l.lstrip().startswith(("- ", "* ")):
         tag = "[C] "                                       #   every OTHER ban still binds here
     l = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", l)         # [text](url) -> text; kills URL colons
     l = re.sub(r"`[^`]*`", "§", l)                      # inline code -> placeholder
-    l = re.sub(r'"[^"]*"', "§", l)                      # double-quoted verbatim (7r)
+    l = re.sub(r'"[^"]*"', "§", l)                      # double-quoted verbatim (waiver)
     l = re.sub(r"\b[\w/.-]+\.(c|h|rst|S):\d+", "§", l)  # file:line citations
     l = re.sub(r"::|\d+:\d+", "§", l)                   # scope form, ratios
     print(f"{n}:{tag}{l}")
@@ -53,7 +53,7 @@ EOF
 
 ### Rows tagged `[C]`
 
-1. `[C]` rows are catalog bullets, list items, and table cells. The registry exempts the label-colon shape there and nothing else: skip BAN-02 candidates on `[C]` rows and adjudicate every other pattern on them exactly as on flowing prose.
+1. `[C]` rows are catalog bullets, list items, and table cells. `../bans/BAN-WAIVERS.md` exempts the label-colon shape there and nothing else: skip BAN-02 candidates on `[C]` rows and adjudicate every other pattern on them exactly as on flowing prose.
 2. SPECIFICATIONS entries are list bullets whose `<spec name>, section <N.N>: <section title>` format is mandated by `../../passes/01-research.md`; rewording them to silence a pattern breaks a format another guideline requires (was rules.md:667-673).
 
 ## The figure sweep (was rules.md:699-705)
@@ -90,11 +90,11 @@ After it prints:
    4. PAGE-02's parity table;
    5. FACT-01's coverage enumerations;
    6. figure geometry.
-2. Every finding is fixed or recorded as an adjudication in `../7r-adjudications.md` with reasoning, never silenced.
+2. Every finding is fixed or surfaced for the owning rule's directory waivers file with reasoning (the user alone folds a ruling in), never silenced.
 
 **PASS CRITERIA:**
 
 1. Every PASS CRITERIA in every rule file under `../bans/`, `../page/`, `../facts/`, and `../plots/` was executed twice: once by the writer before reporting done, once independently by the checker, with the two answer sets compared and every residual adjudicated by the orchestrator itself, never delegated.
 2. The evidence for each criterion is recorded as a count or a list, and the mechanical criteria were re-run after every subsequent edit, hand-edits included.
 3. The regions-times-rules confirmation is on record: for each region of the page, the mechanism that reached it is named, and no region a rule binds was left unexamined.
-4. Zero unadjudicated findings remain across every rule file; every finding was fixed or recorded in `../7r-adjudications.md` with reasoning.
+4. Zero unadjudicated findings remain across every rule file; every finding was fixed or surfaced for the owning rule's directory waivers file with reasoning.

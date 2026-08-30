@@ -4,7 +4,7 @@
 
 ## Step 1: Load the harness and take your role
 
-1. Read ROUTINE-01, `../7r-adjudications.md`, and the PASS CRITERIA of every rule file under `../bans/`, `../page/`, `../facts/`, `../plots/`, and `../diagrams/`.
+1. Read ROUTINE-01, every directory's waivers file (`../bans/BAN-WAIVERS.md`, `../page/PAGE-WAIVERS.md`, `../facts/FACT-WAIVERS.md`, `../plots/PLOT-WAIVERS.md`, `../diagrams/DIAG-WAIVERS.md`), and the PASS CRITERIA of every rule file under `../bans/`, `../page/`, `../facts/`, `../plots/`, and `../diagrams/`.
 2. Know your role: the writer runs Steps 2 through 13 on its own work first; the checker later re-runs them independently and compares answers; the orchestrator adjudicates every residual and never delegates adjudication; a verify campaign re-runs everything later on a newer tree or model.
 3. There is no checker script; the steps run by hand, and a check that cannot fail is not a check.
 4. Work page by page; record evidence at every step (a count or a list, never "looks fine"); reading the page is not sufficient.
@@ -32,7 +32,7 @@
 
 ## Step 4: Adjudicate and fix
 
-1. Judge every candidate from Steps 3, 5, and 6 against the owning rule's exemptions and `../7r-adjudications.md`.
+1. Judge every candidate from Steps 3, 5, and 6 against the owning rule's exemptions and the owning rule's directory waivers file (`<PREFIX>-WAIVERS.md`).
 2. Never reword an exempt construct to silence a pattern.
 3. Fix each confirmed hit with the matching ROUTINE-05 recipe per the fix-routing table below, never by ad-hoc rephrasing.
 4. Confirm no fix introduced another banned shape: swapping a label-colon for "X matters because Y" trades a BAN-02 hit for a BAN-04 hit.
@@ -162,7 +162,7 @@ The recipe rows map to their rules:
 ## Step 14: Sign off, hand off, and re-run
 
 1. The page is final only at zero unadjudicated findings across every rule file.
-2. Every finding is fixed or recorded in `../7r-adjudications.md` with reasoning, and the evidence for every criterion is on record.
+2. Every finding is fixed or surfaced for the owning rule's directory waivers file with reasoning, and the evidence for every criterion is on record.
 3. After any subsequent edit, your own hand-edits included, re-run the mechanical steps.
 4. Writer done: the independent checker re-runs Steps 2 through 13 and compares answers; the orchestrator adjudicates every residual itself.
 5. A verify campaign repeats the walkthrough later, on a newer tree or under a different model.
@@ -222,7 +222,7 @@ The canonical originals cite rules by their old stable IDs — `../diagrams.md` 
 | 7o | FACT-03 |
 | 7p | PLOT-04 |
 | 7q | ROUTINE-05 |
-| 7r | `../7r-adjudications.md` (unchanged) |
+| 7r | the per-directory waivers files (`<PREFIX>-WAIVERS.md`; entry ledger in `tests/TEST-08.md`) |
 | 7s | PLOT-01 |
 | 7t | PLOT-02 |
 | 7u | PLOT-03 |
