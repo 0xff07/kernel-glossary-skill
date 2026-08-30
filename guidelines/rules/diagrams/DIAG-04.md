@@ -216,7 +216,8 @@
                  │      ┌────┬────┬────┬────┬─────┬─────┐
                  │      │ t0 │ t1 │ t2 │ t3 │ ... │tN-1 │
                  │      └────┴────┴────┴────┴─────┴─────┘
-                 │      |<── one entry per index in outer ──>|
+                 │      ├───────────────────────────────┤
+                 │        one entry per index in outer
                  │
                  ▼
        struct linked_t
@@ -236,7 +237,8 @@
                  ┌────┬────┬────┬────┬────┬────┬─────┐
                  │ U0 │ U1 │ U2 │ U3 │ U4 │ ...│UN-1 │  fixed-size units
                  └────┴────┴────┴────┴────┴────┴─────┘  one bit per unit
-                 |<──── total span of one linked_t ──────────>|
+                 ├───────────────────────────────────┤
+                      total span of one linked_t
 
        Flag bits in packed_field (low bits):
          A = FLAG_NAME_A  (bit 0, marker)
@@ -274,12 +276,12 @@
 ```
        Producer side              kfifo / work / ring         Consumer side
        ┌──────────────────┐       ┌──┬──┬──┬─────┬───┐        ┌──────────────┐
-       │ Stage A reads    │       │e0│e1│e2│ ... │e_n│        │ Stage B      │
-       │ source, RW1C     │  put  └──┴──┴──┴─────┴───┘  get   │ dequeues,    │
-       │ clear, enqueue   │ ──▶      ▲              │   ──▶   │ processes    │
-       │ ... return       │          │              └──────▶  │ ... return   │
-       │ IRQ_WAKE_THREAD  │          │                        │ IRQ_HANDLED  │
-       └──────────────────┘          │                        └──────────────┘
+       │ Stage A reads    │  put  │e0│e1│e2│ ... │e_n│  get   │ Stage B      │
+       │ source, RW1C     │──────▶└──┴──┴──┴─────┴───┘───────▶│ dequeues,    │
+       │ clear, enqueue   │                                   │ processes    │
+       │ ... return       │                                   │ ... return   │
+       │ IRQ_WAKE_THREAD  │                                   │ IRQ_HANDLED  │
+       └──────────────────┘                                   └──────────────┘
 ```
 
 1. The remaining patterns are each shown with an example figure; copy the shape and relabel it for the subsystem at hand.
