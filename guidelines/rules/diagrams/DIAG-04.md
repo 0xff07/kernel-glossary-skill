@@ -7,7 +7,9 @@
 **OUTPUT:** Each figure following a named catalog pattern and its distinguishing notes (or carrying a recorded reason no pattern fits); delivered with the pattern named per figure at sign-off.
 
 
-When a diagram is justified, prefer one of the named patterns below. Each pattern has a use case and a shape; copying the shape and substituting names is usually enough to produce a clean figure. Reach for a new shape only when none of these fits the spatial relationship in question.
+1. When a diagram is justified, prefer one of the named patterns below.
+2. Each pattern has a use case and a shape; copying the shape and substituting names is usually enough to produce a clean figure.
+3. Reach for a new shape only when none of these fits the spatial relationship in question.
 
 ### Use-case index
 
@@ -36,7 +38,8 @@ When a diagram is justified, prefer one of the named patterns below. Each patter
 
 ### Pattern: parent + N children fan-out
 
-Use when one parent object spawns multiple typed child objects on a different bus / queue / map / list, and the children's identity comes from a field inside the parent. Draw the parent as a wide top box with field-level content, then N children in a row underneath, joined by a single trunk that splits into N branches.
+1. Use when one parent object spawns multiple typed child objects on a different bus / queue / map / list, and the children's identity comes from a field inside the parent.
+2. Draw the parent as a wide top box with field-level content, then N children in a row underneath, joined by a single trunk that splits into N branches.
 
 ```
        struct parent (on bus_A)
@@ -54,13 +57,21 @@ Use when one parent object spawns multiple typed child objects on a different bu
 
 ### Pattern: sparse slot map with conditional backing
 
-Use when an address space, slot table, or fixed-size index set is divided into uniformly-sized regions and each region may or may not have a backing data structure allocated for it. The figure shows which regions are present (have backing) and which are holes (no backing), with the lookup formulas below. Reach for it when the page needs to convey that the lookup is a direct dereference but the backing array is sparse and only allocated for populated slots.
+1. Use when an address space, slot table, or fixed-size index set is divided into uniformly-sized regions and each region may or may not have a backing data structure allocated for it.
+2. The figure shows which regions are present (have backing) and which are holes (no backing), with the lookup formulas below.
+3. Reach for it when the page needs to convey that the lookup is a direct dereference but the backing array is sparse and only allocated for populated slots.
 
-Draw the slot row as a contiguous strip of N cells joined by `┬` dividers (no gaps between cells, since the slots are contiguous in the index space). Each cell contains a short status word (`present`, `hole`, `valid`, etc.). The bottom border has `┬` connectors only beneath populated slots (the ones that will descend to a backing box). For each populated slot, drop a `▼` arrow from the bottom of the strip to a backing object box drawn directly below; leave the hole slots with no arrow and no box below. Add accessor labels beneath each backing box (the name and field expression by which code reaches that backing object), connected by `▲` arrows pointing up into the backing box. Labels span multiple lines if the field path is long.
+4. Draw the slot row as a contiguous strip of N cells joined by `┬` dividers (no gaps between cells, since the slots are contiguous in the index space).
+5. Each cell contains a short status word (`present`, `hole`, `valid`, etc.).
+6. The bottom border has `┬` connectors only beneath populated slots (the ones that will descend to a backing box).
+7. For each populated slot, drop a `▼` arrow from the bottom of the strip to a backing object box drawn directly below; leave the hole slots with no arrow and no box below.
+8. Add accessor labels beneath each backing box (the name and field expression by which code reaches that backing object), connected by `▲` arrows pointing up into the backing box.
+9. Labels span multiple lines if the field path is long.
 
-Close the figure with a one-line parenthetical noting which slots are skipped, then one or more formula blocks showing the lookup formula for each conversion mode (direct lookup, flat lookup, etc.). Each formula block has a short heading followed by indented pseudocode lines.
+10. Close the figure with a one-line parenthetical noting which slots are skipped, then one or more formula blocks showing the lookup formula for each conversion mode (direct lookup, flat lookup, etc.).
+11. Each formula block has a short heading followed by indented pseudocode lines.
 
-This pattern differs from `parent + N children fan-out` (one parent allocating all N children via a single trunk) and from `N-to-M source/destination mapping` (disjoint inputs feeding rows of a tabular destination): here a single uniform index space partitions into independent slots, each independently populated or absent.
+12. This pattern differs from `parent + N children fan-out` (one parent allocating all N children via a single trunk) and from `N-to-M source/destination mapping` (disjoint inputs feeding rows of a tabular destination): here a single uniform index space partitions into independent slots, each independently populated or absent.
 
 ```
        Sparse slot map (possibly with holes)
@@ -93,9 +104,13 @@ This pattern differs from `parent + N children fan-out` (one parent allocating a
 
 ### Pattern: input decode tree
 
-Use when a function's return value or the chosen branch is a deterministic function of a small number of input bits or fields. Draw it as a tree that consumes one input at a time: the tested input on a trunk, one labelled edge per value, and the outcome at each leaf. The reader follows a path rather than scanning rows, and the shape shows which inputs are read only on some paths.
+1. Use when a function's return value or the chosen branch is a deterministic function of a small number of input bits or fields.
+2. Draw it as a tree that consumes one input at a time: the tested input on a trunk, one labelled edge per value, and the outcome at each leaf.
+3. The reader follows a path rather than scanning rows, and the shape shows which inputs are read only on some paths.
 
-Do NOT draw this as a grid of input columns against an outcome column. That is the banned plain table, and it was the form this catalog carried until the ban retired it. When the material really is a flat product of every input against every outcome with no nesting, it is a semantics table and belongs in Markdown, with no figure at all.
+4. Do NOT draw this as a grid of input columns against an outcome column.
+5. That is the banned plain table, and it was the form this catalog carried until the ban retired it.
+6. When the material really is a flat product of every input against every outcome with no nesting, it is a semantics table and belongs in Markdown, with no figure at all.
 
 ```
        input_a ?
@@ -115,9 +130,12 @@ Do NOT draw this as a grid of input columns against an outcome column. That is t
 
 ### Pattern: boxed flowchart with decision nodes
 
-Use when a function has 3+ sequential decision points with side effects and back-edges, and showing each step in its own box adds clarity. Each step gets its own box; each decision node has explicit yes / no labels on outgoing edges; loops draw an explicit back-edge with an arrow. Reserve this for paths with real branching; a 2-state decision should be written as prose instead.
+1. Use when a function has 3+ sequential decision points with side effects and back-edges, and showing each step in its own box adds clarity.
+2. Each step gets its own box; each decision node has explicit yes / no labels on outgoing edges; loops draw an explicit back-edge with an arrow.
+3. Reserve this for paths with real branching; a 2-state decision should be written as prose instead.
 
-The boxes name conditions and effects, never callees. A chart whose boxes are function names and whose edges mean "calls" is the banned flow graph however many decision diamonds are drawn around it; the test is whether removing every function name would leave a decision structure behind.
+4. The boxes name conditions and effects, never callees.
+5. A chart whose boxes are function names and whose edges mean "calls" is the banned flow graph however many decision diamonds are drawn around it; the test is whether removing every function name would leave a decision structure behind.
 
 ```
        ┌─────────────────┐
@@ -145,7 +163,8 @@ The boxes name conditions and effects, never callees. A chart whose boxes are fu
 
 ### Pattern: side-by-side struct comparison
 
-Use when two related types interact via a third operation (match function, encode / decode pair, pack / unpack helpers). Show both struct definitions as boxes side by side with the operation drawn underneath as the convergence point.
+1. Use when two related types interact via a third operation (match function, encode / decode pair, pack / unpack helpers).
+2. Show both struct definitions as boxes side by side with the operation drawn underneath as the convergence point.
 
 ```
        struct lhs                     struct rhs
@@ -165,11 +184,16 @@ Use when two related types interact via a third operation (match function, encod
 
 ### Pattern: linked structs via field-level pointers
 
-Use when several related structs and arrays connect via pointer fields, encoded pointers, or per-cell bitmap pointers, and the relationship between them is the field-level pointer topology itself. Each struct is drawn as a labeled box: the struct name (with `struct` keyword) sits on a borderless heading line above the box, and field names are listed inside the box one per line with optional type or comment in parentheses. Fields with internal structure (bit-packed words, embedded arrays, fixed bitmaps) get drawn as nested cell strips inside the outer box.
+1. Use when several related structs and arrays connect via pointer fields, encoded pointers, or per-cell bitmap pointers, and the relationship between them is the field-level pointer topology itself.
+2. Each struct is drawn as a labeled box: the struct name (with `struct` keyword) sits on a borderless heading line above the box, and field names are listed inside the box one per line with optional type or comment in parentheses.
+3. Fields with internal structure (bit-packed words, embedded arrays, fixed bitmaps) get drawn as nested cell strips inside the outer box.
 
-Pointer fields exit the bottom border of the box (via `┼` or `─┐`), descend as vertical trunks (`│`), and terminate in a `▼` arrow that lands on the target box below. When a nested bitmap has per-cell pointing relationships (one bit per subsection, one entry per slot), each cell descends via its own vertical trunk and `▼` to its target in a parallel array drawn underneath. Length-bracket annotations of the form `|<── span ──>|` mark total spans beneath arrays. Close the figure with a legend block beneath the diagram listing flag and constant meanings as `NAME = MEANING` columns.
+4. Pointer fields exit the bottom border of the box (via `┼` or `─┐`), descend as vertical trunks (`│`), and terminate in a `▼` arrow that lands on the target box below.
+5. When a nested bitmap has per-cell pointing relationships (one bit per subsection, one entry per slot), each cell descends via its own vertical trunk and `▼` to its target in a parallel array drawn underneath.
+6. Length-bracket annotations of the form `|<── span ──>|` mark total spans beneath arrays.
+7. Close the figure with a legend block beneath the diagram listing flag and constant meanings as `NAME = MEANING` columns.
 
-This pattern differs from `parent + N children fan-out` (which shows allocation or registration of typed children) and from `side-by-side struct comparison` (which shows two peer structs meeting at one operation): here the structs already exist and the visible shape of the figure is the chain of pointer fields linking them together.
+8. This pattern differs from `parent + N children fan-out` (which shows allocation or registration of typed children) and from `side-by-side struct comparison` (which shows two peer structs meeting at one operation): here the structs already exist and the visible shape of the figure is the chain of pointer fields linking them together.
 
 ```
        Linked struct hierarchy
@@ -223,7 +247,9 @@ This pattern differs from `parent + N children fan-out` (which shows allocation 
 
 ### Pattern: N-to-M source/destination mapping
 
-Use when several disjoint inputs feed a single tabular destination, with some inputs feeding multiple rows of the destination. Sources go in a column on the left; the destination is a stacked box on the right; arrows cross the gap. Annotation that would otherwise hang off the right edge of the destination box belongs as prose below the figure, not as right-aligned brackets, so the figure stays under 80 columns.
+1. Use when several disjoint inputs feed a single tabular destination, with some inputs feeding multiple rows of the destination.
+2. Sources go in a column on the left; the destination is a stacked box on the right; arrows cross the gap.
+3. Annotation that would otherwise hang off the right edge of the destination box belongs as prose below the figure, not as right-aligned brackets, so the figure stays under 80 columns.
 
 ```
        Source register              Destination slots
@@ -242,7 +268,8 @@ Use when several disjoint inputs feed a single tabular destination, with some in
 
 ### Pattern: queue / ring between two stages
 
-Use when a producer and a consumer communicate through a bounded buffer (kfifo, work_struct, list_head ring). Show the buffer as a row of cells in the middle; the two stages flank it; arrows label the put / get operations.
+1. Use when a producer and a consumer communicate through a bounded buffer (kfifo, work_struct, list_head ring).
+2. Show the buffer as a row of cells in the middle; the two stages flank it; arrows label the put / get operations.
 
 ```
        Producer side              kfifo / work / ring         Consumer side
@@ -255,11 +282,14 @@ Use when a producer and a consumer communicate through a bounded buffer (kfifo, 
        └──────────────────┘          │                        └──────────────┘
 ```
 
-The remaining patterns are each shown with an example figure; copy the shape and relabel it for the subsystem at hand.
+1. The remaining patterns are each shown with an example figure; copy the shape and relabel it for the subsystem at hand.
 
 ### Pattern: data dependency (inputs feed a transform)
 
-Use when one or more source structs are read by a function that builds or populates a destination struct, and the point is which inputs feed which output (assembling a config, intersecting capabilities, encoding a message). Draw the input struct boxes at the top, the transform function as the labelled junction beneath them, and the produced struct below; the arrows mean feeds / populates / points-to, never call order. The figure is a valid data-dependency picture only because its endpoints are structs: a figure whose nodes are all functions joined by call arrows is the banned code-flow chart. Complements the linked-structs-via-pointers pattern, which shows structs already wired by their fields.
+1. Use when one or more source structs are read by a function that builds or populates a destination struct, and the point is which inputs feed which output (assembling a config, intersecting capabilities, encoding a message).
+2. Draw the input struct boxes at the top, the transform function as the labelled junction beneath them, and the produced struct below; the arrows mean feeds / populates / points-to, never call order.
+3. The figure is a valid data-dependency picture only because its endpoints are structs: a figure whose nodes are all functions joined by call arrows is the banned code-flow chart.
+4. Complements the linked-structs-via-pointers pattern, which shows structs already wired by their fields.
 
 ```
        snd_soc_runtime_calc_hw: intersect every CPU and codec DAI
@@ -286,7 +316,10 @@ Use when one or more source structs are read by a function that builds or popula
 
 ### Pattern: before / after transformation
 
-Use when an operation changes the shape of one data structure (a split, a merge, an insert, a remove, a move, an in-place encode) and the point is the structure before versus after. Draw the structure twice in the same cell style, labelled `before` and `after`, with the operation as a labelled `──▶` between them (or the two states stacked, before above after), so the change is read by diffing the two drawings. Keeping the cell style identical across the two sides is what makes the diff legible. Distinct from data dependency, which feeds inputs through a transform into a *different* destination struct: here the *same* structure is shown reshaped on both sides.
+1. Use when an operation changes the shape of one data structure (a split, a merge, an insert, a remove, a move, an in-place encode) and the point is the structure before versus after.
+2. Draw the structure twice in the same cell style, labelled `before` and `after`, with the operation as a labelled `──▶` between them (or the two states stacked, before above after), so the change is read by diffing the two drawings.
+3. Keeping the cell style identical across the two sides is what makes the diff legible.
+4. Distinct from data dependency, which feeds inputs through a transform into a *different* destination struct: here the *same* structure is shown reshaped on both sides.
 
 ```
     __split_vma at boundary S: one maple-tree interval before and after
@@ -304,7 +337,8 @@ Use when an operation changes the shape of one data structure (a split, a merge,
 
 ### Pattern: signal-timing / waveform
 
-Use when the point is where a data bit or sample lands in time relative to a clock or frame edge (a serial-bus frame, a strobe, a sampling instant). Draw each wire as a square-wave trace built from ─ levels and ┌ ┐ └ ┘ │ edges, one trace per line, with a vertical reference column (▼ and │) marking the frame edge so the offset reads straight off the grid; align the data cells under a per-cell clock tick.
+1. Use when the point is where a data bit or sample lands in time relative to a clock or frame edge (a serial-bus frame, a strobe, a sampling instant).
+2. Draw each wire as a square-wave trace built from ─ levels and ┌ ┐ └ ┘ │ edges, one trace per line, with a vertical reference column (▼ and │) marking the frame edge so the offset reads straight off the grid; align the data cells under a per-cell clock tick.
 
 ```
        I2S vs left-justified: where the left-channel MSB sits
@@ -325,9 +359,13 @@ Use when the point is where a data bit or sample lands in time relative to a clo
 
 ### Pattern: swimlane sequence (actors × time)
 
-Use when several actors (userspace, a core layer, a driver, hardware) hand work to each other over time and the cross-actor ordering is the point. Draw one vertical lane per actor separated by │ columns, time running downward, and a cross-lane ──▶ arrow for each step; annotate each lane with the state it reaches. Distinct from queue/ring (a buffer between two stages): this shows N actors over one timeline.
+1. Use when several actors (userspace, a core layer, a driver, hardware) hand work to each other over time and the cross-actor ordering is the point.
+2. Draw one vertical lane per actor separated by │ columns, time running downward, and a cross-lane ──▶ arrow for each step; annotate each lane with the state it reaches.
+3. Distinct from queue/ring (a buffer between two stages): this shows N actors over one timeline.
 
-The cells carry the state each actor reaches, not the next function it calls. A walkthrough page is where this goes wrong most often: a lane diagram of one call stack, with every cell a callee and every arrow a call, is the banned flow graph with lane rules drawn on it. If the figure would survive deleting all but one lane, it was never a swimlane.
+4. The cells carry the state each actor reaches, not the next function it calls.
+5. A walkthrough page is where this goes wrong most often: a lane diagram of one call stack, with every cell a callee and every arrow a call, is the banned flow graph with lane rules drawn on it.
+6. If the figure would survive deleting all but one lane, it was never a swimlane.
 
 ```
        trigger START fan-out across the soc_pcm_trigger[][] rows
@@ -355,7 +393,9 @@ The cells carry the state each actor reaches, not the next function it calls. A 
 
 ### Pattern: state-transition graph
 
-Use when an object moves through named states and the legal transitions (including back-edges and self-loops) are the point. Draw each state as a boxed node and each event as a labelled directed ──▶ edge; draw the back-edges explicitly. Distinct from the boxed decision flowchart, which traces control flow through one function; this traces an object's state across its lifetime.
+1. Use when an object moves through named states and the legal transitions (including back-edges and self-loops) are the point.
+2. Draw each state as a boxed node and each event as a labelled directed ──▶ edge; draw the back-edges explicitly.
+3. Distinct from the boxed decision flowchart, which traces control flow through one function; this traces an object's state across its lifetime.
 
 ```
        Tip-sense plug state machine (in cs42l42_irq_thread)
@@ -386,7 +426,9 @@ Use when an object moves through named states and the legal transitions (includi
 
 ### Pattern: directed graph / DAG
 
-Use when a multi-node signal or dependency graph has fan-in and fan-out, plus auxiliary nodes (supplies, clocks) that attach to the side rather than carry signal. Draw the signal nodes as boxes joined left-to-right by ──▶ edges, mux fan-in with ─┐/─┘ collectors, and side nodes attached with ◀── or a ▲ stem. More general than parent + N children fan-out (one parent, one level).
+1. Use when a multi-node signal or dependency graph has fan-in and fan-out, plus auxiliary nodes (supplies, clocks) that attach to the side rather than carry signal.
+2. Draw the signal nodes as boxes joined left-to-right by ──▶ edges, mux fan-in with ─┐/─┘ collectors, and side nodes attached with ◀── or a ▲ stem.
+3. More general than parent + N children fan-out (one parent, one level).
 
 ```
        rt722-sdca playback + speaker paths; PDE supplies hang off sideways
@@ -408,7 +450,9 @@ Use when a multi-node signal or dependency graph has fan-in and fan-out, plus au
 
 ### Pattern: register / address-offset map
 
-Use when several registers sit at fixed offsets within a block, or one block repeats at base + stride · index, and the addressing is the point (per-stream, per-port, or per-lane blocks). Draw the index ──▶ base-address column on the left, and one representative block expanded as a box of its named registers on the right. Distinct from a single-register bitfield figure, which plots the bits of one register.
+1. Use when several registers sit at fixed offsets within a block, or one block repeats at base + stride · index, and the addressing is the point (per-stream, per-port, or per-lane blocks).
+2. Draw the index ──▶ base-address column on the left, and one representative block expanded as a box of its named registers on the right.
+3. Distinct from a single-register bitfield figure, which plots the bits of one register.
 
 ```
        Per-stream SDn register blocks (one per host DMA engine)
@@ -433,7 +477,9 @@ Use when several registers sit at fixed offsets within a block, or one block rep
 
 ### Pattern: layered stack / membrane
 
-Use when the point is how layers stack and where one layer calls through to the next across a named API boundary (userspace / core / driver / firmware-or-hardware). Draw each layer as a full-width box stacked above the next, and label each ▼ divider with the boundary it crosses (the ioctl, the ops vector, the message channel). The boundary labels are the point, not the box contents.
+1. Use when the point is how layers stack and where one layer calls through to the next across a named API boundary (userspace / core / driver / firmware-or-hardware).
+2. Draw each layer as a full-width box stacked above the next, and label each ▼ divider with the boundary it crosses (the ioctl, the ops vector, the message channel).
+3. The boundary labels are the point, not the box contents.
 
 ```
        ASoC core (sound/soc/soc-core.c)
@@ -451,7 +497,9 @@ Use when the point is how layers stack and where one layer calls through to the 
 
 ### Pattern: ordered level ladder
 
-Use when a value moves through a small set of strictly-ordered levels and the travel direction matters (power/bias states, D-states, link states). Draw the levels as rows in numeric order, highest at the top, with ▲ (up) and ▼ (down) markers down the side and the per-step rule. Distinct from a state-transition graph: a ladder is monotonic and totally ordered, traversed one step at a time.
+1. Use when a value moves through a small set of strictly-ordered levels and the travel direction matters (power/bias states, D-states, link states).
+2. Draw the levels as rows in numeric order, highest at the top, with ▲ (up) and ▼ (down) markers down the side and the per-step rule.
+3. Distinct from a state-transition graph: a ladder is monotonic and totally ordered, traversed one step at a time.
 
 ```
        enum snd_soc_bias_level: one context climbs and descends the ladder
@@ -471,9 +519,12 @@ Use when a value moves through a small set of strictly-ordered levels and the tr
 
 ### Pattern: refcount with threshold actions
 
-Use when a reference count gates a hardware action only at a threshold crossing (first user enables, last user disables; the 0↔1 edge). Draw the count as horizontal rungs, the raising events climbing one side and the lowering events descending the other, and mark the one rung crossing that reaches the hardware. The shape puts the acting edge next to the inert ones, so the asymmetry is read off the picture rather than counted out of rows.
+1. Use when a reference count gates a hardware action only at a threshold crossing (first user enables, last user disables; the 0↔1 edge).
+2. Draw the count as horizontal rungs, the raising events climbing one side and the lowering events descending the other, and mark the one rung crossing that reaches the hardware.
+3. The shape puts the acting edge next to the inert ones, so the asymmetry is read off the picture rather than counted out of rows.
 
-Do NOT draw this as a grid of events against transitions against actions. That is the banned plain table, and it was the form this catalog carried until the ban retired it.
+4. Do NOT draw this as a grid of events against transitions against actions.
+5. That is the banned plain table, and it was the form this catalog carried until the ban retired it.
 
 ```
        be_start: the hardware sees only the edges next to 0
@@ -498,7 +549,9 @@ Do NOT draw this as a grid of events against transitions against actions. That i
 
 ### Pattern: cyclic ring buffer with position pointers
 
-Use when a single cyclic buffer is split into periods/slots and two pointers (a producer and a consumer, e.g. appl_ptr and hw_ptr) chase each other around it with wrap. Draw the periods as a contiguous row of cells, a ▼ from each pointer onto its cell, and note which span is filled vs free and where the pointers wrap. A specialization of queue/ring for one wrapping buffer with two positions.
+1. Use when a single cyclic buffer is split into periods/slots and two pointers (a producer and a consumer, e.g. appl_ptr and hw_ptr) chase each other around it with wrap.
+2. Draw the periods as a contiguous row of cells, a ▼ from each pointer onto its cell, and note which span is filled vs free and where the pointers wrap.
+3. A specialization of queue/ring for one wrapping buffer with two positions.
 
 ```
        The PCM ring buffer: hw_ptr and appl_ptr chase around it
@@ -521,7 +574,9 @@ Use when a single cyclic buffer is split into periods/slots and two pointers (a 
 
 ### Pattern: frame / bandwidth partition grid
 
-Use when one frame or period of a shared medium is divided into slots or row/column cells, each claimed by an entity (TDM slots, a bus frame's columns, channel allocations). Draw the frame as a contiguous ┌─┬─┐ strip of equal cells labelled by slot, optionally a second strip showing a wider or narrower division of the same frame. The point is how the fixed bandwidth partitions.
+1. Use when one frame or period of a shared medium is divided into slots or row/column cells, each claimed by an entity (TDM slots, a bus frame's columns, channel allocations).
+2. Draw the frame as a contiguous ┌─┬─┐ strip of equal cells labelled by slot, optionally a second strip showing a wider or narrower division of the same frame.
+3. The point is how the fixed bandwidth partitions.
 
 ```
        I2S frame = the two-slot case of TDM
