@@ -6,8 +6,19 @@
 
 **OUTPUT:** Every block opening with an exact `/* path:LINE */` provenance comment, stitched blocks delimited per excerpt with declared elisions, and every unit byte-verified to begin at its cited line; delivered as the confirmed-block count with none left unverified.
 
-**Rule:** Every fenced ` ```c ` block opens with a provenance comment naming the on-disk origin of the excerpt, in the exact form `/* path/from/tree/root.c:LINE */` on its own first line, where LINE is the number of the first reproduced line in the file at the documented version. A short annotation may follow the line number (`/* mm/vma.c:497 (in __split_vma()) */`). A block that stitches excerpts from several places (a caller plus its callee, two distant case labels, a struct field plus the helper that writes it) marks each excerpt's start with its own interior `/* path:line */` delimiter, and marks elided code with a standalone `...` line. Everything between delimiters is verbatim file content.
+**Rule:**
 
-The provenance comment is what makes a page checkable: a reviewer opens the named file at the cited line and compares the unit directly, so a missing or wrong provenance line turns an on-disk match into a finding, and a silently drifted excerpt is caught on the first comparison. Non-code fences (ASCII figures, quoted commit-message tables, shell output) carry no provenance comment and are not diffed.
+1. Every fenced ` ```c ` block opens with a provenance comment naming the on-disk origin of the excerpt, in the exact form `/* path/from/tree/root.c:LINE */` on its own first line, where LINE is the number of the first reproduced line in the file at the documented version.
+2. A short annotation may follow the line number (`/* mm/vma.c:497 (in __split_vma()) */`).
+3. A block that stitches excerpts from several places (a caller plus its callee, two distant case labels, a struct field plus the helper that writes it) marks each excerpt's start with its own interior `/* path:line */` delimiter, and marks elided code with a standalone `...` line.
+4. Everything between delimiters is verbatim file content.
 
-**PASS CRITERIA:** For every fenced C block, confirm the first line is a provenance comment in the exact form `/* path/from/tree/root.c:LINE */` (a short annotation may follow the line number), that a stitched block carries an interior `/* path:line */` delimiter per excerpt and a standalone `...` line per elision, and that non-code fences carry none. Then open each named file at each cited line (`sed -n 'START,ENDp'`) and compare unit by unit, byte for byte, tabs included. Every unit must begin at its cited line: content that matches elsewhere in the file under a wrong claimed line number is a finding, not a pass, and a comparison procedure that resynchronizes on mismatch is worse than none (a permissive verifier once reported 44 of 44 units correct over two fabricated comment terminators). Record the block count and that each was confirmed; sign off only when none is left unverified.
+5. The provenance comment is what makes a page checkable: a reviewer opens the named file at the cited line and compares the unit directly, so a missing or wrong provenance line turns an on-disk match into a finding, and a silently drifted excerpt is caught on the first comparison.
+6. Non-code fences (ASCII figures, quoted commit-message tables, shell output) carry no provenance comment and are not diffed.
+
+**PASS CRITERIA:**
+
+1. For every fenced C block, confirm the first line is a provenance comment in the exact form `/* path/from/tree/root.c:LINE */` (a short annotation may follow the line number), that a stitched block carries an interior `/* path:line */` delimiter per excerpt and a standalone `...` line per elision, and that non-code fences carry none.
+2. Then open each named file at each cited line (`sed -n 'START,ENDp'`) and compare unit by unit, byte for byte, tabs included.
+3. Every unit must begin at its cited line: content that matches elsewhere in the file under a wrong claimed line number is a finding, not a pass, and a comparison procedure that resynchronizes on mismatch is worse than none (a permissive verifier once reported 44 of 44 units correct over two fabricated comment terminators).
+4. Record the block count and that each was confirmed; sign off only when none is left unverified.
