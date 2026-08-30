@@ -6,25 +6,53 @@
 
 **OUTPUT:** Recorded enumerations proving every documented behavior's sites are cited (or a representative spread plus a stated count), the backing structs and helpers, lifecycle and asynchronous behavior, and every hard-coded limit covered with its value and defining line; done-ness confirmed against the catalog and scope statement, with any cut a reported scope decision.
 
-**Problem:** A page that documents only the single function path that prompted it is incomplete. Breadth of coverage — every site that exhibits a behavior, every struct and helper that backs it, the full object lifecycle — is as mandatory as the prose and citation rules.
+**Problem:**
 
-**Rule:** Cite every site that matches a behavior, not one. Enumerate the full set with `find_callers`, `grep_functions`, and Grep before writing; cite each site with an inline Elixir link at the mention and a ` ```c ` block in DETAILS. When the set is too large to cite exhaustively, cite a representative spread (the core implementation plus several users) and state how many sites exist — never silently narrow to one.
+1. A page that documents only the single function path that prompted it is incomplete.
+2. Breadth of coverage — every site that exhibits a behavior, every struct and helper that backs it, the full object lifecycle — is as mandatory as the prose and citation rules.
 
-**Rule:** Cover the data structures and their helpers, not only entry-point functions: the structs, enums, and typedefs that hold the state, plus the helpers and accessor macros that allocate, initialize, read, modify, and destroy them — listed in LINUX KERNEL, defined as ` ```c ` blocks in DETAILS, and shown in use. A page that names a behavior but omits the struct that records the state, or the helper that changes it, is incomplete.
+**Rule:**
 
-**Rule:** Draw the structure, not only describe it. A mechanism with spatial, temporal, or transformational structure (a data or bit layout, an object topology, a reshaping operation, a state machine, a sequence across actors) is drawn per the diagram rules, with as many figures as the material earns and never in a banned shape. A page that walks a split, merge, insertion, teardown, or fork without showing the structure before and after has a coverage gap. The diagram rules' restraint still decides which candidates are real: no figure for a plain call chain, a two-state toggle, or anything one declarative sentence conveys.
+1. Cite every site that matches a behavior, not one.
+2. Enumerate the full set with `find_callers`, `grep_functions`, and Grep before writing; cite each site with an inline Elixir link at the mention and a ` ```c ` block in DETAILS.
+3. When the set is too large to cite exhaustively, cite a representative spread (the core implementation plus several users) and state how many sites exist — never silently narrow to one.
 
-**Rule:** Cover the object lifecycle and asynchronous behavior: allocation, initialization, freeing, the serializing locks, reference counting (`kref` / `refcount_t` get and put, and the put that frees), state transitions (which field advances through which states and what drives each edge), notification mechanisms (notifier chains, `struct completion`, wait queues, eventfd, uevents), deferred work (`work_struct` and `delayed_work`, tasklets, timers, threaded IRQs, RCU callbacks), and the ordering and concurrency rules between them. Tracing only "function A calls function B" misses what the page exists to explain.
+**Rule:**
 
-**Rule:** Call out hard-coded limits explicitly: timeouts, retry and attempt counts, maximum error counts, buffer and queue sizes, poll and backoff intervals — macro, enum value, or bare literal. Find as many as exist; name each with its value and the symbol or literal that holds it, cite its file and line, and reproduce the defining line where the value governs a walked path. A described timeout, retry loop, or threshold without its actual number is incomplete.
+1. Cover the data structures and their helpers, not only entry-point functions: the structs, enums, and typedefs that hold the state, plus the helpers and accessor macros that allocate, initialize, read, modify, and destroy them — listed in LINUX KERNEL, defined as ` ```c ` blocks in DETAILS, and shown in use.
+2. A page that names a behavior but omits the struct that records the state, or the helper that changes it, is incomplete.
 
-**Rule:** The catalog and the scope statement define done-ness. A page is complete when every LINUX KERNEL symbol and every scoped behavior is covered to the rules above; "the core API is documented" is not a completion test, and importance ranking never shrinks coverage. Material that outgrows one page splits along a boundary statement into sibling pages; no page thins its coverage to shorten itself. Compression may remove words, never coverage: shortening must not drop cataloged symbols, behaviors, call-site enumerations, layout-bearing figures, or KERNEL DOCUMENTATION / OTHER SOURCES entries — any such cut is a deliberate scope change (catalog and scope shrink in the same edit, and the cut is reported). Within DETAILS, order generic to specific: the shared mechanism first, then the vendor-, channel-, or driver-specific instances.
+**Rule:**
+
+1. Draw the structure, not only describe it.
+2. A mechanism with spatial, temporal, or transformational structure (a data or bit layout, an object topology, a reshaping operation, a state machine, a sequence across actors) is drawn per the diagram rules, with as many figures as the material earns and never in a banned shape.
+3. A page that walks a split, merge, insertion, teardown, or fork without showing the structure before and after has a coverage gap.
+4. The diagram rules' restraint still decides which candidates are real: no figure for a plain call chain, a two-state toggle, or anything one declarative sentence conveys.
+
+**Rule:**
+
+1. Cover the object lifecycle and asynchronous behavior: allocation, initialization, freeing, the serializing locks, reference counting (`kref` / `refcount_t` get and put, and the put that frees), state transitions (which field advances through which states and what drives each edge), notification mechanisms (notifier chains, `struct completion`, wait queues, eventfd, uevents), deferred work (`work_struct` and `delayed_work`, tasklets, timers, threaded IRQs, RCU callbacks), and the ordering and concurrency rules between them.
+2. Tracing only "function A calls function B" misses what the page exists to explain.
+
+**Rule:**
+
+1. Call out hard-coded limits explicitly: timeouts, retry and attempt counts, maximum error counts, buffer and queue sizes, poll and backoff intervals — macro, enum value, or bare literal.
+2. Find as many as exist; name each with its value and the symbol or literal that holds it, cite its file and line, and reproduce the defining line where the value governs a walked path.
+3. A described timeout, retry loop, or threshold without its actual number is incomplete.
+
+**Rule:**
+
+1. The catalog and the scope statement define done-ness.
+2. A page is complete when every LINUX KERNEL symbol and every scoped behavior is covered to the rules above; "the core API is documented" is not a completion test, and importance ranking never shrinks coverage.
+3. Material that outgrows one page splits along a boundary statement into sibling pages; no page thins its coverage to shorten itself.
+4. Compression may remove words, never coverage: shortening must not drop cataloged symbols, behaviors, call-site enumerations, layout-bearing figures, or KERNEL DOCUMENTATION / OTHER SOURCES entries — any such cut is a deliberate scope change (catalog and scope shrink in the same edit, and the cut is reported).
+5. Within DETAILS, order generic to specific: the shared mechanism first, then the vendor-, channel-, or driver-specific instances.
 
 **PASS CRITERIA:**
 
-- For each behavior the page documents, re-run the enumeration (`find_callers`, `grep_functions`, and a grep that includes headers) and confirm the page cites every site, or a representative spread plus an explicit statement of how many sites exist. Record the enumerations; a silent narrowing to one site fails.
-- Confirm the backing constructs are covered, not only entry points: the structs, enums, and typedefs that hold the state, and the helpers and accessor macros that allocate, initialize, read, modify, and destroy them, are listed in LINUX KERNEL, defined in DETAILS, and shown in use.
-- Confirm every mechanism with spatial, temporal, or transformational structure carries a figure, that every split, merge, insertion, teardown, or fork walk shows the structure before and after, and that no figure was drawn for what one declarative sentence conveys.
-- Confirm lifecycle and asynchronous coverage: allocation, initialization, freeing, the serializing locks, reference counting including the put that frees, state transitions and what drives each edge, notification mechanisms, deferred work, and the ordering rules between them are each covered or explicitly outside the scope statement.
-- Confirm every hard-coded limit (timeout, retry count, error cap, buffer or queue size, poll or backoff interval) is named with its value, its defining symbol or literal, and its file and line, with the defining line reproduced where the value governs a walked path.
-- Check done-ness against the catalog and scope statement: zero cataloged symbols or scoped behaviors uncovered, and zero symbols, behaviors, enumerations, figures, or entries dropped without the catalog and scope shrinking in the same reported change.
+1. For each behavior the page documents, re-run the enumeration (`find_callers`, `grep_functions`, and a grep that includes headers) and confirm the page cites every site, or a representative spread plus an explicit statement of how many sites exist. Record the enumerations; a silent narrowing to one site fails.
+2. Confirm the backing constructs are covered, not only entry points: the structs, enums, and typedefs that hold the state, and the helpers and accessor macros that allocate, initialize, read, modify, and destroy them, are listed in LINUX KERNEL, defined in DETAILS, and shown in use.
+3. Confirm every mechanism with spatial, temporal, or transformational structure carries a figure, that every split, merge, insertion, teardown, or fork walk shows the structure before and after, and that no figure was drawn for what one declarative sentence conveys.
+4. Confirm lifecycle and asynchronous coverage: allocation, initialization, freeing, the serializing locks, reference counting including the put that frees, state transitions and what drives each edge, notification mechanisms, deferred work, and the ordering rules between them are each covered or explicitly outside the scope statement.
+5. Confirm every hard-coded limit (timeout, retry count, error cap, buffer or queue size, poll or backoff interval) is named with its value, its defining symbol or literal, and its file and line, with the defining line reproduced where the value governs a walked path.
+6. Check done-ness against the catalog and scope statement: zero cataloged symbols or scoped behaviors uncovered, and zero symbols, behaviors, enumerations, figures, or entries dropped without the catalog and scope shrinking in the same reported change.
