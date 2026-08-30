@@ -2,7 +2,7 @@
 
 Rules are cited by stable ID everywhere in this skill — briefs, dossiers, campaign specs, and the pass files. **IDs never renumber, and a retired ID stays retired.** One rule per file, grouped by directory; this file maps every ID — current and retired — to its home. Historical artifacts (old dossiers, campaign specs, registry rulings) cite the retired scheme; the legacy tables below keep every one of those citations resolvable.
 
-**Adding a rule touches three things and nothing else:** the new rule file (with the house interface: title line, `> Was:` provenance, INPUT, OUTPUT, body, PASS CRITERIA), one row in the table below, and the pass step that consumes it. Run `tests/level0_suite.py` after; it enforces the shape, the reference boundaries, and this index's consistency. No file anywhere carries a rule-range enumeration.
+**Adding a rule touches three things and nothing else:** the new rule file (with the house interface: title line, `> Was:` provenance, INPUT, OUTPUT, body, PASS CRITERIA), one row in the table below, and the pass step that consumes it. No file anywhere carries a rule-range enumeration.
 
 ## The directories
 
@@ -15,9 +15,8 @@ Rules are cited by stable ID everywhere in this skill — briefs, dossiers, camp
 | `diagrams/` | the ASCII-figure rules and their catalogs | only an agent whose page will carry a figure |
 | `routines/` | the checking harness: protocol, patterns, recipes | everyone who checks |
 | `<dir>/<PREFIX>-WAIVERS.md` (one per rule directory) | waivers and settled rulings, harness routed by ROUTINE-01 | every agent, first, always |
-| `tests/` | the corpus migration suite | corpus maintainers |
 
-Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-WAIVERS.md` is harness (it may name only its own directory's rules, and the checking protocol routes adjudication to it); routines may reference rules and the waivers files, and are referenced only from the passes above the rules tree; nothing references tests.
+Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-WAIVERS.md` is harness (it may name only its own directory's rules, and the checking protocol routes adjudication to it); routines may reference rules and the waivers files, and are referenced only from the passes above the rules tree.
 
 ## Current rules
 
@@ -51,13 +50,13 @@ Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-W
 | ROUTINE-07 | Figure geometry check and repair | `routines/ROUTINE-07.md` |
 | — | Waivers and settled rulings (was the 7r registry) | one `<PREFIX>-WAIVERS.md` per rule directory |
 
-Retired numbers stay retired: BAN-05, ROUTINE-02, ROUTINE-03, ROUTINE-06, PIPELINE-01, PIPELINE-02 (and the SUITE-XX/CHECK-XX/FLOW-XX schemes) are never reissued. The pipelines/ directory itself is retired (ledger: `tests/TEST-09.md`); its fix-routing map lives in ROUTINE-05 and its legacy tables live here.
+Retired numbers stay retired: BAN-05, ROUTINE-02, ROUTINE-03, ROUTINE-06, PIPELINE-01, PIPELINE-02 (and the SUITE-XX/CHECK-XX/FLOW-XX schemes) are never reissued. The pipelines/ directory itself is retired; its fix-routing map lives in ROUTINE-05 and its legacy tables live here.
 
 The sample pages under `guidelines/reference/samples/` embody every rule. The closest-matching sample read in the prep pass (`guidelines/passes/00-prep.md`) is the worked example; match its structure, diagram style, code-citation density, and depth. The examples inside the rule text use ACPI and mm symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem.
 
 ## Legacy: the retired ID scheme
 
-`rules.md` is retired: removed from the live tree, pinned in git history — 715 lines, sha256 `86bd23c9a99ed0d3d87b820f573f0ed65cf912de581350ec8bd65d470319cf8f`, retrievable with `git show fe98d23:guidelines/rules/rules.md` (`tests/TEST-05.md` holds the line-by-line disposition ledger). `diagrams.md` is retired the same way: 714 lines, sha256 `0f0c5b072d29c350d10d80e7af7cb6365717c653c514b1e0936f1ffb954af2bd`, retrievable with `git show 4039106:guidelines/rules/diagrams.md`. The gates took IDs 3a-3c in a one-time move from a former `guidelines/gates/` directory, never repeated.
+`rules.md` is retired: removed from the live tree, pinned in git history — 715 lines, sha256 `86bd23c9a99ed0d3d87b820f573f0ed65cf912de581350ec8bd65d470319cf8f`, retrievable with `git show fe98d23:guidelines/rules/rules.md`. `diagrams.md` is retired the same way: 714 lines, sha256 `0f0c5b072d29c350d10d80e7af7cb6365717c653c514b1e0936f1ffb954af2bd`, retrievable with `git show 4039106:guidelines/rules/diagrams.md`. The gates took IDs 3a-3c in a one-time move from a former `guidelines/gates/` directory, never repeated.
 
 Old rule IDs resolve as:
 
@@ -68,7 +67,7 @@ Old rule IDs resolve as:
 | 7b | BAN-03 | 7o | FACT-03 |
 | 7c | ROUTINE-04 + BAN-06 + BAN-07 | 7p | PLOT-04 |
 | 7d | BAN-04 | 7q | ROUTINE-05 |
-| 7e | PAGE-02 | 7r | the per-directory `<PREFIX>-WAIVERS.md` files (retired file `7r-adjudications.md`; entry ledger in `tests/TEST-08.md`) |
+| 7e | PAGE-02 | 7r | the per-directory `<PREFIX>-WAIVERS.md` files (retired file `7r-adjudications.md`) |
 | 7f | PAGE-01 | 7s | PLOT-01 |
 | 7g | DIAG-01 | 7t | PLOT-02 |
 | 7h | DIAG-03 | 7u | PLOT-03 |

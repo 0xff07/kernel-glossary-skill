@@ -1,6 +1,6 @@
 # PAGE-WAIVERS: Waivers and settled rulings for page/
 
-> Was: the page-owned entries of the settled adjudications registry (7r-adjudications.md, retired; the split ledger is tests/TEST-08.md).
+> Was: the page-owned entries of the settled adjudications registry (7r-adjudications.md, retired to its git pin).
 
 Harness, not a rule: a page cannot violate this file; it modifies how this directory's rules apply. A ruling lands here only through the user — an agent that settles a boundary during a run records it as a LESSON in the run log and surfaces it; only this file makes it durable. Apply what is written, never summarize it into a brief, and never reword a compliant construct to silence a pattern match.
 
