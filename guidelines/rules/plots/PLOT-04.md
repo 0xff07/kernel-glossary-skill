@@ -16,6 +16,17 @@
 
 4. **The derived page passes the same catalog-to-DETAILS parity audit as a fresh page.** Coverage in the source is not coverage in the derived page; "the source covered it" fails the audit.
 
-History, and the measured failure that motivates the rule: a 2,645-line page compressed to 1,268 lines kept its iterator-helper symbols in the catalog while silently dropping their DETAILS sections, kept one catalog symbol with no DETAILS mention at all, and landed at 0.73 fenced blocks per catalog entry where every conforming page measures at least 1.0. The parity audit catches the desync mechanically; the disposition list is what makes any removal legitimate.
+History, and the measured failure that motivates the rule:
 
-**PASS CRITERIA:** A derived page passes only with the four artifacts on record: the source inventory (its LINUX KERNEL catalog entries, DETAILS sections, distinct behaviors and call-site enumerations, figures, and KERNEL DOCUMENTATION and OTHER SOURCES entries); a disposition for every inventory item (kept and where, merged into which section, or cut with the reason), with zero items lacking one; for every cut, evidence that the catalog and the scope statement shrank in the same change and that the cut was reported in the final message and the campaign plan file; and the derived page's own catalog-to-DETAILS parity audit, since coverage in the source is not coverage in the derived page. Check the tripwire: fenced C blocks per catalog entry at or above 1.0. Pass at zero items without a disposition and zero silent drops.
+1. A 2,645-line page compressed to 1,268 lines kept its iterator-helper symbols in the catalog while silently dropping their DETAILS sections, kept one catalog symbol with no DETAILS mention at all, and landed at 0.73 fenced blocks per catalog entry where every conforming page measures at least 1.0.
+2. The parity audit catches the desync mechanically; the disposition list is what makes any removal legitimate.
+
+**PASS CRITERIA:**
+
+1. A derived page passes only with the four artifacts on record:
+   1. the source inventory (its LINUX KERNEL catalog entries, DETAILS sections, distinct behaviors and call-site enumerations, figures, and KERNEL DOCUMENTATION and OTHER SOURCES entries);
+   2. a disposition for every inventory item (kept and where, merged into which section, or cut with the reason), with zero items lacking one;
+   3. for every cut, evidence that the catalog and the scope statement shrank in the same change and that the cut was reported in the final message and the campaign plan file;
+   4. and the derived page's own catalog-to-DETAILS parity audit, since coverage in the source is not coverage in the derived page.
+2. Check the tripwire: fenced C blocks per catalog entry at or above 1.0.
+3. Pass at zero items without a disposition and zero silent drops.
