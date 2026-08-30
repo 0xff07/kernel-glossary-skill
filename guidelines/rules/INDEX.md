@@ -56,7 +56,7 @@ The sample pages under `guidelines/reference/samples/` embody every rule. The cl
 
 ## Legacy: the retired ID scheme
 
-`rules.md` is retired: removed from the live tree, pinned in git history — 715 lines, sha256 `86bd23c9a99ed0d3d87b820f573f0ed65cf912de581350ec8bd65d470319cf8f`, retrievable with `git show e68a891:guidelines/rules/rules.md` (`tests/TEST-05.md` holds the line-by-line disposition ledger). `diagrams.md` stays on disk, frozen. The gates took IDs 3a-3c in a one-time move from a former `guidelines/gates/` directory, never repeated.
+`rules.md` is retired: removed from the live tree, pinned in git history — 715 lines, sha256 `86bd23c9a99ed0d3d87b820f573f0ed65cf912de581350ec8bd65d470319cf8f`, retrievable with `git show fe98d23:guidelines/rules/rules.md` (`tests/TEST-05.md` holds the line-by-line disposition ledger). `diagrams.md` stays on disk, frozen. The gates took IDs 3a-3c in a one-time move from a former `guidelines/gates/` directory, never repeated.
 
 Old rule IDs resolve as:
 
