@@ -28,10 +28,10 @@ This section IS the campaign's log and its only memory (`guidelines/passes/plan.
 - [<date>] Phase 2 review complete: <n> amendments accepted, <n> declined with reasoning (recorded under the review outcome). Catalog now <n> rows.
 - [<date>] Phase 3 user checkpoint: catalog and scope questions presented; decisions recorded under Scope decisions; explicit go received.
 - [<date>] B<n> dispatched: one writer per page (<slugs>).
-- [<date>] B<n> checkpoint: <done>/<total> pages WRITTEN → LINTED; <n> escalations adjudicated (<accepted>/<declined>); fixer diffs sampled; per-page statistics recorded.
+- [<date>] B<n> checkpoint: <done>/<total> pages WRITTEN → LINTED; <n> escalations adjudicated (<accepted>/<declined>); per-page statistics recorded.
 - [<date>] AMENDMENT: <the user's instruction, verbatim where short, and what it supersedes; also recorded in the dated amendments under Execution & verification>.
 - [<date>] CORRECTION: <an earlier recorded claim> is wrong; <the re-verified fact and the measurement that established it>.
-- [<date>] LESSON: <a fixer or checker false-positive class, a settled linking adjudication, a pipeline fix; surfaced to the user, who alone folds a ruling into 7r>.
+- [<date>] LESSON: <a checker false-positive class, a settled linking adjudication, a pipeline fix; surfaced to the user, who alone folds a ruling into 7r>.
 
 ## Scope decisions
 
@@ -780,7 +780,7 @@ The existing `docs/dp/` knowledge base (69 pages) owns the DP protocol layer: AU
 
 ## Execution & verification
 
-- Pipeline (AMENDED 2026-07-12 to the redesigned skill flow): writer → fixer per SKILL.md ("Modes"); substance is writer-owned end to end (parity table closed, mechanical exit suite run, evidence persisted into the dossier EVIDENCE section); the fixer fixes 7r-settled classes in place and escalates the rest find-only; the orchestrator adjudicates escalations at batch checkpoints and stamps WRITTEN → LINTED.
+- Pipeline (AMENDED 2026-07-12 to the redesigned skill flow): writer → orchestrator check per SKILL.md ("Modes"); substance is writer-owned end to end (parity table closed, mechanical exit suite run, evidence persisted into the dossier EVIDENCE section); the orchestrator re-runs the checks, adjudicates every residual itself, applies the fixes, and stamps WRITTEN → LINTED.
 - Per-page procedure: passes 00-03 at write time (`guidelines/passes/`); every writer brief carries the boundary statements and the project bans below. The B1 writer briefs recorded earlier in Status predate the redesign; on resume, re-issue them from the current `guidelines/passes/02-write.md` template (adding the EVIDENCE persist directive).
 - Project-specific writing bans (from prompt.md, on top of Gate A): no fbdev/tty mentions; no MIPI-DSI; no hedging; DP/eDP assumed as the output; DETAILS ordering generic → amdgpu → i915/xe (amdgpu always first); DCN35 named only for IP-specific code; tracepoints of the page's area explicitly covered; diagrams structural/spatial only.
 - Write-time rules: every line number in this plan and in any draft is a hint — re-verify on disk at write time. Known corpus defect classes (audit pending): "vtable" (384), fbdev mentions (158), kerneldoc-elided (non-verbatim) excerpts corpus-wide.
