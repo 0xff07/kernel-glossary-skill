@@ -1,6 +1,6 @@
 # Bluetooth knowledge-base campaign: plan
 
-> MIGRATED 2026-07-18 to the campaigns/ layout (SKILL.md, "The three artifacts and the three states"): this file is now the committed, execution-free campaign SPEC. Its former Status section moved to the machine-local run log `progress/bluetooth/log.md` on the machine that ran it; execution state is derived (catalog vs `docs/`), and runs happen only as user-invoked slices under the overwrite guard. This spec predates the machine-portability rule — any absolute path remaining in it is historical record to re-derive from the local environment at dispatch time, and where its older wording conflicts with current `guidelines/`, the guidelines govern.
+> MIGRATED 2026-07-18 to the campaigns/ layout (SKILL.md, "The three artifacts and the two states"): this file is now the committed, execution-free campaign SPEC. Its former Status section moved to the machine-local run log `progress/bluetooth/log.md` on the machine that ran it; execution state is derived (catalog vs `docs/`), and runs happen only as user-invoked slices under the overwrite guard. This spec predates the machine-portability rule — any absolute path remaining in it is historical record to re-derive from the local environment at dispatch time, and where its older wording conflicts with current `guidelines/`, the guidelines govern.
 
 ## Context
 
@@ -17,7 +17,7 @@ Documented tree: Linux tag `v7.0`, commit `028ef9c96e96197026887c0f092424679298a
 
 Subsystem Map entry Bluetooth (`guidelines/reference/subsystems.md`): dir `bluetooth`, tag `bluetooth`, kernel_paths `net/bluetooth/`, `drivers/bluetooth/`, `include/net/bluetooth/`, spec "Bluetooth Core Specification", section6_heading INTERFACES.
 
-NOT inputs: the other campaigns' entries under `progress/` (other runs; isolation per SKILL.md, "The three artifacts and the three states"); `guidelines/reference/samples/` (style/structure/depth calibration only, never kernel facts); `prompt.md`'s technical details (stale by declaration — its instructions and topic list govern scope, its implied facts do not).
+NOT inputs: the other campaigns' entries under `progress/` (other runs; isolation per SKILL.md, "The three artifacts and the two states"); `guidelines/reference/samples/` (style/structure/depth calibration only, never kernel facts); `prompt.md`'s technical details (stale by declaration — its instructions and topic list govern scope, its implied facts do not).
 
 Output root: `docs/bluetooth/`. No `SUMMARY.md`/`mkdocs.yml` edits. No git commits without an explicit user go.
 
@@ -31,7 +31,7 @@ Standing instructions to any executor, on any machine, cold or warm:
 4. Execute ONLY the slice the invoker named — a batch from this spec's batch order (its recommended slicing), or an explicit page list. Given a bare "run bluetooth" with no slice: report the derived state and ask; never pick a slice autonomously. Overwrite guard: a catalog page that already exists on disk is never overwritten silently — stop and surface it.
 5. Run the slice per SKILL.md "Modes": one writer per page, briefed per `guidelines/passes/02-write.md` with the page's catalog row, its cluster's boundary rules, and the project-specific bans and write-time cautions from this spec's Execution & verification section; then the orchestrator check per page (`guidelines/passes/03-check.md`); events go to the run log.
 6. Promote anything durable — a spec claim the tree refuted, a user amendment, a settled adjudication — into this spec as a dated amendment (or surface it for the waivers files). The run log does not travel.
-7. Verification: on demand only (Scope decision 2) — run `bluetooth-verify` only when the user asks (`guidelines/passes/04-verify.md`); CERTIFIED stamps land in the verify run's log.
+7. Verification: a page's pipeline ends at LINTED. Verification campaigns and the CERTIFIED state were removed from the skill on 2026-08-31; do not plan, dispatch, or stamp one.
 
 ## Scope decisions
 
@@ -76,7 +76,7 @@ Standing instructions to any executor, on any machine, cold or warm:
 ### User-confirmed decisions (checkpoint answers, 2026-07-18)
 
 1. Catalog: APPROVED, writing HELD. The user approved the catalog but chose "Approve catalog, hold writing" — no writer is dispatched until an explicit later go (e.g. "continue the bluetooth campaign" / "start batch B1"). Once writing starts, pages save without per-page asks (campaign mode); git commits always require a separate explicit go.
-2. Verification cadence: ON DEMAND ONLY. No scheduled `bluetooth-verify` run after B1 or at campaign end; the user triggers certification explicitly.
+2. Verification cadence: ON DEMAND ONLY. No scheduled `bluetooth-verify` run after B1 or at campaign end; the user triggers certification explicitly. RETIRED 2026-08-31: verification campaigns and the CERTIFIED state were removed from the skill, so this decision no longer has an effect.
 3. Driver scope: hci_uart family OPTED IN as two curated rows — drivers/hci-uart-core.md and drivers/hci-uart-h4.md (transport core + H:4/serdev framing), anchored by the Area G mini-scout below. Vendor UART protocol drivers (hci_bcm/hci_qca/hci_h5/hci_ll/hci_intel/…) remain out of scope. Catalog 71 → 73.
 4. Boundary rule 14 rescope CONFIRMED: driver examples bind core↔driver-seam constructs; upper-layer pages state that the seam is at HCI and cite the driver pages rather than inventing examples.
 
@@ -936,7 +936,7 @@ Also applied: configure_datapath_sync line hint corrected to hci_conn.c:235; rev
 
 ## Execution & verification
 
-- Pipeline: per SKILL.md ("Modes") — one writer per page (strongest model; passes 00-02 inside the writer), orchestrator check per page (pass 03, never delegated), batches of ~5 with a hard checkpoint between batches; certification by a later `bluetooth-verify` campaign (`guidelines/passes/04-verify.md`); its cadence is a user decision taken at the phase-3 checkpoint.
+- Pipeline: per SKILL.md ("Modes") — one writer per page (strongest model; passes 00-02 inside the writer), orchestrator check per page (pass 03, never delegated), batches of ~5 with a hard checkpoint between batches; a page's pipeline ends at LINTED.
 - Project-specific write-time rules (from the constraints above, on top of Gate A/B):
   - Every major construct documented carries at least one concrete example from btusb, btintel, btmtk, or vhci (constraint 2, rule 7k); pages that document a core function cite driver usage of it (constraint 15).
   - Ops-structure coverage is exhaustive: every callback of a documented ops struct gets its contract (when called, context/locks, what it must do), and every state machine lists all states and all transitions with the code that drives each (constraints 8, 13).
