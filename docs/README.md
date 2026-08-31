@@ -93,7 +93,7 @@ For a single page, just ask for one topic (for example, "write a page on the xHC
 
 ```
 plan ──────────────► write campaign
-produces              writer → fixer per page
+produces              writer, then orchestrator check
 campaign/<c>.md       pages: WRITTEN → LINTED
 (no pages yet)        docs/<dir>/...
 ```
@@ -116,7 +116,7 @@ Procedure: `guidelines/passes/plan.md`.
 
 Executes an approved plan in batches of about five pages. Per page, a writer agent researches with semcode and writes the complete page — it owns all the facts, closes the catalog-to-DETAILS parity table, runs the mechanical exit suite (excerpt byte-compare, link-anchor confirmation, second-basis count re-derivation), and persists the evidence into the page's dossier.
 
-Then, a cheaper fresh-context fixer sweeps the prose, fixes the settled style classes in place, and escalates anything unsettled for the orchestrator to adjudicate at the batch checkpoint. Pages land under `docs/<dir>/` in state WRITTEN → LINTED, which is where a page's pipeline ends. A write campaign can also start from a list of findings against pages already on disk instead of a fresh topic list; the plan pass calls that a repair campaign.
+Then the orchestrator re-runs those same procedures itself and compares the answers against what the writer recorded; a disagreement is a finding. It adjudicates every residual against the waivers and applies the fixes in place, never delegating either. Pages land under `docs/<dir>/` in state WRITTEN → LINTED, which is where a page's pipeline ends. A write campaign can also start from a list of findings against pages already on disk instead of a fresh topic list; the plan pass calls that a repair campaign.
 
 Example prompts:
 
@@ -124,9 +124,9 @@ Example prompts:
 
 > Execute the approved plan at campaign/drm.md. Run batches B1 through B3, checkpointing between batches.
 
-What to expect back: per-batch checkpoints reporting pages done/remaining with writer and fixer evidence, the plan file's Status section updated after every page, and dossiers/parity tables/lint reports accumulating under `progress/<campaign>/`.
+What to expect back: per-batch checkpoints reporting pages done/remaining with writer and check evidence, the plan file's Status section updated after every page, and dossiers/parity tables/lint reports accumulating under `progress/<campaign>/`.
 
-Procedure: `SKILL.md` ("Modes"), with the writer brief in `guidelines/passes/02-write.md` and the fixer brief in `guidelines/passes/03-lint-fixlist.md`.
+Procedure: `SKILL.md` ("Modes"), with the writer brief in `guidelines/passes/02-write.md` and the check procedure in `guidelines/passes/03-check.md`.
 
 ### Notes
 
