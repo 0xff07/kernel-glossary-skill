@@ -4,7 +4,7 @@ Purpose: turn a multi-page request into a user-approved, durable campaign plan t
 Inputs: the request (a prompt file or the conversation) and the documented tree.
 Outputs: the committed campaign spec at `campaigns/<campaign>.md` (structured per "The campaign spec's structure" below) plus the machine-local workspace `progress/<campaign>/` (run log and dossiers), and the approved plan, complete per the checklist below, with the user checkpoint recorded in the spec.
 Run by: the orchestrator itself (or the human planner), never a dispatchable sub-agent — catalog design is the load-bearing judgment of the campaign. The planner dispatches read-only inventory agents and a plan-review agent (briefs at the end of this file) and makes every catalog decision itself from their outputs. In single-agent mode, the same agent runs this as its first pass for any multi-page task, under the same methodology.
-Next: batched writer → fixer production per SKILL.md ("Modes").
+Next: batched writer → orchestrator check production per SKILL.md ("Modes").
 
 Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 

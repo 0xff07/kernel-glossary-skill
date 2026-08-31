@@ -10,9 +10,9 @@ Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its f
 
 ## Why this pass is not a second author
 
-This pipeline used to hand a finished page to a fresh-context fixer that swept it for prose defects. That stage was retired, and the reasoning is worth keeping because it is easy to re-invent.
+This pipeline used to hand a finished page to a fresh-context agent that swept it for prose defects. That stage was retired, and the reasoning is worth keeping because it is easy to re-invent.
 
-The premise was that a writer re-reading its own prose misses its own blind spots. **That premise is true — and irrelevant, because the checks are not a re-reading.** Measured on this corpus: a writer composed twenty label-colon violations, re-read its page twice, saw none of them, then ran the ROUTINE-01 prose view (was 3c) and fixed all twenty. A fresh fixer run afterwards found two items on a two-thousand-line page, against a five-to-fifty-five range on unswept pages, and reproduced every sweep class (was Gate A) at zero. Writer-blindness is a failure of PERCEPTION; the sweeps are PROCEDURE, and procedure survives self-application. The same asymmetry is why a writer's byte-comparison finds its own fabricated excerpts while a third re-reading never does.
+The premise was that a writer re-reading its own prose misses its own blind spots. **That premise is true — and irrelevant, because the checks are not a re-reading.** Measured on this corpus: a writer composed twenty label-colon violations, re-read its page twice, saw none of them, then ran the ROUTINE-01 prose view (was 3c) and fixed all twenty. A fresh-context sweep afterwards found two items on a two-thousand-line page, against a five-to-fifty-five range on unswept pages, and reproduced every sweep class (was Gate A) at zero. Writer-blindness is a failure of PERCEPTION; the sweeps are PROCEDURE, and procedure survives self-application. The same asymmetry is why a writer's byte-comparison finds its own fabricated excerpts while a third re-reading never does.
 
 So the writer sweeps its own prose now (`guidelines/passes/02-write.md`, exit-suite items 6 through 8), and what remains for this pass is the one thing a self-report cannot supply: **evidence that the self-report is true.** A writer that skipped its exit suite and reported "clean" is indistinguishable from one that ran it — unless somebody re-runs it. That is this pass, and it is the entire reason it exists.
 
@@ -29,12 +29,12 @@ Every step is a command whose answer is compared against the dossier's claim. A 
 
 ## Findings
 
-The orchestrator adjudicates every finding itself and never delegates it, because adjudication is where both writers and fixers have failed: writers rationalize their own prose, and fixers have over-exempted settled violations and over-escalated settled ones on the same page. Judge each finding against the waivers; a hit on an exempt construct is a false candidate, and rewording a compliant phrase to silence a pattern is itself a defect.
+The orchestrator adjudicates every finding itself and never delegates it, because adjudication is the step that fails whenever it is delegated: a writer rationalizes its own prose, and an agent handed the job over-exempted settled violations and over-escalated settled ones on the same page. Judge each finding against the waivers; a hit on an exempt construct is a false candidate, and rewording a compliant phrase to silence a pattern is itself a defect.
 
 Applying a finding:
 
 - A finding with an exactly-specified fix (a byte-proved anchor correction, a settled ROUTINE-05 recipe, a figure-geometry adjustment) is applied directly by the orchestrator and re-verified with the command that found it.
-- Volume, or anything needing repeated judgement, goes to a fixer in FIX-LIST mode (`guidelines/passes/03-lint-fixlist.md`) — the fixer role survives only in this form: it applies an already-adjudicated list exactly as briefed, and never sweeps, never derives, and never extends. Derive the fix list from an EXHAUSTIVE grep of the offending construct, not from the sites a report happened to name; a fix list built from a report once missed an identical construct two hundred lines away, and the fixer correctly refused to improvise.
+- Volume is the same job at scale and stays with the orchestrator. Derive the edit set from an EXHAUSTIVE grep of the offending construct, never from the sites a report happened to name: a fix list built from a report once missed an identical construct two hundred lines away. Apply it with a script when the substitution is exact, by hand when it needs wording judgement, and re-run the finding command over every paragraph touched.
 - A factual finding is never fixed here. It goes back to the writer, whose facts they are, while its transcript lives; otherwise it is recorded in the run log, surfaced to the user, and becomes repair-campaign catalog material.
 
 Record the outcome in the dossier's LINT section and the page's state change in the run log (`progress/<campaign>/log.md`, WRITTEN → LINTED). If the check refuted a claim the campaign spec itself makes (a wrong anchor in a catalog row, a stale boundary), promote that correction into the spec as a dated amendment — the log does not travel.
