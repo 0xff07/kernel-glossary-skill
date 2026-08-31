@@ -4,7 +4,7 @@ Purpose: confirm, independently and mechanically, that the writer's own checks w
 Inputs: the finished page (state WRITTEN); its dossier, whose EVIDENCE, LINKS, PARITY and sweep records (was the Gate A record) are the CLAIMS this pass tests; the kernel tree at the documented version, which is the only ground truth.
 Outputs: the page's residual findings adjudicated and applied, and the check's outcome appended to the dossier's LINT section. Page state after this pass: LINTED.
 Run by: **the orchestrator, inline, with shell tools.** It is not delegated. It costs on the order of ten thousand tokens, against the two hundred and ninety to four hundred and sixty thousand a full fresh-eyes sweep used to cost, because it runs procedures instead of reading prose.
-Next: nothing, in-session. The page is LINTED and stays uncertified until a verify campaign (`guidelines/passes/04-verify.md`) runs it on a different tree, in a later session, or under a different model — which is where independent auditing actually belongs.
+Next: nothing. LINTED is the page's terminal state; this pass is the last one it goes through.
 
 Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 

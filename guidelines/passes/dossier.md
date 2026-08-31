@@ -2,18 +2,18 @@
 
 Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
-The dossier is one of the skill's three artifacts (SKILL.md, "The three artifacts and the three states"), and it is the page's ENTIRE working file. Everything every pass learns about one page goes here: the research, the parity table, the exit-suite evidence, the lint findings, the verify findings. There is no report file beside it, and no pass creates one.
+The dossier is one of the skill's three artifacts (SKILL.md, "The three artifacts and the two states"), and it is the page's ENTIRE working file. Everything every pass learns about one page goes here: the research, the parity table, the exit-suite evidence, the lint findings. There is no report file beside it, and no pass creates one.
 
 It exists so that a page's work survives the agent that did it — an interrupted page resumes from the dossier instead of transcript archaeology or re-research — so that passes can run in different sessions or by different agents, and so that a later pass starts its re-derivations from recorded search bases instead of reconstructing them.
 
 ## Ground truth
 
-The dossier is a hint sheet, never a source. It pins the documented version (tag plus commit) in its HEADER, and every fact taken from it — a line number, a caller list, a count, a spec section — is re-verified against the on-disk tree at that version before it lands in the page (PAGE-02). The lint and verify passes never accept a dossier entry as evidence; they use it only as the starting point for their own re-derivations (FACT-03). A dossier that disagrees with the disk is corrected to match the disk, at the moment the disagreement is found.
+The dossier is a hint sheet, never a source. It pins the documented version (tag plus commit) in its HEADER, and every fact taken from it — a line number, a caller list, a count, a spec section — is re-verified against the on-disk tree at that version before it lands in the page (PAGE-02). The check pass never accepts a dossier entry as evidence; it uses the dossier only as the starting point for its own re-derivations (FACT-03). A dossier that disagrees with the disk is corrected to match the disk, at the moment the disagreement is found.
 
 ## Location and lifecycle
 
 - One dossier per page: `progress/<campaign>/<page-slug>.dossier.md`. A single-page run's campaign name is its topic slug.
-- Local scratch, never committed. A run's dossiers are disposable once its campaign closes (keep them until then; gap-fill writers and verify campaigns reuse them). Another run's dossiers are off limits unless the user directs resume, reuse, or verify.
+- Local scratch, never committed. A run's dossiers are disposable once its campaign closes (keep them until then; gap-fill writers reuse them). Another run's dossiers are off limits unless the user directs resume or reuse.
 - Whoever runs the research pass creates it and keeps it current: the writer by default, or a dedicated researcher agent (`guidelines/passes/01-research.md`) when a campaign fans research out. Each later pass appends its own section.
 - Anything durable a dossier records — a correction against the campaign's specification, a lesson, a settled adjudication — is promoted by the orchestrator into the campaign spec (`campaigns/<campaign>.md`) as a dated amendment, or surfaced to the user for the waivers files; the spec is the only artifact here that travels. Run events go to the run log (`progress/<campaign>/log.md`). A finding left only in a dossier or the log is lost when the machine is — by design.
 - When a writer dies mid-page, resuming that same agent stays the first recovery move (its transcript holds the richer context); the dossier is the machine-local fallback, and a replacement agent starts from the dossier plus the campaign spec instead of redoing the research.
@@ -113,7 +113,7 @@ Written by the write pass's exit suite. Per count and per universal
 claim the page states: the claim text, the two derivation bases used
 (the research basis and the differently-shaped exit basis), and the
 reconciled result. Plus the suite's outcomes: excerpt units
-byte-verified, link anchors confirmed, quotations checked. A verify pass
+byte-verified, link anchors confirmed, quotations checked. The check pass
 starts its re-derivations here and must use a basis shaped differently
 from the recorded ones; entries are starting points, never proof.
 
@@ -126,12 +126,6 @@ ruling applied). Write the verdict down BEFORE acting on it; that is what stops
 a writer's defence of its own prose from being silent. The check pass
 (guidelines/passes/03-check.md) then appends its own reproduction of
 these classes, and a disagreement is a finding.
-
-## VERIFY
-Written by the verify pass (guidelines/passes/04-verify.md). Per-rule
-sweep and criteria outcomes (was Gate A and Gate B) with their evidence
-(a count or a list, never "looks fine"), and every finding: rule, class,
-location, exact text, what the tree shows.
 
 ## OPEN GAPS
 Anything not yet located or verified, so a resuming agent knows exactly

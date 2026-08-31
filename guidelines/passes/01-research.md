@@ -2,7 +2,7 @@
 
 Purpose: locate and record every fact the page will need, before any prose exists.
 Inputs: the resolved parameters from pass 00 (subsystem entry, topic scope, documented version); in a campaign also the catalog row's scope statement and boundary rules.
-Outputs: the research dossier at `progress/<campaign>/<page-slug>.dossier.md`, in the run's dossier directory (SKILL.md ("The three artifacts and the three states")), per `guidelines/passes/dossier.md`.
+Outputs: the research dossier at `progress/<campaign>/<page-slug>.dossier.md`, in the run's dossier directory (SKILL.md ("The three artifacts and the two states")), per `guidelines/passes/dossier.md`.
 Run by: the writer by default (single-agent inline, or the campaign writer agent before composing); a dedicated researcher agent (brief at the end of this file) when a campaign fans research out explicitly.
 Next: pass 02 (`guidelines/passes/02-write.md`).
 
@@ -70,7 +70,7 @@ Record the caller/user function name, file path, and line number for each exampl
 
 When writing the DETAILS section, incorporate these usage examples to show the symbol in context. For example, if `acpi_ev_gpe_dispatch` is listed in LINUX KERNEL, the DETAILS section should show where it is called from (called by `acpi_ev_detect_gpe` at SCI time), what arguments it receives, and what it does with the structs and macros also listed in LINUX KERNEL.
 
-Write or update the dossier before moving to the write pass; the dossier is the recovery point for an interrupted page and the re-derivation hint sheet for the lint-fix and verify passes. Every dossier fact is a hint to re-verify on disk at write time, never a citation.
+Write or update the dossier before moving to the write pass; the dossier is the recovery point for an interrupted page and the re-derivation hint sheet for the check pass. Every dossier fact is a hint to re-verify on disk at write time, never a citation.
 
 ## Dispatching a researcher (optional campaign fan-out)
 
