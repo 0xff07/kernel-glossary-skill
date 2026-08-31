@@ -10,8 +10,8 @@ Rules are cited by stable ID everywhere in this skill — briefs, dossiers, camp
 |---|---|---|
 | `bans/` | the prose bans | everyone |
 | `page/` | page structure, citation, linking, provenance | everyone |
-| `facts/` | coverage and claim verification | writers and verifiers |
-| `plots/` | domain model, semantics tables, organization, derivation | writers and verifiers |
+| `facts/` | coverage and claim verification | writers and checkers |
+| `plots/` | domain model, semantics tables, organization, derivation | writers and checkers |
 | `diagrams/` | the ASCII-figure rules and their catalogs | only an agent whose page will carry a figure |
 | `routines/` | the checking harness: protocol, patterns, recipes | everyone who checks |
 | `<dir>/<PREFIX>-WAIVERS.md` (one per rule directory) | waivers and settled rulings, harness routed by ROUTINE-01 | every agent, first, always |

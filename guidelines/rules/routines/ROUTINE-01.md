@@ -9,7 +9,6 @@ A page passes when every PASS CRITERIA in every rule file under `../bans/`, `../
 1. Verify each criterion by performing its named action and recording the evidence, a count or a list, not "looks fine"; reading the page is not sufficient.
 2. The writer runs every criterion on its own work first, the mechanical sweeps on its own prose included. An earlier split that forbade self-sweeping was withdrawn, because the sweeps are procedure rather than perception and survive self-application; the reasoning is recorded in `../../passes/03-check.md`.
 3. The orchestrator then re-runs every mechanical check independently and compares the answers; it adjudicates every residual itself and never delegates adjudication.
-4. A verify campaign re-runs everything later, on a newer tree or under a different model.
 
 ## Re-run trigger and terminal condition (was rules.md:544, 563, 571, 611)
 

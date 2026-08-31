@@ -13,7 +13,7 @@ Stale-session inputs (hints only, never evidence):
 - Draft corpus (primary): a prior-generation draft set produced on an earlier working branch of the skill repository, 64 pages under `docs/drm/` (150-1,334 lines each), extracted read-only for audit. Corpus-wide quick census: all 15,442 Elixir links already v7.0; 0 em-dashes; 384 "vtable" hits (banned word); 158 "fbdev" hits (banned scope); provenance comments in single-excerpt form, many marked "kerneldoc elided" (excerpts non-verbatim, fails the byte-compare check); ~202 box-drawing figure blocks.
 - Draft corpus (secondary): an older-generation corpus in a separate checkout at kernel v6.19, 30 primitive pages (82-278 lines). Scaffolding at most; the primary draft corpus supersedes it except possibly OTHER SOURCES links.
 
-NOT inputs: the other campaigns' entries under `progress/` (other runs, isolation per SKILL.md, "The three artifacts and the three states"); `guidelines/reference/samples/` pages (style/depth calibration only, never kernel facts). The existing `docs/dp/` knowledge base (69 pages: AUX, DPCD, link training, MST) is a boundary constraint, not an input: DP protocol internals stay in dp/, this campaign stops at the KMS↔DP-helper seam.
+NOT inputs: the other campaigns' entries under `progress/` (other runs, isolation per SKILL.md, "The three artifacts and the two states"); `guidelines/reference/samples/` pages (style/depth calibration only, never kernel facts). The existing `docs/dp/` knowledge base (69 pages: AUX, DPCD, link training, MST) is a boundary constraint, not an input: DP protocol internals stay in dp/, this campaign stops at the KMS↔DP-helper seam.
 
 Output root: `docs/drm/`. No `SUMMARY.md`/`mkdocs.yml` edits. No git commits without an explicit user go.
 
@@ -26,13 +26,12 @@ This section IS the campaign's log and its only memory (`guidelines/passes/plan.
 - [<date>] Phase 1 complete: one digest per area recorded under Inventory findings; version-drift headline: <renames and removals>.
 - [<date>] Phase 2 catalog drafted: <n> groups, <n> rows (<n> [prompt] / <n> [curated]), fold-ins, boundary rules, batch order. Adversarial plan review dispatched.
 - [<date>] Phase 2 review complete: <n> amendments accepted, <n> declined with reasoning (recorded under the review outcome). Catalog now <n> rows.
-- [<date>] Phase 3 user checkpoint: catalog and scope questions presented; decisions recorded under Scope decisions (verification cadence included); explicit go received.
+- [<date>] Phase 3 user checkpoint: catalog and scope questions presented; decisions recorded under Scope decisions; explicit go received.
 - [<date>] B<n> dispatched: one writer per page (<slugs>).
 - [<date>] B<n> checkpoint: <done>/<total> pages WRITTEN → LINTED; <n> escalations adjudicated (<accepted>/<declined>); fixer diffs sampled; per-page statistics recorded.
 - [<date>] AMENDMENT: <the user's instruction, verbatim where short, and what it supersedes; also recorded in the dated amendments under Execution & verification>.
 - [<date>] CORRECTION: <an earlier recorded claim> is wrong; <the re-verified fact and the measurement that established it>.
-- [<date>] LESSON: <a fixer or verifier false-positive class, a settled linking adjudication, a pipeline fix; surfaced to the user, who alone folds a ruling into 7r>.
-- [<date>] Verify campaign `<campaign>-verify` complete: <n> pages CERTIFIED (stamps mirrored into this section); <n> factual findings recorded in its Status, seeding a repair campaign.
+- [<date>] LESSON: <a fixer or checker false-positive class, a settled linking adjudication, a pipeline fix; surfaced to the user, who alone folds a ruling into 7r>.
 
 ## Scope decisions
 
@@ -781,8 +780,8 @@ The existing `docs/dp/` knowledge base (69 pages) owns the DP protocol layer: AU
 
 ## Execution & verification
 
-- Pipeline (AMENDED 2026-07-12 to the redesigned skill flow): writer → fixer per SKILL.md ("Modes"); substance is writer-owned end to end (parity table closed, mechanical exit suite run, evidence persisted into the dossier EVIDENCE section); the fixer fixes 7r-settled classes in place and escalates the rest find-only; the orchestrator adjudicates escalations at batch checkpoints and stamps WRITTEN → LINTED. Certification happens in a separate verify campaign (`drm-verify`, per the verify-campaign section of `guidelines/passes/04-verify.md`); its cadence is a pending user decision to be asked when this campaign resumes (the redesign postdates this campaign's original checkpoint).
-- Per-page procedure: passes 00-03 at write time (`guidelines/passes/`; pass 04 runs inside the verify campaign); every writer brief carries the boundary statements and the project bans below. The B1 writer briefs recorded earlier in Status predate the redesign; on resume, re-issue them from the current `guidelines/passes/02-write.md` template (adding the EVIDENCE persist directive).
+- Pipeline (AMENDED 2026-07-12 to the redesigned skill flow): writer → fixer per SKILL.md ("Modes"); substance is writer-owned end to end (parity table closed, mechanical exit suite run, evidence persisted into the dossier EVIDENCE section); the fixer fixes 7r-settled classes in place and escalates the rest find-only; the orchestrator adjudicates escalations at batch checkpoints and stamps WRITTEN → LINTED.
+- Per-page procedure: passes 00-03 at write time (`guidelines/passes/`); every writer brief carries the boundary statements and the project bans below. The B1 writer briefs recorded earlier in Status predate the redesign; on resume, re-issue them from the current `guidelines/passes/02-write.md` template (adding the EVIDENCE persist directive).
 - Project-specific writing bans (from prompt.md, on top of Gate A): no fbdev/tty mentions; no MIPI-DSI; no hedging; DP/eDP assumed as the output; DETAILS ordering generic → amdgpu → i915/xe (amdgpu always first); DCN35 named only for IP-specific code; tracepoints of the page's area explicitly covered; diagrams structural/spatial only.
 - Write-time rules: every line number in this plan and in any draft is a hint — re-verify on disk at write time. Known corpus defect classes (audit pending): "vtable" (384), fbdev mentions (158), kerneldoc-elided (non-verbatim) excerpts corpus-wide.
 - Save policy: pages land only under `docs/drm/<group>/`; no navigation-file edits; no git commits without explicit user go.
