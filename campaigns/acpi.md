@@ -14,7 +14,7 @@ Subsystem Map entry ACPI (`guidelines/reference/subsystems.md`): dir `acpi`, tag
 
 Stale-session inputs (hints only, never evidence): `prompts/plan.md`, a 43-page ACPI plan produced by an earlier session for a retired skill layout ("kmemo-devel"). Its topic divisions and high-level structure are minable; its details are stale by declaration of the commissioning invocation ("The materials contains staled information. You may reuse high-level concept but must take great care with its details"), it embeds machine-local absolute paths, and it references two draft corpora (`drafts/`, `kernel-glossary-devel/docs/acpi/`) that were verified ABSENT on the planning machine (2026-07-19) — those corpora are not inputs anywhere, and no agent searches for them. Full adjudication in the Stale-input reuse map at the end of this file; every stale anchor consumed by this plan was re-verified by the Phase 1 inventory (each area digest carries a claim-verification item).
 
-NOT inputs: other campaigns' workspaces under `progress/` (isolation per SKILL.md, "The three artifacts and the three states"); `guidelines/reference/samples/` pages (style/depth calibration only, never kernel facts); the absent draft corpora named above.
+NOT inputs: other campaigns' workspaces under `progress/` (isolation per SKILL.md, "The three artifacts and the two states"); `guidelines/reference/samples/` pages (style/depth calibration only, never kernel facts); the absent draft corpora named above.
 
 Output root: `docs/acpi/` (does not exist before this campaign; every row is a NEW page). No `SUMMARY.md`/`mkdocs.yml` edits. No git commits without an explicit user go.
 
@@ -53,7 +53,7 @@ Standing instructions to any executor, on any machine, cold or warm:
 1. Catalog: "Approve all 65 rows" — the full catalog stands (40 [request] / 5 [request+] / 13 [args] / 7 [curated]); the merge-eligible pair core/evaluate-object.md + core/evaluation-helpers.md (review #11) stays split.
 2. Vendor-neutrality: the settled PCI-campaign reading confirmed — no vendor-specific mechanism or vendor-driver policy documented as the mechanism; concrete usage examples come from vendor-neutral in-tree consumers (Scope decisions #7 stands as written).
 3. Section-6 heading: REGISTERS on the four EC protocol pages (ec/registers.md, ec/command-set.md, ec/burst-enable.md, ec/interrupt-model.md); METHODS everywhere else per the Subsystem Map. The deviation is recorded as a dated note in the Map's ACPI entry (`guidelines/reference/subsystems.md`).
-4. Verification cadence: on demand only — no scheduled `acpi-verify`; pages end this campaign at LINTED, and CERTIFIED stamps arrive only from a user-invoked verify campaign.
+4. Verification cadence: on demand only — no scheduled `acpi-verify`; pages end this campaign at LINTED, and CERTIFIED stamps arrive only from a user-invoked verify campaign. RETIRED 2026-08-31: verification campaigns and the CERTIFIED state were removed from the skill, so this decision no longer has an effect.
 
 Explicit go: received 2026-07-19 via the checkpoint answers (decision 1 approves the catalog). The go approves the CATALOG; execution starts only when the user names a slice (recommended first slice: B1). Per campaign mode, pages of an invoked slice save without per-page asks; git commits require a separate user go.
 
@@ -1109,7 +1109,7 @@ Reviewer read the full spec and verified 46 anchors on disk across all nine grou
 
 ## Execution & verification
 
-- Pipeline: writer → orchestrator check per SKILL.md ("Modes") and `guidelines/passes/02-write.md`/`03-check.md`; the page is the writer's end to end (facts and prose; parity table closed, mechanical exit suite run, evidence persisted into the dossier); fixers run only in fix-list mode (`guidelines/passes/03-lint-fixlist.md`); the orchestrator adjudicates escalations at batch checkpoints and stamps WRITTEN → LINTED in the run log. Certification happens in a separate verify campaign (`acpi-verify`, per `guidelines/passes/04-verify.md`); cadence is a checkpoint question.
+- Pipeline: writer → orchestrator check per SKILL.md ("Modes") and `guidelines/passes/02-write.md`/`03-check.md`; the page is the writer's end to end (facts and prose; parity table closed, mechanical exit suite run, evidence persisted into the dossier); fixers run only in fix-list mode (`guidelines/passes/03-lint-fixlist.md`); the orchestrator adjudicates escalations at batch checkpoints and stamps WRITTEN → LINTED in the run log.
 - Batches of about five pages, one writer per page, hard checkpoint between batches; writer deaths resume the same agent ("do not redo the research; write the page now from what you have"), fresh writer from the dossier after two failed resumes. Every page gets a dossier at `progress/acpi/<slug>.dossier.md`.
 - Model tiers: writers on the strongest available model; fixers mid-tier; inventory mid-tier; adjudication and sign-off never delegated.
 - Project-specific writing bans (from the request, on top of Gate A/3a): no hedging wordings; no vendor-specific mechanisms or examples (interpretation under Scope decisions #7); figures per 7g-7i only — never a call-graph/flow-enumeration figure (Scope decisions #4); every ACPI construct named in prose is paired with its kernel representation (Scope decisions #1).
@@ -1129,7 +1129,7 @@ Reviewer read the full spec and verified 46 anchors on disk across all nine grou
 
 ### Checkpoint (asked and answered 2026-07-19)
 
-The four questions (catalog scope, vendor-neutrality interpretation, section-6 heading, verification cadence) were presented with concrete options and answered; the decisions are recorded verbatim under Scope decisions ("User-confirmed decisions"). Standing consequences: 65-row catalog final; vendor reading per Scope decisions #7; section-6 heading is METHODS on every page EXCEPT ec/registers.md, ec/command-set.md, ec/burst-enable.md, and ec/interrupt-model.md, which use REGISTERS (decision 3 — writer briefs for those four rows carry the override); `acpi-verify` on demand only, so pages end this campaign at LINTED. Production runs only as user-invoked slices under the overwrite guard.
+The four questions (catalog scope, vendor-neutrality interpretation, section-6 heading, verification cadence — the last since retired) were presented with concrete options and answered; the decisions are recorded verbatim under Scope decisions ("User-confirmed decisions"). Standing consequences: 65-row catalog final; vendor reading per Scope decisions #7; section-6 heading is METHODS on every page EXCEPT ec/registers.md, ec/command-set.md, ec/burst-enable.md, and ec/interrupt-model.md, which use REGISTERS (decision 3 — writer briefs for those four rows carry the override); pages end this campaign at LINTED. Production runs only as user-invoked slices under the overwrite guard.
 
 ### User amendments (dated; supersede what they name)
 
