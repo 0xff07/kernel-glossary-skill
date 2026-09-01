@@ -18,3 +18,4 @@ Harness, not a rule: a page cannot violate this file; it modifies how this direc
 - Generic primitives (`READ_ONCE()`, `memcpy()`, `rcu_read_lock()`, `atomic_read()`, and the like) are always linked to the definition relevant to the documented architecture.
 - An ops-struct member named in prose links to that member's line in the struct definition.
 - Pre-existing bare spans of the same family get fixed in the same pass; "other pages leave it bare" is never a reason.
+- A DENSE REFERENCE TABLE is not exempt: a census or semantics table whose column holds bare symbol names has every occurrence linked, exactly as flowing prose does, even when the same symbol is linked in the text introducing the table. Settled 2026-09-01, closing a standing open adjudication; the corpus carries no cross-page links, so an unlinked symbol in a table is a dead end for the reader who landed mid-table. Density is the accepted cost.

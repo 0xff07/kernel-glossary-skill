@@ -109,11 +109,13 @@ That distinction is the whole basis of this pass, and it was measured. A writer 
     DENSE REFERENCE TABLE — a census or semantics table whose first column is a
     bare symbol name, with that symbol linked in the prose that introduces the
     table. On one measured page 72 of these appeared and the large majority were
-    reader benefit. Whether that shape is exempt is an OPEN ADJUDICATION, not a
-    settled one: resolve each occurrence explicitly, record the verdict, and
-    surface the shape for the waivers files rather than inventing a blanket
-    exemption per page. A bare occurrence in flowing prose, by contrast, is a
-    plain PAGE-04 defect and gets linked.
+    that shape. That shape is NO LONGER an open adjudication: it was settled on
+    2026-09-01 against exemption, and the ruling is in the page directory's
+    waivers file. Every occurrence in such a table is linked, exactly as in
+    flowing prose, because this corpus carries no cross-page links and an
+    unlinked symbol in a table is a dead end for a reader who landed mid-table.
+    Density is the accepted cost. A bare occurrence in flowing prose is, as
+    before, a plain PAGE-04 defect and gets linked.
     ```
 3. Parity closure: confirm every catalog symbol appears in at least one fenced block and the dossier's PARITY table has zero empty rows (fill-or-decatalog above). Check every CELL, not the ratio: pages have cleared the 1.0 blocks-per-entry floor comfortably and still carried empty definition cells.
 4. Counts: re-derive every count and every "only"/"never"/"always"/"exactly" enumeration with a search basis shaped differently from the one used during research — a repeated identical grep repeats the same miss — and reconcile, or fix the sentence to what the enumeration shows (FACT-03). This has changed a published number on every page it has been run against.
