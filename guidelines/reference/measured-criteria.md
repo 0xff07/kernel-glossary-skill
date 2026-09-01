@@ -4,14 +4,16 @@ Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its f
 
 The sample pages were produced by this workflow and verified link-by-link and excerpt-by-excerpt against their kernel tree with zero findings. Their measured shape is descriptive calibration for what "in-depth, fine-grained" turned out to measure as — context for a writer's expectations, never a criterion:
 
-| sample | lines | c blocks | Elixir links | figures |
-|---|---|---|---|---|
-| `guidelines/reference/samples/page-overview-mm-struct.md` | 2,940 | 98 | 861 | 1 |
-| `guidelines/reference/samples/page-lifecycle-mm-refcount.md` | 1,743 | 59 | 591 | 1 |
-| `guidelines/reference/samples/page-encoding-pgtable-entries.md` | 3,024 | 141 | 718 | 3 |
-| `guidelines/reference/samples/page-enhanced-vma-overview.md` | 2,922 | 107 | 634 | 1 |
+| sample | c blocks | Elixir links | figures |
+|---|---|---|---|
+| `guidelines/reference/samples/page-overview-mm-struct.md` | 98 | 861 | 1 |
+| `guidelines/reference/samples/page-lifecycle-mm-refcount.md` | 59 | 591 | 1 |
+| `guidelines/reference/samples/page-encoding-pgtable-entries.md` | 141 | 718 | 3 |
+| `guidelines/reference/samples/page-enhanced-vma-overview.md` | 107 | 634 | 1 |
 
-Across the thirteen pages of the campaign that produced them, the per-page ranges were 1,468 to 3,270 lines, 46 to 141 code blocks, and 357 to 861 Elixir links. These numbers are outcomes, not targets, and no size number is a criterion in either direction: a page ends when coverage is complete, and a conforming page on a genuinely narrow mechanism can measure below every range above.
+Across the thirteen pages of the campaign that produced them, the per-page ranges were 46 to 141 code blocks and 357 to 861 Elixir links. These numbers are outcomes, not targets, and no size number is a criterion in either direction: a page ends when coverage is complete, and a conforming page on a genuinely narrow mechanism can measure below every range above.
+
+**A page's line count is not recorded here and is not a measure of anything.** It was withdrawn deliberately: it correlates with nothing a reader cares about, it moves with excerpt depth and figure count rather than with coverage, and quoting it invites a writer to aim at it. What a page owes is coverage of its scope, and the measures that speak to that are the ones above plus the excerpt criterion below. Report a page's length if it is useful for a run log; do not treat it as evidence about the page.
 
 The criteria are coverage-shaped. Three tripwires convert the depth rules below into checks that work for any subsystem:
 
