@@ -36,6 +36,7 @@ Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-W
 | FACT-01 | Behavior and construct coverage | `facts/FACT-01.md` |
 | FACT-02 | Driver examples | `facts/FACT-02.md` |
 | FACT-03 | Behavioral-claim verification | `facts/FACT-03.md` |
+| FACT-04 | Activation delta | `facts/FACT-04.md` |
 | PLOT-01 | Domain-model layer | `plots/PLOT-01.md` |
 | PLOT-02 | Semantics tables for state sets and taxonomies | `plots/PLOT-02.md` |
 | PLOT-03 | Journey- or model-first organization | `plots/PLOT-03.md` |
