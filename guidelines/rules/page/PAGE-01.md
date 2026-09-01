@@ -49,6 +49,7 @@ Page-shape requirements that apply to every page regardless of subsystem.
 
 1. No internal cross-links.
 2. Do not link to other pages in the knowledge base (`[Page Title](other-page.md)`); each page is self-contained.
+3. Self-contained means the page carries what its reader needs, not that it confines itself to symbols no other page covers. Covering a construct another page also covers is not a defect, and it is how a reader lands anywhere in the corpus and still finishes with a whole mechanism. Because there are no cross-links, a page that stops at a boundary leaves the reader with nowhere to go: reach as far as the page's own subject drives the code, and stop where the code stops being about that subject.
 
 **Rule:** Kernel source cited in Markdown code blocks keeps the exact indentation of the kernel source: tabs (8-space width), never converted to spaces — function bodies, switch/case statements, and multi-line expressions alike.
 
