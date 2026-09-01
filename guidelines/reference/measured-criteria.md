@@ -21,6 +21,24 @@ The criteria are coverage-shaped. Three tripwires convert the depth rules below 
 
 Any tripped wire forces the parity audit (PAGE-02; was Gate B item 1) and, for a derived page, the PLOT-04 disposition list before the page can be called done. The fix for a tripped page is completing coverage per FACT-01 and PAGE-02's criteria, or cutting scope explicitly per PLOT-04 and fill-or-descope; it is never padding prose and never silent thinning.
 
+**An excerpt shows enough of the construct to carry the point the prose makes about it.** This is a
+criterion rather than an outcome, because a byte-exact excerpt can still be useless: a fenced block
+holding a function's signature and its opening brace proves the provenance line and teaches nothing.
+
+Measured across the corpora at v7.0, an excerpt unit runs a median of 15 lines in `docs/acpi/`
+(mean 19.5, 1,789 units) and 14 lines in the sound corpus (mean 17.2, 1,378 units in a 40-page
+sample). Units of five lines or fewer are 14.1% and 11.8% of the total respectively. That residue is
+real and legitimate: a one-line `#define`, a single struct field, a prototype in a header. It is not
+a budget for truncating bodies.
+
+The check is per unit, never per page. For every unit that opens a function, struct, enum, or union,
+the block continues far enough to show the behavior the surrounding prose asserts; where that runs
+long, cut from the middle with the house `...` elision marker rather than stopping at the brace. A
+page whose five-line-or-fewer units run far above the corpus rate has usually truncated bodies
+rather than cited many macros, and the two are told apart by reading the thin units, never by the
+percentage alone. A page measured at 34.2% against a 14.1% corpus rate is how this criterion was
+found.
+
 The depth rules that produce those numbers:
 
 - Definition plus usage, per symbol. Every symbol in the LINUX KERNEL catalog gets both its definition excerpt and at least one real caller or usage excerpt in DETAILS (PAGE-02; was Gate B item 1). A page of definitions alone reads like a header file; the usage excerpt is what makes each symbol's role concrete.
