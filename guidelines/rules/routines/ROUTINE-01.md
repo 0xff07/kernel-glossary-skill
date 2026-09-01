@@ -19,7 +19,7 @@ A page passes when every PASS CRITERIA in every rule file under `../bans/`, `../
 ## The batched sweep and the prose view (was rules.md:636-679)
 
 1. Run the mechanical sweeps of BAN-01, BAN-02, BAN-04, BAN-06, and BAN-07 as one batched pass, per ROUTINE-04's watch list and execution audit, against a prose view of the page, never the raw file.
-2. Only the checks their criteria mark as raw-file runs go against the raw file (BAN-01's heading and boldface greps, PAGE-01's internal-link greps).
+2. Only the checks their criteria mark as raw-file runs go against the raw file (BAN-01's heading and boldface greps, PAGE-01's internal-link greps, PAGE-06's table-cell span inventory — the prose view tags table rows `[C]` and rewrites their links away, so it cannot see them).
 3. The patterns generate candidates; they are not the gate. Judge every hit against the rule's own exemptions and its directory's waivers file (each rule directory carries one, `<PREFIX>-WAIVERS.md`; for this batched sweep that is `../bans/BAN-WAIVERS.md`) before editing, and never reword an exempt construct to silence a pattern.
 4. BAN-07's criteria carry the full hedge token list for the batched sweep.
 
@@ -85,11 +85,13 @@ After it prints:
 
 1. These classes stay a read-through:
    1. BAN-03's prose-list shapes;
-   2. BAN-04's superlatives judged in context;
-   3. FACT-03's heading truth and full claim audit;
-   4. PAGE-02's parity table;
-   5. FACT-01's coverage enumerations;
-   6. figure geometry.
+   2. BAN-08's enumerating sentences, counted by member rather than matched by pattern;
+   3. BAN-04's superlatives judged in context;
+   4. FACT-03's heading truth and full claim audit;
+   5. PAGE-02's parity table;
+   6. PAGE-06's table-cell spans, inventoried from the raw file;
+   7. FACT-01's coverage enumerations;
+   8. figure geometry.
 2. Every finding is fixed or surfaced for the owning rule's directory waivers file with reasoning (the user alone folds a ruling in), never silenced.
 
 **PASS CRITERIA:**

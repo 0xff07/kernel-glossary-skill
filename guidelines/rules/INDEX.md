@@ -28,6 +28,7 @@ Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-W
 | BAN-04 | Hollow superlatives | `bans/BAN-04.md` |
 | BAN-06 | Banned words | `bans/BAN-06.md` |
 | BAN-07 | Hedges | `bans/BAN-07.md` |
+| BAN-08 | Run-on enumerations in prose | `bans/BAN-08.md` |
 | PAGE-01 | General page rules | `page/PAGE-01.md` |
 | PAGE-02 | Self-contained kernel-source citation | `page/PAGE-02.md` |
 | PAGE-03 | Code-block provenance comments | `page/PAGE-03.md` |
@@ -37,6 +38,7 @@ Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-W
 | FACT-02 | Driver examples | `facts/FACT-02.md` |
 | FACT-03 | Behavioral-claim verification | `facts/FACT-03.md` |
 | FACT-04 | Activation delta | `facts/FACT-04.md` |
+| PAGE-06 | Linked code in table cells | `page/PAGE-06.md` |
 | PLOT-01 | Domain-model layer | `plots/PLOT-01.md` |
 | PLOT-02 | Semantics tables for state sets and taxonomies | `plots/PLOT-02.md` |
 | PLOT-03 | Journey- or model-first organization | `plots/PLOT-03.md` |
