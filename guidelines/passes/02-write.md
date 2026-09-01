@@ -13,11 +13,12 @@ Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its f
 This pass owns the writer's reading list; the writer brief points here instead of restating rules.
 
 1. The waivers files — `guidelines/rules/bans/BAN-WAIVERS.md`, `page/PAGE-WAIVERS.md`, `facts/FACT-WAIVERS.md`, `plots/PLOT-WAIVERS.md`, `diagrams/DIAG-WAIVERS.md` — the settled waivers and rulings, all five first; then the rule corpus under `guidelines/rules/` — `INDEX.md` first (the map), then every rule under `bans/`, `page/`, `facts/`, and `plots/` (PLOT-04 applies additionally whenever the page derives from existing material).
-2. The figure rules under `guidelines/rules/diagrams/`, but only when the page will carry a figure: DIAG-01's principles and DIAG-02's banned shapes always govern one, and DIAG-03 and DIAG-04 hold the figure catalogs (choose the shape from DIAG-04's use-case index). A page with no figure needs none of it.
-3. `guidelines/reference/measured-criteria.md`: the depth rules and tripwires that define what "in-depth, fine-grained" measures as.
-4. The sample pages chosen in pass 00 (`guidelines/passes/00-prep.md`), under its doctrine that samples calibrate form only, never facts.
-5. The page's subsystem entry in `guidelines/reference/subsystems.md`.
-6. The checking harness under `guidelines/rules/routines/` (ROUTINE-01, with ROUTINE-04's patterns and ROUTINE-05's recipes). The writer satisfies the factual PASS CRITERIA by construction and by the mechanical exit suite below, AND runs the mechanical sweeps (was Gate A) itself per ROUTINE-01's procedure — the prose view, the candidate patterns, and the figure sweep. Read ROUTINE-04 closely: its patterns are deliberately unanchored, and re-anchoring them reintroduces the blind spot that let a whole class ship for eight pages. The orchestrator re-runs the mechanical checks independently in pass 03 (`guidelines/passes/03-check.md`).
+2. `guidelines/reference/rewriters.md`: the rewriter switchboard. Read the switchboard, then read in full the SKILL.md of every rewriter it lists as ON, and nothing of the ones it lists as OFF. An ON rewriter governs prose style and outranks the bans under `guidelines/rules/bans/` where the two disagree; that file names each displacement. It governs style only — facts, excerpts, citations, page structure, and figures stay with the house rules. Compose under the ON rewriters from the first sentence; this is not a rewriting step after the draft.
+3. The figure rules under `guidelines/rules/diagrams/`, but only when the page will carry a figure: DIAG-01's principles and DIAG-02's banned shapes always govern one, and DIAG-03 and DIAG-04 hold the figure catalogs (choose the shape from DIAG-04's use-case index). A page with no figure needs none of it.
+4. `guidelines/reference/measured-criteria.md`: the depth rules and tripwires that define what "in-depth, fine-grained" measures as.
+5. The sample pages chosen in pass 00 (`guidelines/passes/00-prep.md`), under its doctrine that samples calibrate form only, never facts.
+6. The page's subsystem entry in `guidelines/reference/subsystems.md`.
+7. The checking harness under `guidelines/rules/routines/` (ROUTINE-01, with ROUTINE-04's patterns and ROUTINE-05's recipes). The writer satisfies the factual PASS CRITERIA by construction and by the mechanical exit suite below, AND runs the mechanical sweeps (was Gate A) itself per ROUTINE-01's procedure — the prose view, the candidate patterns, and the figure sweep. Read ROUTINE-04 closely: its patterns are deliberately unanchored, and re-anchoring them reintroduces the blind spot that let a whole class ship for eight pages. A pattern belonging to a ban that an ON rewriter displaces still generates candidates; adjudicate those against the rewriter, and record them as EXEMPT naming it. The orchestrator re-runs the mechanical checks independently in pass 03 (`guidelines/passes/03-check.md`).
 
 ## Generate the page
 
@@ -108,7 +109,6 @@ That distinction is the whole basis of this pass, and it was measured. A writer 
     DENSE REFERENCE TABLE — a census or semantics table whose first column is a
     bare symbol name, with that symbol linked in the prose that introduces the
     table. On one measured page 72 of these appeared and the large majority were
-    that shape, where linking every cell would bury the table in URLs for no
     reader benefit. Whether that shape is exempt is an OPEN ADJUDICATION, not a
     settled one: resolve each occurrence explicitly, record the verdict, and
     surface the shape for the waivers files rather than inventing a blanket
