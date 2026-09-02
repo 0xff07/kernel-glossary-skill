@@ -1,23 +1,32 @@
-# Samples and measured criteria
+# Exemplars and measured criteria
 
 Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
-The sample pages were produced by this workflow and verified link-by-link and excerpt-by-excerpt against their kernel tree with zero findings. Their measured shape is descriptive calibration for what "in-depth, fine-grained" turned out to measure as — context for a writer's expectations, never a criterion:
+The exemplar pages under `docs/sound/` (113 pages, written 2026-06-25 to 27, re-measured 2026-09-02) are what a writer reads before writing (`guidelines/passes/00-prep.md`). Their measured shape is descriptive calibration for what "in-depth, fine-grained" measures as on this corpus, context for a writer's expectations, never a criterion:
 
-| sample | c blocks | Elixir links | figures |
+| exemplar | c blocks | Elixir links | figures |
 |---|---|---|---|
-| `guidelines/reference/samples/page-overview-mm-struct.md` | 98 | 861 | 1 |
-| `guidelines/reference/samples/page-lifecycle-mm-refcount.md` | 59 | 591 | 1 |
-| `guidelines/reference/samples/page-encoding-pgtable-entries.md` | 141 | 718 | 3 |
-| `guidelines/reference/samples/page-enhanced-vma-overview.md` | 107 | 634 | 1 |
+| `docs/sound/alsa/pcm/pcm-substream.md` | 24 | 358 | 6 |
+| `docs/sound/soundwire/bus-device-model.md` | 21 | 310 | 5 |
+| `docs/sound/alsa/card.md` | 23 | 375 | 8 |
+| `docs/sound/alsa/pcm/pcm-state-machine.md` | 12 | 141 | 6 |
+| `docs/sound/hda/hdac-core.md` | 28 | 385 | 10 |
+| `docs/sound/formats/i2s.md` | 9 | 103 | 8 |
+| `docs/sound/flows/playback.md` | 32 | 313 | 6 |
+| `docs/sound/flows/suspend.md` | 29 | 280 | 5 |
+| `docs/sound/alsa/pcm/pcm-ops.md` | 35 | 433 | 5 |
+| `docs/sound/asoc/controls/kcontrol-handlers.md` | 37 | 377 | 6 |
+| `docs/sound/dapm/power/power-engine.md` | 30 | 302 | 8 |
 
-Across the thirteen pages of the campaign that produced them, the per-page ranges were 46 to 141 code blocks and 357 to 861 Elixir links. These numbers are outcomes, not targets, and no size number is a criterion in either direction: a page ends when coverage is complete, and a conforming page on a genuinely narrow mechanism can measure below every range above.
+Across the 113 pages the per-page ranges are 4 to 37 code blocks, 79 to 498 Elixir links, and 2 to 10 figures. The corpus carries 2,451 excerpts at a median of 16 lines, 88 prose words per code block, a binding sentence ending in a colon before 98 of every 100 excerpts, and a member named beside 84 of every 100 definition excerpts (the era table below). These numbers are outcomes, not targets, and no size number is a criterion in either direction: a page ends when coverage is complete, and a conforming page on a genuinely narrow mechanism can measure below every range above.
+
+The frozen mm samples under `guidelines/reference/samples/` (59 to 141 code blocks and 591 to 861 links per page) were the exemplar from 2026-07-18 to 2026-09-02. They were retired as the writer's exemplar because they are the least prose-dense corpus in the repository (52 prose words per code block), the most numeral-dense (10 numerals per thousand prose words, against 2.5 in the sound corpus), and by PAGE-07's generator name no member beside 7 of their 19 definition excerpts. The pages written against them grew count-heavy, and the pages written against them under the 2026-08-29 to 09-01 rules stopped explaining their excerpts.
 
 **A page's line count is not recorded here and is not a measure of anything.** It was withdrawn deliberately: it correlates with nothing a reader cares about, it moves with excerpt depth and figure count rather than with coverage, and quoting it invites a writer to aim at it. What a page owes is coverage of its scope, and the measures that speak to that are the ones above plus the excerpt criterion below. Report a page's length if it is useful for a run log; do not treat it as evidence about the page.
 
 The criteria are coverage-shaped. Three tripwires convert the depth rules below into checks that work for any subsystem:
 
-- Blocks per catalog entry below 1.0: fewer fenced ` ```c ` blocks than LINUX KERNEL catalog entries means unpaired symbols, because every symbol needs a definition and a usage excerpt (conforming pages measure 1.03 to 1.47 blocks per entry; a deficient derived page measured 0.73).
+- Blocks per catalog entry below 1.0: fewer fenced ` ```c ` blocks than LINUX KERNEL catalog entries means unpaired symbols, because every symbol needs a definition and a usage excerpt (conforming pages measure 1.03 to 1.47 blocks per entry; a deficient derived page measured 0.73). The sound exemplars mostly sit below this wire (median 0.76 over 113 pages) because their catalogs are broader than their excerpts; that breadth is not imitated, and the wire binds every new page regardless of what its exemplar measures.
 - Catalog coverage of scope (fill-or-descope): every anchor symbol in the page's catalog-row scope statement and every symbol recorded in the dossier's SYMBOLS section is either cataloged or explicitly de-scoped in the writer's report, with the reason. This is the wire the ratio cannot trip: a writer who catalogs twelve symbols on a topic whose scope holds forty scores a clean ratio on a thin page, and only the scope comparison catches it.
 - A catalog that shrank across a rewrite without reported cuts (PLOT-04).
 
@@ -50,12 +59,12 @@ paragraphs name.
 
 | corpus | written | definition blocks | blocks with zero members named | mean fraction named |
 |---|---|---|---|---|
-| `docs/sound/` | 2026-06 | 323 | 15% | 0.37 |
+| `docs/sound/` | 2026-06 | 321 | 16% | 0.37 |
 | `docs/usb4/` | 2026-06 | 119 | 13% | 0.37 |
 | `docs/pci/` | 2026-05 to 06 | 37 | 16% | 0.50 |
 | `docs/dp/`, the June pages | 2026-06 | 75 | 25% | 0.31 |
 | `docs/xhci/`, the July pages | 2026-07 | 82 | 24% | 0.31 |
-| the four sample pages | frozen 2026-07 | 21 | 29% | 0.32 |
+| the four retired samples (`guidelines/reference/samples/`) | frozen 2026-07 | 19 | 37% | 0.23 |
 | `docs/dp/`, the September pages | 2026-09-01 | 53 | 51% | 0.17 |
 | `docs/xhci/`, the September pages | 2026-09-01 to 02 | 61 | 51% | 0.15 |
 
