@@ -8,6 +8,7 @@ Every ban has a one-line recipe; apply the recipe instead of re-deriving complia
 |---|---|---|
 | em-dash | parentheses, or two sentences | BAN-01 |
 | label-colon prose ("X: Y", "The fix: Y") | one plain declarative sentence; introduce quotes with "According to the comment ..." | BAN-02 |
+| shape-only paragraph beside an excerpt ("the first five fields", "adjacent fields", "has three branches") | name each member the excerpt shows, say what it holds and which path writes or reads it, or elide the excerpt to the members the paragraph explains; a colon-terminated sentence naming what the excerpt shows may introduce it | PAGE-07 |
 | intro sentence + explanatory list | fold the items into one flowing sentence | BAN-03 |
 | hedge (usually, typically, often, in practice, ...) | name the exact condition the code tests | BAN-07 |
 | hollow superlative, "X matters", "the key ..." | name the mechanic in the same clause and drop the ranking | BAN-04 |
