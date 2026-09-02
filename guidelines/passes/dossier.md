@@ -116,7 +116,9 @@ reconciled result. Plus the suite's outcomes: excerpt units
 byte-verified, link anchors confirmed, quotations checked, and the
 excerpt-explanation list (PAGE-07): per definition excerpt, the members
 shown, the members the adjacent paragraphs name, and the group phrase
-covering each member they do not. The check pass
+covering each member they do not, and the leading-paragraph list (PAGE-08):
+each leading paragraph's first sentence with its verdict, and SUMMARY's
+table and figure counts. The check pass
 starts its re-derivations here and must use a basis shaped differently
 from the recorded ones; entries are starting points, never proof.
 

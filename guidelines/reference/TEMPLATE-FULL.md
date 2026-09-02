@@ -4,12 +4,12 @@
 >
 > STRICTLY DO NOT SUBMIT THIS UPSTREAM UNLESS YOU ARE AN EXPERT INTIMATELY FAMILIAR WITH THIS SUBSYSTEM.
 
-(Fill short summary here.)
+(The lead: what the mechanism is for and where it sits, in words a reader with no context can follow; symbols and counts only after that (PAGE-08).)
 (ASCII diagram goes here, if any)
 
 ## SUMMARY
 
-(Open with the domain model (PLOT-01): what the topic is, and the states and transitions, phases, or taxonomy the code implements, before the per-symbol walkthroughs. A spec-defined model is cited in SPECIFICATIONS and mapped onto the kernel constructs; an unspecified model is a disclosed synthesis that names its on-disk sources and keeps every fact under it cited. Present any fixed state set, mode set, or part taxonomy as a member-meaning-construct table, and show a state set's legal transitions (PLOT-02).)
+(Keep this section short: the model in prose and the state set, at most one table and one figure; member tables and per-request detail sit in DETAILS beside their excerpts (PAGE-08). Open with the domain model (PLOT-01): what the topic is, and the states and transitions, phases, or taxonomy the code implements, before the per-symbol walkthroughs. A spec-defined model is cited in SPECIFICATIONS and mapped onto the kernel constructs; an unspecified model is a disclosed synthesis that names its on-disk sources and keeps every fact under it cited. Present any fixed state set, mode set, or part taxonomy as a member-meaning-construct table, and show a state set's legal transitions (PLOT-02).)
 
 ## SPECIFICATIONS
 

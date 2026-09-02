@@ -19,7 +19,7 @@ A page passes when every PASS CRITERIA in every rule file under `../bans/`, `../
 ## The batched sweep and the prose view (was rules.md:636-679)
 
 1. Run the mechanical sweeps of BAN-01, BAN-02, BAN-04, BAN-06, and BAN-07 as one batched pass, per ROUTINE-04's watch list and execution audit, against a prose view of the page, never the raw file.
-2. Only the checks their criteria mark as raw-file runs go against the raw file (BAN-01's heading and boldface greps, PAGE-01's internal-link greps, PAGE-06's table-cell span inventory — the prose view tags table rows `[C]` and rewrites their links away, so it cannot see them; PAGE-07's explanation generator, which counts the members inside the fences the view drops; and BAN-02's fence-introducing-colon adjudication, which needs the fence the view drops).
+2. Only the checks their criteria mark as raw-file runs go against the raw file (BAN-01's heading and boldface greps, PAGE-01's internal-link greps, PAGE-06's table-cell span inventory — the prose view tags table rows `[C]` and rewrites their links away, so it cannot see them; PAGE-07's explanation generator, which counts the members inside the fences the view drops; PAGE-08's opener generator, which needs the headings the view drops to find each section's first paragraph; and BAN-02's fence-introducing-colon adjudication, which needs the fence the view drops).
 3. The patterns generate candidates; they are not the gate. Judge every hit against the rule's own exemptions and its directory's waivers file (each rule directory carries one, `<PREFIX>-WAIVERS.md`; for this batched sweep that is `../bans/BAN-WAIVERS.md`) before editing, and never reword an exempt construct to silence a pattern.
 4. BAN-07's criteria carry the full hedge token list for the batched sweep.
 
@@ -92,7 +92,8 @@ After it prints:
    6. PAGE-06's table-cell spans, inventoried from the raw file;
    7. PAGE-07's shape-only paragraphs beside excerpts (its generator counts the members a paragraph names; whether the paragraph explains them or merely counts and places them is read);
    8. FACT-01's coverage enumerations;
-   9. figure geometry.
+   9. figure geometry;
+   10. PAGE-08's leading paragraphs (its generator tags a count or an ordinal in a first sentence; whether the paragraph opens on purpose is read, tagged or not).
 2. Every finding is fixed or surfaced for the owning rule's directory waivers file with reasoning (the user alone folds a ruling in), never silenced.
 
 **PASS CRITERIA:**

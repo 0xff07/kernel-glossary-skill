@@ -1,6 +1,6 @@
 # page/
 
-The page-mechanics rules: PAGE-01 (general page rules), PAGE-02 (self-contained kernel-source citation), PAGE-03 (code-block provenance comments), PAGE-04 (link anchoring and exhaustive span linking), PAGE-05 (OTHER SOURCES provenance), PAGE-06 (linked code in table cells), PAGE-07 (prose explains what it quotes).
+The page-mechanics rules: PAGE-01 (general page rules), PAGE-02 (self-contained kernel-source citation), PAGE-03 (code-block provenance comments), PAGE-04 (link anchoring and exhaustive span linking), PAGE-05 (OTHER SOURCES provenance), PAGE-06 (linked code in table cells), PAGE-07 (prose explains what it quotes), PAGE-08 (leading paragraphs open on purpose, never on a count).
 
 ## Reference boundary
 

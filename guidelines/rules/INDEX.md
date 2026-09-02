@@ -40,6 +40,7 @@ Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-W
 | FACT-04 | Activation delta | `facts/FACT-04.md` |
 | PAGE-06 | Linked code in table cells | `page/PAGE-06.md` |
 | PAGE-07 | Prose explains what it quotes | `page/PAGE-07.md` |
+| PAGE-08 | Leading paragraphs open on purpose, never on a count | `page/PAGE-08.md` |
 | PLOT-01 | Domain-model layer | `plots/PLOT-01.md` |
 | PLOT-02 | Semantics tables for state sets and taxonomies | `plots/PLOT-02.md` |
 | PLOT-03 | Journey- or model-first organization | `plots/PLOT-03.md` |
