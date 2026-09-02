@@ -8,7 +8,7 @@ Next: batched writer → orchestrator check production per SKILL.md ("Modes").
 
 Rules are cited by stable ID; `guidelines/rules/INDEX.md` maps every ID to its file.
 
-The numbered passes define a single page; this pass defines the set. It is the workflow that produced the sample pages under `guidelines/reference/samples/`, written here in subsystem-independent terms; substitute any subsystem's `kernel_paths`, structures, and syscall surface for the mm examples.
+The numbered passes define a single page; this pass defines the set. It is the workflow that produced the mm pages under `docs/mm/`, written here in subsystem-independent terms; substitute any subsystem's `kernel_paths`, structures, and syscall surface for the mm examples.
 
 ## Plan before generating
 
@@ -45,7 +45,7 @@ The campaign spec is the campaign's durable memory: inventory digests, the catal
 
 ## The campaign spec's structure
 
-`guidelines/reference/samples/plan-drm-campaign.md` predates this layout (it is a spec-plus-log hybrid); its sections other than Status remain the worked example for a conforming spec (the nesting may vary, the presence may not), and its Status section — reduced to generic entry shapes with placeholders — now teaches the entry shapes of the machine-local run log (`progress/<campaign>/log.md`), which is where such entries land today. A few guideline-path references inside it predate the current guidelines layout — where a sample and a rule disagree, the rule governs.
+The worked example for a conforming spec is any committed spec under `campaigns/`; `campaigns/xhci.md` is the fullest, with the version pin in its Context, the inventory digests, the page catalog, the boundary rules, the batch order, the dated amendments and the re-entry contract.
 
 A conforming spec carries these elements, and no execution log:
 
