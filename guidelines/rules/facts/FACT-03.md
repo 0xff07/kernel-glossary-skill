@@ -15,14 +15,12 @@
 
 1. Universal quantifiers are enumerations.
 2. A sentence containing "only", "never", "always", "all", "every", "exactly N", "the single", or "once" asserts the size or uniformity of a set: enumerate that set first (semcode `find_callers` plus a tree-wide grep that includes headers), then cite every member with location links or weaken the sentence to what the enumeration shows.
-3. History: a page asserted a helper "is invoked from exactly one place" while the tree held four callers (the plain store helper, its gfp variant, the fork-path bulk store, an error-path rollback); only re-running the enumeration catches this class.
 
 **Rule:**
 
 1. A per-member claim is as many claims as the family has members.
 2. "Each X ..." / "every X ..." over a family ("each wrapper forwards to exactly one underlying primitive", "every callback runs under the lock", "each descriptor slot maps to one register") is verified by building the member-to-property mapping first; one exception falsifies the sentence.
 3. When an exception exists, restate to what the mapping shows, restrict the family explicitly ("every read-side helper ..."), or name the classifier and what falls outside it ("one primary primitive, plus cursor-bookkeeping helpers") — an unstated classifier is how a strictly-false claim reads as true.
-4. History: a lead sentence claimed each wrapper "forwards to exactly one" primitive while the page's own per-helper table showed one wrapper calling a range-setup helper plus the store primitive.
 
 **Rule:**
 
@@ -42,7 +40,6 @@
 
 1. Headings are claims.
 2. A DETAILS heading must be true of everything in its section, and a heading edit is a claim edit; verify each heading against its section's excerpts after writing and after every rewording.
-3. History: a polish pass strengthened "the accessors mediate every flag change" into "the accessors take the write lock before every flag change" directly above an excerpt whose own kernel comment reads "needs no locking".
 
 **Rule:**
 

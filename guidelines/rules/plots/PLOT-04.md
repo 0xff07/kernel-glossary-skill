@@ -16,11 +16,6 @@
 
 4. **The derived page passes the same catalog-to-DETAILS parity audit as a fresh page.** Coverage in the source is not coverage in the derived page; "the source covered it" fails the audit.
 
-History, and the measured failure that motivates the rule:
-
-1. A 2,645-line page compressed to 1,268 lines kept its iterator-helper symbols in the catalog while silently dropping their DETAILS sections, kept one catalog symbol with no DETAILS mention at all, and landed at 0.73 fenced blocks per catalog entry where every conforming page measures at least 1.0.
-2. The parity audit catches the desync mechanically; the disposition list is what makes any removal legitimate.
-
 **PASS CRITERIA:**
 
 1. A derived page passes only with the four artifacts on record:
