@@ -1,16 +1,13 @@
 # page/
 
-The page-mechanics rules: PAGE-01 (general page rules), PAGE-02 (self-contained kernel-source citation), PAGE-03 (code-block provenance comments), PAGE-04 (link anchoring and exhaustive span linking), PAGE-05 (OTHER SOURCES provenance), PAGE-06 (linked code in table cells), PAGE-07 (prose explains what it quotes), PAGE-08 (leading paragraphs open on purpose, never on a count).
+The page-mechanics rules: PAGE-01 (general page rules), PAGE-02 (self-contained kernel-source citation), PAGE-03 (code-block provenance comments), PAGE-04 (link anchoring and exhaustive span linking), PAGE-05 (OTHER SOURCES provenance), PAGE-06 (linked code in table cells). What a page is for, the rule every one of these protects, is `../WRITING.md`.
 
 ## Reference boundary
 
-**Reference direction is one-way, and it is enforced.** A rule file here states its own requirement and references no other rule and no shared file: nothing in this directory or in bans/, diagrams/, facts/, plots/ — not by name, not by path, not even a sibling one file over — and never routines/ or pipelines/. Rules are referenced from above (the routines, and the passes over them), never the reverse. The directory's `PAGE-WAIVERS.md` is harness, not a rule — its waivers and settled rulings modify how these rules apply, and the checking protocol routes adjudication to it: rules never cite it, and it may name this directory's rules only, never a foreign directory's.
-
-The boundary is grep-checkable from `guidelines/rules/`:
+A rule file here states its own requirement and references no other rule and no shared file: not a sibling, not another directory, never `../routines/` and never `../WAIVERS.md`, which is harness that modifies how these rules apply and is routed to by the checking protocol. Rules are referenced from above (the routines and the passes), never the reverse. Grep-checkable from `guidelines/rules/`:
 
 ```
-grep -rnE '(BAN|PAGE|FACT|PLOT|DIAG|ROUTINE|PIPELINE)-[0-9]|routines/|pipelines/|WAIVERS' page/PAGE-[0-9]*.md | awk -F: '$2+0 != 1'
-grep -rnE '(BAN|FACT|PLOT|DIAG|ROUTINE|PIPELINE)-[0-9]|routines/|pipelines/' page/PAGE-WAIVERS.md
+grep -rnE '(BAN|PAGE|FACT|PLOT|DIAG|ROUTINE)-[0-9]|WRITING|BANS|routines/|WAIVERS' page/PAGE-[0-9]*.md | awk -F: '$2+0 != 1'
 ```
 
-must print nothing (line 1 is each file's own title; the `[0-9]` glob keeps this README and the waivers file out of the rule sweep).
+must print nothing (line 1 is each file's own title).

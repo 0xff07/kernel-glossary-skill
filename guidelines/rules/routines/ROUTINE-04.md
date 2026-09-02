@@ -1,15 +1,79 @@
-# ROUTINE-04: Scan patterns
+# ROUTINE-04: Candidate generators
 
-> Was: the Scan patterns section of 7c; then bans/BAN-05.md. Harness, not a rule: a page cannot violate this file; it is the watch list and execution audit for the batched sweep.
+> Was: the scan-pattern watch list (7c, then bans/BAN-05.md) and the generators that PAGE-07 and PAGE-08 carried. Harness, not a rule: a page cannot violate this file. The sweep patterns live in BANS.md beside their fixes and exemptions; this file holds the scripts that generate candidates no pattern expresses. Every generator prints candidates and none is the gate: what it prints is read, and the owning rule decides.
 
-**Words to watch:** The reasoning (any case, with or without colon), The intent:, The asymmetry:, The fix:, The point is:, The takeaway:, The pattern is:, Two-phase pattern:, is the key:, is essential:, is explicit:, is significant:, is conservative:, is deliberate:, is the linchpin:, is asymmetric:, is intentional:, is correct:, becomes clear here:, says: ", spells this out: ", makes explicit: ", makes the trade-off explicit: ", Comment: "
+## Openers (WRITING rule 1)
 
-**Enumeration candidates (BAN-08):** no pattern expresses the shape, so these only generate candidates for the read-through: a sentence carrying three or more commas together with " and ", ranked by the count of DISTINCT file:line locations in it. Measured on one page, a bare repeated-path test produced 39 candidates for 4 real hits; distinct locations per sentence is the discriminating signal, because a set large enough to need a table needs a location per member while a sentence discussing several functions from one file repeats the path without enumerating anything. Split on semicolons as well as full stops.
+Run over the RAW file, because the headings that mark each leading paragraph are what the prose view drops. It prints the first sentence of the lead and of every section, tagged `COUNT` when that sentence carries a number word, a digit or an ordinal. An incidental number ("USB 2.0", "bit 9", "in one word") is cleared on reading; a first sentence that opens on layout or sequence with no purpose stated is a hit the tag cannot see; so every printed sentence is read.
 
-**Opener candidates (PAGE-08):** the generator printed in PAGE-08's PASS CRITERIA runs over the RAW file (it needs the headings to find each leading paragraph) and prints the first sentence of the lead and of every section opener, tagged when the sentence carries a number word, a digit or an ordinal. The tag is a candidate, never the verdict: a sentence whose subject is the count or the position is a hit, an incidental number is cleared, and a first sentence that opens on layout or sequence with no purpose stated is a hit the tag cannot see, so every printed sentence is read.
+```
+python3 - page.md <<'EOF'
+import re, sys
+L = open(sys.argv[1], encoding="utf-8").read().split("\n")
+NUM = re.compile(r"\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|\d+)\b"
+                 r"|\b(first|second|third|fourth|fifth|remaining|other)\b", re.I)
+fence = False; sec = "lead"; lead = True
+for n, l in enumerate(L, 1):
+    if l.startswith("```"): fence = not fence; continue
+    if fence: continue
+    if l.startswith("#"): sec = l.lstrip("#").strip()[:60]; lead = True; continue
+    if not l.strip() or l.startswith(("|", "- ", ">")): continue
+    if lead:
+        s = re.split(r"(?<=[.;:])\s", re.sub(r"\]\(https?://[^)]*\)", "]", l), maxsplit=1)[0]
+        print(f"{n} [{sec}]{' COUNT' if NUM.search(s) else ''}: {s[:160]}")
+    lead = False
+EOF
+```
 
-**Explanation candidates (PAGE-07):** the generator printed in PAGE-07's PASS CRITERIA runs over the RAW file (the members it counts live inside the fences the prose view drops) and prints, per definition excerpt, the members the two adjacent paragraphs name and the ones they do not. It sees names, not explanations: a zero-named block is a defect outright, an unnamed member is adjudicated against the group phrase the paragraph uses, and the shape-only paragraph (counts, positions, "the first five fields") is a read-through the generator cannot express even when every member is named.
+## Members named beside a definition excerpt (WRITING rule 3)
 
-**Caution:**: Two need care: a label-colon can sit anywhere in a prose sentence, not merely at its start, `Comment: "` in prose differs from the LINUX KERNEL bullet form `[symbol]: bit 0xN. Comment: "..."`, which is a catalog entry and acceptable. BAN-03's "intro sentence + list" shape and the colon-introduced list ("X is called from N places: A, B, C") belong on the same sweep. The paragraph-final colon that introduces the fenced excerpt on the next non-blank line is exempt under BAN-02 (amended 2026-09-02) and is adjudicated from the raw file with the awk command in BAN-02's criteria, because the prose view cannot see the fence it points at.
+Run over the RAW file, because the members it counts are inside the fences the prose view drops. It prints, per fenced C block that shows two or more struct, union or enum members, how many of those members the two adjacent paragraphs name and which they do not. A block with zero members named is a defect outright; an unnamed member is covered only by a group phrase the paragraph takes from the excerpt's own comment; a paragraph that names every member and only counts or places them is a hit the generator cannot see. So the paragraph beside every excerpt is read, function excerpts included, which the generator never scores.
 
-**PASS CRITERIA:** The sweep itself is the check: confirm every pattern in the words-to-watch list was run, case-insensitively, over a prose view of the page rather than the raw file, and never anchored to line start (one unwrapped line per paragraph makes an anchored pattern blind to every mid-paragraph hit). Confirm BAN-03's intro-sentence-plus-list shape and the colon-introduced list rode the same sweep. Adjudicate every candidate against the rule exemptions and the directory's waivers file (`../bans/BAN-WAIVERS.md`); the LINUX KERNEL bullet form `[symbol]: bit 0xN. Comment: "..."` is a catalog entry and acceptable. Pass when every candidate is either fixed or recorded as exempt, and no compliant construct was reworded just to silence a pattern.
+```
+python3 - page.md <<'EOF'
+import re, sys
+lines = open(sys.argv[1], encoding="utf-8").read().split("\n")
+MEMBER = re.compile(r"^\t[^\t/*#}].*?\b(\w+)\s*(?:\[[^\]]*\])?\s*(?::\s*\d+)?\s*;")
+ENUMV  = re.compile(r"^\t([A-Z][A-Z0-9_]*)\s*(?:=[^,/]*)?,?\s*(?:/\*.*)?$")
+def para(i, step):
+    j = i + step
+    while 0 <= j < len(lines) and not lines[j].strip(): j += step
+    if not (0 <= j < len(lines)) or lines[j].startswith(("```", "#")): return ""
+    k = j
+    while 0 <= k + step < len(lines) and lines[k + step].strip() and not lines[k + step].startswith("```"): k += step
+    a, b = sorted((j, k))
+    return " ".join(lines[a:b + 1])
+i = 0; blocks = 0; zero = 0; fr = []
+while i < len(lines):
+    if lines[i].rstrip() != "```c": i += 1; continue
+    j = i + 1
+    while j < len(lines) and not lines[j].startswith("```"): j += 1
+    body = lines[i + 1:j]; kind = None; mem = []
+    for l in body:
+        if re.search(r"\b(struct|union) \w*\s*\{|\bunion\s*\{", l): kind = "struct"
+        elif re.search(r"\benum \w*\s*\{", l): kind = "enum"
+        elif l.startswith("}"): kind = None
+        m = (MEMBER if kind == "struct" else ENUMV if kind == "enum" else None)
+        m = m and m.match(l)
+        if m and m.group(1) not in mem: mem.append(m.group(1))
+    if len(mem) >= 2:
+        prose = re.sub(r"\(https?://[^)]*\)", "", para(i, -1) + " " + para(j, +1))
+        named = [m for m in mem if re.search(r"\b" + re.escape(m) + r"\b", prose)]
+        blocks += 1; fr.append(len(named) / len(mem)); zero += not named
+        print(f"{i + 1}: {len(named)}/{len(mem)} named; unnamed: {' '.join(m for m in mem if m not in named) or '-'}")
+    i = j + 1
+print(f"definition blocks={blocks} zero-named={zero} mean-fraction-named={sum(fr) / max(len(fr), 1):.2f}")
+EOF
+```
+
+## Enumerations (BANS, run-on enumeration)
+
+No pattern expresses the shape. Generate candidates as the sentences that carry three or more commas together with " and ", split on semicolons as well as full stops, and rank them by the number of DISTINCT file:line locations each carries: a sentence with four locations is almost always a real hit and a sentence with one almost never is, because a set large enough to need a table needs a location per member. Then read: the steps of one operation are prose, the members of one set are a table.
+
+## SUMMARY shape (WRITING rule 5)
+
+```
+awk '/^## SUMMARY/{f=1} /^## SPECIFICATIONS/{f=0} f && /^\|---/{t++} f && /^```/{c++} END{print "tables", t+0, "figures", c/2}' page.md
+```
+
+**PASS CRITERIA:** Each generator was run over the raw file of the finished page, every row it printed was read against the owning rule, and the rows with their verdicts are recorded in the dossier's EVIDENCE section. A generator's clean footer is never the pass; the reading is.
