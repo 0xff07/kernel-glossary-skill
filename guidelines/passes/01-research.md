@@ -84,7 +84,7 @@ SKILL_DIR: <absolute path to the kernel-glossary-skill checkout>
 
 MANDATORY READING, in order:
 1. <SKILL_DIR>/guidelines/passes/00-prep.md — resolve the parameters;
-   skip the sample reading, which is the writer's job.
+   skip the exemplar reading, which is the writer's job.
 2. <SKILL_DIR>/guidelines/passes/01-research.md — your procedure.
 3. <SKILL_DIR>/guidelines/passes/dossier.md — your deliverable's format.
 4. <SKILL_DIR>/guidelines/reference/subsystems.md — read only the page's subsystem entry.

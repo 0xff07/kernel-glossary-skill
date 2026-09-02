@@ -1,6 +1,6 @@
 # sample-output/
 
-Representative pipeline OUTPUT, kept for inspection — what a writer produces under the current (post-migration, per-rule) corpus. This directory is NOT part of the samples doctrine: the calibration exemplars live in `guidelines/reference/samples/`, the prep pass's sample list does not include this directory, and nothing here is a standard to imitate or a source of kernel facts.
+Representative pipeline OUTPUT, kept for inspection — what a writer produces under the current (post-migration, per-rule) corpus. This directory is NOT part of the samples doctrine: the calibration exemplars are the `docs/sound/` pages named in `guidelines/passes/00-prep.md` (the frozen samples under `guidelines/reference/samples/` were retired as the writer's exemplar on 2026-09-02), the prep pass's exemplar list does not include this directory, and nothing here is a standard to imitate or a source of kernel facts.
 
 | file | what it is |
 |---|---|

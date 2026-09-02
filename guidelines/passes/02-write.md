@@ -16,7 +16,7 @@ This pass owns the writer's reading list; the writer brief points here instead o
 2. `guidelines/reference/rewriters.md`: the rewriter switchboard. Read the switchboard, then read in full the SKILL.md of every rewriter it lists as ON, and nothing of the ones it lists as OFF. An ON rewriter governs prose style and outranks the bans under `guidelines/rules/bans/` where the two disagree; that file names each displacement. It governs style only — facts, excerpts, citations, page structure, and figures stay with the house rules. Compose under the ON rewriters from the first sentence; this is not a rewriting step after the draft.
 3. The figure rules under `guidelines/rules/diagrams/`, but only when the page will carry a figure: DIAG-01's principles and DIAG-02's banned shapes always govern one, and DIAG-03 and DIAG-04 hold the figure catalogs (choose the shape from DIAG-04's use-case index). A page with no figure needs none of it.
 4. `guidelines/reference/measured-criteria.md`: the depth rules and tripwires that define what "in-depth, fine-grained" measures as.
-5. The sample pages chosen in pass 00 (`guidelines/passes/00-prep.md`), under its doctrine that samples calibrate form only, never facts.
+5. The exemplar pages under `docs/sound/` chosen in pass 00 (`guidelines/passes/00-prep.md`), read in full, under its doctrine that exemplars calibrate form only, never facts.
 6. The page's subsystem entry in `guidelines/reference/subsystems.md`.
 7. The checking harness under `guidelines/rules/routines/` (ROUTINE-01, with ROUTINE-04's patterns and ROUTINE-05's recipes). The writer satisfies the factual PASS CRITERIA by construction and by the mechanical exit suite below, AND runs the mechanical sweeps (was Gate A) itself per ROUTINE-01's procedure — the prose view, the candidate patterns, and the figure sweep. Read ROUTINE-04 closely: its patterns are deliberately unanchored, and re-anchoring them reintroduces the blind spot that let a whole class ship for eight pages. A pattern belonging to a ban that an ON rewriter displaces still generates candidates; adjudicate those against the rewriter, and record them as EXEMPT naming it. The orchestrator re-runs the mechanical checks independently in pass 03 (`guidelines/passes/03-check.md`).
 
@@ -132,7 +132,7 @@ Claims that are not disk-settleable (intent, motivation, anything the tree at th
 
 ## Composing stance
 
-The sample pages under `guidelines/reference/samples/` embody every rule. The closest-matching sample read in the prep pass (`guidelines/passes/00-prep.md`) is the worked example; match its structure, diagram style, code-citation density, and depth. The examples in the rule files use ACPI and mm symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem. Write the paragraph beside each excerpt as the explanation of that excerpt (PAGE-07): what each member it shows holds and who writes or reads it, what the shown lines of a function do. A sentence that names what the excerpt is about to show may end in the colon that introduces it; a paragraph that counts the members or says where they sit explains nothing. Where the members are many, cut the excerpt into several and explain each. All generated content must follow the rules as it is composed; the ROUTINE-05 recipes (`guidelines/rules/routines/ROUTINE-05.md`) exist so compliant phrasing never has to be re-derived per hit, and the waivers files settle the boundary cases in advance.
+The exemplar pages under `docs/sound/` are the worked examples. The one or two read in the prep pass (`guidelines/passes/00-prep.md`) set the standard for the lead, the journey or model organization of DETAILS, the figures, and above all the paragraph beside each excerpt; match them there, and match the rules wherever a sound page predates one (`00-prep.md` names the three known gaps). The examples in the rule files use ACPI, mm, and sound symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem. Write the paragraph beside each excerpt as the explanation of that excerpt (PAGE-07): what each member it shows holds and who writes or reads it, what the shown lines of a function do. A sentence that names what the excerpt is about to show may end in the colon that introduces it; a paragraph that counts the members or says where they sit explains nothing. Where the members are many, cut the excerpt into several and explain each. All generated content must follow the rules as it is composed; the ROUTINE-05 recipes (`guidelines/rules/routines/ROUTINE-05.md`) exist so compliant phrasing never has to be re-derived per hit, and the waivers files settle the boundary cases in advance.
 
 ## Dispatching a writer (campaign brief)
 
@@ -153,8 +153,10 @@ skipped read is a skipped rule set.
    diagrams/DIAG-WAIVERS.md — the settled waivers and rulings. First
    action, all five. Apply them as written; never reword an exempt
    construct.
-2. <SKILL_DIR>/guidelines/passes/00-prep.md — template and samples
-   doctrine (samples calibrate form only, never facts).
+2. <SKILL_DIR>/guidelines/passes/00-prep.md — template and exemplar
+   doctrine. Read the one or two docs/sound/ pages it names for this
+   page's archetype, in full, before writing (exemplars calibrate form
+   only, never facts; the rules govern where a sound page predates one).
 3. <SKILL_DIR>/guidelines/passes/01-research.md and
    <SKILL_DIR>/guidelines/passes/dossier.md — the research procedure and
    the dossier you keep at <SKILL_DIR>/progress/<campaign>/<slug>.dossier.md.
@@ -188,6 +190,9 @@ CAMPAIGN FACTS (carried by this brief because no guideline file can):
   truth. Architecture scope: <arch>. State CONFIG assumptions in the page
   where behavior depends on them: <list>.
 - Section 6 heading for this subsystem: <value or "omit">.
+- Exemplar pages for this page's archetype, from 00-prep.md: <one or two
+  docs/sound/ paths>. Read them in full before writing; form only, never
+  facts.
 - Project-specific bans and amendments from the campaign spec: <list, or
   "none">.
 - <If an existing draft or prior page feeds this one: the source file(s)

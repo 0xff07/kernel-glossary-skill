@@ -1,8 +1,10 @@
 # Samples
 
-This directory holds frozen copies of exemplar pages for the kernel-glossary skill. SKILL.md refers to example pages only by their `guidelines/reference/samples/` path, so these files stay findable even after the subsystem directory hierarchy under `docs/` is reorganized. The page and draft copies are snapshots taken from the memory-management campaign and the plan copy from the DRM/KMS campaign (both at kernel v7.0); the live files they were copied from may evolve or move independently.
+> RETIRED AS THE WRITER'S EXEMPLAR, 2026-09-02. Writers read `docs/sound/` instead (`guidelines/passes/00-prep.md`); `guidelines/reference/measured-criteria.md` records why. The `page-` and `draft-` copies stay only as the record behind `guidelines/reference/draft-contrast.md`, and `plan-drm-campaign.md` remains the worked example for `guidelines/passes/plan.md`. Nothing below is read before writing a page.
 
-Files prefixed `page-` are sample pages: each met every gate (Gate A and Gate B, mapped in `guidelines/rules/INDEX.md`), verified link-by-link and excerpt-by-excerpt against its kernel tree with zero findings. They are the standard to calibrate against when writing any new page, for any subsystem.
+This directory holds frozen copies of exemplar pages for the kernel-glossary skill. Until 2026-09-02 SKILL.md referred to example pages only by their `guidelines/reference/samples/` path, so these files stayed findable even after the subsystem directory hierarchy under `docs/` was reorganized. The page and draft copies are snapshots taken from the memory-management campaign and the plan copy from the DRM/KMS campaign (both at kernel v7.0); the live files they were copied from may evolve or move independently.
+
+Files prefixed `page-` are sample pages: each met every gate (Gate A and Gate B, mapped in `guidelines/rules/INDEX.md`), verified link-by-link and excerpt-by-excerpt against its kernel tree with zero findings. They were the standard to calibrate against from 2026-07-18 to 2026-09-02; since then writers calibrate against `docs/sound/`.
 
 - `page-overview-mm-struct.md` (2,940 lines, 98 code blocks, 861 links, 1 figure) demonstrates the structure-tour archetype, documenting one central struct field group by field group with a full accessor and lifecycle catalog.
 - `page-lifecycle-mm-refcount.md` (1,743 lines, 59 code blocks, 591 links, 1 figure) demonstrates the lifecycle/refcount archetype and the smallest acceptable depth for a fine-grained page.

@@ -56,7 +56,7 @@ Reference boundary: rules reference nothing at all; each directory's `<PREFIX>-W
 
 Retired numbers stay retired: BAN-05, ROUTINE-02, ROUTINE-03, ROUTINE-06, PIPELINE-01, PIPELINE-02 (and the SUITE-XX/CHECK-XX/FLOW-XX schemes) are never reissued. The pipelines/ directory itself is retired; its fix-routing map lives in ROUTINE-05 and its legacy tables live here.
 
-The sample pages under `guidelines/reference/samples/` embody every rule. The closest-matching sample read in the prep pass (`guidelines/passes/00-prep.md`) is the worked example; match its structure, diagram style, code-citation density, and depth. The examples inside the rule text use ACPI and mm symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem.
+The exemplar pages under `docs/sound/` are the worked examples; `guidelines/passes/00-prep.md` names one or two per archetype, and the writer matches their lead, organization, figures, and the paragraph beside each excerpt, with the rules governing wherever a sound page predates one. The examples inside the rule text use ACPI, mm, and sound symbols; they illustrate the rule mechanic, which applies unchanged to every subsystem.
 
 ## Legacy: the retired ID scheme
 
