@@ -25,7 +25,7 @@
 14. On a page organized around a journey or a model, the primary figure shows that spine whole, so the reader holds a map of the same shape the prose traces.
 15. A figure that only lists symbols in boxes with no process or relationship among them is a catalog in visual form; redraw it to show the relationship or drop it.
 
-16. When a diagram is used, follow the style established in the sample pages (for example the page-table-entry bit layouts and slot-map figures in `guidelines/reference/samples/page-encoding-pgtable-entries.md`) and the reference figures in the bit-layout and pattern catalogs.
+16. When a diagram is used, follow the style established in the exemplar pages under `docs/sound/` (for example the register-bank figures in `docs/sound/soundwire/stream/bank-switch.md`, the frame-timing waveforms and the serial-port format-field figure in `docs/sound/formats/i2s.md`, and the object-hierarchy figure in `docs/sound/hda/hdac-core.md`) and the reference figures in the bit-layout and pattern catalogs.
 17. Use Unicode box-drawing characters (`┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼`) and `▼ ▲ ◀ ▶` for arrows.
 18. Title each sub-diagram with a short heading underlined by a `────` rule.
 19. Multiple sub-diagrams may share one fenced block when each has its own titled section.

@@ -18,7 +18,7 @@
 2. When a normative specification fixes it (an ACPI, PCIe, USB, or hardware-manual definition of a register layout, state set, or protocol), cite the spec in SPECIFICATIONS, present the model as the spec defines it, and map the kernel's constructs onto it (the spec-semantics-paired-with-kernel-slots form), so the reader learns a state's specified meaning and the constant that carries it together.
 3. When no specification defines it — the common case for pure-software subsystems — the model is a synthesis assembled from the kernel's own materials: the code, the enumerating comments and struct doc-comments, the relevant `Documentation/` pages, and the commit messages of the introducing series.
 4. This is the one place a page states more than a single excerpt witnesses, licensed only under disclosure: name the materials ("Assembled from the type comment, `Documentation/mm/process_addrs.rst`, and the series that introduced the per-VMA lock, the model is ..."), keep every fact under the model separately cited, and weaken or scope anything the materials do not support.
-5. The frozen mm samples (`guidelines/reference/samples/`) show the synthesis stated up front.
+5. The exemplar pages under `docs/sound/` show the synthesis stated up front: `docs/sound/alsa/pcm/pcm-state-machine.md` opens on the one state value and the pre/do/undo/post dispatch model before any per-symbol walk, and `docs/sound/alsa/object-model.md` opens on the card, component, PCM, stream, substream, and runtime object graph.
 6. A model the tree's own materials do not support is never invented to fill the section: state what the sources establish and stop.
 7. A guessed model ("the design is presumably ...") is worse than none.
 

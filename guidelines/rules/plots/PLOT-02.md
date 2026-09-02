@@ -9,7 +9,7 @@
 **Rule:**
 
 1. A fixed set of states or modes, or a classification of parts (a device power-state set, a page-fault-type set, a flag taxonomy, an error-code family, an ops struct's callback set), is presented as a table, not a bare list of constants: one row per member, a meaning column stating what the member is in the model, and a construct column linking the defining code.
-2. The encoding and lifecycle archetypes among the frozen samples show this member-meaning-construct shape for bitfields and object states.
+2. The exemplar pages under `docs/sound/` show this member-meaning-construct shape: `docs/sound/dapm/widgets/widget-types.md` tables every `enum snd_soc_dapm_type` member against its constructor macro and its role, and `docs/sound/flows/playback.md` tables each ioctl against the core function it reaches and the PCM state it leaves.
 
 **Rule:**
 

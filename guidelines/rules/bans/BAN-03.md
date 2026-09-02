@@ -27,7 +27,7 @@ Two details deserve attention.
 advance_transaction writes the next byte to EC_DATA only while IBF reads 0, and reads a result byte only while OBF reads 1, so the host never races the controller.
 ```
 
-Do not flag the H3 catalog lists in LINUX KERNEL (grouped by file or functional area as the sample pages do: `EC_SC status bit macros`, `Port accessors`, `Transaction state machine`) or the bullet lists in KERNEL DOCUMENTATION and OTHER SOURCES: those are reference catalogs and remain as lists. Tables remain as tables. The ban covers prose-explanation lists only.
+Do not flag the H3 catalog lists in LINUX KERNEL (grouped by file or functional area as the exemplar pages under `docs/sound/` do: `Substream and container types (pcm.h)`, `Lifecycle helpers (sound/core/init.c)`, `Trigger commands (include/sound/pcm.h)`) or the bullet lists in KERNEL DOCUMENTATION and OTHER SOURCES: those are reference catalogs and remain as lists. Tables remain as tables. The ban covers prose-explanation lists only.
 
 **PASS CRITERIA:**
 
