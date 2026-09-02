@@ -114,13 +114,13 @@ claim the page states: the claim text, the two derivation bases used
 (the research basis and the differently-shaped exit basis), and the
 reconciled result. Plus the suite's outcomes: excerpt units
 byte-verified, link anchors confirmed, quotations checked, and the
-excerpt-explanation list (PAGE-07): per definition excerpt, the members
-shown, the members the adjacent paragraphs name, and the group phrase
-covering each member they do not, and the leading-paragraph list (PAGE-08):
-each leading paragraph's first sentence with its verdict, and SUMMARY's
-table and figure counts. The check pass
-starts its re-derivations here and must use a basis shaped differently
-from the recorded ones; entries are starting points, never proof.
+WRITING evidence from ROUTINE-04's generators: every leading paragraph
+with the verdict on its first sentence, every definition excerpt with the
+members shown and named and the group phrase covering each member not
+named, the DETAILS spine (journey or model), and SUMMARY's table and
+figure counts. The check pass starts its re-derivations here and must
+use a basis shaped differently from the recorded ones; entries are
+starting points, never proof.
 
 ## LINT
 The sweep record (was the Gate A record). The WRITER writes it as part of its exit suite
