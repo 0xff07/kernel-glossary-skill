@@ -44,6 +44,75 @@ SIDEBAND RULE-8 WAIVER, MADE EVIDENCE-BASED (verified on disk 2026-07-21; refine
 
 Also corrected in this amendment: the Directory organization block below said "twelve groups" and `device/ … (9)`. The post-review, post-checkpoint reality is thirteen groups and `device/` 8 — review item 14 folded `ep-state.md` into `device-tracking.md`, and the user checkpoint added the `dbc/` group. The Page catalog tables and the tag census were already correct; only that prose block had gone stale, and it is fixed in place.
 
+## Amendment 2026-09-02 — the vendor-name ban does not reach inside a citation URL
+
+Settled by the orchestrator during slice B9, after two writers independently escalated the same collision.
+
+The campaign's project-specific ban (Execution & verification: "no vendor mentions ... anywhere") collides with PAGE-05, which requires every OTHER SOURCES entry to reproduce a commit's `Link:` trailer byte-exactly and forbids constructing or normalizing one. Kernel mailing-list message-IDs routinely embed a maintainer's employer domain, so a byte-exact trailer can carry a vendor name that the ban appears to forbid.
+
+**PAGE-05 governs.** The ban binds authored prose, headings, figures and excerpt selection, which is the region the request was aimed at; it does not reach inside a citation URL, where the domain is part of an opaque identifier rather than a claim about a vendor's hardware. Normalizing such a URL would violate PAGE-05 and break the link.
+
+The precedent is established rather than incidental: pages already shipped under this campaign carry 151 `@linux.intel.com` message-ID domains plus others (`@quicinc.com`, `@ti.com`, `@nvidia.com`, `@nxp.com`), across `docs/xhci/core/`, `docs/xhci/init/`, `docs/xhci/interrupt/`, `docs/xhci/lifecycle/` and `docs/xhci/ring/`. Writers from B9 forward apply this without escalating. Every other limb of the ban stands unchanged, and vendor names remain forbidden in authored prose, figure text, headings and excerpt selection.
+
+Surfaced to the user for BAN-WAIVERS; until it is folded in there, this amendment is the campaign's binding statement.
+
+## Amendment 2026-09-02 — figure density: carry more figures where the material earns them
+
+User instruction given during slice B8, and it binds every batch from B8 forward.
+
+Pages carry MORE ASCII figures than the corpus has been averaging, wherever the subject has real structure to show. FACT-01 already licensed this ("as many figures as the material earns"); the amendment is that writers should treat the figure budget as generous rather than minimal. Measured baseline for calibration: the four B9 pages carried 3 or 4 figures each, and the frozen samples run 1 to 3. Aim above that where the subject supports it, and expect register, layout and state-machine pages to carry the most.
+
+Nothing about figure QUALITY relaxes, and two rules still outrank the larger budget:
+
+- DIAG-02's four banned shapes, which outrank the catalogs: a plain table redrawn in box characters, a call-flow graph whose every edge means "calls", a struct-member listing nothing exits, and plain text in a fence. Every figure passes the strip-the-labels test before it lands.
+- DIAG-01's restraint principle: no figure for a plain call chain, a two-state toggle, or anything one declarative sentence conveys.
+
+A page with eight figures of which two fail the strip test is worse than the same page with six. Figures are added by finding structure the prose cannot carry, never by drawing the same content twice or by promoting a semantics table into box characters, which is DIAG-02's first banned shape and the standing hazard for register pages specifically.
+
+The shapes that reliably earn their place on this campaign's remaining material: a register word partitioned into named bit ranges drawn to scale with L-connectors (DIAG-03, calibrating against `docs/pci/protocol/tlp/msg/`); a link or endpoint state machine with what drives each edge; a timeline across separate actors for a sequence such as resume signalling or a reset; a field-to-field transform where one register's contents are reshaped into another structure; and a before-and-after pair around an operation that reshapes memory.
+
+## Amendment 2026-09-02 — the Area B RsvdZ claim is refuted; Area D's lesson repeats
+
+Found at write time by the `ports/port-registers-usb3.md` writer during slice B8 and verified by the orchestrator against the tree.
+
+Area B digest item 9.3 asserted that `PORT_WRC`, `PORT_CEC` and `PORT_CAS` are marked "RsvdZ for USB 2.0 ports" by a header comment at `xhci-port.h:74-9,98-9`. Both halves are false at v7.0:
+
+- `drivers/usb/host/xhci-port.h` contains no "RsvdZ" comment anywhere. The comments around those defines describe warm reset, the configure-error condition, and Cold Attach Status respectively.
+- The three "RsvdZ for USB2 ports" comments are in `drivers/usb/host/xhci.h`, inside `xhci_decode_portsc`, at :2434, :2444 and :2452, and they annotate `WPR`, `WRC` and `CEC`. `PORT_CAS` is not among them and carries no such comment in the tree.
+
+Item 9.3 is corrected in place and tagged. The USB3 page documents what the tree says and derives CAS's generation status from its own header comment plus the decode path that reads it; the USB2 writer was corrected mid-run, because the orchestrator's dispatch brief had repeated the bad claim verbatim.
+
+This is the second inventory-digest claim this campaign has had refuted at write time, after `xhci_link_segments` in Amendment 2026-07-21, and the shape is identical: a planning-time digest entry that reads precisely, cites a file and a line range, and does not survive a grep. The standing instruction already covers it and is restated here because two instances now argue it is systemic rather than incidental — **every anchor in this spec's Inventory findings is a hint, and a writer that cannot reproduce one on disk reports it instead of writing around it.** Dispatch briefs inherit that status: a claim quoted from the digest into a brief is still a hint, and a writer may refuse it on evidence.
+
+## Amendment 2026-09-02 — excerpt explanation (PAGE-07): the twelve pages of B9, B8 and B10 are repair candidates
+
+User finding on `roothub/port-arrays.md` after slice B8, generalized by measurement over every page this campaign wrote on 2026-09-01 and 2026-09-02, and traced to the skill rather than to the writers.
+
+The paragraphs beside the `struct xhci_port` excerpt in port-arrays' DETAILS say where the members sit and how many there are ("the first five fields are what the construction pass writes", "adjacent fields of struct xhci_hcd") and say nothing about what any member holds or which path writes and reads it. The page does know: its SUMMARY carries a nine-row field table with exactly that content, three hundred and sixty lines above the excerpt. The same shape recurs across the batch. Measured with the generator that now ships in PAGE-07 (per fenced definition excerpt, the members shown against the members the adjacent paragraphs name):
+
+| page | definition excerpts | zero members named | mean fraction named |
+|---|---|---|---|
+| ports/port-registers-usb3 | 6 | 5 | 0.01 |
+| ring/transfer/transfer-td | 5 | 4 | 0.04 |
+| ring/transfer/streams | 7 | 5 | 0.09 |
+| roothub/root-hub | 7 | 4 | 0.12 |
+| roothub/port-arrays | 7 | 4 | 0.12 |
+| ring/transfer/transfer-events | 5 | 3 | 0.11 |
+| ports/port-hotplug | 4 | 2 | 0.10 |
+| ring/transfer/transfer-ring | 9 | 2 | 0.26 |
+| ring/transfer/endpoint-halt-recovery | 4 | 1 | 0.27 |
+| roothub/bus-suspend-resume | 2 | 1 | 0.33 |
+| ports/port-event-handling | 1 | 1 | 0.00 |
+| ports/port-registers-usb2 | 4 | 0 | 0.36 |
+
+Thirty-two of sixty-one excerpts (52%) have no member named beside them. This campaign's own July pages ran 24% on the same measurement, the sound corpus 15%, and the usb4 and pci corpora 13% and 16% (the per-era table is in `guidelines/reference/measured-criteria.md`). The doubling coincides with the 2026-08-29 to 2026-09-01 skill restructure and not with a model change: BAN-08's rule 3 as it read that week ("what its members share") was applied to excerpts instead of tables, BAN-02's text had removed the colon-terminated sentence that introduces an excerpt by naming what it shows, and the rewriter switchboard's humanizer entry barred the opening sentence from stating the heading's purpose. All three are corrected as of 2026-09-02 (PAGE-07 added, with its generator; BAN-08 rule 8; BAN-02's fence-colon exemption; `guidelines/reference/rewriters.md`; exit-suite item 8 in `guidelines/passes/02-write.md`; step 7 in `guidelines/passes/03-check.md`).
+
+Binding from here:
+
+- Every writer from the B7 remainder and B11 onward runs under PAGE-07: the paragraph beside a definition excerpt names each member the excerpt shows, says what it holds and which path writes or reads it, and a long definition is cut into several excerpts each explained where it stands. The exit suite's item 8 and the check pass's step 7 hold the gate; a zero-named excerpt is a defect, not a style note.
+- The twelve pages above are repair candidates and are NOT overwritten silently; the overwrite guard applies. Repair is a fresh writer started from the page's dossier plus this spec, briefed "work from the page's own field tables; explain each excerpt where you quote it", and the repair never shortens an excerpt to hide the members it would otherwise have to explain (eliding to the members the paragraph explains is the licensed cut). Order by the table's zero-named column, worst first, unless the user names a page.
+- The corpus-level figures from PAGE-07's generator are the calibration for the repairs: the sound corpus's 15% zero-named at a mean 0.37 named is the standard a repaired page meets, not this campaign's July 24%.
+
 ## Re-entry contract (retrofitted 2026-07-18)
 
 Standing instructions to any executor, on any machine, cold or warm:
@@ -348,7 +417,7 @@ Supported-Protocol extended capability (ID 2, xhci-ext-caps.h): `XHCI_EXT_CAPS_P
 
 1. Same register set, different semantics: both share one `struct xhci_port_regs` layout (xhci.h:84) and common PORTSC bits (CONNECT/PE/OC/RESET/POWER/common change bits) — divergence is in specific bits' meaning plus the PORTPMSC/PORTLI/PORTHLPMC contents, not the register map.
 2. PLS state machine differs: USB2 uses only U0/U2(=L1)/U3/Resume/RxDetect/Polling and drives a timestamp-based SW resume state machine (`xhci_handle_usb2_port_link_resume` xhci-hub.c:937); USB3 additionally has U1/Recovery/Compliance/SS.Inactive, and the raw PLS nibble is placed directly into wPortStatus bits5:8 (`xhci_hub_report_usb3_link_state` xhci-hub.c:856-907), resume completion signalled by `u3exit_done` only.
-3. `PORT_WRC`/`PORT_CEC`/`PORT_CAS` are "RsvdZ for USB 2.0 ports" per the header comment (xhci-port.h:74-9,98-9) — architecturally USB3-only; `USB_PORT_FEAT_BH_PORT_RESET`/`_C_BH_PORT_RESET`/`_C_PORT_CONFIG_ERROR` are exercised only on the USB3 rhub.
+3. [CORRECTED 2026-09-02] The driver's PORTSC decoder annotates `WPR`, `WRC` and `CEC` as "RsvdZ for USB2 ports", in `xhci.h` inside `xhci_decode_portsc` at :2434, :2444 and :2452. The original claim here named `PORT_WRC`/`PORT_CEC`/`PORT_CAS` and cited xhci-port.h:74-9,98-9; both halves are refuted on disk — `xhci-port.h` carries no RsvdZ comment at all, and `PORT_CAS` carries none anywhere in the tree (the third member of the annotated trio is `WPR`, not `CAS`). `PORT_CAS`'s USB3 status is derived from its own header comment and the paths that read it; `USB_PORT_FEAT_BH_PORT_RESET`/`_C_BH_PORT_RESET`/`_C_PORT_CONFIG_ERROR` are exercised only on the USB3 rhub.
 4. PORTPMSC layout is generation-exclusive: USB3 = U1/U2 LPM inactivity timeouts, gated `if (hcd->speed < HCD_USB3) goto error;` (xhci-hub.c:1521,1529); USB2 = L1 LPM fields (L1S/RWE/HIRD/L1DS/HLE) + Test Mode field, manipulated only by `xhci_set_usb2_hardware_lpm` (xhci.c:4647) and `xhci_port_set_test_mode` (xhci-hub.c:678), both of which reject USB3 ports.
 5. PORTHLPMC exists only for USB2 — no USB3 code path ever touches it (xhci.c:4707-9).
 6. PORTLI differs: USB3 always carries Link-Error-Count + Rx/Tx lane counts; the same offset for plain USB2 is RsvdP unless eUSB2v2-capable, in which case it carries RDR/TDR (xhci-port.h:146-153).
@@ -419,7 +488,7 @@ DCBAA/scratchpad/PAGESIZE setup:
 Doorbell helpers:
 - `xhci_ring_cmd_db` drivers/usb/host/xhci-ring.c:422 — writes `DB_VALUE_HOST` to `dba->doorbell[0]`.
 - `xhci_ring_ep_doorbell` drivers/usb/host/xhci-ring.c:549 — writes `DB_VALUE(ep_index,stream_id)` to `dba->doorbell[slot_id]`, skipped if ep_state has pending-cancel/halt/set-deq/clearing-TT bits.
-- `ring_doorbell_for_active_rings` / `xhci_ring_doorbell_for_active_rings` drivers/usb/host/xhci-ring.c:576/601 — ring per-stream doorbells for non-empty TD lists.
+- `ring_doorbell_for_active_rings` [defined at xhci-ring.c:576, verified 2026-09-02; one Area E entry says 578 and is wrong] / `xhci_ring_doorbell_for_active_rings` drivers/usb/host/xhci-ring.c:576/601 — ring per-stream doorbells for non-empty TD lists.
 
 Slot-ID acquisition (Enable Slot):
 - `xhci_alloc_dev` drivers/usb/host/xhci.c:4211 — queues TRB_ENABLE_SLOT, waits, reads `command->slot_id`, then calls `xhci_alloc_virt_device`.
@@ -722,6 +791,8 @@ Enumeration-command family (xHCI side):
 
 #### 8. Error-handling paths (completion code → handler, file:line)
 
+> [LINE NUMBERS STALE, verified 2026-09-02] The SYMBOLS in this section all reproduce on disk, but its line numbers for the `handle_tx_event` path run behind the tree by 3 to about 30 lines: short-packet reclassification is at xhci-ring.c:2683 (not :2686), and the underrun/overrun block is at :2753-2760 (not :2724-2733). Found by the `transfer-events.md` writer in slice B10 and confirmed by the orchestrator. Treat every line number in this section as a hint and re-derive it on disk, per Amendment 2026-09-02.
+
 - Stall (`COMP_STALL_ERROR`) — `handle_tx_event` sets `status=-EPIPE` (xhci-ring.c:2703); per-type processor sets `td->status`; `finish_td`(xhci-ring.c:2234) detects halt via `xhci_halted_host_endpoint` and calls `xhci_handle_halted_endpoint(...,EP_HARD_RESET)` (xhci-ring.c:984) → Reset Endpoint command → USB core's subsequent CLEAR_FEATURE(HALT) drives `xhci_endpoint_reset` (xhci.c:3307).
 - Babble (`COMP_BABBLE_DETECTED_ERROR`) — `status=-EOVERFLOW` (xhci-ring.c:2712); isoc path additionally marks `td->error_mid_td` and sums partial length (`process_isoc_td` xhci-ring.c:2440-2445).
 - Transaction error (`COMP_USB_TRANSACTION_ERROR`/`COMP_SPLIT_TRANSACTION_ERROR`) — `status=-EPROTO` (xhci-ring.c:2696-2701); bulk/intr retries in-place up to `MAX_SOFT_RETRY`=3 via `xhci_handle_halted_endpoint(...,EP_SOFT_RESET)` (`process_bulk_intr_td` xhci-ring.c:2555-2562) before giving up.
@@ -967,7 +1038,7 @@ Tags: [prompt] = explicitly in a prompt.md bullet (or a split of one, marked); [
 | page | scope (anchor symbols) | tag |
 |---|---|---|
 | transfer-ring.md | endpoint transfer rings: ep-ctx deq as the HW entry point, xhci_virt_ep.ring vs stream selection (xhci_virt_ep_to_ring xhci-ring.c:628, xhci_triad_to_transfer_ring :652), OWNS prepare_transfer (:3325, ring lookup + td init + first-TD usb_hcd_link_urb_to_ep) and cites prepare_ring as ring/ring-maintenance.md's seam symbol, enqueue model + giveback_first_trb doorbell hand-off (:3432), TR Dequeue+DCS ownership, ring-full → expansion (cited; internals are ring-memory.md's) | [prompt] |
-| transfer-td.md | TDs and transfer-TRB construction: struct xhci_td (xhci.h:1302), urb_priv (:1406, __counted_by + kzalloc_flex idiom xhci.c:1650), count_trbs/count_trbs_needed/count_sg_trbs_needed/count_isoc_trbs_needed (xhci-ring.c:3374-3410), 64KB TRB_MAX_BUFF_SIZE rule (xhci.h:1265), xhci_td_remainder TD-size math (:3514), bounce alignment xhci_align_td (:3541), IDT xhci_urb_suitable_for_idt (xhci.h:2015), CHAIN/IOC/ISP flags, TD lifecycle TRB→doorbell→event | [prompt] |
+| transfer-td.md | TDs and transfer-TRB construction: struct xhci_td (xhci.h:1302), urb_priv (:1406, __counted_by + kzalloc_flex idiom xhci.c:1644 [CORRECTED 2026-09-02; :1650 is `urb->hcpriv = urb_priv;`]), count_trbs/count_trbs_needed/count_sg_trbs_needed/count_isoc_trbs_needed (xhci-ring.c:3374-3410), 64KB TRB_MAX_BUFF_SIZE rule (xhci.h:1265), xhci_td_remainder TD-size math (:3514), bounce alignment xhci_align_td (:3541), IDT xhci_urb_suitable_for_idt (xhci.h:2015), CHAIN/IOC/ISP flags, TD lifecycle TRB→doorbell→event | [prompt] |
 | transfer-events.md | the completion side: handle_tx_event (xhci-ring.c:2633) comp-code decode + trb_in_td TD matching, the per-type processors named as dispatch pointers only (process_ctrl_td/process_isoc_td/process_bulk_intr_td :2293/2388/2518 — owned by their xfer pages), the shared funnel finish_td (:2234) → xhci_dequeue_td (:926) → xhci_td_cleanup (:879), giveback xhci_giveback_urb_in_irq (:825) → usb_hcd_giveback_urb BH deferral (hcd.c:1731, HCD_BH), short-packet reclassification (:2686), ring_xrun_event underrun/overrun | [prompt] |
 | xfer-control.md | control transfers: 2/3-TRB TDs — Setup (TRB_IDT immediate data, xhci-ring.c:3833), Data (TRB_DIR_IN :3855), Status (:3906) — via xhci_queue_ctrl_tx (:3770), ep0 shared-ring specifics, process_ctrl_td stage tracking (:2293), seam usb_control_msg/usb_control_msg_send (message.c:150/2229) down to the TRBs; per-stage TRB figures | [prompt] |
 | xfer-bulk.md | bulk transfers: xhci_queue_bulk_tx (xhci-ring.c:3611) normal-TRB chains, scatter-gather walk + count_sg_trbs_needed, 64KB splits + bounce alignment, URB_ZERO_PACKET extra ZLP TD, OWNS the shared process_bulk_intr_td walkthrough (:2518) incl. soft-retry MAX_SOFT_RETRY=3 (:2555) — xfer-interrupt.md cites it, transfer-events.md names it as a dispatch pointer only; seam usb_bulk_msg/usb_submit_urb | [prompt] |
