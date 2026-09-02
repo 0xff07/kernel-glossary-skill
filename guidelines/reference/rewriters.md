@@ -85,15 +85,33 @@ bold mini-headings in lists (16), filler and qualifier stacking (23, 24), announ
 
 Conflicts, resolved in the rewriter's favor:
 
-- BAN-01 item 6 requires a declarative what-does-what heading; pattern 29 forbids the opening
-  sentence from restating that heading. Under this rewriter, the heading form stands and the
-  opening sentence must say something the heading does not.
+- BAN-01 item 6 requires a declarative what-does-what heading; pattern 29 forbids a one-line
+  paragraph that only restates the heading. Under this rewriter the heading form stands, and the
+  opening sentence expands the heading's claim with the mechanism that delivers it: the members,
+  the call, the condition. A verbatim restatement is the hit; an expansion is not. This entry
+  used to read "the opening sentence must say something the heading does not", and that wording
+  was withdrawn on 2026-09-02: read literally, it barred the opening sentence from the purpose
+  the heading had just named, and the pages written under it opened their sections with
+  cardinality, lifetime, and field position instead (PAGE-07 records the measure).
 - BAN-01 item 2 bans boldface in prose outright; pattern 15 makes it a density rule. The absolute
   ban stands, because it is stricter and the two point the same way.
 
 Where it agrees with the house rules, nothing changes: pattern 14 and BAN-01 item 1 both ban the em
 dash, pattern 9 and BAN-01 item 3 both ban the negative construction, patterns 1 and 4 and BAN-04
 all ban the hollow superlative, pattern 24 and BAN-07 both ban qualifier stacking.
+
+Two boundaries the rewriter's own text draws, restated here because a writer applying it to
+technical prose has over-applied both:
+
+- Pattern 3 (-ing pseudo-analysis) is bounded by its own words to watch: highlighting,
+  underscoring, ensuring, reflecting, symbolizing, contributing to, fostering, encompassing,
+  showcasing. A participial or "so" clause that names a code-level consequence ("..., so every
+  PORTSC access on the page goes through it"; "..., which is how handle_port_status finds the
+  port") is the explanation, not the pattern, and it stays. Cutting such clauses is how a
+  paragraph beside an excerpt ends up describing the excerpt's shape and none of its content.
+- Patterns 23 and 24 (filler, qualifier stacking) remove words that carry nothing. A clause
+  that says what a member holds or which path writes it carries the page; it is never filler,
+  however long the paragraph beside the excerpt becomes.
 
 ## asd-ste100
 
