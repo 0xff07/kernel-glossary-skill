@@ -122,6 +122,18 @@ Found by the `pm/port-power-management.md` writer, the first page written under 
 
 These are the sixth and seventh planning anchors this campaign has corrected at write time. The standing instruction holds unchanged: every anchor in this spec is a hint, and a writer that cannot reproduce one on disk reports it instead of writing around it.
 
+## Amendment 2026-09-02 — the lead states purpose and background before any enumeration; SUMMARY stays short
+
+User instruction on `pm/port-power-management.md` at its check, binding every remaining row and every repair.
+
+The page's lead opened "A root-hub port on a PCI-attached xHCI host carries three groups of writable control bits that decide ...", and its SUMMARY ran 81 lines with three member tables, a state figure and the policy-layer detail. The user: "Before you start counting, you should state what the purpose and background first. Looking into the counting with no context makes the reader clueless. State the background before diving into code." And: the summary is too detailed; shorten it and move the detail into DETAILS.
+
+Binding from here:
+
+- The lead opens on what the mechanism is for and where it sits (the problem it solves, the actors, the layer above and below), in words a reader with no context can follow, before it names or counts any register field, symbol or group. A count is never the first thing the lead says.
+- SUMMARY carries the domain model in prose plus the state set and its transitions that PLOT-02 requires (one table, one figure at most). Member tables and per-request or per-bit detail sit in DETAILS beside the excerpt they describe (BAN-08 rule 8), not in SUMMARY.
+- This is the same rule the sound campaign recorded on 2026-08-20 ("counts serve claims; a count that serves no claim is noise; every DETAILS section states what the reader should understand"), which never reached the skill; it is restated here so the xhci writers see it, and surfaced to the user for the skill's rule corpus; it became PAGE-08 later the same day.
+
 ## Re-entry contract (retrofitted 2026-07-18)
 
 Standing instructions to any executor, on any machine, cold or warm:
