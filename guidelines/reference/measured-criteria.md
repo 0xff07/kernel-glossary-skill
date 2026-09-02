@@ -41,6 +41,36 @@ rather than cited many macros, and the two are told apart by reading the thin un
 percentage alone. A page measured at 34.2% against a 14.1% corpus rate is how this criterion was
 found.
 
+**The paragraph beside an excerpt explains the excerpt** (PAGE-07). This is the second criterion an
+excerpt can fail after being byte-exact and long enough: the prose beside it can describe its shape
+(how many members, which pass writes them, where the struct sits) and explain none of its content.
+It was found by measurement on 2026-09-02, with the generator PAGE-07 prints: for every fenced C
+block showing two or more members of a struct, union, or enum, count the members the two adjacent
+paragraphs name.
+
+| corpus | written | definition blocks | blocks with zero members named | mean fraction named |
+|---|---|---|---|---|
+| `docs/sound/` | 2026-06 | 323 | 15% | 0.37 |
+| `docs/usb4/` | 2026-06 | 119 | 13% | 0.37 |
+| `docs/pci/` | 2026-05 to 06 | 37 | 16% | 0.50 |
+| `docs/dp/`, the June pages | 2026-06 | 75 | 25% | 0.31 |
+| `docs/xhci/`, the July pages | 2026-07 | 82 | 24% | 0.31 |
+| the four sample pages | frozen 2026-07 | 21 | 29% | 0.32 |
+| `docs/dp/`, the September pages | 2026-09-01 | 53 | 51% | 0.17 |
+| `docs/xhci/`, the September pages | 2026-09-01 to 02 | 61 | 51% | 0.15 |
+
+The rate doubled inside both campaigns between July and September, and every rule change of the
+2026-08-29 to 09-01 window sits between the two rows: the run-on-enumeration ban read as sending
+every field's purpose into a table in another section, the label-colon ban had already removed the
+binding sentence the June corpus introduced 98% of its excerpts with, and the rewriter switchboard's
+heading rule barred the opening sentence from the purpose the heading named. PAGE-07 states the
+criterion; the rows above are what it measures as. The measure is topic-sensitive (`docs/acpi/`,
+written in June, runs 45% because its excerpts are ACPICA unions whose members the prose groups),
+so a page is judged by its rows, never by its percentage alone; the percentage says which pages to
+read first. A member is explained when the paragraph names it or names the group the excerpt's own
+comment files it under, which is why the sound corpus scores well at a mean fraction of 0.37 rather
+than 1.0.
+
 The depth rules that produce those numbers:
 
 - Definition plus usage, per symbol. Every symbol in the LINUX KERNEL catalog gets both its definition excerpt and at least one real caller or usage excerpt in DETAILS (PAGE-02; was Gate B item 1). A page of definitions alone reads like a header file; the usage excerpt is what makes each symbol's role concrete.
