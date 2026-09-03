@@ -134,6 +134,27 @@ Binding from here:
 - SUMMARY carries the domain model in prose plus the state set and its transitions that PLOT-02 requires (one table, one figure at most). Member tables and per-request or per-bit detail sit in DETAILS beside the excerpt they describe (BAN-08 rule 8), not in SUMMARY.
 - This is the same rule the sound campaign recorded on 2026-08-20 ("counts serve claims; a count that serves no claim is noise; every DETAILS section states what the reader should understand"), which never reached the skill; it is restated here so the xhci writers see it, and surfaced to the user for the skill's rule corpus; it became PAGE-08 later the same day.
 
+## Amendment 2026-09-03 — four Area F claims refuted at write time (the B12 device-PM pair)
+
+Found by the `pm/usb2-device-pm.md` and `pm/usb3-device-pm.md` writers during the 2026-09-03 slice and verified by the orchestrator against the tree. These are the eighth through eleventh planning anchors this campaign has corrected at write time; the standing instruction holds unchanged — every anchor in this spec is a hint, and a writer that cannot reproduce one on disk reports it instead of writing around it.
+
+- **`usb_hcd.bandwidth_mutex` does not govern the USB2 hardware-LPM callers.** The Area F locking digest said it "must be held by callers of usb_enable_lpm/usb_disable_lpm", and that much is true of the USB3 pair, reached through `usb_unlocked_disable_lpm`/`usb_unlocked_enable_lpm` (`hub.c:4479`/`:4563`). Neither `usb_enable_usb2_hardware_lpm`, `usb_disable_usb2_hardware_lpm` nor `usb_set_usb2_hardware_lpm` takes it. What actually serializes the USB2 path is the device lock on the sysfs route, the device and port locks already held on the hub routes, and `xhci->lock` inside the hook. `usb2-device-pm.md` documents that and de-catalogs the mutex.
+- **`PORT_U1_TIMEOUT` and `PORT_U2_TIMEOUT` are used.** Area F item 83 is right that they are written at `xhci-hub.c:1520-1535`; the point for the generation-split pages is that the USB3 divergence is about where the per-device *policy* lands, not about USB3 never touching PORTPMSC. Both pages state the contrast that way.
+- **`XHCI_LPM_SUPPORT` is `BIT_ULL(11)` and `XHCI_U2_DISABLE_WAKE` is `BIT_ULL(27)`**, not `BIT(...)`. Neither is named on either page (quirk mechanism only), but the digest's macro is wrong and any page excerpting the quirk block must match disk bytes.
+- **Write-time caution 5 is not universal.** `kzalloc_obj`/`kzalloc_flex` are the v7.0 idioms in most of the driver, but `xhci-mem.c:1736` and `:1742` use `kzalloc_node(sizeof(*command), ...)`. The caution stands as a default and stops being a licence to assume.
+
+## Amendment 2026-09-03 — a vendor-named SYMBOL is not a vendor mention; the ban binds authored text
+
+Settled by the orchestrator at the B12 check, after the `pm/usb3-device-pm.md` writer escalated it as the highest-cost ambiguity of its run.
+
+The scope statement for `usb3-device-pm.md` demands the per-endpoint-type tiers of the U1 and U2 timeout calculation. On disk, two of the helpers carrying those tiers have symbol names that embed a vendor, and they are selected by vendor-named quirk bits. The project ban forbids vendor mentions "anywhere", and the 2026-09-02 URL amendment had already established that the ban's real region is authored text rather than every byte on the page.
+
+**The ban binds authored prose, headings, figure text and excerpt selection. It does not reach a symbol name inside a ` ```c ` excerpt, and it does not license paraphrasing or omitting kernel code that the page's scope requires.** BANS states plainly that no ban reaches inside a C fence, and PAGE-02 forbids paraphrase, so a page that needs a function's body reproduces it verbatim, vendor-named identifier included. What the writer must not do is name that symbol in its own sentences, headings or figures.
+
+The resolution the usb3 writer reached, confirmed here as the campaign's rule: reproduce the bodies verbatim with the comment that states the tiers, de-catalog the two helpers (a catalog bullet is authored text and would name them), and reach them from prose by `path:line` location links rather than by symbol span. Writers from here apply this without escalating.
+
+Surfaced to the user for `guidelines/rules/WAIVERS.md`; until it is folded in there, this amendment is the campaign's binding statement.
+
 ## Re-entry contract (retrofitted 2026-07-18)
 
 Standing instructions to any executor, on any machine, cold or warm:
@@ -875,7 +896,7 @@ PCI/x86-64/ACPI scope only.
 - Suspend order: hub/port suspend → `xhci_bus_suspend` (roothub PORTSC→U3) → `xhci_pci_suspend`/`xhci_suspend` (controller: CMD_RUN clear, CSS save) → hcd-pci.c `suspend_common` (pci_disable_device) → `hcd_pci_suspend_noirq`(pci_prepare_to_sleep, hcd-pci.c:557).
 - Resume order (reverse): PCI D0 → `hcd_pci_resume_noirq`/`hcd_pci_resume`/`hcd_pci_restore` (hcd-pci.c:584-598) → `resume_common`(pci_enable_device+set_master) → `xhci_pci_resume`/`xhci_resume` (CRS restore or reinit) → `xhci_bus_resume` (roothub PORTSC→U0) via `usb_hcd_resume_root_hub`/pending-portevent (xhci.c:1262-1266).
 - What survives: op-regs saved xhci.c:1029(`xhci_save_registers`)→restored xhci.c:1125 when `!power_lost`. Falls back to FULL REINIT (nothing survives — dcbaa/rings/device contexts freed, xhci->devs[] and current_mel LPM cache lost until re-enumeration) when: XHCI_RESET_ON_RESUME or broken_suspend xhci.c:1108-1109, or USBSTS SRE|HCE after restore xhci.c:1149-1154 → `xhci_halt`:1170→`xhci_reset(XHCI_RESET_LONG_USEC)`:1175→`xhci_mem_cleanup`:1186→`xhci_init`:1196→`xhci_run`:1202/1205 (skipped, -ENODEV, if XHCI_STATE_REMOVING:1172-1173).
-- Locking: `xhci->lock` (spin_lock_irq/irqsave) held across register RMW in suspend/resume/bus_suspend/bus_resume/hub_control; dropped/retaken around `xhci_stop_device`, ACPI power calls, and `rexit_done`/`u3exit_done` waits. `bandwidth_mutex` (hcd.h:185) must be held by callers of usb_enable_lpm/usb_disable_lpm (comment hub.c:4327-4331). Port device lock (`usb_lock_port`) held across `usb_port_suspend`/`usb_port_resume` (hub.c:3501/3793).
+- Locking: `xhci->lock` (spin_lock_irq/irqsave) held across register RMW in suspend/resume/bus_suspend/bus_resume/hub_control; dropped/retaken around `xhci_stop_device`, ACPI power calls, and `rexit_done`/`u3exit_done` waits. `bandwidth_mutex` (hcd.h:185) must be held by callers of usb_enable_lpm/usb_disable_lpm (comment hub.c:4327-4331) [CORRECTED 2026-09-03: this binds the USB3 pair only, reached via usb_unlocked_disable_lpm/usb_unlocked_enable_lpm (hub.c:4479/:4563). The USB2 hardware-LPM path does NOT take it: neither usb_enable_usb2_hardware_lpm, usb_disable_usb2_hardware_lpm nor usb_set_usb2_hardware_lpm acquires bandwidth_mutex. See Amendment 2026-09-03]. Port device lock (`usb_lock_port`) held across `usb_port_suspend`/`usb_port_resume` (hub.c:3501/3793).
 - Per-device suspend dispatch split, drivers/usb/core/generic.c:284-287 (`usb_generic_driver_suspend`): root hub (`!udev->parent`) → `hcd_bus_suspend`; normal device → `usb_port_suspend` (hub.c:3501).
 
 #### 4. Hard-coded limits
