@@ -35,6 +35,15 @@
 | refcount with threshold actions | a refcount gates hardware action only at the 0↔1 edge transitions |
 | cyclic ring buffer with position pointers | two pointers chase each other around one wrapping buffer |
 | frame / bandwidth partition grid | one frame of a shared medium divides into slots claimed by entities |
+| values on one scale | several values are positions on one axis with a floor or a ceiling, and where each lands relative to the others matters |
+| topology with a boundary | a guard or a policy is a place in the device tree (a depth limit, a per-port bit), and which rule can reach a device depends on where it sits |
+| nested spans | what holds true inside a bracket (a lock held, a feature off) around an operation, with brackets nested |
+| race window | one path acts on what it read earlier while another path changes it in between |
+| lifetime Gantt | who may touch an object changes at named handovers, and the count is the sum of the holders |
+| drain | a transition waits for in-flight work to leave before it proceeds |
+| two-view memory strip | one buffer seen from two address spaces, with something on each side pointing into it |
+| lengths against one ruler | a fixed budget must contain a sum of parts, and the failing case matters as much as the fitting one |
+| scan bar chart | a loop keeps a running maximum or minimum over a set and one member can abort it |
 
 ### Pattern: parent + N children fan-out
 
@@ -598,4 +607,193 @@
           set_tdm_slot assigns each codec channel a slot mask (N > 2)
 ```
 
-**PASS CRITERIA:** For each justified figure, choose the pattern from the use-case index by matching its "reach for it when" column, and record the pattern name at sign-off; reach for a new shape only when no listed pattern fits the relationship, and record why. Confirm the figure matches its pattern's stated shape and distinguishing notes: a sparse slot map is neither a fan-out (one trunk allocating children) nor an N-to-M mapping (disjoint inputs feeding a tabular destination); swimlane cells carry the state each actor reaches, never the next callee, and a swimlane that would survive deleting all but one lane fails; data-dependency endpoints are structs and its arrows mean feeds or populates, never call order; a before/after keeps the identical cell style on both sides so the change reads as a diff; flowchart boxes name conditions and effects, never callees; annotation that would hang off the destination's right edge moves to prose below the figure so every line stays under 80 columns. Honor the two retired forms this catalog once carried: input-decode material is drawn as a decode tree, never as a grid of input columns against an outcome column, and threshold-refcount material as a rung ladder, never as a grid of events against transitions against actions (both grids are the banned plain table, and the ban outranks this catalog). A flat input-to-outcome product with no nesting is a Markdown semantics table and gets no figure at all. Pass per figure with the pattern named.
+### Pattern: values on one scale
+
+1. Use when several computed or configured values are positions on one axis with a floor, a ceiling or both, and the point is where each lands relative to the others (timeout tiers, an encoding's output range, a latency against its limit).
+2. Draw one axis with tick labels, a `┬` at each value and an L-connector callout beneath naming it; callouts nest rightmost-first, the DIAG-03 convention. Mark a floor or a ceiling as a labelled tick.
+3. The shape asserts order and distance; a value the reader must compare with another belongs on the same axis, never in a second figure.
+4. Distinct from the ordered level ladder, whose levels are discrete states a value moves through; here the positions are magnitudes.
+
+```
+       Where each endpoint type's U1 candidate lands
+       ─────────────────────────────────────────────
+       (the periodic floor rises to 105% of the service interval
+        when that is larger)
+
+       0        1        2        3        4        5   multiples of SEL
+       ├─────────────────┬────────┬─────────────────┬─────────────▶
+                         │        │                 └─ bulk
+                         │        └─ control, notification interrupt
+                         └─ periodic floor
+```
+
+### Pattern: topology with a boundary
+
+1. Use when a guard or a policy is a position in the device tree or on a bus (a depth limit, a per-port capability bit, a segment a rule stops at), and which rule can even reach a device depends on where it sits.
+2. Draw the tree from the controller down with the tier numbered in the left margin, mark a closed cell where a per-port bit closes it, draw the limit as a dashed `─ ─` line that the trunk crosses on a `┼`, and label each leaf with the guard that refuses it or the outcome for one that passes. Keep every trunk continuous; labels sit beside a trunk, never on it.
+3. The shape asserts that place decides: a boundary at a depth, a closed cell at a position. It also shows which guards cannot reach a device at all, which no ordered list of guards can. Distinct from the parent + N children fan-out, which shows identity and ownership. A run of guards with no place and no magnitude is prose, or the boxed flowchart when it has side effects; the gate ladder that carried this example until 2026-09-03 was retired for asserting only its labels.
+
+```
+       Where a device must sit for a timeout to be computed at all
+       ────────────────────────────────────────────────────────────
+       (tier counts from the root hub; a port's lpm_incapable bit is
+        read only for the device plugged straight into that port)
+
+       tier 1   ┌─────────────── host controller ────────────────┐
+                │ guard 1: LPM support claimed, slot present     │
+                │  port 0          port 1          port 2        │
+                └─────┬───────────────┬───────────────┬──────────┘
+                      │ lpm_incapable │ capable       │ capable
+                  ┌───┴───┐       ┌───┴───┐       ┌───┴───┐
+       tier 2     │  dev  │       │  dev  │       │  hub  │
+                  └───────┘       └───────┘       └───┬───┘
+                  guard 3 refuses           computed  │
+                                                  ┌───┴───┐
+       tier 3                                     │  dev  │ computed
+                                                  └───┬───┘
+           ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┼─ ─  deepest tier
+                                                  ┌───┴───┐ this host permits
+       tier 4                                     │  hub  │
+                                                  └───┬───┘
+                                                      │
+                                                  ┌───┴───┐
+       tier 5                                     │  dev  │ guard 2 refuses
+                                                  └───────┘
+```
+
+### Pattern: nested spans
+
+1. Use when the point is what holds true inside a bracket (a lock held, a feature switched off, a device quiesced) around an operation, and the bracket nests inside another.
+2. Draw one time axis, one span bar `├───┤` per bracket on its own row, each inner span strictly inside the outer, and beneath them one row per affected holder showing the value it reads inside the span against the values outside; dashed guides `╎` drop from the span ends to those rows.
+3. The shape asserts containment in time; the holder rows show the state of a thing that is not an actor, which a swimlane cannot.
+
+```
+       What the two holders read while link power management is off
+       ────────────────────────────────────────────────────────────
+
+       time ─────────────────────────────────────────────────────▶
+       bandwidth_mutex   ├───────────────────────────────────────┤
+       both states off       ├───────────────────────────────┤
+       the change itself         ├───────────────────────┤
+                             ╎                               ╎
+       hub idle timeout 0x7F ╎ 0  0  0  0  0  0  0  0  0  0  ╎ recomputed
+       slot exit latency old ╎ 0                             ╎ new
+```
+
+### Pattern: race window
+
+1. Use when a hazard is one path acting on something it read earlier while another path changes it in between (a check-then-act on a state word, a cancel against a completion, a wakeup flag against a suspend decision).
+2. Draw one time axis and one row per path; the read-to-act stretch of the first path is a span bar `├───┤` with the read at its left end and the act at its right, and the second path's write is an arrowhead `▲` landing inside the bar with its label beside the stem.
+3. The shape asserts that a point falls inside an interval. It is a swimlane only in the sense the swimlane pattern tests: deleting either row kills it.
+
+```
+       A state test and the death that lands inside it
+       ───────────────────────────────────────────────
+
+       time ─────────────────────────────────────────────────────▶
+       CPU A   reads xhc_state         acts on what it read
+               RUNNING ├────────────────────────────┤ queues the command
+                                     ▲
+       CPU B                         │ xhci_hc_died() sets DYING
+
+       the write lands inside A's interval, so A queues a command
+       on a controller that is already dead
+```
+
+### Pattern: lifetime Gantt
+
+1. Use when an object's lifetime is the point and who may touch it changes at named handovers (an URB from allocation to free, a device from registration to unbind, a page from allocation to release).
+2. Draw one time axis with the handover functions as column heads and dashed guides `╎` beneath them, one span bar per holder aligned to the guides, and a bottom row giving the count at each column. The count equals the bars a vertical slice crosses, which is how the reader checks it.
+3. Distinct from the refcount ladder, which shows what the 0 to 1 edges trigger; this shows who holds and derives the count. Distinct from the state graph, which shows states rather than owners.
+
+```
+       One URB, its holders, and the count they add up to
+       ───────────────────────────────────────────────────
+
+       time ──────────────────────────────────────────────────────────────▶
+                     usb_alloc_urb  usb_submit_urb  completion  usb_free_urb
+                     ╎              ╎               ╎           ╎
+       caller        ├──────────────────────────────────────────┤
+       HCD                          ├───────────────┤
+                     ╎              ╎               ╎           ╎
+       refcount      1              2               1           0
+```
+
+### Pattern: drain
+
+1. Use when a transition waits for in-flight work to leave before it proceeds (stopping an endpoint before a reset, killing URBs, flushing a workqueue, a grace period).
+2. Draw the inlet closed with `──┤`, the in-flight items as a strip that empties toward `──▶`, and the gate as a dashed vertical `╎` that opens when the strip is empty, with what runs next beside it.
+3. The shape asserts three facts at once: nothing new enters, what is inside leaves, and the next step waits on emptiness. The refcount ladder shows a count reaching zero; this shows the closed inlet that makes it reach zero.
+
+```
+       The ring drains before the reset may run
+       ────────────────────────────────────────
+       (the inlet is closed; nothing new enters while it empties)
+
+       new work ──┤   ┌──────┬──────┬──────┐  completions   ╎
+                      │  td  │  td  │  td  │ ─────────────▶ ╎ gate, opens
+                      └──────┴──────┴──────┘                ╎ when the ring
+                                                            ╎ is empty; then
+                                                            ╎ the reset runs
+```
+
+### Pattern: two-view memory strip
+
+1. Use when one region of memory is seen from two address spaces and something on each side points into it (a context array under its DMA base and its kernel pointer, a ring segment, a descriptor block, an skb's data area).
+2. Draw the strip once as `┌─┬─┐` cells, the CPU-side name or address on a ruler above and the device-side address on a ruler below, the register or field that holds each address as a labelled arrow into its ruler, and a `├───┤` measurement bar under the first cell giving the cell size.
+3. Distinct from the register / address-offset map, which lays out a register block by offset; this is one buffer under two rulers.
+
+```
+       One device's context array, as the driver and the controller see it
+       ───────────────────────────────────────────────────────────────────
+
+       CPU view virt_dev->out_ctx->bytes
+                ┌──────────────┬───────────────┬─────────────────────┐
+                │ slot context │ ep context 0  │ ep contexts 1 to 30 │
+                └──────────────┴───────────────┴─────────────────────┘
+       DMA view virt_dev->out_ctx->dma  ◀── DCBAA[slot_id]
+                ├─ CTX_SIZE ───┤  32 or 64 bytes, from HCCPARAMS1
+```
+
+### Pattern: lengths against one ruler
+
+1. Use when a fixed budget must contain a sum of parts (a latency inside a service interval, a header inside an MTU, an exit latency inside a timeout) and the failing case is as important as the fitting one.
+2. Draw the budget as one ruler `├───┤`, then one row per case with its parts as adjoining span bars starting at the ruler's left end, so a part that runs past the ruler's right end is visible as overhang; label the overhang with its consequence.
+3. The shape asserts a length comparison; the frame partition grid divides a frame into claimed slots, while this tests whether the parts fit at all.
+
+```
+       SEL plus one bus interval against the service interval
+       ───────────────────────────────────────────────────────
+
+                      0                                interval
+       budget         ├───────────────────────────────────────┤
+       fits           ├──── SEL ────┼─ 125 us ─┤    slack
+       does not fit   ├───────── SEL ─────────────────┼─ 125 us ─┤
+                                                                 ▲ overhang:
+                                                          device-initiated
+                                                          entry refused
+```
+
+### Pattern: scan bar chart
+
+1. Use when a loop over a set keeps a running maximum or minimum and one member can abort it (a per-endpoint timeout scan, a per-port capability sweep, a per-child resource walk).
+2. Draw the members as filled bars `██` in scan order along one axis with height as the value, mark the kept one, draw the aborting member as a shaded bar `▒▒`, and label the members after it as never examined.
+3. The shape asserts magnitude, order and the cut; the data-dependency pattern shows what feeds a transform, this shows what a scan over many produces and where it stops.
+
+```
+       One scan, the candidate it keeps, and the one that ends it
+       ─────────────────────────────────────────────────────────
+       (hub timeout candidate per endpoint, in scan order)
+
+          ▲
+          │                   ██  ◀ largest so far, the value kept
+          │        ██         ██
+          │   ██   ██   ██    ██    ██
+          │   ██   ██   ██    ██    ██    ▒▒  USB3_LPM_DISABLED
+          │   ██   ██   ██    ██    ██    ▒▒  the scan stops, -E2BIG
+          └───██───██───██────██────██────▒▒────────▶ scan order
+             ep0  ep1  ep2   ep3   ep4   ep5   ep6 never examined
+```
+
+
+**PASS CRITERIA:** For each justified figure, choose the pattern from the use-case index by matching its "reach for it when" column, and record the pattern name at sign-off; reach for a new shape only when no listed pattern fits the relationship, and record why. Confirm the figure matches its pattern's stated shape and distinguishing notes: a sparse slot map is neither a fan-out (one trunk allocating children) nor an N-to-M mapping (disjoint inputs feeding a tabular destination); swimlane cells carry the state each actor reaches, never the next callee, and a swimlane that would survive deleting all but one lane fails; data-dependency endpoints are structs and its arrows mean feeds or populates, never call order; a before/after keeps the identical cell style on both sides so the change reads as a diff; flowchart boxes name conditions and effects, never callees; annotation that would hang off the destination's right edge moves to prose below the figure so every line stays under 80 columns. Honor the two retired forms this catalog once carried: input-decode material is drawn as a decode tree, never as a grid of input columns against an outcome column, and threshold-refcount material as a rung ladder, never as a grid of events against transitions against actions (both grids are the banned plain table, and the ban outranks this catalog). A flat input-to-outcome product with no nesting is a Markdown semantics table and gets no figure at all. The nine patterns added on 2026-09-03 carry their own distinctions: a lifetime Gantt shows who holds and derives the count, and threshold material stays with the refcount ladder; a race window passes the swimlane's deletion test; a span bar on a time or value axis is a datum, and ROUTINE-07's measurement-bar check does not apply to it. Pass per figure with the pattern named.
