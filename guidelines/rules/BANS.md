@@ -8,7 +8,7 @@ Sweep them over a prose view of the page (ROUTINE-01 builds it: fences dropped, 
 |---|---|---|---|
 | em dash | `—` | parentheses, or two sentences | nothing; figure text included |
 | boldface | `**` on the raw file | plain text | `/**` kerneldoc openers inside fences |
-| negative construction ("X, not Y") | `(,\|\band)\s+(not\|never)\s`, then read: a sentence asserting X by denying Y is a hit | state what the thing is | a quoted comment |
+| negative construction ("X, not Y", "X rather than Y") | `(,\|\band)\s+(not\|never)\s\|\brather than\b\|\binstead of\b`, then read: a sentence asserting X by denying Y is a hit | state what the thing is | a quoted comment; a comparison whose denied alternative is a real design the reader could otherwise assume |
 | placement verbs | the lemmas live, lives, lived, living, sit, sits, sat, sitting, hang, hangs, hung, hanging, want, wants, wanted, wanting | "is defined in", "is held in", "occupies", "is attached behind"; a field "transitions through" its values | the adjective ("the live ring"); a real actor ("the reader wants the buffer"); a verbatim quote. Physical hardware earns no exemption: "the device sits behind a translator" is reworded |
 | "walk" for a scalar | `\bwalks?\b`, then read | "advances through" | traversing a data structure (a list, a tree, page tables, the namespace) |
 | "vtable" | `vtable` | "function pointer struct" or the type name | nothing |
