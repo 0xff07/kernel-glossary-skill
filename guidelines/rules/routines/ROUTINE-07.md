@@ -11,7 +11,7 @@ The geometry criteria in `../diagrams/DIAG-01.md` and `../diagrams/DIAG-03.md` s
 3. Flag ASCII `\`, `/`, and `|` used as a side, corner, junction, connector, or extent marker. Leave the three exempt uses alone: an English word separator, a C expression such as `||`, and reproduced kernel source.
 4. Group the rows of ONE box, then check that box against itself: its left border column, its right border column, and every interior `│` must meet a border or junction character (`┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ │`) in the row above and the row below.
 5. Follow every vertical trunk to both ends. A trunk must terminate on a junction, an arrowhead, or a labelled elbow at each end; a trunk that stops in blank space is broken however straight it looks.
-6. Check that an extent or measurement bar spans exactly the columns of the thing it measures, since a bar that overshoots asserts a width the figure does not have.
+6. Check that a measurement bar, an extent drawn under a strip or a box, spans exactly the columns of the thing it measures, since a bar that overshoots asserts a width the figure does not have. A span bar on a time or value axis (a Gantt holder, a bracket, a budget) is the datum itself, sized to its own extent, and is measured against nothing.
 
 ## Repair each class
 
@@ -90,5 +90,7 @@ A trunk hanging in blank space and an arrow stopping short of its target, redraw
 2. Two boxes drawn at different indents inside one figure, which differ in width by design.
 3. A `│` above a `▼` or below a `▲`, which is a trunk meeting its own arrowhead.
 4. A C expression such as `field_y == ANY || ...` inside annotation text, which the ASCII exemption covers.
+5. A dashed vertical `╎` used as a guide or a barrier: it aligns rows across a figure or marks a gate, terminates on the row it aligns or beside its label, and carries no trunk relationship, so rule 5's termination test does not apply to it. (Added 2026-09-03.)
+6. A span bar `├───┤` on a time or value axis with no box above it, which is a datum and not a measurement; rule 6 applies to measurement bars only. (Added 2026-09-03.)
 
 **PASS CRITERIA:** This file imposes no page-level check of its own; a page cannot fail it directly. It passes through use: every figure the geometry criteria reject is repaired by the matching repair above rather than by nudging characters until it looks right, the check is re-run after each repair, and the four classes above are recorded as cleared rather than fixed.

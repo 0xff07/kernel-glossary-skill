@@ -17,15 +17,16 @@
 
 8. The test to apply to every figure before saving it: **strip every label and read what is left.**
 9. A figure survives when the remaining skeleton still asserts something (this contains that, this becomes that, these two ends meet here, this partitions into those, time runs this way across these actors).
-10. It fails when what remains is an empty grid, a stack of unconnected boxes, or nothing at all.
+10. What survives is a spatial property carrying the fact: position on an axis, a length, containment, alignment across rows, the direction of a flow. A box is a container, not a shape. A column of boxes whose meaning is in their labels fails this test however true the labels are, and so does a bar or an axis whose positions mean nothing. (Added 2026-09-03.)
+11. It fails when what remains is an empty grid, a stack of unconnected boxes, or nothing at all.
 
-11. Two fenced blocks are not figures and this rule does not reach them: a ` ```c ` source excerpt, and a block reproducing a verbatim quotation whose formatting must survive (a commit message, a `Documentation/` passage, a Kconfig help text).
-12. Both are exempt from this rule and from the strip-the-labels test.
+12. Two fenced blocks are not figures and this rule does not reach them: a ` ```c ` source excerpt, and a block reproducing a verbatim quotation whose formatting must survive (a commit message, a `Documentation/` passage, a Kconfig help text).
+13. Both are exempt from this rule and from the strip-the-labels test.
 
 **PASS CRITERIA:**
 
-1. For every figure, strip every label and record what the remaining skeleton still asserts (this contains that, this becomes that, these two ends meet here, this partitions into those, time runs this way across these actors); an empty grid, a stack of unconnected boxes, or nothing at all fails.
-2. Then confirm the figure is none of the four banned shapes: a plain table (records by attributes in box characters; a genuine grid must show a partition, and the tabular material belongs in a Markdown semantics table), a plain function-flow graph (every node a function name, every edge meaning "calls"; a swimlane that would survive deleting all but one lane is this shape wearing lanes), a plain listing of struct members (a box nothing exits), or plain text in a fence.
-3. Confirm precedence was honored: where a catalog pattern would have produced one of these shapes, the pattern was overridden, and each failed figure was redrawn into a shape that carries structure or deleted with its content folded into the surrounding prose.
-4. A ` ```c ` excerpt and a verbatim-quotation fence are not figures and are never tested.
-5. Pass per figure with the strip-test result recorded.
+14. For every figure, strip every label and record what the remaining skeleton still asserts (this contains that, this becomes that, these two ends meet here, this partitions into those, time runs this way across these actors); an empty grid, a stack of unconnected boxes, or nothing at all fails.
+15. Then confirm the figure is none of the four banned shapes: a plain table (records by attributes in box characters; a genuine grid must show a partition, and the tabular material belongs in a Markdown semantics table), a plain function-flow graph (every node a function name, every edge meaning "calls"; a swimlane that would survive deleting all but one lane is this shape wearing lanes), a plain listing of struct members (a box nothing exits), or plain text in a fence.
+16. Confirm precedence was honored: where a catalog pattern would have produced one of these shapes, the pattern was overridden, and each failed figure was redrawn into a shape that carries structure or deleted with its content folded into the surrounding prose.
+17. A ` ```c ` excerpt and a verbatim-quotation fence are not figures and are never tested.
+18. Pass per figure with the strip-test result recorded.
