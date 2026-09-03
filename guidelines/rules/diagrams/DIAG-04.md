@@ -17,7 +17,6 @@
 |---|---|
 | parent + N children fan-out | one parent spawns multiple typed children; identity comes from a parent field |
 | sparse slot map with conditional backing | a uniform index space where each slot may or may not have a backing object |
-| input decode tree | a return value or branch is a deterministic function of a few input bits |
 | boxed flowchart with decision nodes | 3+ sequential decision points with side effects and back-edges |
 | side-by-side struct comparison | two related types meet at a third operation (match, encode/decode) |
 | linked structs via field-level pointers | the field-level pointer topology between existing structs is the point |
@@ -109,32 +108,6 @@
        Flat lookup:
          lookup(idx) = base + idx
          (base is a virtually contiguous array; only populated slots are mapped)
-```
-
-### Pattern: input decode tree
-
-1. Use when a function's return value or the chosen branch is a deterministic function of a small number of input bits or fields.
-2. Draw it as a tree that consumes one input at a time: the tested input on a trunk, one labelled edge per value, and the outcome at each leaf.
-3. The reader follows a path rather than scanning rows, and the shape shows which inputs are read only on some paths.
-
-4. Do NOT draw this as a grid of input columns against an outcome column.
-5. That is the banned plain table, and it was the form this catalog carried until the ban retired it.
-6. When the material really is a flat product of every input against every outcome with no nesting, it is a semantics table and belongs in Markdown, with no figure at all.
-
-```
-       input_a ?
-          │
-          ├─ 0 ──────────────────────▶ OUTCOME_NONE
-          │      (input_b is not read on this path)
-          │
-          └─ 1 ──▶ input_b ?
-                      │
-                      ├─ 0 ─────────▶ OUTCOME_HANDLED
-                      │
-                      └─ 1 ─────────▶ OUTCOME_WAKE
-                                        │
-                                        ▼
-                                      followup_handler
 ```
 
 ### Pattern: boxed flowchart with decision nodes
@@ -796,4 +769,4 @@
 ```
 
 
-**PASS CRITERIA:** For each justified figure, choose the pattern from the use-case index by matching its "reach for it when" column, and record the pattern name at sign-off; reach for a new shape only when no listed pattern fits the relationship, and record why. Confirm the figure matches its pattern's stated shape and distinguishing notes: a sparse slot map is neither a fan-out (one trunk allocating children) nor an N-to-M mapping (disjoint inputs feeding a tabular destination); swimlane cells carry the state each actor reaches, never the next callee, and a swimlane that would survive deleting all but one lane fails; data-dependency endpoints are structs and its arrows mean feeds or populates, never call order; a before/after keeps the identical cell style on both sides so the change reads as a diff; flowchart boxes name conditions and effects, never callees; annotation that would hang off the destination's right edge moves to prose below the figure so every line stays under 80 columns. Honor the two retired forms this catalog once carried: input-decode material is drawn as a decode tree, never as a grid of input columns against an outcome column, and threshold-refcount material as a rung ladder, never as a grid of events against transitions against actions (both grids are the banned plain table, and the ban outranks this catalog). A flat input-to-outcome product with no nesting is a Markdown semantics table and gets no figure at all. The nine patterns added on 2026-09-03 carry their own distinctions: a lifetime Gantt shows who holds and derives the count, and threshold material stays with the refcount ladder; a race window passes the swimlane's deletion test; a span bar on a time or value axis is a datum, and ROUTINE-07's measurement-bar check does not apply to it. Pass per figure with the pattern named.
+**PASS CRITERIA:** For each justified figure, choose the pattern from the use-case index by matching its "reach for it when" column, and record the pattern name at sign-off; reach for a new shape only when no listed pattern fits the relationship, and record why. Confirm the figure matches its pattern's stated shape and distinguishing notes: a sparse slot map is neither a fan-out (one trunk allocating children) nor an N-to-M mapping (disjoint inputs feeding a tabular destination); swimlane cells carry the state each actor reaches, never the next callee, and a swimlane that would survive deleting all but one lane fails; data-dependency endpoints are structs and its arrows mean feeds or populates, never call order; a before/after keeps the identical cell style on both sides so the change reads as a diff; flowchart boxes name conditions and effects, never callees; annotation that would hang off the destination's right edge moves to prose below the figure so every line stays under 80 columns. Honor the retired forms this catalog once carried: input-decode material gets no figure, neither the grid of input columns against an outcome column (the banned plain table) nor the decode tree that replaced it (retired 2026-09-04 as labels joined by arrows, a shape whose meaning is entirely in its text); a flat input-to-outcome product is a Markdown semantics table and a nested one is prose, and a test of a value against a limit is drawn to scale only when the magnitudes are the page's own facts. Threshold-refcount material is a rung ladder, never a grid of events against transitions against actions (the banned plain table; the ban outranks this catalog). A flat input-to-outcome product with no nesting is a Markdown semantics table and gets no figure at all. The nine patterns added on 2026-09-03 carry their own distinctions: a lifetime Gantt shows who holds and derives the count, and threshold material stays with the refcount ladder; a race window passes the swimlane's deletion test; a span bar on a time or value axis is a datum, and ROUTINE-07's measurement-bar check does not apply to it. Pass per figure with the pattern named.
