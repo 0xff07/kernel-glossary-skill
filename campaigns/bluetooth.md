@@ -15,9 +15,9 @@ Two user amendments (2026-07-18) shape everything below:
 
 Documented tree: Linux tag `v7.0`, commit `028ef9c96e96197026887c0f092424679298aae8` ("Linux 7.0"); `git describe --tags` at the tree root must print `v7.0`. All Elixir links use `https://elixir.bootlin.com/linux/v7.0/source/...`. Research tooling: semcode where an index for this commit exists, Grep/Read otherwise; the on-disk tree at the pin is always ground truth (7e, 7o), so absence of semcode on a resuming machine changes cost, not correctness.
 
-Subsystem Map entry Bluetooth (`guidelines/reference/subsystems.md`): dir `bluetooth`, tag `bluetooth`, kernel_paths `net/bluetooth/`, `drivers/bluetooth/`, `include/net/bluetooth/`, spec "Bluetooth Core Specification", section6_heading INTERFACES.
+Subsystem Map entry Bluetooth (`guidelines/subsystems.md`): dir `bluetooth`, tag `bluetooth`, kernel_paths `net/bluetooth/`, `drivers/bluetooth/`, `include/net/bluetooth/`, spec "Bluetooth Core Specification", section6_heading INTERFACES.
 
-NOT inputs: the other campaigns' entries under `progress/` (other runs; isolation per SKILL.md, "The three artifacts and the two states"); `guidelines/reference/samples/` (style/structure/depth calibration only, never kernel facts); `prompt.md`'s technical details (stale by declaration — its instructions and topic list govern scope, its implied facts do not).
+NOT inputs: the other campaigns' entries under `progress/` (other runs; isolation per SKILL.md, "The three artifacts and the two states"); `guidelines/reference/samples/` (at commit 45b7634, before the compaction) (style/structure/depth calibration only, never kernel facts); `prompt.md`'s technical details (stale by declaration — its instructions and topic list govern scope, its implied facts do not).
 
 Output root: `docs/bluetooth/`. No `SUMMARY.md`/`mkdocs.yml` edits. No git commits without an explicit user go.
 
@@ -29,7 +29,7 @@ Standing instructions to any executor, on any machine, cold or warm:
 2. Derive campaign state: diff this catalog's 73 rows against their output paths under `docs/bluetooth/`. A page on disk is done (presumed to have completed its writing run's check pass); a missing page is open. There is no shared execution log to consult.
 3. Create or reuse the machine-local workspace `progress/bluetooth/` (run log `log.md`, dossiers). It is never committed.
 4. Execute ONLY the slice the invoker named — a batch from this spec's batch order (its recommended slicing), or an explicit page list. Given a bare "run bluetooth" with no slice: report the derived state and ask; never pick a slice autonomously. Overwrite guard: a catalog page that already exists on disk is never overwritten silently — stop and surface it.
-5. Run the slice per SKILL.md "Modes": one writer per page, briefed per `guidelines/passes/02-write.md` with the page's catalog row, its cluster's boundary rules, and the project-specific bans and write-time cautions from this spec's Execution & verification section; then the orchestrator check per page (`guidelines/passes/03-check.md`); events go to the run log.
+5. Run the slice per SKILL.md "Modes": one writer per page, briefed per `guidelines/campaign.md` section 5 (the writer brief) with the page's catalog row, its cluster's boundary rules, and the project-specific bans and write-time cautions from this spec's Execution & verification section; then the orchestrator check per page (`guidelines/checking.md` section 7); events go to the run log.
 6. Promote anything durable — a spec claim the tree refuted, a user amendment, a settled adjudication — into this spec as a dated amendment (or surface it for the waivers files). The run log does not travel.
 7. Verification: a page's pipeline ends at LINTED. Verification campaigns and the CERTIFIED state were removed from the skill on 2026-08-31; do not plan, dispatch, or stamp one.
 
@@ -941,7 +941,7 @@ Also applied: configure_datapath_sync line hint corrected to hci_conn.c:235; rev
   - Every major construct documented carries at least one concrete example from btusb, btintel, btmtk, or vhci (constraint 2, rule 7k); pages that document a core function cite driver usage of it (constraint 15).
   - Ops-structure coverage is exhaustive: every callback of a documented ops struct gets its contract (when called, context/locks, what it must do), and every state machine lists all states and all transitions with the code that drives each (constraints 8, 13).
   - Lifecycle sections (alloc/free/refcount/locking) and async-behavior sections (work deferral, completions, timers, lazy processing) are mandatory wherever the construct has them (constraints 11, 12).
-  - Packet formats get 7h-style byte/bit figures; struct relationships and state machines get 7i figures (constraint 16); figures follow `guidelines/rules/diagrams.md`.
+  - Packet formats get 7h-style byte/bit figures; struct relationships and state machines get 7i figures (constraint 16); figures follow `guidelines/rules/diagrams.md` (at commit f7e4323, before the compaction).
   - The kernel/userspace split is stated explicitly wherever a protocol layer lives partly in userspace (GAP/GATT/ATT/SDP; constraint on the BLE-host and SDP bullets).
   - Elixir links pin `v7.0`; excerpts byte-compared against the tree (7e, 7l).
 - Write-time cautions: prompt.md details are stale by declaration — nothing from it lands without on-disk verification; inventory-digest line numbers are hints to re-verify. Known version-drift list (facts a writer must not import from older documentation; each verified by an inventory agent against this tree, commit ids given for provenance):
