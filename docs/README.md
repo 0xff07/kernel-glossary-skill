@@ -58,7 +58,7 @@ To use it with Claude Code, simply clone it into the `.claude/skills/`:
 
 ```
 # In kernel root
-git clone https://github.com/0xff07/kernel-glossary-skill.git ./.claude/skills/
+git clone https://github.com/0xff07/kernel-glossary-skill.git ./.claude/skills/kernel-glossary-skill
 ```
 
 Launch Claude Code in the root directory of the kernel source code:
@@ -89,18 +89,18 @@ You can now start using it!
 
 ## Usage
 
-For a single page, just ask for one topic (for example, "write a page on the xHCI command ring for v7.0"): one agent runs the whole pipeline inline and asks before saving. Larger work flows through two separable phases, each resumable from files under `campaign/`, so a phase can run in a different session — or on a different machine — from the one before it. The skill's full contract lives in `SKILL.md`; the per-stage procedures and dispatch briefs live under `guidelines/passes/`.
+For a single page, just ask for one topic (for example, "write a page on the xHCI command ring for v7.0"): one agent runs the whole pipeline inline and asks before saving. Larger work flows through two separable phases, each resumable from the spec under `campaigns/`, so a phase can run in a different session, or on a different machine, from the one before it. The skill's full contract lives in `SKILL.md`; the per-phase procedures are its four passes, read from the guidelines by phase, and the dispatch briefs live in `guidelines/campaign.md`.
 
 ```
 plan ──────────────► write campaign
 produces              writer, then orchestrator check
-campaign/<c>.md       pages: WRITTEN → LINTED
+campaigns/<c>.md      pages: WRITTEN → LINTED
 (no pages yet)        docs/<dir>/...
 ```
 
 ### 1. Planning
 
-Turns a rough topic list into a user-approved campaign plan at `campaign/<campaign>.md`: parallel read-only inventory agents digest the subsystem, the orchestrator curates the page catalog itself (scope statements, anchor symbols, boundary rules with seam symbols, fold-in adjudications, batch order), a fresh agent adversarially reviews the catalog, and planning ends at a user checkpoint — the genuine scope questions, then an explicit go. No page is generated in this phase.
+Turns a rough topic list into a user-approved campaign plan at `campaigns/<campaign>.md`: parallel read-only inventory agents digest the subsystem, the orchestrator curates the page catalog itself (scope statements, anchor symbols, boundary rules with seam symbols, fold-in adjudications, batch order), a fresh agent adversarially reviews the catalog, and planning ends at a user checkpoint — the genuine scope questions, then an explicit go. No page is generated in this phase.
 
 Example prompts:
 
@@ -108,25 +108,25 @@ Example prompts:
 
 > Plan a documentation campaign for the DRM/KMS subsystem at v7.0. The topic list is in prompt.md; it is rough, so inventory the tree and curate the catalog. Don't write any page yet.
 
-What to expect back: a plan file under `campaign/`, a summary of the catalog, and 2-4 checkpoint questions (scope options, optional pages, granularity). Generation starts only after you answer and give the go.
+What to expect back: a plan file under `campaigns/`, a summary of the catalog, and 2-4 checkpoint questions (scope options, optional pages, granularity). Generation starts only after you answer and give the go.
 
-Procedure: `guidelines/passes/plan.md`.
+Procedure: `guidelines/campaign.md`.
 
 ### 2. Writing campaign
 
-Executes an approved plan in batches of about five pages. Per page, a writer agent researches with semcode and writes the complete page — it owns all the facts, closes the catalog-to-DETAILS parity table, runs the mechanical exit suite (excerpt byte-compare, link-anchor confirmation, second-basis count re-derivation), and persists the evidence into the page's dossier.
+Executes an approved plan in batches of about five pages. Per page, a writer agent researches with semcode and writes the complete page — it owns all the facts, closes the catalog-to-DETAILS parity table, runs the mechanical checks (`kg check`: excerpt byte-compare, link-anchor confirmation, the bands and the sweeps) with its counts re-derived on a second basis, and persists the evidence into the page's dossier.
 
-Then the orchestrator re-runs those same procedures itself and compares the answers against what the writer recorded; a disagreement is a finding. It adjudicates every residual against the waivers and applies the fixes in place, never delegating either. Pages land under `docs/<dir>/` in state WRITTEN → LINTED, which is where a page's pipeline ends. A write campaign can also start from a list of findings against pages already on disk instead of a fresh topic list; the plan pass calls that a repair campaign.
+Then the orchestrator re-runs those same procedures itself and compares the answers against what the writer recorded; a disagreement is a finding. It adjudicates every residual against the rules' own exemptions and applies exactly specified fixes in place, never delegating either. Pages land under `docs/<dir>/` in state WRITTEN → LINTED, which is where a page's pipeline ends. There is no repair campaign: a page the user wants rewritten is removed in a commit of its own and created again from the removed revision as prior material.
 
 Example prompts:
 
 > Resume the drm campaign and start batch B1 per the plan.
 
-> Execute the approved plan at campaign/drm.md. Run batches B1 through B3, checkpointing between batches.
+> Execute the approved plan at campaigns/drm.md. Run batches B1 through B3, checkpointing between batches.
 
-What to expect back: per-batch checkpoints reporting pages done/remaining with writer and check evidence, the plan file's Status section updated after every page, and dossiers/parity tables/lint reports accumulating under `progress/<campaign>/`.
+What to expect back: per-batch checkpoints reporting pages done/remaining with writer and check evidence, the machine-local run log updated after every page, and one dossier per page (research, parity table, evidence, lint) accumulating under `progress/<campaign>/`, mirroring the page paths; the spec records no execution state.
 
-Procedure: `SKILL.md` ("Modes"), with the writer brief in `guidelines/passes/02-write.md` and the check procedure in `guidelines/passes/03-check.md`.
+Procedure: `SKILL.md` ("Modes"), with the writer brief in `guidelines/campaign.md` and the check pass in `guidelines/checking.md`.
 
 ### Notes
 

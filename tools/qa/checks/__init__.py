@@ -1,0 +1,1 @@
+"""Automatically discovered guideline checks."""
