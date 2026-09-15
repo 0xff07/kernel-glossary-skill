@@ -42,7 +42,7 @@ The body of a `_Exx` method hands its event to a driver through the ASL `Notify`
 - ACPI Specification, section 5.6.4.1.1: Queuing the Matching Control Method for Execution
 - ACPI Specification, section 5.6.6: Device Object Notifications
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Discovery: namespace walk for GPE methods
 
@@ -103,7 +103,7 @@ The body of a `_Exx` method hands its event to a driver through the ASL `Notify`
 - [`'\<gpe_count\>':'drivers/acpi/sysfs.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/sysfs.c#L611): increments the per-GPE slot behind `/sys/firmware/acpi/interrupts/gpeXX`
 - [`'\<acpi_install_global_event_handler\>':'drivers/acpi/acpica/evxface.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/evxface.c#L534): stores the callback in [`acpi_gbl_global_event_handler`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/acglobal.h#L241)
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/namespace.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/namespace.rst): places the `\_GPE` scope ("Scope(_GPE): the GPE namespace") in the namespace tree that the method walk traverses
 - [`Documentation/firmware-guide/acpi/debug.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/debug.rst): `acpi.debug_layer`/`acpi.debug_level` switches that surface the registration and dispatch traces in the code on this page

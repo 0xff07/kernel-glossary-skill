@@ -54,7 +54,7 @@ Registration happens once per device at probe time. [`ged_probe()`](https://elix
 - ACPI Specification, section 5.6.9.4: GED Wake Events
 - ACPI Specification, section 5.6.6: Device Object Notifications
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Consumer: Generic Event Device
 
@@ -94,7 +94,7 @@ Registration happens once per device at probe time. [`ged_probe()`](https://elix
 - [`'\<acpi_os_execute\>':'drivers/acpi/osl.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/osl.c#L1092): queues the dispatch under [`OSL_NOTIFY_HANDLER`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acpiosxf.h#L22) onto [`kacpi_notify_wq`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/osl.c#L67)
 - [`'\<acpi_bus_notify\>':'drivers/acpi/bus.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/bus.c#L568): global system-notify handler that schedules hotplug work for values 0x00 through 0x7F
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): documents the `Interrupt()` and `GpioInt()` resource descriptors that name the events `_EVT` later receives
 - [`Documentation/firmware-guide/acpi/gpio-properties.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/gpio-properties.rst): GPIO resource handling under ACPI, background for the GpioInt lane

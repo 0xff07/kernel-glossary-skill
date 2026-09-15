@@ -41,7 +41,7 @@ On the consumer side, Linux installs [`acpi_bus_notify()`](https://elixir.bootli
 - ACPI Specification, section 19.6: ASL Operator Reference (the Notify operator)
 - ACPI Specification, section 20.2: AML Grammar Definition (DefNotify encoding)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Opcode encoding and interpreter path
 
@@ -103,7 +103,7 @@ On the consumer side, Linux installs [`acpi_bus_notify()`](https://elixir.bootli
 - [`ACPI_OST_SC_SUCCESS`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/acpi.h#L684) / [`ACPI_OST_SC_NON_SPECIFIC_FAILURE`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/acpi.h#L685): general processing status codes
 - [`ACPI_OST_SC_EJECT_NOT_SUPPORTED`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/acpi.h#L695) / [`ACPI_OST_SC_DEVICE_BUSY`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/acpi.h#L697) / [`ACPI_OST_SC_EJECT_IN_PROGRESS`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/acpi.h#L699): ejection status codes returned by the hotplug core
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/acpi-lid.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/acpi-lid.rst): the lid device usage model built on `Notify(lid_device, 0x80)` plus `_LID` re-evaluation
 - [`Documentation/driver-api/acpi/scan_handlers.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/driver-api/acpi/scan_handlers.rst): the scan-handler machinery that services Bus Check, Device Check, and Eject Request notifications

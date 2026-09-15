@@ -57,7 +57,7 @@ The runtime protocol follows the spec's handling sequence. [`acpi_ev_gpe_dispatc
 - ACPI Specification, section 5.6.4.1: _Exx, _Lxx, and _Qxx Methods for GPE Processing
 - ACPI Specification, section 7.3.13: _PRW (Power Resources for Wake)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### FADT register blocks and boot-time parsing
 
@@ -111,7 +111,7 @@ The runtime protocol follows the spec's handling sequence. [`acpi_ev_gpe_dispatc
 - [`'\<acpi_ec_gpe_handler\>':'drivers/acpi/ec.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L1328): interrupt-level raw handler driving the EC transaction state machine
 - [`'\<acpi_ec_enable_gpe\>':'drivers/acpi/ec.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L348): wrapper around [`acpi_enable_gpe()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/evxfgpe.c#L92)/[`acpi_set_gpe()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/evxfgpe.c#L199) with a polling quirk
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/ABI/testing/sysfs-firmware-acpi`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/sysfs-firmware-acpi): the `/sys/firmware/acpi/interrupts/gpeXX` counters plus their enable/disable/clear/mask controls
 - [`Documentation/firmware-guide/acpi/debug.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/debug.rst): ACPICA debug layers and levels used when tracing GPE storms and lost events

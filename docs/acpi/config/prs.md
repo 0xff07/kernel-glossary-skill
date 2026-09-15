@@ -59,7 +59,7 @@ Beyond PNP, the ACPI interrupt link driver reads `_PRS` through the same walk to
 - ACPI Specification, section 6.4.2: Small Resource Data Type (Start Dependent Functions and End Dependent Functions descriptors)
 - ACPI Specification, section 19.6: ASL Operator Reference (StartDependentFn, StartDependentFnNoPri, EndDependentFn macros)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### ACPICA fetch and decoded types
 
@@ -122,7 +122,7 @@ Beyond PNP, the ACPI interrupt link driver reads `_PRS` through the same walk to
 - [`'\<acpi_pci_link_check_possible\>':'drivers/acpi/pci_link.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/pci_link.c#L84): callback harvesting IRQ descriptors and skipping group markers
 - [`'\<struct acpi_pci_link\>':'drivers/acpi/pci_link.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/pci_link.c#L66) / [`'\<struct acpi_pci_link_irq\>':'drivers/acpi/pci_link.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/pci_link.c#L55): link state holding `possible[]` and `possible_count`
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/admin-guide/pnp.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/admin-guide/pnp.rst): the PNP layer whose option machinery `_PRS` feeds, including the sysfs interface
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): ACPI enumeration paths surrounding the PNP ACPI protocol

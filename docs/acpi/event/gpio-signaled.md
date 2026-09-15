@@ -49,7 +49,7 @@ gpiolib owns the whole kernel side. [`acpi_gpiochip_add()`](https://elixir.bootl
 - ACPI Specification, section 5.6.6: Device Object Notifications
 - ACPI Specification, section 19.6.55: GpioInt (GPIO Interrupt Connection Resource Descriptor Macro)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Registration entry points
 
@@ -104,7 +104,7 @@ gpiolib owns the whole kernel side. [`acpi_gpiochip_add()`](https://elixir.bootl
 - [`acpi_gbl_reduced_hardware`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acpixf.h#L214): ACPICA copy of the FADT `HW_REDUCED_ACPI` flag, set in [`acpi_tb_parse_fadt()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/tbfadt.c#L276)
 - [`'\<acpi_ev_initialize_events\>':'drivers/acpi/acpica/evevent.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/evevent.c#L34): returns before any fixed-event or GPE setup when the flag is set, which leaves `_AEI` pins and GED interrupts as the platform's event sources
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/gpio-properties.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/gpio-properties.rst): `_DSD` naming, polarity and pull semantics for `GpioIo`/`GpioInt` resources
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): the GPIO support section with full `GpioInt` ASL declarations and the driver-side consumption model

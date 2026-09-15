@@ -51,7 +51,7 @@ Every interrupt executes [`advance_transaction()`](https://elixir.bootlin.com/li
 - ACPI Specification, section 5.6.4: General-Purpose Event Handling
 - ACPI Specification, section 5.2.15: Embedded Controller Boot Resources Table (ECDT)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Interrupt source discovery and installation
 
@@ -138,7 +138,7 @@ Every interrupt executes [`advance_transaction()`](https://elixir.bootlin.com/li
 - [`'\<acpi_clear_gpe\>':'drivers/acpi/acpica/evxfgpe.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/evxfgpe.c#L568): W1C write to the GPE STS bit
 - [`'\<acpi_ec_submit_request\>':'drivers/acpi/ec.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L381) / [`'\<acpi_ec_complete_request\>':'drivers/acpi/ec.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L389): [`reference_count`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/internal.h#L202)-driven GPE enable/disable bracketing each transaction
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/ABI/testing/sysfs-firmware-acpi`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/sysfs-firmware-acpi): the `/sys/firmware/acpi/interrupts/gpeXX` counters; the EC GPE's counter increments on every EC interrupt
 - [`Documentation/admin-guide/dynamic-debug-howto.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/admin-guide/dynamic-debug-howto.rst): enabling the [`ec_dbg_stm()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L225) and [`ec_dbg_evt()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L229) trace lines that log every interrupt-context step and event transition

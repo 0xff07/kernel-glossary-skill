@@ -58,7 +58,7 @@ The Linux consumption layer splits in two. For descriptors with a generic analog
 - ACPI Specification, section 19.3.3: ASL Resource Templates
 - ACPI Specification, section 19.6: ASL Operator Reference (one macro per descriptor kind)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Decoded resource model (include/acpi/acrestyp.h)
 
@@ -135,7 +135,7 @@ The Linux consumption layer splits in two. For descriptors with a generic analog
 - [`'\<pnpacpi_allocated_resource\>':'drivers/pnp/pnpacpi/rsparser.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/pnp/pnpacpi/rsparser.c#L164): `_CRS` callback mixing the generic converters with raw DMA/vendor/GPIO reads
 - [`'\<pnpacpi_option_resource\>':'drivers/pnp/pnpacpi/rsparser.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/pnp/pnpacpi/rsparser.c#L454): `_PRS` callback reading raw union members for every legacy descriptor family
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): how connector descriptors (I2cSerialBus, SpiSerialBus, UartSerialBus, GpioInt, FixedDMA) steer device enumeration onto the right bus
 - [`Documentation/firmware-guide/acpi/gpio-properties.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/gpio-properties.rst): pairing GpioInt/GpioIo descriptors with `_DSD` names and how polarity in the descriptor interacts with the property cells

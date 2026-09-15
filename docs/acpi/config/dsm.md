@@ -54,7 +54,7 @@ The consumers on this page cover the three calling patterns. The PCI core define
 - ACPI Specification, section 9.1.1: _DSM (Device Specific Method)
 - ACPI Specification, section 19.6: ASL Operator Reference (ToUUID compiles the Arg0 Buffer)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Evaluation helpers
 
@@ -107,7 +107,7 @@ The consumers on this page cover the three calling patterns. The PCI core define
 - [`'\<tpm_eval_dsm\>':'drivers/char/tpm/tpm_ppi.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/char/tpm/tpm_ppi.c#L56): driver-local wrapper fixing the GUID and delegating to the typed helper
 - [`'\<tpm_store_ppi_request\>':'drivers/char/tpm/tpm_ppi.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/char/tpm/tpm_ppi.c#L124): sysfs store handler packing one or two Integers into Arg3
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/arch/arm64/acpi_object_usage.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/arch/arm64/acpi_object_usage.rst): per-object table confirming `_DSM` as section 9.1.1 and warning that its return values are interface-defined rather than standardized
 - [`Documentation/firmware-guide/acpi/osi.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/osi.rst): recommends a vendor `_DSM` as the supported way to give Linux OS-specific firmware hooks, replacing `_OSI("Linux")` strings

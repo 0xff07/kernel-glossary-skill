@@ -61,7 +61,7 @@ The state machine has three values, [`ACPI_POWER_RESOURCE_STATE_OFF`](https://el
 - ACPI Specification, sections 6.3.7 and 7.2.4: `_STA` (same table; 7.2.4 is the power-resource variant returning 0/1)
 - ACPI Specification, sections 7.3.8 to 7.3.11: `_PR0`..`_PR3` (the packages that reference declared resources)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### The kernel object (drivers/acpi/power.c)
 
@@ -134,7 +134,7 @@ The state machine has three values, [`ACPI_POWER_RESOURCE_STATE_OFF`](https://el
 - [`'\<resource_in_use_show\>':'drivers/acpi/power.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/power.c#L900): the per-resource `resource_in_use` attribute printing `!!ref_count`
 - [`'\<acpi_power_sysfs_remove\>':'drivers/acpi/power.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/power.c#L911): removes the attribute through the device `remove` hook
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/namespace.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/namespace.rst): documents that the core creates [`struct acpi_device`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acpi_bus.h#L471) objects for power resources and maps the `PowerResource` namespace object to the LNXPOWER bus_id
 - [`Documentation/power/pci.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/power/pci.rst): describes the per-state resource sets "controlled (i.e. enabled or disabled) with the help of their own control methods, _ON and _OFF"

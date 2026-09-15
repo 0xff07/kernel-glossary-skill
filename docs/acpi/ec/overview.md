@@ -48,7 +48,7 @@ The operation region attachment is what makes the EC load-bearing for the rest o
 - ACPI Specification, section 5.2.15: Embedded Controller Boot Resources Table (ECDT)
 - ACPI Specification, section 6.5.4: _REG (Region)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Probe entry points and boot ordering
 
@@ -135,7 +135,7 @@ The operation region attachment is what makes the EC load-bearing for the rest o
 - [`'\<acpi_ec_read_io\>':'drivers/acpi/ec_sys.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec_sys.c#L30) / [`'\<acpi_ec_write_io\>':'drivers/acpi/ec_sys.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec_sys.c#L64): debugfs file operations over the 256-byte EC space
 - [`write_support`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec_sys.c#L21): module parameter gating debugfs writes to EC RAM
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/ABI/testing/debugfs-ec`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/debugfs-ec): the `/sys/kernel/debug/ec/*/` gpe, use_global_lock, and io files
 - [`Documentation/ABI/testing/sysfs-firmware-acpi`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/sysfs-firmware-acpi): the `/sys/firmware/acpi/interrupts/gpeXX` counters that show EC GPE activity

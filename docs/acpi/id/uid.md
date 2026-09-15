@@ -18,7 +18,7 @@ Consumers reach the value through a small helper family in [`include/acpi/acpi_b
 - ACPI Specification, section 6.1.12: _UID (Unique ID)
 - ACPI Specification, section 6.1.5: _HID (Hardware ID)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### ACPICA evaluation
 
@@ -73,7 +73,7 @@ Consumers reach the value through a small helper family in [`include/acpi/acpi_b
 - [`'\<snd_soc_acpi_id_present\>':'sound/soc/soc-acpi.c'`](https://elixir.bootlin.com/linux/v7.0/source/sound/soc/soc-acpi.c#L11): [`acpi_dev_present()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/utils.c#L956) caller probing codec presence with the UID wildcard
 - [`'\<uid_show\>':'drivers/acpi/dock.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/dock.c#L522): dock-station `uid` attribute evaluating `_UID` directly as an integer
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/ABI/testing/sysfs-bus-acpi`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/sysfs-bus-acpi): the `uid` attribute, "the output of the device object's _UID control method, if present"
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): device identification objects in ACPI-based enumeration, the context `_UID` disambiguates within

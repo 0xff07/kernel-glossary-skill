@@ -60,7 +60,7 @@ The engine is split between interrupt context and task context. [`advance_transa
 - ACPI Specification, section 12.3.4: Burst Disable Embedded Controller, BD_EC (0x83)
 - ACPI Specification, section 12.3.5: Query Embedded Controller, QR_EC (0x84)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Command vocabulary
 
@@ -132,7 +132,7 @@ The engine is split between interrupt context and task context. [`advance_transa
 - [`'\<acpi_ec_read_io\>':'drivers/acpi/ec_sys.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec_sys.c#L30): debugfs dump of all 256 EC bytes via [`ec_read()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L913)
 - [`'\<acpi_ec_space_handler\>':'drivers/acpi/ec.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L1346): EmbeddedControl operation region handler translating AML field accesses into RD_EC/WR_EC transactions
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/ABI/testing/debugfs-ec`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/debugfs-ec): the `/sys/kernel/debug/ec/*/io` window onto the 256 EC bytes implemented by [`drivers/acpi/ec_sys.c`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec_sys.c) on top of [`ec_read()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L913)/[`ec_write()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L931)
 - [`Documentation/admin-guide/dynamic-debug-howto.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/admin-guide/dynamic-debug-howto.rst): names `dyndbg="file ec.c +p"` as the boot parameter that surfaces the EC transaction traces emitted through [`ec_dbg_raw()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L214) and friends

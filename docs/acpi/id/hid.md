@@ -43,7 +43,7 @@ Inside the kernel the ID travels a fixed pipeline. [`acpi_get_object_info()`](ht
 - ACPI Specification, section 6.1.12: _UID (Unique ID)
 - ACPI Specification, section 19.6.37: EISAID (EISA ID String To Integer Conversion Macro)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### ACPICA evaluation and EISAID decoding
 
@@ -99,7 +99,7 @@ Inside the kernel the ID travels a fixed pipeline. [`acpi_get_object_info()`](ht
 - [`'\<hid_show\>':'drivers/acpi/device_sysfs.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/device_sysfs.c#L398): the `/sys/bus/acpi/devices/.../hid` attribute
 - [`'\<modalias_show\>':'drivers/acpi/device_sysfs.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/device_sysfs.c#L333): the matching `modalias` attribute
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): the `_HID`/`_ADR` mandate, adding IDs to drivers, and the `PRP0001` device-tree namespace link
 - [`Documentation/driver-api/acpi/scan_handlers.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/driver-api/acpi/scan_handlers.rst): scan handlers claiming devices by hardware ID before driver matching

@@ -44,7 +44,7 @@ The scan code flattens the spec's two-tier identity into one ordered list. [`acp
 - ACPI Specification, section 6.1.5: _HID (Hardware ID)
 - ACPI Specification, section 19.6.37: EISAID (EISA ID String To Integer Conversion Macro)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### ACPICA evaluation
 
@@ -106,7 +106,7 @@ The scan code flattens the spec's two-tier identity into one ordered list. [`acp
 - [`pnp_dev_table`](https://elixir.bootlin.com/linux/v7.0/source/drivers/tty/serial/8250/8250_pnp.c#L28): the 8250 serial PNP table whose generic `PNP0501` entry matches compatible UARTs
 - [`'\<compare_pnp_id\>':'drivers/pnp/driver.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/pnp/driver.c#L29): PNP-side matcher walking the copied ID chain
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): the `PRP0001` device tree namespace link, including the position-dependent priority of `PRP0001` inside a `_CID` package
 - [`Documentation/firmware-guide/acpi/DSD-properties-rules.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/DSD-properties-rules.rst): validity rules that a `_DSD` property set must satisfy before `PRP0001` is permitted in `_HID` or `_CID`

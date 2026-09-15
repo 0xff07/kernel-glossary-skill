@@ -45,7 +45,7 @@ On the kernel side the value flows through three stages. During the namespace sc
 - ACPI Specification, section 6.3.7: _STA (Device Status)
 - ACPI Specification, Appendix B: Video Extensions (display output device addressing)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### ACPICA evaluation
 
@@ -98,7 +98,7 @@ On the kernel side the value flows through three stages. During the namespace sc
 - [`'\<mfd_acpi_add_device\>':'drivers/mfd/mfd-core.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/mfd/mfd-core.c#L55): MFD cells matched by `_ADR` or per-child ID walk
 - [`'\<acpiphp_add_context\>':'drivers/pci/hotplug/acpiphp_glue.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/pci/hotplug/acpiphp_glue.c#L226): hotplug slot registration re-evaluating `_ADR` with [`acpi_evaluate_integer()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/utils.c#L247)
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): the `_HID`/`_ADR` mandate, plus a worked PCIe example whose `Method (_ADR)` returns the device/function couple
 - [`Documentation/firmware-guide/acpi/namespace.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/namespace.rst): namespace tree showing a `GFX0` device with `_ADR 0x00020000` under a PCI root

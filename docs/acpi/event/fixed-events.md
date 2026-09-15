@@ -62,7 +62,7 @@ Runtime handling is a two-stage pipeline inside [`drivers/acpi/acpica/evevent.c`
 - ACPI Specification, section 5.6.2: Types of ACPI Events
 - ACPI Specification, section 5.6.3: Fixed Event Handling
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Event index space
 
@@ -121,7 +121,7 @@ Runtime handling is a two-stage pipeline inside [`drivers/acpi/acpica/evevent.c`
 - [`'\<acpi_suspend_enter\>':'drivers/acpi/sleep.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/sleep.c#L598): polls and clears PWRBTN_STS right after S3 resume
 - [`'\<fixed_event_count\>':'drivers/acpi/sysfs.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/sysfs.c#L625): sysfs counter bump fed by [`acpi_global_event_handler()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/sysfs.c#L637) through [`acpi_install_global_event_handler()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/evxface.c#L534)
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/ABI/testing/sysfs-firmware-acpi`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/sysfs-firmware-acpi): documents the `ff_pwr_btn`, `ff_slp_btn`, `ff_rt_clk`, `ff_pmtimer` and `ff_gbl_lock` fixed-event counter files under `/sys/firmware/acpi/interrupts/`
 - [`Documentation/power/suspend-and-interrupts.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/power/suspend-and-interrupts.rst): interrupt handling across suspend/resume, the phase in which wake-armed fixed events fire

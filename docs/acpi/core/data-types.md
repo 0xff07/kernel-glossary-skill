@@ -51,7 +51,7 @@ Input and output have asymmetric ownership. Arguments are caller-built arrays of
 - ACPI Specification, section 19.3.5: ASL Data Types
 - ACPI Specification, section 5.3.2: Objects
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Object type constants (actypes.h)
 
@@ -109,7 +109,7 @@ Input and output have asymmetric ownership. Arguments are caller-built arrays of
 - [`'\<acpi_ut_evaluate_object\>':'drivers/acpi/acpica/uteval.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/uteval.c#L37): internal evaluator validating returns against [`ACPI_BTYPE_INTEGER`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/aclocal.h#L254)-style masks
 - [`ACPI_BTYPE_INTEGER`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/aclocal.h#L254) / [`ACPI_BTYPE_STRING`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/aclocal.h#L255) / [`ACPI_BTYPE_BUFFER`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/aclocal.h#L256) / [`ACPI_BTYPE_PACKAGE`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/aclocal.h#L257): bitmapped type masks allowing multi-type expectations
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/driver-api/acpi/linuxized-acpica.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/driver-api/acpi/linuxized-acpica.rst): how the ACPICA code base (actypes.h, utcopy.c, nsxfeval.c) is imported and lexically converted into the kernel tree
 - [`Documentation/firmware-guide/acpi/method-tracing.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/method-tracing.rst): tracing control method evaluation, the path every object conversion described here sits on

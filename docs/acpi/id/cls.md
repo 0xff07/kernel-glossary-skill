@@ -36,7 +36,7 @@ On the Linux side the class string becomes an ordinary hardware ID. The [`ACPI_V
 - ACPI Specification, section 6.1: Device Identification Objects
 - ACPI Specification, section 6.1.3: _CLS (Class Code)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### ACPICA evaluation
 
@@ -84,7 +84,7 @@ On the Linux side the class string becomes an ordinary hardware ID. The [`ACPI_V
 - [`'\<do_acpi_entry\>':'scripts/mod/file2alias.c'`](https://elixir.bootlin.com/linux/v7.0/source/scripts/mod/file2alias.c#L539): emits `acpi*:bbsspp:*` aliases for class-only table entries
 - [`MODULE_DEVICE_TABLE`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/module.h#L255): exports the table to the alias generator
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/arch/arm64/acpi_object_usage.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/arch/arm64/acpi_object_usage.rst): per-object table listing `_CLS` under spec section 6.1.3 ("Use as needed, see also _HID")
 - [`Documentation/ABI/testing/sysfs-bus-acpi`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/sysfs-bus-acpi): the `modalias` attribute whose field list the class string joins

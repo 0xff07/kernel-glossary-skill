@@ -19,7 +19,7 @@ Delivery and servicing share the machinery of all hotplug notifications. The val
 - ACPI Specification, section 6.3.7: _STA (Status)
 - ACPI Specification, section 6.3.3: _EJx (Eject), evaluated when a dock station turns a Device Check into an undock
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Value definition and delivery path
 
@@ -72,7 +72,7 @@ Delivery and servicing share the machinery of all hotplug notifications. The val
 - [`'\<acpi_initialize_hp_context\>':'drivers/acpi/scan.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/scan.c#L78): helper libata uses to install its dock notify callbacks
 - [`'\<acpi_ac_notify\>':'drivers/acpi/ac.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ac.c#L120): AC adapter handler with an explicit [`case ACPI_NOTIFY_DEVICE_CHECK`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/actypes.h#L616) that re-reads `_PSR`
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/driver-api/acpi/scan_handlers.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/driver-api/acpi/scan_handlers.rst): the scan-handler machinery that attaches handlers during enumeration and services Device Check events
 - [`Documentation/firmware-guide/acpi/namespace.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/namespace.rst): how the ACPI namespace maps onto the [`struct acpi_device`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acpi_bus.h#L471) tree that a Device Check re-evaluates

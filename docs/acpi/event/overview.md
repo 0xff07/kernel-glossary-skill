@@ -65,7 +65,7 @@ Hardware-reduced platforms (FADT flag mirrored in [`acpi_gbl_reduced_hardware`](
 - ACPI Specification, section 4.8.3: PM1 Event Grouping
 - ACPI Specification, section 7.3.13: _PRW (Power Resources for Wake)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### SCI entry
 
@@ -122,7 +122,7 @@ Hardware-reduced platforms (FADT flag mirrored in [`acpi_gbl_reduced_hardware`](
 - [`'\<acpi_ec_register_query_methods\>':'drivers/acpi/ec.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L1443): namespace walk collecting `_Qxx` methods under the EC node
 - [`'\<acpi_ec_event_processor\>':'drivers/acpi/ec.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L1152): work item that evaluates the `_Qxx` method
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): ACPI device enumeration including GpioInt resources consumed by drivers
 - [`Documentation/firmware-guide/acpi/gpio-properties.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/gpio-properties.rst): ACPI GPIO descriptions that the `_AEI` event machinery builds on

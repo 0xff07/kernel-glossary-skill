@@ -52,7 +52,7 @@ Interrupt arming is a separate phase. [`acpi_gpiochip_request_irqs()`](https://e
 - ACPI Specification, section 6.4.3.8.1: GPIO Connection Descriptor
 - ACPI Specification, section 19.6.56: GpioInt (GPIO Interrupt Connection Resource Descriptor Macro)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Walk entry
 
@@ -112,7 +112,7 @@ Interrupt arming is a separate phase. [`acpi_gpiochip_request_irqs()`](https://e
 - [`'\<acpi_dev_irq_flags\>':'drivers/acpi/resource.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/resource.c#L342): maps trigger/polarity/share/wake to `IORESOURCE_IRQ_*` flags
 - [`'\<acpi_dev_get_irq_type\>':'drivers/acpi/resource.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/resource.c#L368): maps trigger/polarity to `IRQ_TYPE_*` for consumer-device GpioInt paths
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): documents the `GpioInt()` descriptor shape and how ACPI tables hand GPIOs and interrupts to drivers
 - [`Documentation/firmware-guide/acpi/gpio-properties.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/gpio-properties.rst): `_DSD`-based naming for GpioIo/GpioInt resources on the same controllers that carry `_AEI`

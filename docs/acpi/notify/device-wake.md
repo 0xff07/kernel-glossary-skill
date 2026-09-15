@@ -48,7 +48,7 @@ On the consumer side [`acpi_add_pm_notifier()`](https://elixir.bootlin.com/linux
 - ACPI Specification, section 7.3.13: _PRW (Power Resources for Wake)
 - ACPI Specification, section 7.3: Device Power Management Objects (_DSW, _PSW)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Notification value
 
@@ -121,7 +121,7 @@ On the consumer side [`acpi_add_pm_notifier()`](https://elixir.bootlin.com/linux
 - [`'\<acpi_bus_notify\>':'drivers/acpi/bus.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/bus.c#L568): the global system-notify handler logs the value and returns, leaving the work to the per-device handler
 - [`'\<acpi_button_notify\>':'drivers/acpi/button.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/button.c#L440): button driver treats [`ACPI_BUTTON_NOTIFY_WAKE`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/button.c#L28) (0x02) as a wakeup-event report without a key press
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/power/pci.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/power/pci.rst): PCI power management, including how `_PRW` wake power resources and PME signaling combine on ACPI platforms
 - [`Documentation/driver-api/pm/devices.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/driver-api/pm/devices.rst): the device wakeup framework (wakeup sources, [`device_set_wakeup_capable()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/base/power/wakeup.c#L471), wakeup counts) that the handler feeds

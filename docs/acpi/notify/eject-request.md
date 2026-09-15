@@ -23,7 +23,7 @@ The kernel routing has two deferral steps and one strategy switch. [`acpi_bus_no
 - ACPI Specification, section 6.3.5: _OST (OSPM Status Indication)
 - ACPI Specification, section 6.3.7: _STA (Device Status)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Notification value and global receiver
 
@@ -88,7 +88,7 @@ The kernel routing has two deferral steps and one strategy switch. [`acpi_bus_no
 - [`'\<hotplug_event\>':'drivers/pci/hotplug/acpiphp_glue.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/pci/hotplug/acpiphp_glue.c#L783): value switch; the 0x03 case ejects the slot
 - [`'\<acpiphp_disable_and_eject_slot\>':'drivers/pci/hotplug/acpiphp_glue.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/pci/hotplug/acpiphp_glue.c#L1004): unconfigures all slot functions, then evaluates `_EJ0` on the function that has one
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/driver-api/acpi/scan_handlers.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/driver-api/acpi/scan_handlers.rst): the scan-handler machinery whose attach/detach pairing the eject path drives
 - [`Documentation/ABI/testing/sysfs-bus-acpi`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/sysfs-bus-acpi): documents the per-device `eject` attribute

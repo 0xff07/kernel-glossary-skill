@@ -49,7 +49,7 @@ Consumption fans out from [`acpi_bus_get_status()`](https://elixir.bootlin.com/l
 - ACPI Specification, section 7.2: Declaring a Power Resource Object
 - ACPI Specification, section 7.2.4: _STA (Status) on a PowerResource object
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Bitmap constants and the status struct
 
@@ -118,7 +118,7 @@ Consumption fans out from [`acpi_bus_get_status()`](https://elixir.bootlin.com/l
 - [`ACPI_POWER_RESOURCE_STATE_OFF`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/power.c#L42) / [`ACPI_POWER_RESOURCE_STATE_ON`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/power.c#L43) / [`ACPI_POWER_RESOURCE_STATE_UNKNOWN`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/power.c#L44): the tri-state cache values
 - [`'\<struct acpi_power_resource\>':'drivers/acpi/power.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/power.c#L51): per-resource object holding the cached `state`
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/ABI/testing/sysfs-bus-acpi`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/sysfs-bus-acpi): the `status` attribute with the full bit table and the present/enabled and functional-without-present rules
 - [`Documentation/firmware-guide/acpi/namespace.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/namespace.rst): namespace figure showing a `Method(_STA)` node as "the status control method" of a device

@@ -54,7 +54,7 @@ The consumers documented here are vendor neutral and cover the three shapes a `_
 - ACPI Specification, section 6.4.3.5: Address Space Resource Descriptors
 - ACPI Specification, section 19.3.3: ASL Resource Templates
 
-## LINUX KERNEL
+## COVERAGE
 
 ### ACPICA fetch layer
 
@@ -122,7 +122,7 @@ The consumers documented here are vendor neutral and cover the three shapes a `_
 - [`'\<struct i2c_acpi_lookup\>':'drivers/i2c/i2c-core-acpi.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/i2c/i2c-core-acpi.c#L33): walk context pairing board info with the adapter handle
 - [`'\<struct acpi_resource_i2c_serialbus\>':'include/acpi/acrestyp.h'`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acrestyp.h#L422): decoded I2cSerialBus descriptor payload
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): how `_CRS` connector resources steer enumeration onto platform, I2C, and SPI buses
 - [`Documentation/PCI/acpi-info.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/PCI/acpi-info.rst): `_CRS` as the generalized BAR for host bridge windows and builtin devices

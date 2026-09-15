@@ -46,7 +46,7 @@ The verified caller graph at v7.0 is narrow. [`acpi_ec_space_handler()`](https:/
 - ACPI Specification, section 12.3.3: Burst Enable Embedded Controller, BE_EC (0x82)
 - ACPI Specification, section 12.3.4: Burst Disable Embedded Controller, BD_EC (0x83)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Command bytes and the status bit
 
@@ -85,7 +85,7 @@ The verified caller graph at v7.0 is narrow. [`acpi_ec_space_handler()`](https:/
 
 - [`OSL_EC_BURST_HANDLER`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acpiosxf.h#L27): [`acpi_execute_type`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acpiosxf.h#L20) enumerator with zero users in the v7.0 tree
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/admin-guide/dynamic-debug-howto.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/admin-guide/dynamic-debug-howto.rst): the `dyndbg="file ec.c +p"` recipe that makes the `BURST=%d` status traces and the BE_EC/BD_EC command traces visible
 - [`Documentation/ABI/testing/debugfs-ec`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/debugfs-ec): the debugfs EC register window; its accesses run through [`ec_read()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L913)/[`ec_write()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L931) and therefore stay outside burst mode

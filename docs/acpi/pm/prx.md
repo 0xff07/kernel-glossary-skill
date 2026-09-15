@@ -45,7 +45,7 @@ Consumption happens whenever [`acpi_device_set_power()`](https://elixir.bootlin.
 - ACPI Specification, section 7.3.13: `_PRW` (Power Resources for Wake)
 - ACPI Specification, section 7.2.2: `_OFF` and section 7.2.3: `_ON` (the methods run on the referenced resources; same in-tree table)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Parsing at enumeration (drivers/acpi/scan.c, drivers/acpi/power.c)
 
@@ -83,7 +83,7 @@ Consumption happens whenever [`acpi_device_set_power()`](https://elixir.bootlin.
 - [`'\<acpi_power_get_inferred_state\>':'drivers/acpi/power.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/power.c#L810): shallowest state whose list is fully ON; D3cold fallback keyed on the `_PR3`-derived slot validity
 - [`'\<acpi_device_set_power\>':'drivers/acpi/device_pm.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/device_pm.c#L162): the transition engine ordering `_PSx` against the resource lists, with the D3cold-to-D3hot method remap
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/power/pci.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/power/pci.rst): states the kernel contract for entering Dx, "(1) enable the power resources required by the device in this state using their _ON control methods and (2) execute the _PSx control method", and the `_PRW` role for wake signaling
 - [`Documentation/arch/arm64/acpi_object_usage.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/arch/arm64/acpi_object_usage.rst): per-object spec section table; `_PRx` at 7.3.8-11 with the rule "If _PR0 is defined, _PR3 must also be defined"

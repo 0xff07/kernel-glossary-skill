@@ -76,7 +76,7 @@ The namespace objects that a [`struct acpi_device`](https://elixir.bootlin.com/l
 - ACPI Specification, section 6.5.8: _DEP (Operation Region Dependencies)
 - ACPI Specification, section 7.3.13: _PRW (Power Resources for Wake)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Core type and per-device substructs
 
@@ -155,7 +155,7 @@ The namespace objects that a [`struct acpi_device`](https://elixir.bootlin.com/l
 - [`'\<acpi_dev_parent\>':'include/acpi/acpi_bus.h'`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acpi_bus.h#L569): parent ACPI device via `dev.parent`
 - [`'\<acpi_dev_name\>':'include/linux/acpi.h'`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/acpi.h#L97): the registered `HID:instance` device name
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/namespace.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/namespace.rst): how the ACPI namespace maps to the Linux device tree, including the [`struct acpi_device`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acpi_bus.h#L471) per-node objects
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): companion linkage for platform, I2C, and SPI devices enumerated from the namespace

@@ -51,7 +51,7 @@ Routing events to the SCI at all is a mode decision owned by the `SCI_EN` bit, b
 - ACPI Specification, section 16.3.1: Placing the System in ACPI Mode
 - ACPI Specification, section 16.3.4: Exiting ACPI Mode
 
-## LINUX KERNEL
+## COVERAGE
 
 ### FADT plumbing
 
@@ -102,7 +102,7 @@ Routing events to the SCI at all is a mode decision owned by the `SCI_EN` bit, b
 - [`'\<counter_show\>':'drivers/acpi/sysfs.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/sysfs.c#L675): copies the live counters into the [`COUNT_SCI`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/sysfs.c#L571) and [`COUNT_SCI_NOT`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/sysfs.c#L572) slots on every read
 - [`'\<counter_set\>':'drivers/acpi/sysfs.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/sysfs.c#L732): writing to the `sci` file zeroes every counter
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/ABI/testing/sysfs-firmware-acpi`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/sysfs-firmware-acpi): documents `/sys/firmware/acpi/interrupts/`, including the `sci` counter and the statement that all ACPI interrupts arrive via a single IRQ shown as `acpi` in `/proc/interrupts`
 - [`Documentation/power/suspend-and-interrupts.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/power/suspend-and-interrupts.rst): how IRQs, the SCI among them, are disabled and re-enabled across system suspend

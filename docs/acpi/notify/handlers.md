@@ -46,7 +46,7 @@ The lifecycle contract follows from that asynchrony. Drivers install after the d
 - ACPI Specification, section 5.6.4: General-Purpose Event Handling (deferred execution of event-sourced control methods)
 - ACPI Specification, section 6.3.5: _OST (OSPM Status Indication)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### ACPICA registration (evxface.c)
 
@@ -111,7 +111,7 @@ The lifecycle contract follows from that asynchrony. Drivers install after the d
 - [`'\<acpi_setup_sb_notify_handler\>':'drivers/acpi/bus.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/bus.c#L719): installs [`acpi_sb_notify()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/bus.c#L707) on `\_SB` with [`ACPI_DEVICE_NOTIFY`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/actypes.h#L801)
 - [`'\<acpi_power_meter_notify\>':'drivers/hwmon/acpi_power_meter.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/hwmon/acpi_power_meter.c#L817): in-tree user of the legacy [`struct acpi_driver`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acpi_bus.h#L176) `.ops.notify` callback
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/driver-api/acpi/scan_handlers.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/driver-api/acpi/scan_handlers.rst): the scan-handler objects whose presence makes [`acpi_scan_init_hotplug()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/scan.c#L2050) mark a device for global hotplug notification handling
 - [`Documentation/driver-api/acpi/linuxized-acpica.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/driver-api/acpi/linuxized-acpica.rst): the split between the imported ACPICA core ([`drivers/acpi/acpica/`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/)) and the Linux OS services layer ([`drivers/acpi/osl.c`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/osl.c)) that implements [`acpi_os_execute()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/osl.c#L1092)

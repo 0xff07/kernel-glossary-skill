@@ -21,7 +21,7 @@ Consumers across [`drivers/acpi/`](https://elixir.bootlin.com/linux/v7.0/source/
 - ACPI Specification, section 6.3.5: _OST (OSPM Status Indication)
 - ACPI Specification, section 6.5.4: _REG (Region)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Value and probe helpers (drivers/acpi/utils.c)
 
@@ -78,7 +78,7 @@ Consumers across [`drivers/acpi/`](https://elixir.bootlin.com/linux/v7.0/source/
 - [`'\<acpi_fan_get_fps\>':'drivers/acpi/fan_core.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/fan_core.c#L287): `_FPS` rows extracted with [`acpi_extract_package()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/utils.c#L32)
 - [`'\<acpi_pci_link_get_current\>':'drivers/acpi/pci_link.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/pci_link.c#L228): [`acpi_evaluation_failure_warn()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/utils.c#L653) caller
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): how devices enumerated from the namespace get the handles these helpers operate on
 - [`Documentation/driver-api/acpi/linuxized-acpica.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/driver-api/acpi/linuxized-acpica.rst): the boundary between this Linux helper layer and the imported ACPICA core

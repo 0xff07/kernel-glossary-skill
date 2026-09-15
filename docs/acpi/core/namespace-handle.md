@@ -64,7 +64,7 @@ Linux builds its device model on top of this through the attached-data mechanism
 - ACPI Specification, section 19.6.30: Device (Declare Device Package), the ASL statement that creates device nodes
 - ACPI Specification, section 19.6.122: Scope (Open Named Scope)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Node and handle representation
 
@@ -132,7 +132,7 @@ Linux builds its device model on top of this through the attached-data mechanism
 - [`'\<pnpacpi_add_device_handler\>':'drivers/pnp/pnpacpi/core.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/pnp/pnpacpi/core.c#L286): vendor-neutral [`acpi_get_devices()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/nsxfeval.c#L771) callback walked in DETAILS
 - [`'\<acpi_db_dump_namespace\>':'drivers/acpi/acpica/dbnames.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/dbnames.c#L172): AML debugger command dumping the live namespace tree
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/namespace.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/namespace.rst): how the namespace is built from DSDT/SSDT and mirrored into the Linux device tree
 - [`Documentation/driver-api/acpi/acpi-drivers.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/driver-api/acpi/acpi-drivers.rst): the role of [`struct acpi_device`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acpi_bus.h#L471) as the interface to the namespace

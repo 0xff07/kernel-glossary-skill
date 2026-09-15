@@ -63,7 +63,7 @@ Consumption happens through the fwnode abstraction. [`DECLARE_ACPI_FWNODE_OPS()`
 - Device Properties UUID For _DSD, revision 2.0 (UEFI Forum companion document defining daffd814-6eba-4d8c-8a91-bc9bbf4aa301)
 - Hierarchical Data Extension UUID For _DSD (UEFI Forum companion document defining dbb8e3e6-5886-4ba6-8795-1319f52a966b)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### GUID dispatch table
 
@@ -139,7 +139,7 @@ Consumption happens through the fwnode abstraction. [`DECLARE_ACPI_FWNODE_OPS()`
 - [`'\<at25_probe\>':'drivers/misc/eeprom/at25.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/misc/eeprom/at25.c#L482): probe path invoking the property reads
 - [`'\<struct spi_eeprom\>':'include/linux/spi/eeprom.h'`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/spi/eeprom.h#L14): chip description the properties fill in
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/DSD-properties-rules.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/DSD-properties-rules.rst): validity rules for `_DSD` property sets and the conflict rule against AML-touched hardware
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): the at25 EEPROM `_DSD` example and the `PRP0001` matching rules this page walks through

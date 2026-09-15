@@ -53,7 +53,7 @@ The status vocabulary is defined in [`include/acpi/acexcep.h`](https://elixir.bo
 
 - ACPI Specification, chapter 5: ACPI Software Programming Model (defines control methods and the execution model that [`acpi_ns_evaluate()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/nseval.c#L42) implements)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Entry points (nsxfeval.c)
 
@@ -108,7 +108,7 @@ The status vocabulary is defined in [`include/acpi/acexcep.h`](https://elixir.bo
 - [`'\<acpi_ac_get_state\>':'drivers/acpi/ac.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ac.c#L66): [`ACPI_FAILURE()`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acexcep.h#L58) plus [`acpi_format_exception()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/utexcep.c#L30) logging
 - [`'\<acpi_init_properties\>':'drivers/acpi/property.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/property.c#L585): `_DSD` through [`acpi_evaluate_object_typed()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpica/nsxfeval.c#L44) demanding a Package
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/driver-api/acpi/linuxized-acpica.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/driver-api/acpi/linuxized-acpica.rst): how the ACPICA sources (nsxfeval.c, nseval.c, utcopy.c) are imported into the kernel tree and lexically converted
 - [`Documentation/firmware-guide/acpi/method-tracing.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/method-tracing.rst): tracing control method execution, the path this page documents

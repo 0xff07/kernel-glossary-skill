@@ -42,7 +42,7 @@ A command write to `EC_SC` starts one of the five protocol commands ([`ACPI_EC_C
 - ACPI Specification, section 12.3: Embedded Controller Command Set
 - ACPI Specification, section 5.2.15: Embedded Controller Boot Resources Table (ECDT)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### EC_SC status bit macros
 
@@ -101,7 +101,7 @@ A command write to `EC_SC` starts one of the five protocol commands ([`ACPI_EC_C
 - [`'\<acpi_ec_burst_enable\>':'drivers/acpi/ec.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L847) / [`'\<acpi_ec_burst_disable\>':'drivers/acpi/ec.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L857): BE_EC and BD_EC builders, the latter conditioned on [`ACPI_EC_FLAG_BURST`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L45)
 - [`'\<ec_read\>':'drivers/acpi/ec.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L913) / [`'\<ec_write\>':'drivers/acpi/ec.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L931): exported byte accessors that the debugfs `io` file loops over
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/ABI/testing/debugfs-ec`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/debugfs-ec): the `/sys/kernel/debug/ec/*/io` window onto the EC RAM behind the register pair
 - [`Documentation/admin-guide/dynamic-debug-howto.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/admin-guide/dynamic-debug-howto.rst): enabling the [`pr_debug()`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/printk.h#L634) callsites that print every `EC_SC`/`EC_DATA` access

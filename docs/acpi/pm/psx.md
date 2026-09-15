@@ -44,7 +44,7 @@ Linux probes all of this once, in the scan path [`acpi_add_single_object()`](htt
 - ACPI Specification, sections 7.3.8 to 7.3.11: `_PR0`, `_PR1`, `_PR2`, `_PR3` (the power-resource packages ordered around `_PSx`)
 - ACPI Specification, section 2.3: Device Power State Definitions
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Detection at scan time
 
@@ -78,7 +78,7 @@ Linux probes all of this once, in the scan path [`acpi_add_single_object()`](htt
 - [`'\<acpi_subsys_suspend_late\>':'drivers/acpi/device_pm.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/device_pm.c#L1182): system-sleep late phase entering the chosen D-state
 - [`acpi_general_pm_domain`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/device_pm.c#L1370): the [`struct dev_pm_domain`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/pm.h#L751) wiring the callbacks, attached by [`acpi_dev_pm_attach()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/device_pm.c#L1443)
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/arch/arm64/acpi_object_usage.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/arch/arm64/acpi_object_usage.rst): the per-object table giving `_PSx` sections 7.3.2-5 and the rule "If _PS0 is defined, _PS3 must also be defined"
 - [`Documentation/power/runtime_pm.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/power/runtime_pm.rst): the runtime-PM callback model that [`acpi_subsys_runtime_suspend()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/device_pm.c#L1067) and [`acpi_subsys_runtime_resume()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/device_pm.c#L1082) implement

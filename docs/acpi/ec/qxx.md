@@ -37,7 +37,7 @@ The handler list doubles as a kernel-side override mechanism. [`acpi_ec_add_quer
 - ACPI Specification, section 5.6.6: Device Object Notifications
 - ACPI Specification, section 12.11: Defining an Embedded Controller Device in ACPI Namespace
 
-## LINUX KERNEL
+## COVERAGE
 
 ### Query transaction construction
 
@@ -90,7 +90,7 @@ The handler list doubles as a kernel-side override mechanism. [`acpi_ec_add_quer
 
 - [`ec_dbg_evt()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L229): dynamic-debug macro behind the "Query(0xNN) scheduled/started/stopped" lifecycle traces
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/admin-guide/dynamic-debug-howto.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/admin-guide/dynamic-debug-howto.rst): enabling the [`pr_debug()`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/printk.h#L634) callsites behind [`ec_dbg_evt()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/ec.c#L229) to watch the query lifecycle
 - [`Documentation/ABI/testing/sysfs-firmware-acpi`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/ABI/testing/sysfs-firmware-acpi): the `/sys/firmware/acpi/interrupts/gpeXX` counter that ticks once per EC event interrupt feeding this pipeline

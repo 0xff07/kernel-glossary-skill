@@ -53,7 +53,7 @@ Both in-tree consumers are vendor neutral. The PNP ACPI protocol registers [`pnp
 - ACPI Specification, section 6.2.16: _SRS (Set Resource Settings)
 - ACPI Specification, section 6.4: Resource Data Types for ACPI
 
-## LINUX KERNEL
+## COVERAGE
 
 ### ACPICA write path
 
@@ -129,7 +129,7 @@ Both in-tree consumers are vendor neutral. The PNP ACPI protocol registers [`pnp
 - [`'\<acpi_device_set_power\>':'drivers/acpi/device_pm.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/device_pm.c#L162): D-state transitions bracketing the PNP set/disable operations
 - [`'\<acpi_device_power_manageable\>':'include/acpi/acpi_bus.h'`](https://elixir.bootlin.com/linux/v7.0/source/include/acpi/acpi_bus.h#L857): guard for those transitions
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/PCI/acpi-info.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/PCI/acpi-info.rst): quotes the spec's `_PRS`/`_CRS`/`_SRS` configuration protocol and where PCI host bridges rely on it
 - [`Documentation/arch/arm64/acpi_object_usage.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/arch/arm64/acpi_object_usage.rst): per-object usage table confirming `_SRS` as section 6.2.16 ("Use as needed; see also _PRS")

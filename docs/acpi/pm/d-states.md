@@ -58,7 +58,7 @@ The ACPI Specification defines five device power states. Section 2.3 (Device Pow
 - ACPI Specification, sections 7.3.8 to 7.3.11: `_PR0`, `_PR1`, `_PR2`, `_PR3` (same in-tree table)
 - ACPI Specification, section 7.3.13: _PRW (Power Resources for Wake)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### State constants (include/acpi/actypes.h)
 
@@ -119,7 +119,7 @@ The ACPI Specification defines five device power states. Section 2.3 (Device Pow
 - [`'\<real_power_state_show\>':'drivers/acpi/device_sysfs.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/device_sysfs.c#L339): `real_power_state`, a fresh [`acpi_device_get_power()`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/device_pm.c#L75) read
 - [`'\<acpi_power_add_remove_device\>':'drivers/acpi/power.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/power.c#L599): creates the `power_resources_D0`..`power_resources_D3hot` link groups
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/non-d0-probe.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/non-d0-probe.rst): the `_DSC` object behind `state_for_enumeration` and the 0=D0 .. 4=D3cold numbering used by the kernel
 - [`Documentation/power/pci.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/power/pci.rst): D0-D3 semantics on PCI, the D3hot/D3cold split, and the power-up-through-D0 transition matrix

@@ -49,7 +49,7 @@ The driver in [`drivers/acpi/evged.c`](https://elixir.bootlin.com/linux/v7.0/sou
 - ACPI Specification, section 5.6.6: Device Object Notifications
 - ACPI Specification, section 19.6: ASL Operator Reference, Interrupt (Interrupt Resource Descriptor Macro)
 
-## LINUX KERNEL
+## COVERAGE
 
 ### GED driver core (drivers/acpi/evged.c)
 
@@ -103,7 +103,7 @@ The driver in [`drivers/acpi/evged.c`](https://elixir.bootlin.com/linux/v7.0/sou
 - [`'\<acpi_default_enumeration\>':'drivers/acpi/scan.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/scan.c#L2245): namespace-scan tail that creates a platform device for a regular device object
 - [`'\<acpi_create_platform_device\>':'drivers/acpi/acpi_platform.c'`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/acpi_platform.c#L110): builds the [`struct platform_device`](https://elixir.bootlin.com/linux/v7.0/source/include/linux/platform_device.h#L23) the GED driver binds to
 
-## KERNEL DOCUMENTATION
+## DOCUMENTATION
 
 - [`Documentation/firmware-guide/acpi/enumeration.rst`](https://elixir.bootlin.com/linux/v7.0/source/Documentation/firmware-guide/acpi/enumeration.rst): ACPI namespace devices without a bus connector resource become platform devices, which is the path that materializes the `ACPI0013` GED for [`ged_driver`](https://elixir.bootlin.com/linux/v7.0/source/drivers/acpi/evged.c#L186)
 
