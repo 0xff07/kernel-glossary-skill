@@ -53,6 +53,37 @@ def block_map(page, inputs):
     notes.insert(0, (None, f"inventory: structured blocks={len(entries)} excerpts={counts['C']} figures={counts['D']} tables={counts['T']} other fences={counts['Q']} prose words under DETAILS={prose_words}"))
     footer = f"subsections={len(page.subsections)} distinct-maps={len(set(maps))} longest-repeat={worst} figures={sum((m['figures'] for m in measures))} other-fences={sum((m['others'] for m in measures))}"
     yield from reading(rows, notes, footer, {'subsections': len(page.subsections), 'maps': maps, 'inventory': entries, 'prose_words': prose_words}, severity='note')
+def map_record(page, inputs):
+    """The block maps the dossier records against the page's, matched by subsection title."""
+    from dossier_utils import recorded_maps
+    if inputs is None or not getattr(inputs, 'dossier_lines', None):
+        yield from reading([], [], 'block map record: no dossier, not compared', {'recorded': None}, severity='note')
+        return
+    recorded = recorded_maps(inputs)
+    rows, notes, matched = [], [], set()
+    if not recorded:
+        rows.append(Row(None, 'no block map recorded in EVIDENCE; copy the map of every DETAILS subsection into the dossier (dossier.md [evidence.block-map])', set()))
+    differing = 0
+    for sub in page.subsections if recorded else []:
+        title = sub['title']
+        candidates = [i for i, r in enumerate(recorded) if i not in matched and (title.startswith(r['title']) or r['title'].startswith(title[:FINDING_CLIP]))]
+        if not candidates:
+            rows.append(Row(sub['line'], f"[{title[:FINDING_CLIP]}] block map not recorded (now map={sub['map']})", set()))
+            continue
+        i = next((c for c in candidates if recorded[c]['line'] == sub['line']), candidates[0])
+        matched.add(i)
+        if recorded[i]['map'] != sub['map']:
+            differing += 1
+            rows.append(Row(sub['line'], f"[{title[:FINDING_CLIP]}] block map differs from the record: recorded {recorded[i]['map']}, now {sub['map']}", set()))
+    for i, r in enumerate(recorded):
+        if i not in matched:
+            notes.append((None, f"recorded block map names no subsection on the page: [{r['title'][:FINDING_CLIP]}] {r['map']}"))
+    summary = (f'block map record: subsections={len(page.subsections)} recorded={len(recorded)} matching={len(matched) - differing} '
+               f'differing={differing} unrecorded={len(page.subsections) - len(matched)} unmatched-records={len(recorded) - len(matched)}')
+    yield from reading(rows, notes, summary, {'recorded': len(recorded), 'matching': len(matched) - differing, 'differing': differing,
+                                              'unrecorded': len(page.subsections) - len(matched)})
+
+
 LABEL_LOCATION = re.compile('^([\\w./-]+):(\\d+)')
 
 def inventory_of(page):
@@ -128,5 +159,6 @@ def reuse(page, inputs):
 
 def check(page, inputs):
     yield from block_map(page, inputs)
+    yield from map_record(page, inputs)
     yield from baseline_inventory(page, inputs)
     yield from reuse(page, inputs)

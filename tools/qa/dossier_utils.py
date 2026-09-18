@@ -8,6 +8,9 @@ ROW_DECORATION = re.compile('^(?:\\\\<)?(?:struct |enum |union )?|\\\\>$|\\(\\)$
 DIGEST_LINE = re.compile('page sha256:\\s*([0-9a-f]{64})', re.I)
 EVIDENCE_SECTION = '## EVIDENCE'
 BASES_HEADER = re.compile(r'^\|.*\bline\b.*\bbasis\b.*\|', re.I)
+# a recorded block map: a table row `| <line> <title> | <map> | ... |` or the engine's own line
+MAP_ROW = re.compile(r'^\|\s*(\d+)\s+(.*?)\s*\|\s*([A-Z](?: [A-Z])*)\s*\|')
+MAP_LINE = re.compile(r'^\s*(\d+)\s+\[(.*?)\]\s+map=([A-Z](?: [A-Z])*)\b')
 
 def tables_of(lines):
     tables, current = ([], [])
@@ -44,6 +47,18 @@ def bases_rows(inputs):
             rows.append({'line': int(cells[0]), 'claim': cells[1], 'bases': cells[2:4], 'result': cells[4] if len(cells) > 4 else ''})
         break
     return rows
+
+
+def recorded_maps(inputs):
+    """The block maps the EVIDENCE section records: [{line, title, map}], the title as written,
+    which may be a prefix of the page's."""
+    body = inputs.dossier_section(EVIDENCE_SECTION) if inputs is not None and inputs.dossier_lines else ''
+    out = []
+    for line in body.split('\n'):
+        found = MAP_ROW.match(line) or MAP_LINE.match(line)
+        if found:
+            out.append({'line': int(found.group(1)), 'title': found.group(2).strip(), 'map': found.group(3)})
+    return out
 
 
 def parity_tables(inputs):
