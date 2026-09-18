@@ -139,6 +139,14 @@ shared helpers; tests and this README are excluded. Either changed digest, or an
 old record without a QA digest, returns the page to WRITTEN. Records are never
 created automatically from a clean run.
 
+## Retire a check
+
+`python3 tools/qa/kg.py retro progress/<campaign>` reads the first-pass records and
+`EXEMPT` lines of a campaign's dossiers and prints, per rule, the pages it fired on,
+its first-pass FAIL and review totals, the exempted share of its hits on those pages,
+the `EXEMPT` lines across every dossier and the last page it fired on; `--rule <id>` lists the pages instead. [DESIGN.md](DESIGN.md)
+section 11 says how the numbers turn into a retirement.
+
 ## Validation and maintenance
 
 Full selftest validates all bindings, requires a nonempty test module for every

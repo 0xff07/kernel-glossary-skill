@@ -339,3 +339,44 @@ loader, dispatcher, selector list, CLI option list or reporter. Extending an
 existing rule changes its implementation and tests, plus its guideline when the
 requirement changes. Shared parsing grows only when the check exposes a real
 need shared with other callers.
+
+## 11. Retiring a check
+
+Retirement applies to checks, not to the prose a writer reads, and it rests on
+what each check found across pages rather than on an impression.
+
+The record. Before fixing anything the engine finds, a writer runs `kg check`
+once over the composed page and records in the dossier's LINT, under a `First
+pass` heading, the FAIL and review counts per rule exactly as printed
+(dossier.md [lint.first-pass]). Together with the `EXEMPT` lines the dossier
+carries in machine-readable form, every page then holds three numbers per rule:
+what the check found before any fix, what was fixed, and what was judged a
+false hit.
+
+The command. `kg retro <progress dir> [--rule <id>]` reads every dossier under
+the directory and prints one row per rule: pages with a record, pages where the
+rule fired on the first pass, the first-pass FAIL and review totals, the
+`EXEMPT` lines written against it on those pages and the share of its hits they
+cover, the `EXEMPT` lines across every dossier, and the last page and date it
+fired. `--rule` lists the pages instead. It is run once per
+batch or campaign and changes nothing; dossiers without a record are counted in
+its first line, and a rule the dossiers name that the skill no longer carries
+is listed last and marked.
+
+The thresholds, applied by a person. Over at least twenty pages: a check with no
+first-pass hit is a guard the writers no longer need; it goes when it carries
+maintenance (a test module, a coupling to shared parsing) and stays when it
+costs nothing to run. A check whose hits are mostly exempted, seven in ten or
+more, is producing reading work; its exempt logic is reworked or the check goes
+and the prose stays. A check with fixed hits stays. A manual rule whose reading
+rows are adjudicated "no change" page after page is merged into its neighbour
+or given a form the engine can verify, which is an improvement rather than a
+retirement. `retro` marks the first two cases in its last column.
+
+Retirement is deletion. A retired check loses its module and its test and its
+requirement drops the `qa` marker; a retired rule loses its sentence, with a
+clause added to the neighbour that absorbs it. There is no parked state: git
+history is the archive, and the `skill:` commit that retires carries the `kg
+retro` numbers that justified it. After a style sweep is retired, one batch is
+checked with the deleted check re-run from history, because a first-pass rate
+measured while the sweep existed does not prove what writers do without it.
