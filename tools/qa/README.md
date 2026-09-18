@@ -15,6 +15,7 @@ python3 tools/qa/kg.py rules
 python3 tools/qa/kg.py selftest --rule page.self-contained
 python3 tools/qa/kg.py selftest
 python3 tools/qa/kg.py table page.md
+python3 tools/qa/kg.py retro progress/usb4
 python3 tools/qa/kg.py view page.md --prose
 ```
 

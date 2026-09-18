@@ -232,6 +232,7 @@ python3 tools/qa/kg.py rules
 python3 tools/qa/kg.py selftest --rule page.self-contained
 python3 tools/qa/kg.py selftest
 python3 tools/qa/kg.py table page.md
+python3 tools/qa/kg.py retro progress/usb4
 python3 tools/qa/kg.py view page.md --prose
 ```
 
@@ -242,6 +243,8 @@ introductions belong to their respective rule outputs.
 
 `table` emits the LINKS table. `view` provides page representations through
 `--prose`, `--raw`, `--spans-visible` or `--regions`.
+`retro` reads a campaign's dossiers and prints, per rule, what the checks found on
+first passes (section 11).
 
 A nonexistent ID or an empty explicit selection is an error. Exit codes are:
 

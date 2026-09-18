@@ -149,6 +149,20 @@ def cmd_selftest(args):
     return selftest.main(skill_dir(), only=args.rule)
 
 
+def cmd_retro(args):
+    from inputs import skill_dir
+    from retro import gather, known_rules, render, summarize
+    if not os.path.isdir(args.dir):
+        print(f'kg: no directory {args.dir}', file=sys.stderr)
+        return 1
+    pages = gather(args.dir)
+    rows = summarize(pages, known_rules(skill_dir()))
+    if args.rule:
+        rows = [row for row in rows if row['rule'] == args.rule]
+    print('\n'.join(render(args.dir, pages, rows, rule=args.rule)))
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(prog='kg', description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
@@ -179,6 +193,10 @@ def main(argv=None):
     where.add_argument('rule_id')
     where.set_defaults(func=cmd_where)
     sub.add_parser('rules', help='list checks by guideline ID').set_defaults(func=cmd_rules)
+    retro = sub.add_parser('retro', help="per rule, what the checks found on the first pass of every page a campaign's dossiers record")
+    retro.add_argument('dir', nargs='?', default='progress', help='a progress directory (default: progress)')
+    retro.add_argument('--rule', metavar='ID', help='list the pages for this rule instead')
+    retro.set_defaults(func=cmd_retro)
     args = parser.parse_args(argv)
     try:
         return args.func(args)
