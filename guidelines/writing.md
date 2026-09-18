@@ -89,7 +89,7 @@ Which constructs, sites and limits a kernel page covers, and which drivers may s
 
 ## Figures [figures-pointer]
 
-Draw a figure where a spatial, temporal or transformational relationship would cost the reader effort to reconstruct, never for a call chain, a two-state toggle or anything one sentence conveys with less effort; strip the labels, and what remains must still assert something. `guidelines/figures.md` carries the banned shapes, the geometry, the register styles and the pattern index.
+Draw a figure where a spatial, temporal or transformational relationship would cost the reader effort to reconstruct, never for a call chain, a two-state toggle or anything one sentence conveys with less effort; strip the labels, and what remains must still assert something. `guidelines/figures.md` carries the strip test, the geometry, the register styles and the pattern index.
 
 ## Style [style]
 

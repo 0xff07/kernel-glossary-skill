@@ -60,7 +60,7 @@ VIEW
 awk '/^```/{f=!f} p && NF{ print p, (/^```/ ? "ok" : "DANGLING"); p=0 } !f && /:$/{p=NR}' page.md
 ```
 
-3. [sweeps.figures] The figure sweep prints every non-C fence; a fence with no drawing character is a quotation or listing, exempt like any other quoted text, and the rest are read against the three sweeps that reach figures and the banned shapes.
+3. [sweeps.figures] The figure sweep prints every non-C fence; a fence with no drawing character is a quotation or listing, exempt like any other quoted text, and the rest are read against the three sweeps that reach figures and the shapes that fail the strip test.
 
 ```
 awk '/^```/{f=!f; lang=(f? substr($0,4) : ""); next} f && lang!="c"' page.md
@@ -74,7 +74,7 @@ awk '/^```/{f=!f; lang=(f? substr($0,4) : ""); next} f && lang!="c"' page.md
 1. [judgement.candidates] A check emits violations, reading candidates and measurements. The check pass adjudicates candidates against the owning guideline; zero findings proves only that the check detected none of the shapes it recognizes.
 2. [judgement.no-rewording] Never reword an exempt construct to silence a pattern. A hit the exempt column covers is recorded in the dossier's LINT as `EXEMPT <rule-id> "<a fragment of the flagged text>": <the ruling applied>` (a page line may follow the fragment as a hint, a double quote inside the fragment is written `\"`, and the ruling runs to the end of the line), which `kg check` reads and prints as a note; a new exemption or ruling lands only through the user, and an agent that settles a boundary during a run records it in the run log and surfaces it.
 3. [judgement.unwitnessed] A claim the tree cannot witness is handled as [facts.unwitnessed] says: scoped out, weakened, or stated with its basis disclosed.
-4. [judgement.strip-test] Every figure passes the strip test and none of the four banned shapes; each is signed off with the relationship it conveys and the pattern it follows.
+4. [judgement.strip-test] Every figure passes the strip test and is none of the four shapes that fail it; each is signed off with the relationship it conveys and the pattern it follows.
 5. [judgement.read-not-measured] Whether nearby source supports an explanation, whether an excerpt keeps the context needed to read it, whether a bridge connects its surroundings, and whether a figure serves its passage are read, never measured.
 6. [judgement.scope-covered] Scoped behaviors covered: every behavior the catalog row names has a location on the page, or a recorded scope reduction.
 7. [judgement.claims-nearby] Claims supported nearby: every behavioral sentence has the source that supports it beside it on the page.
