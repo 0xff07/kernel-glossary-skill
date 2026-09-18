@@ -1,6 +1,7 @@
 """Select count-bearing sentences to re-derive on a second basis."""
 import re
 
+from dossier_utils import bases_rows
 from sentence_utils import prose_sentences, sentence_worklist
 
 RULE = 'facts.two-bases'
@@ -15,4 +16,5 @@ def check(page, inputs):
     baseline = inputs.baseline if inputs is not None else None
     candidates = [sentence for sentence in prose_sentences(page, baseline)
                   if NUMBER.search(sentence.text) or ORDINAL.search(sentence.text)]
-    yield from sentence_worklist(candidates, label='count', baseline_present=baseline is not None)
+    yield from sentence_worklist(candidates, label='count', baseline_present=baseline is not None,
+                                 bases=bases_rows(inputs), page=page, report_stale=True)

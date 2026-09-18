@@ -28,7 +28,7 @@ The dossier is the page's entire working file: the research, the parity table, t
 
 ## EVIDENCE [evidence]
 
-1. [evidence.bases] Per count and universal claim: the claim, the two derivation bases and the reconciled result. The QA outcomes: excerpt units byte-verified, link anchors confirmed, quotations checked; every leading paragraph with the verdict on its first sentence; every definition excerpt with the members shown and named and the group phrase covering each member not named; the DETAILS spine; the lead's and SUMMARY's counts with every sentence's role; the excerpt-introduction list; and the block map of every DETAILS subsection with each outlier's disposition. Starting points for the check pass, never proof.
+1. [evidence.bases] Per count and universal claim, one row of a `### Bases` table with the columns line, claim, basis 1, basis 2 and result: the page line and a fragment of the sentence as `kg check` printed them, the two derivation bases (tool, pattern and scope) and the reconciled result (agrees, weakened to what, or refuted and fixed). The two facts checks read the table, list only the sentences without a row, and report a row whose fragment no longer sits on its line. Then the QA outcomes: excerpt units byte-verified, link anchors confirmed, quotations checked; every leading paragraph with the verdict on its first sentence; every definition excerpt with the members shown and named and the group phrase covering each member not named; the DETAILS spine; the lead's and SUMMARY's counts with every sentence's role; the excerpt-introduction list; and the block map of every DETAILS subsection with each outlier's disposition. Starting points for the check pass, never proof.
 2. [evidence.acceptance-lines, qa] The seven acceptance lines of checking.md [judgement], from [judgement.scope-covered] to [judgement.constructs], each done or not applicable with the reason; then `page sha256: <digest>` of the page the evidence describes, which the check pass refreshes after an in-place fix (checking.md [check-pass.fixes]).
 
 ## LINT [lint]
@@ -108,9 +108,14 @@ mention with a one-line reason; block and unit counts are measurements
 and prove nothing.
 
 ## EVIDENCE
-Per count and universal claim: the claim, the two derivation bases and
-the reconciled result. The QA outcomes: excerpt units byte-verified, link
-anchors confirmed, quotations checked; every leading paragraph with the
+### Bases
+| line | claim | basis 1 | basis 2 | result |
+One row per count and universal claim `kg check` lists: the page line and
+a fragment of the sentence, the two derivation bases (tool, pattern,
+scope) and the reconciled result.
+
+The QA outcomes: excerpt units byte-verified, link anchors confirmed,
+quotations checked; every leading paragraph with the
 verdict on its first sentence; every definition excerpt with the members
 shown and named and the group phrase covering each member not named; the
 DETAILS spine; the lead's and SUMMARY's counts with every sentence's role;

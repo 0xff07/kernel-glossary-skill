@@ -216,7 +216,8 @@ retain the language heuristics that select candidates.
 
 Add shared parsing when real callers need it. Source and dossier utilities,
 anchor classification and the LINKS emitter are ordinary shared modules; checks
-and emitters do not depend on another rule's registration.
+and emitters do not depend on another rule's registration. `dossier_utils.py`
+also reads the dossier's EVIDENCE Bases table for the two facts checks.
 
 ## 7. Commands
 

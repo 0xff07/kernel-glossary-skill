@@ -73,7 +73,7 @@ DIRECTIVES.
 - At most about 25 KB of output per command; a persisted output is read by slice only.
 - Under the skill checkout the only files you write are the page and your dossier, nowhere else in progress/ and never in guidelines/ or campaigns/; scratch goes only to YOUR SCRATCH. No git operation that changes state.
 - A create: if the output path exists when you are about to write, stop and report. A resume: stop and report if the page on disk is not at the starting digest the brief names; otherwise write the rebuilt page to YOUR SCRATCH/<slug>.md, never over the page on disk, and report its digest, and the orchestrator moves it into place.
-- Enumerate call-site populations before any prose that counts or characterizes them.
+- Enumerate call-site populations before any prose that counts or characterizes them, and give every count and universal claim its row in the dossier's Bases table (dossier.md [evidence.bases]).
 - The page states results and their scope, never the search; the search stays in the dossier.
 - Keep the parity checklist as you compose; fill or de-catalog every row.
 - Before your first fix, run `kg check` once over the composed page and record the FAIL and review counts per rule under a `First pass` heading in the dossier's LINT (dossier.md [lint.first-pass]).
