@@ -76,6 +76,7 @@ DIRECTIVES.
 - Enumerate call-site populations before any prose that counts or characterizes them.
 - The page states results and their scope, never the search; the search stays in the dossier.
 - Keep the parity checklist as you compose; fill or de-catalog every row.
+- Before your first fix, run `kg check` once over the composed page and record the FAIL and review counts per rule under a `First pass` heading in the dossier's LINT (dossier.md [lint.first-pass]).
 - Run the QA steps after the page is complete, fix what they find before reporting, and persist the LINKS table with every kind / reason cell filled and the EVIDENCE and LINT sections into the dossier, ending EVIDENCE with `page sha256: <digest>` of the page the evidence describes.
 - LINT ends with your verdicts. The `LINTED <date> page sha256: <digest> qa sha256: <qa-digest>` record and the `check pass:` line are the check pass's, never yours; a writer that writes either is reported.
 - Final message: the lead verbatim; sections written; catalog count and parity outcome (de-catalogings with reasons); QA results (units verified, anchors confirmed, counts with second bases, the generator summary notes, the lead and SUMMARY counts and sentence roles, sweep candidates per class with dispositions, the rhythm outliers with dispositions, the introduction summary); the exemptions applied; any hint that did not reproduce; any claim that is not disk-settleable and how the page scopes it. Not the page text beyond the lead.
