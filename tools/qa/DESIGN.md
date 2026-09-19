@@ -1,34 +1,37 @@
-# QA Checks by Guideline
+# QA checks by guideline
 
-One guideline ID owns one Python module, one `check(page, inputs)` function and
-one corresponding test module. This document defines the current design of
-`tools/qa/` and the contribution contract for adding or extending a check.
+One requirement in `guidelines/` marked `qa` owns one Python module under
+`tools/qa/checks/`, one `check(page, inputs)` function and one test module.
+This document is the design of `tools/qa/` and the contract for changing it.
+The guidelines carry the requirements themselves; `README.md` shows the
+commands as a user runs them.
 
-## 1. Purpose
+## 1. Purpose and scope
 
-Adding a check requires understanding its guideline and detection logic, with one
-predictable implementation location and one test location. Regex checks,
-structural checks, measurements and reading inventories use the same interface.
-A requirement with several detection methods keeps them together.
+Adding a check means understanding one requirement and its detection, with one
+predictable place for the implementation and one for its tests. Regex sweeps,
+structural checks, measurements and reading inventories share one interface,
+and a requirement with several detection methods keeps them together. Small
+rule files bound what an author has to read; parsing, input resolution and
+reporting stay shared. A detection technique never opens a second extension
+route.
 
-Small rule files limit the scope an author needs to read and modify. Reusable
-parsing, input resolution and reporting remain shared. Detection technique does
-not create a separate extension route.
+The engine proves what it can and lists what a person must read. Human
+adjudication is part of every check pass, and a clean run never stands in for
+it.
 
-## 2. Guidelines and file ownership
+## 2. Ownership
 
-Guidelines retain their requirement IDs and normative prose. A `qa` marker means
-that a requirement has a programmatic check; an unmarked requirement remains
-manual. The marker does not claim that automation covers the full requirement.
-
-For example, the marker in a requirement can be written as:
+Guidelines keep their requirement IDs and normative prose. A `qa` marker says
+the requirement has a programmatic check; an unmarked requirement is manual.
+The marker does not claim that the check covers the whole requirement.
 
 ```markdown
 5. [facts.counts-serve-claims, qa] A count that serves no claim is noise.
 ```
 
-Each marked requirement has one module in the flat `tools/qa/checks/` directory
-and one corresponding module under `tools/qa/tests/`:
+Each marked requirement has one module in the flat `checks/` directory and one
+module under `tests/`:
 
 | Guideline ID | Check module, relative to `tools/qa/` | Test module |
 |---|---|---|
@@ -37,24 +40,22 @@ and one corresponding module under `tools/qa/tests/`:
 | `page.self-contained` | `checks/page_self_contained.py` | `tests/test_page_self_contained.py` |
 | `excerpts.verbatim` | `checks/excerpts_verbatim.py` | `tests/test_excerpts_verbatim.py` |
 
-The filename stem is the ID with dots and hyphens replaced by underscores. The
-module's `RULE` value is its authoritative identity. Discovery validates this
-convention and rejects filename collisions between distinct IDs.
+The filename stem is the ID with dots and hyphens replaced by underscores; the
+module's `RULE` value is its authoritative identity, and discovery validates
+the convention and rejects filename collisions between distinct IDs.
 
-All detection for a requirement belongs to its module: candidate selection,
-regexes, thresholds, exceptions and local helpers. For example, internal links,
-named page references, anonymous deflections and template residue all belong to
+All detection for a requirement lives in its module: candidate selection,
+regexes, thresholds, exceptions and local helpers. Internal links, named page
+references, anonymous deflections and template residue all belong to
 `page_self_contained.py`.
 
-## 3. Rule interface and implementation
+## 3. The check contract
 
-A check module has two required exports: `RULE` and `check(page, inputs)`.
-`check()` returns an iterable of `report.Finding` records; a generator is the
-usual implementation. The runner supplies the parsed page and resolved inputs,
-then attaches the rule ID and guideline location to the output.
-
-A requirement with several checks composes ordinary local functions. For example,
-with the helper implementations in the same module:
+A check module exports `RULE` and `check(page, inputs)`. `check()` returns an
+iterable of `report.Finding` records, usually as a generator; the runner
+supplies the parsed page and the resolved inputs and attaches the rule ID and
+guideline location to the output. A requirement with several detectors composes
+ordinary local functions:
 
 ```python
 RULE = "page.self-contained"
@@ -67,119 +68,112 @@ def check(page, inputs):
     yield from check_template_residue(page)
 ```
 
-The authoring interface requires no descriptor, `CHECKS` export, registered part,
-kind, coverage field or dependency declaration. A check yields findings rather
-than creating runner result objects. YAML schemas, rule dictionaries and
-selector dispatch are not alternative authoring interfaces.
+There is no descriptor, `CHECKS` export, registered part, kind, coverage field
+or dependency declaration, and no YAML schema, rule dictionary or selector
+dispatch as an alternative authoring interface. Each rule is implemented
+directly: no generic dispatcher copied in with branches left under constant
+selectors, no configuration fallback for a case that cannot occur.
 
-Implement each rule directly. Do not copy a generic dispatcher into a rule and
-leave branches controlled by constant selector values. Opening and closing
-checks inspect their respective subsection boundaries with distinct sentence
-limits. Lead, summary and section-order checks express their constraints without
-configuration fallbacks that cannot occur.
+Shared functions exist where there are real shared callers, take ordinary
+Python arguments and live outside `checks/`. The judgment stays in the rule
+even when the mechanics are shared:
 
-Use ordinary shared functions when there are actual shared callers. Their
-parameters are regular Python arguments, and helpers live outside `checks/`.
-Keep guideline judgments local even when the mechanics are shared:
+- `patterns.py` and `measurements.py` provide the operations; the caller
+  supplies its rule's patterns and thresholds.
+- `sentence_utils.py` normalizes sentences, tracks the committed baseline and
+  presents worklists; the facts rules select their candidates with their own
+  count, ordinal and universal regexes, and presentation never dispatches on a
+  rule ID.
+- The two geometry rules are independent: layout owns width limits, the
+  register exceptions and the loose-vertical scan; unicode owns the emoji ban.
 
-- `patterns.py` and `measurements.py` provide common operations; callers supply
-  their rule's patterns and thresholds.
-- `sentence_utils.py` provides sentence normalization, baseline provenance and
-  worklist presentation. Facts rules select candidates with their own count,
-  ordinal or universal regexes. Presentation accepts already selected candidates
-  and does not dispatch on rule IDs or selector names.
-- Geometry rules independently implement layout and ASCII connector checks.
-  Width limits and register exceptions belong to layout; literal-text connector
-  exceptions belong to Unicode. Vertical-connection helpers stay local to layout
-  because it is their only caller.
-
-A check reads its arguments and yields output. It does not print, modify files or
-shared inputs, invoke another rule's entry point, or carry its own CLI or selftest.
-Shared input caches belong to the input resolver.
+A check reads its arguments and yields output. It does not print, modify files
+or shared inputs, call another rule's entry point, or carry its own CLI or
+selftest. Source caches belong to the input resolver.
 
 ## 4. Findings and reporting
 
-A finding is `Finding(line, severity, message, data=None)`. Its line is a positive
-page line number or `None` when no page location exists; missing content must not
-produce a fabricated location. `data` must be JSON-serializable.
+A finding is `Finding(line, severity, message, data=None)`. The line is a page
+line number or `None` when no page location exists; missing content never gets
+a fabricated location. `data` is JSON-serializable. `report.observations()`
+packages a rule's findings with its summary note and listing rows, and
+`report.reading()` its review rows; both are the ordinary way to yield an
+inventory.
 
 | Severity | Meaning |
 |---|---|
 | `FAIL` | A detected violation under the check's conditions |
-| `review` | A candidate or reading work item requiring human judgment |
-| `note` | Context, an informational inventory, measurement or recorded exemption |
+| `review` | A candidate or reading work item that needs human judgment |
+| `note` | Context: an inventory row, a measurement or a recorded exemption |
 
-JSON version 3 groups results by guideline ID. Every observation appears in
-`findings`: reading candidates are review findings, informational rows are notes,
-and aggregate measurements are summary notes with structured `data`. Text output
-also includes inventories and summaries; `--json` provides their full details.
+Every observation appears in the output: reading candidates as review findings,
+informational rows as notes, aggregate measurements as summary notes with
+structured `data`. `--json` groups the results by guideline ID with the full
+details; the text report prints the same inventories and summaries.
 
 Execution completeness is separate from guideline judgment. A rule that emits
-nothing is reported as `0 findings`, without implying that the full guideline
-passes. `INCOMPLETE` means required input was unavailable; `ERROR` means a broken
-binding, execution failure or invalid output. Both retain earlier findings.
+nothing is `0 findings`, which does not say the requirement holds; `INCOMPLETE`
+means a required input was unavailable, `ERROR` a broken binding, an execution
+failure or invalid output, and both keep the findings emitted before them.
 
-Candidate labels describe observations the algorithm can establish. The counts
-inventory uses `CONTAINS UNIVERSAL WORD` when it observes a universal word; this
-cannot establish that the count serves a useful claim. A review row's `data.flags`
-records heuristic observations, and empty flags do not clear its reading task.
+A candidate's label describes what the algorithm observed, never what a person
+must decide: the counts inventory says `CONTAINS UNIVERSAL WORD` because it saw
+one, not because the count serves a claim, and a review row's `data.flags`
+records heuristic observations that do not clear its reading task. Each
+inventory's summary note carries its own rule's measurements under `data`; a
+run with `--only` selects a rule's inventory alone.
 
-Inventories report the measurements owned by their rule:
-
-| Rule | Summary data fields |
-|---|---|
-| `geometry.layout` | `figures`, `over_width`, `loose_verticals` |
-| `geometry.unicode` | `figures`, `ascii_connectors` |
-
-A full run, or `check page.md --only geometry.layout geometry.unicode --json`,
-provides the complete geometry inventory. Facts worklists label candidates
-`COUNT` under `facts.two-bases` and `UNIVERSAL` under `facts.universal-claims`.
-A sentence matching both appears under both rules.
-
-Deduplication requiring knowledge of a rule stays in that module. The
-self-contained check accounts for references in owning-page column cells once
-and avoids duplicate named/local-link deflection reports. The reporter does not
-guess equivalence from similar messages or merge observations across rules.
-
-Human adjudication remains part of the check pass. Review findings are not
-cleared automatically to make a run appear clean.
+Deduplication that needs knowledge of a rule stays in that rule: the
+self-contained check counts an owning-page cell once and does not report a
+named page and a local link twice. The reporter never merges observations
+across rules or guesses equivalence from similar messages, and a review finding
+is never cleared to make a run look clean.
 
 ## 5. Discovery and execution
 
-`rules.py` indexes guidelines and discovers `checks/*.py`, excluding
-`__init__.py`. It reads each module's `RULE` and `check`; no central registration
-is required. Imports and discovery are deterministic, and checks execute in
-guideline order. This stable reporting order is not a dependency between checks.
+`rules.py` indexes the guideline markers and discovers `checks/*.py`, reading
+each module's `RULE` and `check`; nothing is registered centrally. Imports and
+discovery are deterministic and checks run in guideline order, a stable
+reporting order rather than a dependency between checks. Modules enter
+`sys.modules` before execution so ordinary Python, dataclasses with deferred
+annotations included, works during import.
 
-Modules enter `sys.modules` before execution so ordinary Python features,
-including dataclasses with deferred annotations, work during import.
+Discovery and execution validate that guideline IDs and markers are well
+formed and unique; that every `qa` requirement has exactly one module and every
+module names a requirement marked `qa`; that filenames follow the convention
+without collisions; that `RULE` is a valid ID and `check` callable; and that
+every yielded record has a valid location, message, severity and serializable
+data. A malformed marker, a missing module, a broken import, a duplicate ID,
+invalid output or an unknown requested ID is a visible error and never removes
+a check from the run silently.
 
-Discovery and execution validate that:
+`kg.py` consumes each iterable and records findings and execution outcomes.
+Errors are caught while the generator runs, findings emitted before an error or
+a `MissingInput` stay in the report, and the other checks continue.
 
-- Guideline IDs and markers are valid, with unique IDs.
-- Every `qa` requirement has exactly one check module, and every module refers to
-  a requirement marked `qa`.
-- Module filenames follow the convention without collisions.
-- `RULE` is a valid ID and `check` is callable.
-- Yielded records have valid locations, messages, severities and serializable data.
+## 6. Inputs
 
-Malformed markers, missing modules, broken imports, duplicate IDs, invalid output
-and unknown requested IDs are visible errors. They cannot silently remove a check
-from the run.
+`inputs.Inputs` resolves everything a run reads, once, and validates it before
+any check depends on it:
 
-`kg.py` consumes each iterable and records findings and execution outcomes. Errors
-are caught during iteration, when a generator's body runs. Findings emitted before
-an error or `MissingInput` remain in the report. Other checks continue so their
-observations and remaining work are visible.
+- the page, with its sha256;
+- the kernel tree, from `--tree`, `KG_TREE` or the checkout convention,
+  checked to be a kernel tree, its Git availability, the version the page's
+  links pin and the cleanliness of the files the page cites;
+- the worksheet, by convention at `progress/<campaign>/<dir>/<group>/<slug>.worksheet.md`
+  or from `--worksheet`, its identity checked against the page;
+- the campaign spec, `campaigns/<dir>.md` by convention or `--spec`;
+- the baseline, the last committed revision of the page that differs from it,
+  which the facts rules use for provenance;
+- the subsystem, the `guidelines/subsystems.md` entry whose `dir` is the
+  page's directory under `docs/`, exposed as `inputs.subsystem` with its
+  kernel paths;
+- a per-run cache of source lines, and the QA digest of section 10.
 
-## 6. Inputs and shared parsing
-
-`inputs.require(name)` returns a resolved, usable input or raises `MissingInput`
-with a useful reason. Supported names are `tree`, `git`, `worksheet` and `baseline`;
-`git` returns the source tree path after checking Git availability.
-
-Perform independent page work before work that requires another input where
-practical. For example, with local helpers:
+`inputs.require(name)` returns a usable `tree`, `git`, `worksheet` or
+`baseline` or raises `MissingInput` with the reason. A check does its
+page-only work before requiring an input, so the runner keeps those findings
+and marks the rule incomplete when the input is missing:
 
 ```python
 def check(page, inputs):
@@ -188,287 +182,225 @@ def check(page, inputs):
     yield from source_findings(page, tree)
 ```
 
-The runner preserves earlier findings and marks a rule incomplete when a required
-input is unavailable. Excerpt introductions and OTHER SOURCES formatting can
-produce page observations before source resolution; source body slices wait for
-a validated tree.
+Checks use the resolved inputs and never discover alternate paths that bypass
+the validation. Optional absence differs from failure: a rule may find that no
+differing baseline exists or that no spec applies and say so, but a failed
+history probe or a read failure is an input error, not an empty observation.
+`inputs.git()` raises on failed commands and timeouts, and a caller that wants
+a negative search result allows it explicitly, `ok=(0, 1)` for `git grep`.
 
-Source version, cited-file cleanliness and worksheet identity are validated before
-dependent work. Checks use resolved inputs rather than discovering alternate
-paths that bypass validation. A catalog lookup requires Git when it needs tree
-resolution; work with no applicable catalog row or commit entry need not do so.
+## 7. Shared parsing and censuses
 
-Optional absence differs from failure. A check may inspect `inputs.baseline` and
-report that no differing committed baseline applies, or note that an optional
-spec is absent. A failed baseline-history probe or actual read failure is an
-input error, not an empty observation or evidence of an unborn repository.
+Shared modules exist for real shared callers and never depend on a rule's
+registration:
 
-The shared `inputs.git()` helper raises errors for failed commands and timeouts.
-Callers explicitly allow meaningful negative results, such as `ok=(0, 1)` for
-`git grep`; other failures must not become empty search results.
+- `pagemodel.py` is the page as every check reads it, parsed once per run:
+  sections and regions, headings, paragraphs, tables and cells (escaped pipes,
+  separator rows validated whole), spans, fences, excerpt units with their
+  provenance, figures and their circled-number legends, the catalog keys and
+  entries, the cited files, a fence's introduction and outro, readable
+  sentences and the skim of DETAILS.
+- `constructs.py` parses a kernel source file into its file-scope constructs,
+  functions, definitions, initializers, macros and comment blocks with their
+  extents, and answers `construct_at`, `members_of` and `assignment_to`
+  (plain, compound, `++` and `--`). Its writer census, `field_writers`,
+  follows an embedded object through its container (`sw->tmu.mode`).
+  `sources_within` collects the `.c` and `.h` files a subsystem's kernel paths
+  name, a directory recursively, a glob or a single file, test files left out,
+  and `object_sources` hands a census the subsystem's sources, falling back to
+  the directories the page cites only for a page with no subsystem entry.
+- `walk_utils.py` maps a page's units onto an owned function: the pieces
+  shown, the chain they form, what was shown ahead of the walk and what was
+  never shown.
+- `worksheet_utils.py` reads the worksheet's tables: the Bases rows, the
+  recorded block map, the COMPLETENESS tables, the Lifecycle rows and the
+  `excluded:` files under them; `Inputs.exemptions()` reads the LINT section.
+- `span_utils.py` classifies link anchors and `links_table.py` emits the
+  LINKS table; `sentence_utils.py`, `patterns.py` and `measurements.py` serve
+  the style and facts sweeps as section 3 describes.
 
-`pagemodel.py` owns reusable document structure and source locations: regions,
-headings, paragraphs, tables and cells, spans, fences and excerpt units. Counts
-and self-contained checks share its table parsing, including escaped pipes.
-Separator recognition validates the whole row so negative values remain data.
-Sentence helpers share normalization and baseline tracking while rule modules
-retain the language heuristics that select candidates.
+## 8. Rule families on that machinery
 
-Add shared parsing when real callers need it. Source and worksheet utilities,
-anchor classification and the LINKS emitter are ordinary shared modules; checks
-and emitters do not depend on another rule's registration. `worksheet_utils.py`
-also reads the worksheet's EVIDENCE for the two facts checks (the Bases table) and
-for `arrangement.units` (the recorded block map).
+The guidelines define what each rule requires; this section says only what the
+implementation leans on.
 
-## 7. Commands
+Excerpts. `excerpts.walkthrough` takes each cataloged function's extent from
+`constructs.py`, maps the page's units onto it with `walk_utils.py` and reports
+lines never shown as FAIL, pieces shown before the walk reaches them as review
+and lines shown again as a count; `excerpts.outline` requires the piece table
+and the circled numbers the introductions repeat. `excerpts.reshown` lists
+every location link whose lines the page reproduces only elsewhere and every
+re-show longer than about twelve lines; `excerpts.contiguity` fails an elision
+inside a function; `excerpts.verbatim` validates the one surviving elision
+marker, `... /* N lines, to :LINE */`, and prints the exact marker when it is
+missing; `excerpts.enclosing` accepts a unit from inside a function when the
+sentence above names and links the function. `kg excerpt` prints a unit ready
+to paste, so no source is transcribed by hand.
 
-The command surface uses guideline IDs for checks and reading inventories:
+Reading. `arrangement.route`, `purpose.conclusion-first`, `arrangement.recap`
+and `purpose.schema` make the skim of DETAILS carry the argument, and
+`lifecycle.order` ties the order of DETAILS to the object's lifecycle figure.
+`kg skim` prints that skim and `kg view --load` the measurements behind these
+rules, so a rule change is judged by what it does to a page.
 
-```sh
-python3 tools/qa/kg.py check page.md
-python3 tools/qa/kg.py check page.md --only page.self-contained
-python3 tools/qa/kg.py check page.md --only page.self-contained --json
-python3 tools/qa/kg.py check page.md --checklist
-python3 tools/qa/kg.py where page.self-contained
-python3 tools/qa/kg.py rules
-python3 tools/qa/kg.py selftest --rule page.self-contained
-python3 tools/qa/kg.py selftest
-python3 tools/qa/kg.py table page.md
-python3 tools/qa/kg.py retro progress/usb4
-python3 tools/qa/kg.py view page.md --prose
-```
+Figures. `drawing.model` requires the page's map under the lead or in SUMMARY.
+`drawing.triggers` detects the trigger table's shapes heuristically, an enum or
+three enumerator spans, two actors of a known pair named twice each, a
+definition of six or more members, two list or allocation primitives in one
+excerpt, a topology helper or the word depth twice, three ordinal openers, and
+lists every DETAILS subsection carrying one with no figure; the writer answers
+each row with a figure or a recorded reason. `drawing.legend` verifies a
+legend the way prose sites are verified, the numbers match the drawing, each
+site is reproduced and lies inside the named function, each entry carries its
+phrase, and `drawing.walk` requires the paragraph after a DETAILS figure to link
+the legend's functions in mark order. `geometry.layout` and `geometry.unicode`
+measure the drawing itself.
 
-`where` names the guideline, implementation and corresponding test. `rules` lists
-implementations by requirement. `check --only <id>` retrieves that requirement's
-findings and inventory; lead sentences, summary sentences and excerpt
-introductions belong to their respective rule outputs.
+Lifecycle. `lifecycle.when` takes as candidates the cataloged `struct name`
+keys the subsystem's sources define, a catalog entry for a member such as
+`struct tb_nhi *nhi` naming no object, and lists each with a field two or more
+functions write and no Lifecycle table, the `excluded:` files left out.
+`evidence.lifecycle` reads every table row against the tree, the member exists,
+the site assigns it inside the named writer, the mark stands in a legend, and
+against the same census, so a drawn lifecycle is complete or says what it left
+out. Both read `object_sources`, the subsystem's kernel paths, never the whole
+neighbourhood a page cites.
 
-`table` emits the LINKS table. `view` provides page representations through
-`--prose`, `--raw`, `--spans-visible` or `--regions`.
-`retro` reads a campaign's worksheets and prints, per rule, what the checks found on
-first passes (section 11).
+## 9. Commands
 
-A nonexistent ID or an empty explicit selection is an error. Exit codes are:
+| Command | What it does |
+|---|---|
+| `check <page> [--only ID ...] [--json] [--checklist] [--tree] [--worksheet] [--campaign] [--spec]` | runs the checks and prints findings, inventories and the page state |
+| `view <page> --regions / --prose / --raw / --spans-visible / --load` | prints a page representation, `--load` the reading-load measurements |
+| `skim <page>` | prints the reading path of DETAILS: the route, then each subsection's title, first sentence, recaps and last sentence |
+| `table <page>` | emits the worksheet's LINKS table |
+| `excerpt <path:first[-last]> [--whole]` | prints a verbatim unit with its provenance comment, or the whole construct holding the line |
+| `selftest [--rule ID]` | validates the bindings and runs the rule tests, the shared engine tests and the reference figures |
+| `where <ID>` | names the guideline, the check module and the test module |
+| `rules` | lists the checks by guideline ID |
+| `retro <progress dir> [--rule ID]` | per rule, what the checks found on the first pass of every page a campaign's worksheets record |
+| `triage <docs dir> [--cache DIR] [--json] [--verbose]` | one row per page under the current rules, graded current, fix or rebuild |
+
+`retro` prints, per rule, the pages with a first-pass record, the pages where
+the rule fired, the first-pass FAIL and review totals, the `EXEMPT` lines
+written against it and the share of its hits they cover, and the last page and
+date it fired; `--rule` lists the pages instead. `triage` prints, per page, the
+FAIL and review totals, the excerpt-rule failures, the units and the share that
+are skeletons, the walkthrough gaps, the reading and figure failures, lines,
+figures and state, then a summary per grade: no FAIL is current; walk gaps at
+most one owned function in five and skeletons at most a third of the units is
+fix; the rest is rebuild. Its `--cache` reuses a page's check document while
+the page and QA digests match. Both commands change nothing.
 
 | Exit code | Meaning |
 |---|---|
-| `1` | A detected FAIL or engine/input error |
-| `2` | Missing required inputs, without another failure |
-| `0` | Complete execution without FAIL; human review may remain |
+| `0` | complete execution without FAIL; human review may remain |
+| `1` | a FAIL, or an engine or input error |
+| `2` | missing required inputs without another failure |
 
-A partial `--only` run never establishes LINTED state.
+A nonexistent ID or an empty explicit selection is an error, and a partial
+`--only` run never establishes LINTED state.
 
-The corpus command. `kg triage <docs dir> [--cache DIR]` runs the checks over
-every page under the directory, or reuses a cached document whose page and QA
-digests still match, and prints one row per page: FAIL and review totals, the
-excerpt-rule failures, the excerpt units and the share that are skeletons or
-elided, the walkthrough gaps, the reading-rule and figure-rule failures, lines,
-figures and state, then a summary per grade. The grade is a threshold on two
-numbers: no FAIL is current; walk gaps at most one owned function in five and
-skeletons (units without their opener or eliding inside a function) at most a
-third of the units is fix; the rest is rebuild. The QA digest a LINTED record
-names leaves `retro.py` and `triage.py` out, since they read findings and
-produce none, so editing them voids no record. It changes
-nothing, and a rerun after every batch shows the corpus moving.
+## 10. Exemptions and page state
 
-## 8. Exemptions and page state
-
-Exemptions are recorded in the worksheet's LINT section:
+Exemptions live in the worksheet's LINT section:
 
 ```text
 EXEMPT rule-id "fragment" [line]: ruling
 ```
 
-A fragment must identify one observation under that rule; an optional line hint
-resolves ambiguity. Every exemption matches against the original findings. An
-earlier exemption cannot make another ambiguous fragment become unique. Stale,
-ambiguous and line-only entries exempt nothing. Exemptions cannot suppress engine
-errors or missing inputs.
+The fragment identifies exactly one observation under that rule, an optional
+line hint resolving ambiguity; every exemption matches against the original
+findings, and an earlier exemption cannot make another ambiguous fragment
+unique. Stale, ambiguous and line-only entries exempt nothing, and no exemption
+suppresses an engine error or a missing input. There are no registered parts:
+a legacy `EXEMPT rule-id/part` entry is re-adjudicated rather than silently
+widened.
 
-There are no registered parts. Legacy `EXEMPT rule-id/part` entries require
-re-adjudication; their suffix is not dropped to broaden their scope silently.
-
-`lint_record.py` provides record interpretation for both the `lint.record` check
-and the CLI. Page state does not depend on a check's human-readable messages.
-After a complete full check pass and human adjudication, the worksheet records:
+After a complete run and human adjudication the worksheet records:
 
 ```text
 LINTED <date> page sha256: <digest> qa sha256: <qa-digest>
 ```
 
-The QA digest deterministically hashes sorted repository-relative paths and file
-bytes for guideline Markdown and executable QA Python, including the parser,
-input resolver, loader, reporter and shared helpers. Tests and QA documentation
-are excluded. File bytes include uncommitted changes, so a Git commit ID alone
-cannot substitute for the digest.
+`lint_record.py` interprets the record for the `lint.record` check and the
+CLI; page state never depends on a check's human-readable messages. The QA
+digest hashes, in sorted order of their repository-relative paths, the bytes of
+every guideline Markdown file and every Python file under `tools/qa/` except
+the tests and the reporting-only modules `retro.py` and `triage.py`, which read
+findings and produce none. File bytes include uncommitted changes, so a commit
+ID cannot stand in for the digest.
 
-A changed page or QA digest, or a record lacking a QA digest, returns the page to
-WRITTEN and requires a new check pass. LINTED requires a current record, completed
-human review and a complete full run without failures. A clean run does not
-automatically create a record or establish factual correctness.
+A changed page or QA digest, or a record without a QA digest, returns the page
+to WRITTEN. LINTED needs a current record, completed human review and a
+complete full run without FAIL; a clean run creates no record and establishes
+no factual correctness.
 
-## 9. Tests and validation
+## 11. Tests and validation
 
-Use standard-library `unittest`, inline text and small page builders. Tests need
-Python 3.10+ and Git for temporary source repositories, with no external kernel
-tree or worksheet. Create temporary source trees and worksheets only where needed.
+Tests use the standard `unittest`, inline text and small page builders, and
+need Python 3.10+ and Git for temporary source repositories; no external kernel
+tree or worksheet. Each rule's test module exercises its real `check()`: an
+offending example, a similar allowed one, the relevant regions and boundaries,
+and missing-input behavior where it applies, asserting location, severity,
+provenance and structured data rather than message text alone.
 
-Each rule's corresponding test module exercises its real `check()` callable.
-Cover an offending example, a similar allowed example, relevant regions and
-boundaries, and missing-input behavior where applicable. Assert meaningful
-observations such as location, severity, baseline provenance and structured data.
+`selftest --rule <id>` validates one binding and runs its tests. The full
+`selftest` validates every binding, requires nonempty test modules, runs the
+rule and shared-engine tests and checks the reference figures under
+`references/figures/` and `guidelines/figures.md` with the geometry checks.
+Unknown IDs, missing or broken modules and zero executed tests fail visibly.
+GitHub Actions runs the full selftest.
 
-`selftest --rule <id>` validates the selected binding and executes that rule's
-tests regardless of detection technique. Full `selftest` validates every binding,
-requires nonempty test modules, runs rule and shared-engine tests, and validates
-reference figures through the discovered geometry checks with their applicable
-acceptance scope. Unknown IDs, missing or broken modules and zero executed tests
-fail visibly. GitHub Actions runs the full selftest.
+Shared regression tests cover discovery, imports, invalid selections and
+output, generator failures, findings retained before a missing input, input
+errors, exemption ambiguity and LINT state; the reading algorithms and the
+LINKS emitter are tested against their real implementations. The contribution
+integration test adds exactly a guideline, a check module and a test module and
+exercises `rules`, `where`, `check` and both selftests without central edits,
+its temporary suite excluding the contribution test itself.
 
-Shared regression tests cover discovery, imports, invalid selections and output,
-generator failures, retained findings before missing inputs, input errors,
-exemption ambiguity and LINT state. Algorithm and LINKS emitter tests exercise
-their real implementations. Tests establish these behaviors; human review still
-establishes whether a documentation page satisfies its factual requirements.
+A refactoring preserves candidate scope, exceptions, severity, locations,
+ordering, provenance and execution outcomes; a deliberate change of detection or
+reporting is written into the guideline or this document and covered by a
+behavior test. No per-rule fixture language, fixture directory or selftest
+scaffold exists.
 
-The contribution integration test adds exactly a guideline, check module and test
-module, then exercises `rules`, `where`, `check`, selected selftest and full
-selftest without central edits. Its temporary suite excludes the contribution
-test itself to avoid recursion.
+## 12. Adding, extending and retiring a check
 
-Refactoring preserves candidate scope, exceptions, severity, locations, ordering,
-provenance and execution outcomes. Deliberate detection or reporting changes are
-explicitly documented in the relevant contract and covered by behavior tests.
-No per-rule fixture language, fixture directory or selftest scaffold is required.
+Adding one:
 
-## 10. Adding or extending a check
-
-1. Find the requirement in `guidelines/` and add `qa` to its marker if needed.
-2. Create or edit `checks/<id>.py`, replacing dots and hyphens with underscores.
-   Keep every detector and candidate selector for that requirement together.
-3. Add or update the corresponding `tests/test_<id>.py`.
+1. Find the requirement in `guidelines/` and add `qa` to its marker.
+2. Create `checks/<stem>.py`, with every detector and candidate selector for
+   that requirement together.
+3. Add `tests/test_<stem>.py`.
 4. Run the selected selftest, then the full selftest.
 
-A new rule appears in `check`, `where`, `rules` and `selftest` without edits to a
-loader, dispatcher, selector list, CLI option list or reporter. Extending an
-existing rule changes its implementation and tests, plus its guideline when the
-requirement changes. Shared parsing grows only when the check exposes a real
-need shared with other callers.
+The rule then appears in `check`, `where`, `rules` and `selftest` with no edit
+to a loader, dispatcher, selector list, CLI option or reporter. Extending a
+rule changes its module and tests, and its guideline when the requirement
+changes; shared parsing grows only when another caller needs it.
 
-## 11. Retiring a check
+Retiring one rests on what the check found across pages, not on an impression.
+Before fixing anything, a writer runs `kg check` once over the composed page
+and records the FAIL and review counts per rule under `First pass` in the
+worksheet's LINT (worksheet.md [lint.first-pass]); with the `EXEMPT` lines,
+every page then holds per rule what was found, what was fixed and what was
+judged a false hit, and `kg retro` sums them.
 
-Retirement applies to checks, not to the prose a writer reads, and it rests on
-what each check found across pages rather than on an impression.
+The thresholds, applied by a person over at least twenty pages: a check with no
+first-pass hit is a guard the writers no longer need, and goes when it carries
+maintenance and stays when it costs nothing to run; a check whose hits are
+mostly exempted, seven in ten or more, is producing reading work, so its exempt
+logic is reworked or the check goes and the prose stays; a check with fixed
+hits stays; a manual rule whose reading rows are adjudicated "no change" page
+after page is merged into its neighbour or given a form the engine can verify.
+`retro` marks the first two cases in its last column.
 
-The record. Before fixing anything the engine finds, a writer runs `kg check`
-once over the composed page and records in the worksheet's LINT, under a `First
-pass` heading, the FAIL and review counts per rule exactly as printed
-(worksheet.md [lint.first-pass]). Together with the `EXEMPT` lines the worksheet
-carries in machine-readable form, every page then holds three numbers per rule:
-what the check found before any fix, what was fixed, and what was judged a
-false hit.
-
-The command. `kg retro <progress dir> [--rule <id>]` reads every worksheet under
-the directory and prints one row per rule: pages with a record, pages where the
-rule fired on the first pass, the first-pass FAIL and review totals, the
-`EXEMPT` lines written against it on those pages and the share of its hits they
-cover, the `EXEMPT` lines across every worksheet, and the last page and date it
-fired. `--rule` lists the pages instead. It is run once per
-batch or campaign and changes nothing; worksheets without a record are counted in
-its first line, and a rule the worksheets name that the skill no longer carries
-is listed last and marked.
-
-The thresholds, applied by a person. Over at least twenty pages: a check with no
-first-pass hit is a guard the writers no longer need; it goes when it carries
-maintenance (a test module, a coupling to shared parsing) and stays when it
-costs nothing to run. A check whose hits are mostly exempted, seven in ten or
-more, is producing reading work; its exempt logic is reworked or the check goes
-and the prose stays. A check with fixed hits stays. A manual rule whose reading
-rows are adjudicated "no change" page after page is merged into its neighbour
-or given a form the engine can verify, which is an improvement rather than a
-retirement. `retro` marks the first two cases in its last column.
-
-Retirement is deletion. A retired check loses its module and its test and its
-requirement drops the `qa` marker; a retired rule loses its sentence, with a
-clause added to the neighbour that absorbs it. There is no parked state: git
-history is the archive, and the `skill:` commit that retires carries the `kg
-retro` numbers that justified it. After a style sweep is retired, one batch is
-checked with the deleted check re-run from history, because a first-pass rate
-measured while the sweep existed does not prove what writers do without it.
-
-## 12. Reading the code whole
-
-A page is also a guided reading of its source. The excerpt rules therefore
-distinguish two kinds of shown line: the lines a claim rests on, which the
-prose explains, and the lines around them, which the page names by stage and
-lets the reader read. A function the catalog names is read whole, in one
-excerpt or in consecutive pieces cut at its stage boundaries, and a paragraph
-that reasons about lines shown in another subsection shows them again beside
-itself instead of pointing back.
-
-Two checks carry this. `excerpts.walkthrough` finds every catalog entry that
-anchors a function, takes the function's extent from the shared construct
-parser (`constructs.py`), maps the page's units onto it and reports the lines
-never shown (a FAIL), the pieces shown before the walk reaches them (a review
-row) and the lines shown again (a count). `excerpts.reshown` lists, for
-reading, every location link whose lines the page reproduces only in another
-subsection and every unit that shows again more than about twelve lines already
-shown. `excerpts.contiguity` fails an elision inside a function, and
-`excerpts.verbatim` requires the one surviving elision, a run of members
-dropped from a long definition, to carry what it drops and where the excerpt
-resumes, `... /* N lines, to :LINE */`, printing the exact marker when it is
-missing.
-
-`kg excerpt <path:first-last>` prints a unit ready to paste, its provenance
-comment included, and `--whole` prints the function or definition holding the
-cited line, so a writer never transcribes source by hand.
-
-A figure's function references go through a numbered legend, `① name
-file:line  what happens there`, which `drawing.legend` verifies the way prose
-sites are verified: the numbers match the drawing, the site is reproduced by an
-excerpt and lies in the named function, and each entry carries its phrase;
-`drawing.walk` requires the paragraph after a DETAILS figure to link the
-legend's functions in mark order, the reader's way back from the drawing to the
-code. An object lifecycle figure adds a Lifecycle table to the
-worksheet's EVIDENCE; `evidence.lifecycle` reads each row against the tree (the
-member exists, the site assigns it inside the named writer, the mark stands in a
-legend) and against a census of every function that writes the field, so a
-drawn lifecycle is complete or says what it left out. `lifecycle.when` runs the
-same census over every cataloged struct the subsystem's sources define and lists
-the objects with a field two or more functions write and no table yet. Both
-censuses read the kernel paths of the page's subsystems.md entry (`inputs.subsystem`),
-never the whole neighbourhood the page cites: a page linking `struct device` and
-`complete()` once pulled `include/linux`, `drivers/base` and `kernel/sched` into
-the scan and paid two minutes a check for it, and a catalog entry for a member
-(`struct tb_nhi *nhi`) is no longer read as an object. The census follows an embedded object
-through its container (`sw->tmu.mode`) and counts increments as writes; the
-shared parser lives in `constructs.py`.
-
-## 13. Reading DETAILS whole
-
-DETAILS is built to be read at two speeds. The skim, `kg skim`, is the
-route paragraph followed by every subsection's title, first sentence, recaps
-and last sentence; the rules make that skim carry the argument
-(`arrangement.route`, `purpose.conclusion-first`, `arrangement.recap`) and
-give the reader a slot for every block before it lands (`purpose.schema`, the
-piece outline of `excerpts.outline` with the circled numbers each piece's
-introduction repeats). `lifecycle.order`
-ties the order of DETAILS to the object's lifecycle figure. `kg view --load`
-prints the measurements behind these rules, words per sentence, links per
-sentence, distinct symbols, blocks, figures, recaps and the longest run
-without one, so a change to the rules can be judged by what it does to a page.
-
-## 14. Figures the material demands
-
-Two rules make figures a matter of the material rather than the writer's
-budget. `drawing.model` requires one figure under the lead or in SUMMARY, the
-page's map. `drawing.triggers` carries the trigger table of figures.md and
-lists, for reading, every DETAILS subsection whose prose or excerpts carry one
-of its shapes and no figure: an enum excerpt or a family of enumerator spans
-of three or more (a state set), two actors of a known pair named twice each
-(a hand-over), a definition of six or more members (a layout), two or more
-list or allocation primitives in one excerpt (a reshaping), a topology helper
-or the word depth twice (a tree), three or more ordinal sentence openers (a
-sequence). The heuristics are deliberately broad; the writer answers each row
-with a figure or a recorded reason, and the retrospective shows which shapes
-the pages actually draw.
+Retirement is deletion. The module and its test go, the requirement drops its
+`qa` marker, and a retired rule loses its sentence with a clause added to the
+neighbour that absorbs it. There is no parked state: Git history is the
+archive, and the `skill:` commit that retires carries the `kg retro` numbers
+that justified it. After a style sweep is retired, one batch is checked with
+the deleted check re-run from history, because a first-pass rate measured while
+the sweep existed does not prove what writers do without it.
