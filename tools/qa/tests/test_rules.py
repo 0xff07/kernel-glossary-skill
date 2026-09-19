@@ -114,10 +114,12 @@ class Contribution(unittest.TestCase):
             page_file=base/'page.md';page_file.write_text('# T\n')
             def run(*args):
                 return subprocess.run([sys.executable,str(base/'tools/qa/kg.py'),*args],capture_output=True,text=True)
+            figure_files = sorted((base/'references/figures').glob('*.md')) + [base/'guidelines/figures.md']
+            reference_figures = sum(1 for path in figure_files for _fence in selftest.plain_fences(path))
             for args,expected in [(('rules',),'extra.example'),(('where','extra.example'),'test_extra_example.py'),
                                   (('check',str(page_file),'--only','extra.example'),'newly discovered'),
                                   (('selftest','--rule','extra.example'),'Ran 1 test'),
-                                  (('selftest',),'Reference figures: 34 checked, 0 problems')]:
+                                  (('selftest',),f'Reference figures: {reference_figures} checked, 0 problems')]:
                 result=run(*args)
                 self.assertEqual(result.returncode,0,result.stdout+result.stderr)
                 self.assertIn(expected,result.stdout)

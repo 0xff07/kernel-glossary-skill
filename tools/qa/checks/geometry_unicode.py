@@ -1,34 +1,44 @@
-"""Find ASCII connectors, preserving the literal text and source exceptions."""
+"""Find emoji and pictographs in figures; any other character may draw."""
 import re
 
 from report import Finding, observations
 
 RULE = 'geometry.unicode'
 TITLE_CLIP = 70
-ASCII_CONNECTOR = re.compile(r'[\\/|]')
-TEXT = r'[^\s\\/|\u2500-\u259f\u2190-\u21ff\u25a0-\u25ff]'
-CONNECTOR_EXEMPT = re.compile(
-    r'\|\||/\*.*?\*/|(?<=' + TEXT + r') ?/ ?(?=' + TEXT + r')'
-    r'|(?<!\S)/(?=\w)|(?<=\w)/(?!\S)|(?<=\w)\|(?=\w)'
+# the emoji blocks of the supplementary plane (pictographs, emoticons, transport, symbols,
+# regional indicators, skin tones), the BMP characters that render as emoji by default, and the
+# variation selector that turns a text symbol into an emoji
+EMOJI = re.compile(
+    '[\U0001F000-\U0001FAFF]'
+    '|[⌚⌛⏩-⏬⏰⏳◽◾☔☕♈-♓♿⚓⚡⚪⚫'
+    '⚽⚾⛄⛅⛎⛔⛪⛲⛳⛵⛺⛽✅✊✋✨❌❎'
+    '❓-❕❗➕-➗➰➿⬛⬜⭐⭕]'
+    '|️'
 )
+
+
+def emoji_in(line):
+    return [m.group(0) for m in EMOJI.finditer(line)]
 
 
 def check(page, inputs):
     listing = []
-    total_connectors = 0
+    total = 0
     for number, fence in enumerate(page.figures, 1):
         body = fence.body
-        connectors = [row for row, line in enumerate(body)
-                      if ASCII_CONNECTOR.search(CONNECTOR_EXEMPT.sub('', line))]
-        for row in connectors:
-            yield Finding(fence.start + 1 + row, 'review',
-                          f'figure {number} ASCII \\, / or | '
-                          '(allowed only as a word separator, a path, a C expression or reproduced source)')
-
-        total_connectors += len(connectors)
+        hits = 0
+        for row, line in enumerate(body):
+            found = emoji_in(line)
+            if not found:
+                continue
+            hits += len(found)
+            shown = ' '.join(f'U+{ord(c):04X}' for c in found[:4])
+            yield Finding(fence.start + 1 + row, 'FAIL',
+                          f'figure {number} carries an emoji or pictograph ({shown}); any other character may draw, an emoji never')
+        total += hits
         title = next((line.strip()[:TITLE_CLIP] for line in body if line.strip()), '')
-        listing.append(f'fig {number}: {len(body)} lines | ascii connectors {len(connectors)} | {title}')
+        listing.append(f'fig {number}: {len(body)} lines | emoji {hits} | {title}')
 
     yield from observations(rows=listing,
-                            summary=f'figures={len(page.figures)} ascii-connectors={total_connectors}',
-                            data={'figures': len(page.figures), 'ascii_connectors': total_connectors})
+                            summary=f'figures={len(page.figures)} emoji={total}',
+                            data={'figures': len(page.figures), 'emoji': total})
