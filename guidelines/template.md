@@ -27,4 +27,6 @@
 
 ## DETAILS
 
+(The route: one paragraph of three to five sentences naming in order what the subsections below establish. Then, on a page with eight or more catalog symbols, the actor table, columns actor and role, one linked symbol per row.)
+
 (A journey or a model: subsections that are the phases of a process in order, or the facets of the model, each cataloged symbol shown inside the phase where it acts beside its definition and usage excerpts and the paragraph that explains them, never one section per symbol in catalog order. Every catalog symbol appears here. writing.md [purpose] to [arrangement].)

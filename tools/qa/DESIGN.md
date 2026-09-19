@@ -422,3 +422,17 @@ same census over every cataloged struct and lists the objects with a field two
 or more functions write and no table yet. The census follows an embedded object
 through its container (`sw->tmu.mode`) and counts increments as writes; the
 shared parser lives in `constructs.py`.
+
+## 13. Reading DETAILS whole
+
+DETAILS is built to be read at two speeds. The skim, `kg view --skim`, is the
+route paragraph followed by every subsection's title, first sentence, recaps
+and last sentence; the rules make that skim carry the argument
+(`arrangement.route`, `purpose.conclusion-first`, `arrangement.recap`) and
+give the reader a slot for every block before it lands (`purpose.schema`, the
+actor table of `arrangement.actors`, the piece outline of `excerpts.outline`
+with the circled numbers each piece's introduction repeats). `lifecycle.order`
+ties the order of DETAILS to the object's lifecycle figure. `kg view --load`
+prints the measurements behind these rules, words per sentence, links per
+sentence, distinct symbols, blocks, figures, recaps and the longest run
+without one, so a change to the rules can be judged by what it does to a page.

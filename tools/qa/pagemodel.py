@@ -30,6 +30,7 @@ QUOTATION = re.compile(r'"[^"]*"')
 PROVENANCE = re.compile(r"^/\* ([\w./-]+):(\d+)\b[^*]*\*/\s*$")
 PROVENANCE_FILE = re.compile(r"/\* ([\w./-]+):\d+")
 ELISION = "..."
+RECAP = re.compile(r"^So far,")
 CIRCLED = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳"
 LEGEND_MARK = re.compile("[" + CIRCLED + "]")
 # a legend entry beneath a drawing: the mark, the function or symbol, and its site, the file
@@ -143,6 +144,16 @@ def is_code_line(text):
 def prose_text(text):
     """A line as a reader reads it: links reduced to their text, code spans to X."""
     return CODE_SPAN.sub("X", LINK.sub(r"\1", text))
+
+
+def readable_text(text):
+    """A line as the skim prints it: links reduced to their text, code spans kept without backticks."""
+    return LINK.sub(r"\1", text).replace("`", "")
+
+
+def readable_sentences(text):
+    """The sentences of one paragraph with their symbols legible, for the skim."""
+    return [s for s in SENTENCE_END.split(readable_text(text).strip()) if re.search(r"\w", s)]
 
 
 def sentences_of(text):
@@ -547,6 +558,50 @@ class Page:
         quoted = " ".join(LINK.sub(r"\1", text).split())[:BRIDGE_CLIP]
         return Block("P", n, words, "", quoted, (words, count, lengths)), j
 
+    def paragraph_texts(self, numbered):
+        """[(line, full text)] of the prose paragraphs in a run of numbered lines, with the block
+        reader's boundaries, so a first or last sentence can be read whole."""
+        out = []
+        i = 0
+        while i < len(numbered):
+            n, line = numbered[i]
+            if not line.strip():
+                i += 1
+                continue
+            if line.startswith("```"):
+                _b, i = self._read_fence(numbered, i)
+            elif line.startswith("|"):
+                _b, i = self._read_table(numbered, i)
+            elif ITEM.match(line):
+                _b, i = self._read_list(numbered, i)
+            elif HEADING4.match(line):
+                _b, i = self._read_heading(numbered, i)
+            else:
+                j = i
+                while j < len(numbered) and numbered[j][1].strip() and not numbered[j][1].startswith(("```", "|")) \
+                        and not HEADING4.match(numbered[j][1]):
+                    j += 1
+                if j == i:
+                    j = i + 1
+                out.append((n, " ".join(text for _m, text in numbered[i:j])))
+                i = j
+        return out
+
+    def skim(self):
+        """The reading path of DETAILS: the route paragraphs of the preamble, then per subsection the
+        title, the first sentence of its opening paragraph, its recap paragraphs and the last sentence
+        of its closing paragraph."""
+        out = {"preamble": [t for _n, t in self.paragraph_texts(self.details_preamble)], "subsections": []}
+        for sub in self.subsections:
+            paragraphs = self.paragraph_texts(sub["numbered"])
+            first = readable_sentences(paragraphs[0][1]) if paragraphs else []
+            last = readable_sentences(paragraphs[-1][1]) if paragraphs else []
+            out["subsections"].append({"line": sub["line"], "title": sub["title"],
+                                       "opener": first[0] if first else "", "closer": last[-1] if last else "",
+                                       "recaps": [readable_text(t) for _n, t in paragraphs if RECAP.match(prose_text(t))],
+                                       "paragraphs": paragraphs})
+        return out
+
     def blocks_of(self, numbered):
         """[(Block)] for a run of numbered lines: the block map of a subsection or a page."""
         out = []
@@ -572,6 +627,7 @@ class Page:
     def _parse_subsections(self):
         """Every ### subsection under DETAILS with its block map."""
         self.subsections = []
+        self.details_preamble = []        # numbered lines between the DETAILS heading and its first ###
         details = self.section(DETAILS)
         if details is None:
             return
@@ -589,6 +645,8 @@ class Page:
                 continue
             if current is not None:
                 current["numbered"].append((n, line))
+            elif n != details.start:
+                self.details_preamble.append((n, line))
         for sub in self.subsections:
             blocks = self.blocks_of(sub["numbered"])
             sub["blocks"] = blocks

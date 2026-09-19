@@ -90,9 +90,57 @@ def cmd_check(args):
     return report.exit_status(results, inputs)
 
 
+def print_skim(page):
+    """The reading path of DETAILS: route, then per subsection the title, opener, recaps and closer."""
+    skim = page.skim()
+    for text in skim['preamble']:
+        print(f'route: {text}')
+    for sub in skim['subsections']:
+        print(f"\n### {sub['title']}  (page {sub['line']})")
+        print(f"  first: {sub['opener']}")
+        for recap in sub['recaps']:
+            print(f"  recap: {recap}")
+        print(f"  last:  {sub['closer']}")
+
+
+def print_load(page):
+    """Reading-load measurements of the page, no rule attached."""
+    import statistics
+    from pagemodel import CODE_LINK, prose_text, sentences_of, RECAP
+    details = page.section('DETAILS')
+    prose = [(n, l) for n, l in enumerate(page.lines, 1)
+             if page.region_of(n) == 'prose' and l.strip() and not l.startswith(('#', '|')) and not l.startswith(('    ', '\t'))]
+    words = sum(len(prose_text(l).split()) for _n, l in prose)
+    sentences = [s for _n, l in prose for s in sentences_of(l)]
+    links = sum(len(CODE_LINK.findall(l)) for _n, l in prose)
+    symbols = {t.strip().strip('`') for _n, l in prose for t, _u in CODE_LINK.findall(l)}
+    skim = page.skim()
+    recaps = sum(len(s['recaps']) for s in skim['subsections'])
+    run = longest = 0
+    for s in skim['subsections']:
+        run += 1
+        if s['recaps']:
+            longest = max(longest, run); run = 0
+    longest = max(longest, run)
+    rows = [('lines', len(page.lines)), ('DETAILS starts at line', details.start if details else '-'),
+            ('prose words', words), ('sentences', len(sentences)),
+            ('words per sentence', round(statistics.mean(len(s.split()) for s in sentences), 1) if sentences else 0),
+            ('links per sentence', round(links / len(sentences), 2) if sentences else 0),
+            ('distinct linked symbols', len(symbols)), ('excerpts', len(page.excerpts)), ('figures', len(page.figures)),
+            ('DETAILS subsections', len(page.subsections)), ('route paragraph', 'present' if skim['preamble'] else 'absent'),
+            ('recaps', recaps), ('longest run without a recap', longest)]
+    width = max(len(k) for k, _v in rows)
+    for k, v in rows:
+        print(f'{k:{width}}  {v}')
+
+
 def cmd_view(args):
     page = Page(args.page)
-    if args.regions:
+    if args.skim:
+        print_skim(page)
+    elif args.load:
+        print_load(page)
+    elif args.regions:
         for n, line in enumerate(page.lines[:page.counted_lines()], 1):
             print(f'{n}:{page.region_of(n):10} {line}')
     elif args.raw:
@@ -207,7 +255,7 @@ def main(argv=None):
     view = sub.add_parser('view', help='print a page representation')
     view.add_argument('page')
     mode = view.add_mutually_exclusive_group(required=True)
-    for name in ('regions', 'prose', 'raw', 'spans-visible'):
+    for name in ('regions', 'prose', 'raw', 'spans-visible', 'skim', 'load'):
         mode.add_argument('--' + name, action='store_true')
     view.set_defaults(func=cmd_view)
     table = sub.add_parser('table', help="emit the worksheet's LINKS table")

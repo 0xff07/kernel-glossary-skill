@@ -19,6 +19,8 @@ When a figure earns its place, the shapes that fail, the geometry every figure k
 
 2. [lifecycle.figure] The drawing carries the events as columns or the states as boxes, the fields and the values they take, and a circled number at every write; the legend beneath names the writer and its site ([drawing.legend]); every writer of a drawn field appears, because a lifecycle with a writer missing asserts a state the code can leave. The worksheet's Lifecycle table is the figure's verified twin (worksheet.md [evidence.lifecycle]).
 
+3. [lifecycle.order, qa] DETAILS follows the object's lifecycle: the writes the figure numbers are shown in the order of their marks, so that reading the subsections in order is reading the strip from left to right, and a page that departs from that order says why where it does. The check finds the first excerpt that shows each numbered write and flags a later mark shown before an earlier one.
+
 ## The strip test and the shapes that fail it [shapes]
 
 1. [shapes.strip-test] Strip every label and read what is left. A figure survives when the skeleton still asserts something (this contains that, this becomes that, these ends meet here, this partitions into those, time runs this way across these actors) through a spatial property: position on an axis, a length, containment, alignment, the direction of a flow. A box is a container, not a shape; a column of boxes whose meaning is in their labels fails, and so does an axis whose positions mean nothing.
