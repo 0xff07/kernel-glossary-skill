@@ -30,6 +30,11 @@ QUOTATION = re.compile(r'"[^"]*"')
 PROVENANCE = re.compile(r"^/\* ([\w./-]+):(\d+)\b[^*]*\*/\s*$")
 PROVENANCE_FILE = re.compile(r"/\* ([\w./-]+):\d+")
 ELISION = "..."
+CIRCLED = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳"
+LEGEND_MARK = re.compile("[" + CIRCLED + "]")
+# a legend entry beneath a drawing: the mark, the function or symbol, and its site, the file
+# inherited from the previous entry when written as `:line` alone
+LEGEND_ENTRY = re.compile(r"([" + CIRCLED + r"])\s+([A-Za-z_]\w*)(?:\(\))?\s+(?:([\w./-]+\.[chS]))?:(\d+)\b")
 # a standalone elision line, bare or carrying how many lines it drops and where the excerpt resumes
 ELISION_MARK = re.compile(r"^\.\.\.(?:\s*/\*\s*(\d+) lines?, to :(\d+)\s*\*/)?\s*$")
 CATALOG_SYMBOL = re.compile(r"\[`'\\<([^\\]+)\\>'(?::'[^']*')?`\]")
@@ -95,6 +100,22 @@ def split_cells(line):
     if cells and not cells[-1].strip():
         cells = cells[:-1]
     return [cell.strip() for cell in cells]
+
+
+def legend_entries(body):
+    """(entries, marks in the drawing) of one figure body: entries as {mark, name, file, line, row}
+    in order, marks as the set of circled numbers on the lines that are not legend lines."""
+    entries, marks, last_file = [], set(), None
+    for row, line in enumerate(body):
+        found = list(LEGEND_ENTRY.finditer(line))
+        if not found:
+            marks.update(LEGEND_MARK.findall(line))
+            continue
+        for m in found:
+            path = m.group(3) or last_file
+            last_file = path
+            entries.append({"mark": m.group(1), "name": m.group(2), "file": path, "line": int(m.group(4)), "row": row})
+    return entries, marks
 
 
 def is_elision(text):

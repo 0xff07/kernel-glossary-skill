@@ -20,5 +20,6 @@
                      └────────────┴─────────────────┴──────────────────┴────┴───────────┴──────
                       ①            ②   ③             ②    ③             ①   ② ③          ④
 
-       ① tmu_mode_init  ② tb_switch_tmu_configure  ③ tb_switch_tmu_enable  ④ tb_switch_tmu_disable
+       ① tmu_mode_init tmu.c:357   ② tb_switch_tmu_configure tmu.c:1068
+       ③ tb_switch_tmu_enable tmu.c:1013   ④ tb_switch_tmu_disable tmu.c:620
 ```

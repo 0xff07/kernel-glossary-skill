@@ -69,3 +69,47 @@ def completeness_tables(inputs):
     scope = [t for t in tables if SCOPE_HEADER.match(t[0])]
     catalog = [t for t in tables if not SCOPE_HEADER.match(t[0])]
     return (tables, scope, catalog)
+
+
+LIFECYCLE_HEADER = re.compile(r'^\|.*\bobject\b.*\bfield\b.*\bwriter\b.*\|', re.I)
+STRUCT_NAME = re.compile(r'struct\s+([A-Za-z_]\w*)')
+
+
+def lifecycle_rows(inputs):
+    """The rows of the EVIDENCE Lifecycle table: {object, field, mark, writer, site, event, value},
+    the object as `struct name`, or [] when the worksheet holds none."""
+    body = inputs.worksheet_section(EVIDENCE_SECTION) if inputs is not None and inputs.worksheet_lines else ''
+    rows = []
+    for table in tables_of(body.split('\n')):
+        if not LIFECYCLE_HEADER.match(table[0]):
+            continue
+        for line in table[1:]:
+            cells = [cell.strip().strip('`') for cell in line.strip().strip('|').split('|')]
+            if len(cells) < 5:
+                continue
+            found = STRUCT_NAME.search(cells[0])
+            rows.append({'object': f'struct {found.group(1)}' if found else cells[0], 'field': cells[1], 'mark': cells[2],
+                         'writer': re.sub(r'\(\)$', '', cells[3]), 'site': cells[4],
+                         'event': cells[5] if len(cells) > 5 else '', 'value': cells[6] if len(cells) > 6 else ''})
+        break
+    return rows
+
+
+EXCLUDED_LINE = re.compile(r'^excluded:\s*(.+?)\s*(?:\((.*)\))?\s*$', re.I)
+
+
+def lifecycle_exclusions(inputs):
+    """{file basename: reason} from `excluded: file[, file] (reason)` lines under the Lifecycle heading:
+    the files whose writers the lifecycle census leaves out, each with its stated reason."""
+    body = inputs.worksheet_section(EVIDENCE_SECTION) if inputs is not None and inputs.worksheet_lines else ''
+    out = {}
+    active = False
+    for line in body.split('\n'):
+        if line.startswith('### '):
+            active = line.strip().lower() == '### lifecycle'
+            continue
+        m = EXCLUDED_LINE.match(line.strip()) if active else None
+        if m:
+            for name in re.split(r'\s*,\s*', m.group(1)):
+                out[name.split('/')[-1].strip('`')] = (m.group(2) or '').strip()
+    return out

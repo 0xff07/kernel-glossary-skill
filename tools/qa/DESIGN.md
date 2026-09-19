@@ -409,3 +409,16 @@ missing.
 `kg excerpt <path:first-last>` prints a unit ready to paste, its provenance
 comment included, and `--whole` prints the function or definition holding the
 cited line, so a writer never transcribes source by hand.
+
+A figure's function references go through a numbered legend, `① name
+file:line`, which `drawing.legend` verifies the way prose sites are verified:
+the numbers match the drawing, the site is reproduced by an excerpt and lies in
+the named function. An object lifecycle figure adds a Lifecycle table to the
+worksheet's EVIDENCE; `evidence.lifecycle` reads each row against the tree (the
+member exists, the site assigns it inside the named writer, the mark stands in a
+legend) and against a census of every function that writes the field, so a
+drawn lifecycle is complete or says what it left out. `lifecycle.when` runs the
+same census over every cataloged struct and lists the objects with a field two
+or more functions write and no table yet. The census follows an embedded object
+through its container (`sw->tmu.mode`) and counts increments as writes; the
+shared parser lives in `constructs.py`.

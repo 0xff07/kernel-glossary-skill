@@ -126,3 +126,110 @@ def construct_at(constructs, line):
         if c.start <= line <= c.end:
             return c
     return None
+
+
+STRUCT_OPEN = r'^(?:typedef\s+)?struct\s+%s\s*\{'
+MEMBER = re.compile(r'(?:\(\s*\*\s*)?([A-Za-z_]\w*)\s*\)?\s*(?:\([^)]*\))?\s*(?:\[[^\]]*\])*\s*(?::\s*\d+)?\s*;\s*$')
+STRUCT_POINTER = r'\bstruct\s+%s\s*\*+\s*([A-Za-z_]\w*)'
+ASSIGN = r'\b%s\s*(?:->|\.)\s*%s\s*(?:\[[^\]]*\])?\s*(?:(?:[-+*/|&^%%]|<<|>>)?=(?!=)|\+\+|--)'
+ASSIGN_ANY = r'(?:->|\.)\s*%s\s*(?:\[[^\]]*\])?\s*(?:(?:[-+*/|&^%%]|<<|>>)?=(?!=)|\+\+|--)'
+
+
+def members_of(source, name):
+    """The member names of `struct name` as the file defines it, nested members included, or []."""
+    opener = re.compile(STRUCT_OPEN % re.escape(name))
+    start = next((i for i, line in enumerate(source) if opener.match(line)), None)
+    if start is None:
+        return []
+    out, depth = [], 0
+    for line in source[start:]:
+        code = re.sub(r'/\*.*?\*/', '', line)
+        depth += code.count('{') - code.count('}')
+        if depth <= 0 and line.strip().startswith('}'):
+            break
+        m = MEMBER.search(code.strip())
+        if m and depth >= 1 and not code.strip().startswith(('/*', '*', '//')):
+            out.append(m.group(1))
+    return out
+
+
+def assignment_to(line, field, variable=None):
+    """Whether the line assigns the field, through the given variable when one is named."""
+    pattern = ASSIGN % (re.escape(variable), re.escape(field)) if variable else ASSIGN_ANY % re.escape(field)
+    return re.search(pattern, re.sub(r'/\*.*?\*/', '', line)) is not None
+
+
+EMBEDDING = r'^\s*struct\s+%s\s*(\*?)\s*([A-Za-z_]\w*)\s*(?:\[[^\]]*\])?\s*;'
+
+
+def embeddings_of(sources, name):
+    """{(container struct, member, pointer)} for every struct that holds `struct name` as a
+    member, by value or by pointer, across the given sources."""
+    out = set()
+    member = re.compile(EMBEDDING % re.escape(name))
+    for source in sources.values():
+        if source is None:
+            continue
+        container = None
+        depth = 0
+        for line in source:
+            opened = re.match(r'^(?:typedef\s+)?struct\s+([A-Za-z_]\w*)\s*\{', line)
+            if opened and depth == 0:
+                container = opened.group(1)
+            m = member.match(line)
+            if m and container and depth >= 1:
+                out.add((container, m.group(2), bool(m.group(1))))
+            code = re.sub(r'/\*.*?\*/', '', line)
+            depth += code.count('{') - code.count('}')
+            if depth <= 0:
+                container = None
+                depth = 0
+    return out
+
+
+def field_writers(sources, name):
+    """{field: [(path, line, function)]} for every assignment to a member of `struct name`:
+    through a variable a function declares or receives as `struct name *`, or through a
+    variable of a struct that embeds it, `container->member.field`. `sources` maps a tree path
+    to its lines; comment blocks and prototypes are skipped with the constructs."""
+    out = {}
+    routes = [(re.compile(STRUCT_POINTER % re.escape(name)), '')]
+    for container, member, pointer in embeddings_of(sources, name):
+        routes.append((re.compile(STRUCT_POINTER % re.escape(container)), member + ('->' if pointer else '.')))
+    for path, source in sources.items():
+        if source is None:
+            continue
+        for construct in constructs_of(source):
+            if construct.kind != 'function':
+                continue
+            body = source[construct.start - 1:construct.end]
+            for pointer, via in routes:
+                variables = {m.group(1) for line in body for m in pointer.finditer(line)}
+                if not variables:
+                    continue
+                for offset, line in enumerate(body):
+                    code = re.sub(r'/\*.*?\*/', '', line)
+                    for variable in variables:
+                        prefix = r'\b' + re.escape(variable) + r'\s*(?:->|\.)\s*' + (re.escape(via) if via else '')
+                        for m in re.finditer(prefix + r'([A-Za-z_]\w*)', code):
+                            if re.match(r'\s*(?:\[[^\]]*\])?\s*(?:(?:[-+*/|&^%]|<<|>>)?=(?!=)|\+\+|--)', code[m.end():]):
+                                out.setdefault(m.group(1), []).append((path, construct.start + offset, construct.name))
+    return out
+
+
+def sources_under(tree, dirs, cache):
+    """{tree path: lines} for every .c and .h file under the given tree directories, test files
+    left out, so a census reads the neighbourhood the page cites."""
+    import os
+    out = {}
+    for directory in sorted(set(dirs)):
+        try:
+            names = sorted(os.listdir(os.path.join(tree, directory)))
+        except OSError:
+            continue
+        for name in names:
+            if name.endswith(('.c', '.h')) and 'test' not in name:
+                rel = f'{directory}/{name}' if directory else name
+                from inputs import source_lines
+                out[rel] = source_lines(tree, rel, cache)
+    return out
