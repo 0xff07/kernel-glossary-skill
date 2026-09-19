@@ -163,6 +163,37 @@ def cmd_retro(args):
     return 0
 
 
+def cmd_excerpt(args):
+    """Print one unit ready to paste: the provenance comment and the verbatim lines of
+    `path:first[-last]`, or with --whole the file-scope construct that holds the cited line."""
+    import re as _re
+    from constructs import constructs_of, construct_at
+    from inputs import is_kernel_tree, skill_dir, source_lines
+    match = _re.match(r'^([\w./-]+):(\d+)(?:-(\d+))?$', args.location)
+    if not match:
+        print('excerpt: give path:first or path:first-last', file=sys.stderr)
+        return 2
+    path, first = match.group(1), int(match.group(2))
+    last = int(match.group(3)) if match.group(3) else first
+    tree = os.path.abspath(args.tree or os.environ.get('KG_TREE') or os.path.dirname(os.path.dirname(os.path.dirname(skill_dir()))))
+    if not is_kernel_tree(tree):
+        print(f'excerpt: no kernel tree at {tree}; pass --tree', file=sys.stderr)
+        return 2
+    source = source_lines(tree, path, {})
+    if source is None or first < 1 or last > len(source) or last < first:
+        print(f'excerpt: {path}:{first}-{last} is not in the tree', file=sys.stderr)
+        return 2
+    if args.whole:
+        construct = construct_at(constructs_of(source), first)
+        if construct is None:
+            print(f'excerpt: {path}:{first} lies in no file-scope construct', file=sys.stderr)
+            return 2
+        first, last = construct.start, construct.end
+    print(f'/* {path}:{first} */')
+    print('\n'.join(source[first - 1:last]))
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(prog='kg', description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
@@ -186,6 +217,11 @@ def main(argv=None):
         command.add_argument('--tree')
         command.add_argument('--worksheet')
         command.add_argument('--campaign')
+    excerpt = sub.add_parser('excerpt', help='print a verbatim unit with its provenance comment, ready to paste')
+    excerpt.add_argument('location', help='path:first or path:first-last, relative to the tree')
+    excerpt.add_argument('--whole', action='store_true', help='the whole function or definition holding the cited line')
+    excerpt.add_argument('--tree')
+    excerpt.set_defaults(func=cmd_excerpt)
     st = sub.add_parser('selftest', help='validate bindings, rule tests and shared engine tests')
     st.add_argument('--rule', metavar='ID', help="execute this rule's test module")
     st.set_defaults(func=cmd_selftest)

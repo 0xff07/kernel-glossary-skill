@@ -382,3 +382,30 @@ history is the archive, and the `skill:` commit that retires carries the `kg
 retro` numbers that justified it. After a style sweep is retired, one batch is
 checked with the deleted check re-run from history, because a first-pass rate
 measured while the sweep existed does not prove what writers do without it.
+
+## 12. Reading the code whole
+
+A page is also a guided reading of its source. The excerpt rules therefore
+distinguish two kinds of shown line: the lines a claim rests on, which the
+prose explains, and the lines around them, which the page names by stage and
+lets the reader read. A function the catalog names is read whole, in one
+excerpt or in consecutive pieces cut at its stage boundaries, and a paragraph
+that reasons about lines shown in another subsection shows them again beside
+itself instead of pointing back.
+
+Two checks carry this. `excerpts.walkthrough` finds every catalog entry that
+anchors a function, takes the function's extent from the shared construct
+parser (`constructs.py`), maps the page's units onto it and reports the lines
+never shown (a FAIL), the pieces shown before the walk reaches them (a review
+row) and the lines shown again (a count). `excerpts.reshown` lists, for
+reading, every location link whose lines the page reproduces only in another
+subsection and every unit that shows again more than about twelve lines already
+shown. `excerpts.contiguity` fails an elision inside a function, and
+`excerpts.verbatim` requires the one surviving elision, a run of members
+dropped from a long definition, to carry what it drops and where the excerpt
+resumes, `... /* N lines, to :LINE */`, printing the exact marker when it is
+missing.
+
+`kg excerpt <path:first-last>` prints a unit ready to paste, its provenance
+comment included, and `--whole` prints the function or definition holding the
+cited line, so a writer never transcribes source by hand.

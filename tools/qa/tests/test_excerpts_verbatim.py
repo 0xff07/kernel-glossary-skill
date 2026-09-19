@@ -32,10 +32,17 @@ class CompareUnit(unittest.TestCase):
         self.assertEqual(counts['bad'], 1)
         self.assertIn('mismatch at source line 3', findings[0].message)
 
-    def test_declared_elision_resynchronises(self):
-        findings, counts = compare(unit_of(2, 'int b;', '...', 'int e;', 'int f;'), SOURCE)
+    def test_declared_elision_resynchronises_and_carries_its_numbers(self):
+        findings, counts = compare(unit_of(2, 'int b;', '... /* 2 lines, to :5 */', 'int e;', 'int f;'), SOURCE)
         self.assertEqual(findings, [])
         self.assertEqual((counts['elisions'], counts['resyncs'], counts['bad']), (1, 1, 0))
+        findings, counts = compare(unit_of(2, 'int b;', '...', 'int e;', 'int f;'), SOURCE)
+        self.assertEqual(counts['bad'], 1)
+        self.assertIn('write `... /* 2 lines, to :5 */`', findings[0].message)
+        findings, counts = compare(unit_of(2, 'int b;', '... /* 1 line, to :5 */', 'int e;'), SOURCE)
+        self.assertIn("(found '... /* 1 line, to :5 */')", findings[0].message)
+        findings, counts = compare(unit_of(2, 'int b;', '...', 'int c;'), SOURCE)
+        self.assertIn('drops no line', findings[0].message)
 
     def test_resync_onto_a_duplicated_line_is_refused(self):
         findings, counts = compare(unit_of(2, 'int b;', '...', 'int x;'), DUPLICATED)
@@ -44,12 +51,12 @@ class CompareUnit(unittest.TestCase):
 
     def test_an_elision_may_end_on_the_closing_brace(self):
         source = ['struct a {', '\tint x;', '};', 'struct b {', '\tint y;', '};']
-        findings, counts = compare(unit_of(1, 'struct a {', '...', '};'), source)
+        findings, counts = compare(unit_of(1, 'struct a {', '... /* 1 line, to :3 */', '};'), source)
         self.assertEqual(findings, [])
         self.assertEqual((counts['resyncs'], counts['bad']), (1, 0))
-        findings, counts = compare(unit_of(1, 'struct a {', '...', '\tint y;'), source)
+        findings, counts = compare(unit_of(1, 'struct a {', '... /* 3 lines, to :5 */', '\tint y;'), source)
         self.assertEqual(counts['bad'], 0)
-        self.assertEqual(compare(unit_of(4, 'struct b {', '...', '};'), source)[1]['bad'], 0)
+        self.assertEqual(compare(unit_of(4, 'struct b {', '... /* 1 line, to :6 */', '};'), source)[1]['bad'], 0)
 
     def test_tabs_are_compared_byte_for_byte(self):
         source = ['\tint a;', '        int b;']

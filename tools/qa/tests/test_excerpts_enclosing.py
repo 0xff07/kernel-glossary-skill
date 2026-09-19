@@ -48,11 +48,16 @@ class Enclosing(unittest.TestCase):
         self.assertIn('shows lines of struct kg_ring (ring.h:6-9) without its opening line; begin the unit at ring.h:6', self.fails(found)[0])
         found = self.run_on(fence('/* drivers/kg/ring.h:6 */', 'struct kg_ring {', '...', '\tunsigned int tail;', '};'))
         self.assertEqual(self.fails(found), [])
-        self.assertEqual(found.footer, 'units=1 openers-shown=1 continued=0 top-level-lines=0 unmapped=0 findings=0')
+        self.assertEqual(found.footer, 'units=1 openers-shown=1 continued=0 named-above=0 top-level-lines=0 unmapped=0 findings=0')
 
-    def test_a_function_fragment_needs_its_signature(self):
+    def test_a_function_fragment_needs_its_signature_or_a_sentence_naming_it(self):
         found = self.run_on(fence('/* drivers/kg/ring.c:8 */', '\tring->head++;'))
-        self.assertIn('shows lines of kg_ring_push() (ring.c:1-10)', self.fails(found)[0])
+        self.assertIn('shows lines of kg_ring_push() (ring.c:1-10) without its signature, and no sentence above the fence links kg_ring_push()', self.fails(found)[0])
+        intro = 'The push advances the head, as [`kg_ring_push()`](https://elixir.bootlin.com/linux/v0.1/source/drivers/kg/ring.c#L1) shows.'
+        details = '### A\n\n' + intro + '\n\n' + fence('/* drivers/kg/ring.c:8 */', '\tring->head++;') + f'\n\n{PROSE}\n'
+        found = observed(rule.check(page(skeleton(details=details)), TestInputs(tree=self.root)))
+        self.assertEqual(self.fails(found), [])
+        self.assertIn('named-above=1', found.footer)
         found = self.run_on(fence('/* drivers/kg/ring.c:2 */', '\t\t\tint v)', '{', '\tint ret;'))
         self.assertIn('begin the unit at ring.c:1', self.fails(found)[0])
         found = self.run_on(fence('/* drivers/kg/ring.c:1 */', 'static int kg_ring_push(struct kg_ring *ring,', '\t\t\tint v)', '{', '...', '\tring->head++;', '\treturn 0;', '}'))

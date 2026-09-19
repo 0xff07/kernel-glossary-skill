@@ -1,6 +1,6 @@
 """Measurement units, thresholds and consecutive runs over the shared page model."""
 from inputs import source_lines
-from pagemodel import ELISION
+from pagemodel import is_elision
 from report import Finding
 from report import observations
 
@@ -13,7 +13,7 @@ def positions_of(unit, source):
     pos = unit.line - 1
     after = False
     for line in unit.lines:
-        if line.strip() == ELISION:
+        if is_elision(line):
             out.append(None)
             after = True
             continue

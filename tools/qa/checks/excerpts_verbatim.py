@@ -2,7 +2,7 @@
 from report import Finding
 from report import observations
 from inputs import source_lines
-from pagemodel import ELISION
+from pagemodel import elision_numbers, is_elision
 import re
 RULE = 'excerpts.verbatim'
 RESYNC_WINDOW = 600
@@ -27,12 +27,17 @@ def compare_unit(unit, source, findings, counts):
     position = unit.line - 1
     first = True
     after_elision = False
+    marker = None
     for line in unit.lines:
-        if line.strip() == ELISION:
+        if is_elision(line):
             counts['elisions'] += 1
             after_elision = True
+            marker = line
             continue
         if position < len(source) and source[position] == line:
+            if after_elision:
+                findings.append(Finding(unit.fence.start, 'FAIL', f'{unit.path}:{unit.line} declares an elision that drops no line before {line.strip()[:RESYNC_CLIP]!r}; remove the marker'))
+                counts['bad'] += 1
             first = False
             after_elision = False
             position += 1
@@ -48,6 +53,11 @@ def compare_unit(unit, source, findings, counts):
             findings.append(Finding(unit.fence.start, 'FAIL', f'{unit.path}:{unit.line} elision resynchronises on a line that occurs {source.count(line)} times in the file; split the block into two units: {line.strip()[:RESYNC_CLIP]!r}'))
             counts['bad'] += 1
             return
+        dropped, resumed = found - position, found + 1
+        want = f'... /* {dropped} line{"" if dropped == 1 else "s"}, to :{resumed} */'
+        if elision_numbers(marker) != (dropped, resumed):
+            findings.append(Finding(unit.fence.start, 'FAIL', f'{unit.path}:{unit.line} elision marker must carry what it drops and where the excerpt resumes: write `{want}`' + (f' (found {marker.strip()!r})' if elision_numbers(marker)[0] is not None else '')))
+            counts['bad'] += 1
         position = found + 1
         first = False
         after_elision = False

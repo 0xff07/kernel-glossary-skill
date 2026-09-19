@@ -31,7 +31,7 @@ writing.md says how a page explains; this file says what a Linux-kernel page is 
 
 ## Excerpt provenance [provenance]
 
-1. [provenance.form, qa] Every fenced C block opens with `/* path/from/tree/root.c:LINE */` naming its first reproduced line, and a short annotation may follow the number. A block stitching several places delimits each unit with its own provenance comment and marks elided code with a standalone `...`. A non-code fence carries no provenance; it is a figure when a line carries a drawing character and a quotation or listing otherwise.
+1. [provenance.form, qa] Every fenced C block opens with `/* path/from/tree/root.c:LINE */` naming its first reproduced line, and a short annotation may follow the number. A block stitching several places delimits each unit with its own provenance comment. The one elision, a run of members dropped from a long definition, is a standalone `... /* N lines, to :LINE */` ([excerpts.contiguity]). A non-code fence carries no provenance; it is a figure when a line carries a drawing character and a quotation or listing otherwise.
 
 ## Links [links]
 

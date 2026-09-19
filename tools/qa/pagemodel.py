@@ -30,6 +30,8 @@ QUOTATION = re.compile(r'"[^"]*"')
 PROVENANCE = re.compile(r"^/\* ([\w./-]+):(\d+)\b[^*]*\*/\s*$")
 PROVENANCE_FILE = re.compile(r"/\* ([\w./-]+):\d+")
 ELISION = "..."
+# a standalone elision line, bare or carrying how many lines it drops and where the excerpt resumes
+ELISION_MARK = re.compile(r"^\.\.\.(?:\s*/\*\s*(\d+) lines?, to :(\d+)\s*\*/)?\s*$")
 CATALOG_SYMBOL = re.compile(r"\[`'\\<([^\\]+)\\>'(?::'[^']*')?`\]")
 # the decoration a catalog name carries and a COMPLETENESS row does not: the tag, a pointer star, an
 # array bound, a call's parentheses
@@ -95,13 +97,26 @@ def split_cells(line):
     return [cell.strip() for cell in cells]
 
 
+def is_elision(text):
+    """A standalone `...` line, bare or carrying its count and resumption line."""
+    return ELISION_MARK.match(text.strip()) is not None
+
+
+def elision_numbers(text):
+    """(lines dropped, line resumed at) of a numbered elision marker, or (None, None)."""
+    match = ELISION_MARK.match(text.strip())
+    if not match or match.group(1) is None:
+        return (None, None)
+    return (int(match.group(1)), int(match.group(2)))
+
+
 def is_code_line(text):
     """A body line that can carry a definition: not blank, a comment, a brace or an elision."""
     if not text:
         return False
     if text.startswith(COMMENT_STARTS):
         return False
-    return text.strip() != ELISION
+    return not is_elision(text)
 
 
 def prose_text(text):
@@ -227,6 +242,22 @@ class Page:
         if current:
             out.append(current)
         return out
+
+    def intro_of(self, fence):
+        """The prose above a fence: what lies between the previous heading, figure, table, list or
+        excerpt and the fence, with the page line of its first non-blank line."""
+        out = []
+        j = fence.start - 2
+        first = None
+        while j >= 0:
+            line = self.lines[j]
+            if line.startswith(("```", "#", "|")) or re.match(r"^\s*[-*]\s", line):
+                break
+            out.append(line)
+            if line.strip():
+                first = j + 1
+            j -= 1
+        return ("\n".join(reversed(out)), first)
 
     def in_fence(self, n):
         """True when the 1-based line n lies inside a fence, markers included."""
@@ -455,7 +486,7 @@ class Page:
             marks = [f"{m.group(1)}:{m.group(2)}" for m in
                      (PROVENANCE.match(t.strip()) for t in body) if m]
             label = " + ".join(marks) if marks else (body[0].strip()[:LABEL_CLIP] if body else "")
-            size = sum(1 for t in body if not PROVENANCE.match(t.strip()) and t.strip() != ELISION)
+            size = sum(1 for t in body if not PROVENANCE.match(t.strip()) and not is_elision(t))
             construct = construct_of(raw_body)
             return Block("C", n, size, label, construct, {"body": raw_body}), j + 1
         kind = "D" if any(BOX_DRAWING.search(t) for t in body) else "Q"

@@ -37,21 +37,8 @@ KEYWORDS = ('if', 'for', 'while', 'switch', 'return', 'sizeof')
 ENCLOSING_KEYWORDS = ('if', 'for', 'while', 'switch', 'return')
 
 def intro_text(page, fence):
-    """The prose above a fence: what lies between the previous heading, figure, table, list or
-    excerpt and the fence, with its own first page line."""
-    lines = page.lines
-    out = []
-    j = fence.start - 2
-    first = None
-    while j >= 0:
-        line = lines[j]
-        if line.startswith(('```', '#', '|')) or re.match('^\\s*[-*]\\s', line):
-            break
-        out.append(line)
-        if line.strip():
-            first = j + 1
-        j -= 1
-    return ('\n'.join(reversed(out)), first)
+    """The prose above a fence, from the page model."""
+    return page.intro_of(fence)
 
 def defined_name(line):
     for pattern in (DEFINITION_TAGGED, DEFINITION_MACRO, DEFINITION_FUNCTION, DEFINITION_TABLE, DEFINITION_BY_MACRO, DEFINITION_VARIABLE):

@@ -1,7 +1,7 @@
 """Checks for [provenance.form]."""
 from report import Finding
 import re
-from pagemodel import ELISION
+from pagemodel import ELISION, is_elision
 from pagemodel import PROVENANCE
 RULE = 'provenance.form'
 CLIP = 60
@@ -34,8 +34,8 @@ def elisions_standalone(page):
     for fence in page.excerpts:
         for k, line in enumerate(fence.body):
             text = line.strip()
-            if ELISION in line and text != ELISION and text.startswith(ELISION):
-                out.append(Finding(fence.start + 1 + k, 'review', f'an elision marker should be a standalone `...` line: {text[:40]!r}'))
+            if text.startswith(ELISION) and not is_elision(text):
+                out.append(Finding(fence.start + 1 + k, 'review', f'an elision marker is a standalone `...` line, bare or as `... /* N lines, to :LINE */`: {text[:40]!r}'))
     return out
 
 def no_provenance_outside_excerpts(page):
