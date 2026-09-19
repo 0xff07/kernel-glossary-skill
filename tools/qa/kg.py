@@ -245,6 +245,19 @@ def cmd_excerpt(args):
     return 0
 
 
+def cmd_triage(args):
+    import triage
+    def progress(k, n, page_path):
+        if args.verbose:
+            print(f'[{k}/{n}] {page_path}', file=sys.stderr)
+    rows = triage.gather(skill_dir(), args.dir, cache=args.cache, tree=args.tree, progress=progress)
+    if args.json:
+        print(json.dumps(rows, indent=2))
+    else:
+        print('\n'.join(triage.render(rows, args.dir)))
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(prog='kg', description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
@@ -287,6 +300,13 @@ def main(argv=None):
     retro.add_argument('dir', nargs='?', default='progress', help='a progress directory (default: progress)')
     retro.add_argument('--rule', metavar='ID', help='list the pages for this rule instead')
     retro.set_defaults(func=cmd_retro)
+    tri = sub.add_parser('triage', help='every page of a directory under the current rules, one row each, graded current, fix or rebuild')
+    tri.add_argument('dir', nargs='?', default='docs', help='a docs directory (default: docs)')
+    tri.add_argument('--cache', metavar='DIR', help='reuse check documents from this directory when the page and QA digests match, and write fresh ones there')
+    tri.add_argument('--json', action='store_true')
+    tri.add_argument('--verbose', action='store_true')
+    tri.add_argument('--tree')
+    tri.set_defaults(func=cmd_triage)
     args = parser.parse_args(argv)
     try:
         return args.func(args)

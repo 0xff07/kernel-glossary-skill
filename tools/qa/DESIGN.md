@@ -258,6 +258,19 @@ A nonexistent ID or an empty explicit selection is an error. Exit codes are:
 
 A partial `--only` run never establishes LINTED state.
 
+The corpus command. `kg triage <docs dir> [--cache DIR]` runs the checks over
+every page under the directory, or reuses a cached document whose page and QA
+digests still match, and prints one row per page: FAIL and review totals, the
+excerpt-rule failures, the excerpt units and the share that are skeletons or
+elided, the walkthrough gaps, the reading-rule and figure-rule failures, lines,
+figures and state, then a summary per grade. The grade is a threshold on two
+numbers: no FAIL is current; walk gaps at most one owned function in five and
+skeletons (units without their opener or eliding inside a function) at most a
+third of the units is fix; the rest is rebuild. The QA digest a LINTED record
+names leaves `retro.py` and `triage.py` out, since they read findings and
+produce none, so editing them voids no record. It changes
+nothing, and a rerun after every batch shows the corpus moving.
+
 ## 8. Exemptions and page state
 
 Exemptions are recorded in the worksheet's LINT section:

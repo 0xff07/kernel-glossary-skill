@@ -6,11 +6,17 @@ from pathlib import Path
 RECORD = re.compile(r"\bLINTED\s+(\S+)\s+page sha256:\s*([0-9a-f]{64})(?:[ \t]+qa sha256:[ \t]*([0-9a-f]{64}))?", re.I)
 
 
+# modules that only read check results and never produce them; editing them changes no finding
+REPORTING_ONLY = ("retro.py", "triage.py")
+
+
 def qa_digest(base):
+    """The digest of everything that decides a finding: the guidelines and the QA code, the tests
+    and the reporting-only modules left out."""
     base = Path(base)
     paths = list((base / "guidelines").glob("*.md"))
     paths += [p for p in (base / "tools/qa").rglob("*.py")
-              if "tests" not in p.relative_to(base / "tools/qa").parts]
+              if "tests" not in p.relative_to(base / "tools/qa").parts and p.name not in REPORTING_ONLY]
     digest = hashlib.sha256()
     for path in sorted(paths, key=lambda p: p.relative_to(base).as_posix()):
         relative = path.relative_to(base).as_posix().encode("utf-8")

@@ -135,7 +135,8 @@ LINTED <date> page sha256: <digest> qa sha256: <qa-digest>
 ```
 
 The QA digest includes guideline Markdown and executable QA Python, including
-shared helpers; tests and this README are excluded. Either changed digest, or an
+shared helpers; tests, this README and the reporting-only modules `retro.py` and
+`triage.py` are excluded, since they read findings and produce none. Either changed digest, or an
 old record without a QA digest, returns the page to WRITTEN. Records are never
 created automatically from a clean run.
 
