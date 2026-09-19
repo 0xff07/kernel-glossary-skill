@@ -434,8 +434,13 @@ worksheet's EVIDENCE; `evidence.lifecycle` reads each row against the tree (the
 member exists, the site assigns it inside the named writer, the mark stands in a
 legend) and against a census of every function that writes the field, so a
 drawn lifecycle is complete or says what it left out. `lifecycle.when` runs the
-same census over every cataloged struct and lists the objects with a field two
-or more functions write and no table yet. The census follows an embedded object
+same census over every cataloged struct the subsystem's sources define and lists
+the objects with a field two or more functions write and no table yet. Both
+censuses read the kernel paths of the page's subsystems.md entry (`inputs.subsystem`),
+never the whole neighbourhood the page cites: a page linking `struct device` and
+`complete()` once pulled `include/linux`, `drivers/base` and `kernel/sched` into
+the scan and paid two minutes a check for it, and a catalog entry for a member
+(`struct tb_nhi *nhi`) is no longer read as an object. The census follows an embedded object
 through its container (`sw->tmu.mode`) and counts increments as writes; the
 shared parser lives in `constructs.py`.
 

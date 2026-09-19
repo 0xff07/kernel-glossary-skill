@@ -49,4 +49,4 @@ writing.md says how a page explains; this file says what a Linux-kernel page is 
 
 ## Subsystem conventions [conventions]
 
-1. [conventions.subsystem-entry] `guidelines/subsystems.md` carries, per subsystem, the tag, the `docs/` directory, the kernel paths, the specification and the section-six heading (REGISTERS, METHODS, PRIMITIVES or INTERFACES); the prep pass resolves the page's entry, and the page follows it.
+1. [conventions.subsystem-entry] `guidelines/subsystems.md` carries, per subsystem, the tag, the `docs/` directory, the kernel paths, the specification and the section-six heading (REGISTERS, METHODS, PRIMITIVES or INTERFACES); the prep pass resolves the page's entry, the page follows it, and the engine reads the same entry for the kernel paths its lifecycle censuses scan.

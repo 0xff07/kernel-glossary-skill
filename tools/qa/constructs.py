@@ -1,4 +1,6 @@
 """File-scope constructs of a kernel source file: functions, definitions, initializers, macros and comment blocks, with their line extents."""
+import glob
+import os
 import re
 
 TITLE = re.compile(r'^\s*\*\s+((?:struct|enum|union)\s+)?(\w+)(\(\))?\s+-')
@@ -232,4 +234,50 @@ def sources_under(tree, dirs, cache):
                 rel = f'{directory}/{name}' if directory else name
                 from inputs import source_lines
                 out[rel] = source_lines(tree, rel, cache)
+    return out
+
+
+def sources_within(tree, kernel_paths, cache):
+    """{tree path: lines} for every .c and .h file the subsystem's kernel paths name: a directory
+    (ending in /) with everything under it, a glob, or a single file; test files left out."""
+    from inputs import source_lines
+    out = {}
+    for spec in kernel_paths:
+        spec = spec.strip()
+        if not spec:
+            continue
+        matches = sorted(glob.glob(os.path.join(tree, spec))) if any(c in spec for c in '*?[') else [os.path.join(tree, spec.rstrip('/'))]
+        for match in matches:
+            if os.path.isdir(match):
+                for root, dirs, names in os.walk(match):
+                    dirs.sort()
+                    for name in sorted(names):
+                        if name.endswith(('.c', '.h')) and 'test' not in name:
+                            rel = os.path.relpath(os.path.join(root, name), tree).replace(os.sep, '/')
+                            out[rel] = source_lines(tree, rel, cache)
+            elif os.path.isfile(match) and match.endswith(('.c', '.h')):
+                rel = os.path.relpath(match, tree).replace(os.sep, '/')
+                out[rel] = source_lines(tree, rel, cache)
+    return out
+
+
+def object_sources(page, inputs):
+    """The sources a lifecycle census reads: the kernel paths of the page's subsystems.md entry,
+    or the directories of the files the page cites when no entry matches."""
+    entry = getattr(inputs, 'subsystem', None)
+    if entry and entry.get('kernel_paths'):
+        return sources_within(inputs.tree, entry['kernel_paths'], inputs.cache)
+    dirs = {os.path.dirname(f) for f in page.cited_files() if f.endswith(('.c', '.h'))}
+    return sources_under(inputs.tree, dirs, inputs.cache)
+
+
+def defined_structs(sources):
+    """The names of the structs the sources define."""
+    out = set()
+    for source in sources.values():
+        if source is None:
+            continue
+        for construct in constructs_of(source):
+            if construct.kind == 'struct' and construct.name:
+                out.add(construct.name)
     return out

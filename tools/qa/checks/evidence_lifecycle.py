@@ -1,7 +1,6 @@
 """Checks for [evidence.lifecycle]."""
-import os
 import re
-from constructs import assignment_to, constructs_of, construct_at, field_writers, members_of, sources_under
+from constructs import assignment_to, constructs_of, construct_at, field_writers, members_of, object_sources
 from inputs import source_lines
 from pagemodel import legend_entries
 from report import Finding, observations
@@ -27,8 +26,7 @@ def lifecycle(page, inputs):
     legends = [e for fence in page.figures for e in legend_entries(fence.body)[0]]
     cited = page.cited_files()
     definitions = {key.split()[1]: path for key, path, _line, _n in page.catalog_entries if key.startswith('struct ') and path}
-    dirs = {os.path.dirname(f) for f in cited if f.endswith(('.c', '.h'))}
-    sources = sources_under(inputs.tree, dirs, inputs.cache)
+    sources = object_sources(page, inputs)
     tables = {}
 
     def fail(text):

@@ -1,10 +1,11 @@
 """Checks for [lifecycle.when]."""
-import os
-from constructs import field_writers, sources_under
+import re
+from constructs import defined_structs, field_writers, object_sources
 from report import Finding, observations
 from worksheet_utils import lifecycle_exclusions, lifecycle_rows
 RULE = 'lifecycle.when'
 MIN_WRITERS = 2
+STRUCT_KEY = re.compile(r'^struct ([A-Za-z_]\w*)$')
 
 def qualifying_fields(sources, name, excluded=()):
     """{field: [writer functions]} for the fields of `struct name` that MIN_WRITERS or more functions write,
@@ -16,14 +17,23 @@ def qualifying_fields(sources, name, excluded=()):
             out[field] = functions
     return out
 
+def cataloged_structs(page):
+    """The structs the catalog names as objects: a key of the form `struct name`; an entry for a
+    member (`struct tb_nhi *nhi`) names no object."""
+    return [m.group(1) for key in page.catalog_keys for m in [STRUCT_KEY.match(key)] if m]
+
 def candidates(page, inputs):
     findings, listing = [], []
-    structs = [key.split()[1] for key in page.catalog_keys if key.startswith('struct ')]
+    named = cataloged_structs(page)
+    sources = object_sources(page, inputs) if named else {}
+    defined = defined_structs(sources) if named else set()
+    structs = [name for name in named if name in defined]
+    for name in named:
+        if name not in defined:
+            listing.append(f'struct {name}: defined outside the subsystem sources, not a candidate')
     counts = {'objects': len(structs), 'qualifying': 0, 'recorded': 0}
     recorded = {row['object'] for row in lifecycle_rows(inputs)}
     excluded = lifecycle_exclusions(inputs)
-    dirs = {os.path.dirname(f) for f in page.cited_files() if f.endswith(('.c', '.h'))}
-    sources = sources_under(inputs.tree, dirs, inputs.cache) if structs else {}
     for name in structs:
         fields = qualifying_fields(sources, name, excluded)
         if not fields:

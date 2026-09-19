@@ -4,7 +4,7 @@ import shutil
 import tempfile
 import unittest
 
-from inputs import Inputs, worksheet_verdict, page_key, page_within
+from inputs import Inputs, worksheet_verdict, page_key, page_within, subsystem_entry
 
 
 def exemptions_of(lint_text):
@@ -205,3 +205,32 @@ class RequiredInputs(unittest.TestCase):
         from inputs import MissingInput
         with self.assertRaises(MissingInput):
             inputs.require('tree')
+
+
+class SubsystemEntry(unittest.TestCase):
+    MAP = ("# Map\n\n## KG\n\n- tag: `kg`\n- dir: `kg`\n- kernel_paths: `drivers/kg/`, `include/linux/kg.h`\n"
+           "- spec: none\n- section6_heading: none\n\n## Other\n\n- dir: `other`\n- kernel_paths: `drivers/other/`\n")
+
+    def test_the_entry_of_the_pages_directory(self):
+        base = tempfile.mkdtemp()
+        try:
+            os.makedirs(os.path.join(base, "guidelines"))
+            open(os.path.join(base, "guidelines", "subsystems.md"), "w", encoding="utf-8").write(self.MAP)
+            entry = subsystem_entry(os.path.join(base, "docs", "kg", "ring.md"), base)
+            self.assertEqual((entry["name"], entry["dir"], entry["kernel_paths"]), ("KG", "kg", ["drivers/kg/", "include/linux/kg.h"]))
+            self.assertEqual(subsystem_entry(os.path.join(base, "docs", "other", "x.md"), base)["kernel_paths"], ["drivers/other/"])
+            self.assertIsNone(subsystem_entry(os.path.join(base, "docs", "none", "x.md"), base))
+            self.assertIsNone(subsystem_entry(os.path.join(base, "page.md"), base))
+        finally:
+            shutil.rmtree(base)
+
+    def test_no_map_means_no_entry(self):
+        base = tempfile.mkdtemp()
+        try:
+            self.assertIsNone(subsystem_entry(os.path.join(base, "docs", "kg", "ring.md"), base))
+        finally:
+            shutil.rmtree(base)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -89,6 +89,41 @@ def page_within(page_path, base=None):
     return None, os.path.basename(page_path)
 
 
+SUBSYSTEMS = "guidelines/subsystems.md"
+ENTRY_FIELD = re.compile(r"^- (dir|kernel_paths): (.*)$")
+
+
+def subsystem_entries(base=None):
+    """The entries of guidelines/subsystems.md, [{name, dir, kernel_paths}], the kernel paths
+    as written: a directory ending in /, a single file, or a glob."""
+    try:
+        lines = open(os.path.join(base or skill_dir(), SUBSYSTEMS), encoding="utf-8").read().split("\n")
+    except OSError:
+        return []
+    entries, current = [], None
+    for line in lines:
+        if line.startswith("## "):
+            current = {"name": line[3:].strip(), "dir": None, "kernel_paths": []}
+            entries.append(current)
+            continue
+        found = ENTRY_FIELD.match(line) if current is not None else None
+        if found:
+            values = re.findall(r"`([^`]+)`", found.group(2))
+            if found.group(1) == "dir":
+                current["dir"] = values[0] if values else None
+            else:
+                current["kernel_paths"] = values
+    return [entry for entry in entries if entry["dir"]]
+
+
+def subsystem_entry(page_path, base=None):
+    """The subsystems.md entry whose dir is the page's directory under docs/, or None."""
+    directory, _within = page_within(page_path, base)
+    if directory is None:
+        return None
+    return next((entry for entry in subsystem_entries(base) if entry["dir"] == directory), None)
+
+
 def source_lines(tree, relative_path, cache):
     if relative_path in cache:
         return cache[relative_path]
@@ -168,6 +203,7 @@ class Inputs:
     def __init__(self, page_path, tree=None, worksheet=None, campaign=None, base=None, spec=None):
         self.page_path = page_path
         self.base = base or skill_dir()
+        self.subsystem = subsystem_entry(page_path, self.base)
         self.problems, self.notes = [], []
         self.cache = {}
         self.source_problems = []

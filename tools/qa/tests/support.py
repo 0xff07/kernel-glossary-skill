@@ -64,6 +64,7 @@ class TestInputs:
         self.spec = None
         self.base = '/nonexistent/kg-test'
         self.page_path = self.base + '/page.md'
+        self.subsystem = None
         self.__dict__.update(values)
 
 
