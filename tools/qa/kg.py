@@ -134,11 +134,14 @@ def print_load(page):
         print(f'{k:{width}}  {v}')
 
 
+def cmd_skim(args):
+    print_skim(Page(args.page))
+    return 0
+
+
 def cmd_view(args):
     page = Page(args.page)
-    if args.skim:
-        print_skim(page)
-    elif args.load:
+    if args.load:
         print_load(page)
     elif args.regions:
         for n, line in enumerate(page.lines[:page.counted_lines()], 1):
@@ -255,9 +258,12 @@ def main(argv=None):
     view = sub.add_parser('view', help='print a page representation')
     view.add_argument('page')
     mode = view.add_mutually_exclusive_group(required=True)
-    for name in ('regions', 'prose', 'raw', 'spans-visible', 'skim', 'load'):
+    for name in ('regions', 'prose', 'raw', 'spans-visible', 'load'):
         mode.add_argument('--' + name, action='store_true')
     view.set_defaults(func=cmd_view)
+    skim = sub.add_parser('skim', help="print the reading path of DETAILS: the route, then every subsection's title, first sentence, recaps and last sentence")
+    skim.add_argument('page')
+    skim.set_defaults(func=cmd_skim)
     table = sub.add_parser('table', help="emit the worksheet's LINKS table")
     table.add_argument('page')
     table.set_defaults(func=cmd_table)

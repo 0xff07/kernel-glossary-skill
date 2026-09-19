@@ -428,7 +428,7 @@ shared parser lives in `constructs.py`.
 
 ## 13. Reading DETAILS whole
 
-DETAILS is built to be read at two speeds. The skim, `kg view --skim`, is the
+DETAILS is built to be read at two speeds. The skim, `kg skim`, is the
 route paragraph followed by every subsection's title, first sentence, recaps
 and last sentence; the rules make that skim carry the argument
 (`arrangement.route`, `purpose.conclusion-first`, `arrangement.recap`) and
