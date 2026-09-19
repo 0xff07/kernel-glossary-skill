@@ -1,26 +1,26 @@
-"""plugins.dossier: the identity verdicts, the scope-closure and catalog tables of PARITY, the
+"""plugins.worksheet: the identity verdicts, the scope-closure and catalog tables of PARITY, the
 acceptance lines and the evidence digest, and the LINT record that evidences LINTED."""
 import unittest
 from inputs import Inputs
-from checks import parity_scope_table as dossier
+from checks import parity_scope_table as worksheet
 from tests.support import page, skeleton, TestInputs, observed
 DIGEST = 'a' * 64
 OTHER = 'b' * 64
 ACCEPTANCE = '- scoped behaviors covered: done\n- claims supported nearby: done\n- guards preserved: done\n- invariants searched: done\n- activation delta: not applicable, nothing switches on\n- modes told apart: not applicable\n- constructs and limits covered: done\n'
 
 class FakeInputs(TestInputs):
-    dossier_section = Inputs.dossier_section
+    worksheet_section = Inputs.worksheet_section
 
     def __init__(self, text, how='convention', rejected=(), digest=DIGEST):
         super().__init__()
-        self.dossier_lines = text.split('\n') if text is not None else None
-        self.dossier = '<dossier>' if text is not None else None
-        self.dossier_how = how
-        self.dossier_rejected = list(rejected)
+        self.worksheet_lines = text.split('\n') if text is not None else None
+        self.worksheet = '<worksheet>' if text is not None else None
+        self.worksheet_how = how
+        self.worksheet_rejected = list(rejected)
         self.page_digest = digest
 
 def check(name, text, **fields):
-    return observed(dossier.check(page(skeleton()), FakeInputs(text, **fields)))
+    return observed(worksheet.check(page(skeleton()), FakeInputs(text, **fields)))
 
 class Parity(unittest.TestCase):
     SCOPE = '| anchors | location on the page |\n|---|---|\n| `kg_ring` | DETAILS, the first subsection |\n\n'

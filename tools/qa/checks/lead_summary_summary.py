@@ -51,7 +51,7 @@ def summary_sentences(page, inputs):
     tables = [v for k, v in blocks if k == 'T']
     figures = [v for k, v in blocks if k == 'D']
     shape = ', '.join([f'table {r}x{c}' for r, c in tables] + [f'figure {s} lines' for s in figures]) or 'none'
-    rows = [Row(section.start, '  SUMMARY sentences (tag each M, J, I or B in the dossier):', set())]
+    rows = [Row(section.start, '  SUMMARY sentences (tag each M, J, I or B in the worksheet):', set())]
     rows += [Row(section.start, f'   {n:2} [ ] {s[:SENTENCE_CLIP]}', set()) for n, s in enumerate(found, 1)]
     footer = f"SUMMARY words={words} paragraphs={len(paragraphs)} sentences={len(found)} excerpts={sum((1 for k, _v in blocks if k == 'C'))} blocks={kinds} dense={shape}"
     yield from reading(rows, [], footer, {'words': words, 'paragraphs': len(paragraphs), 'sentences': found, 'blocks': kinds}, severity='review')

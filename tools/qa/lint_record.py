@@ -22,11 +22,11 @@ def qa_digest(base):
 
 def page_state_of(inputs):
     """(state, reason, record), independent of the lint check's reporting."""
-    if inputs.dossier_lines is None:
-        return "WRITTEN", "no dossier on this machine", None
-    records = RECORD.findall(inputs.dossier_section("## LINT"))
+    if inputs.worksheet_lines is None:
+        return "WRITTEN", "no worksheet on this machine", None
+    records = RECORD.findall(inputs.worksheet_section("## LINT"))
     if not records:
-        return "WRITTEN", "no LINTED record in the dossier's LINT section", None
+        return "WRITTEN", "no LINTED record in the worksheet's LINT section", None
     date, page, qa = records[-1]
     record = (date, page.lower(), qa.lower())
     if record[1] != inputs.page_digest:

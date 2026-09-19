@@ -1,7 +1,7 @@
 """Select count-bearing sentences to re-derive on a second basis."""
 import re
 
-from dossier_utils import bases_rows
+from worksheet_utils import bases_rows
 from sentence_utils import prose_sentences, sentence_worklist
 
 RULE = 'facts.two-bases'

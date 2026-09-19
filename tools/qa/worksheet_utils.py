@@ -33,9 +33,9 @@ def row_symbols(cells):
     return set()
 
 def bases_rows(inputs):
-    """The rows of the EVIDENCE Bases table: {line, claim, bases, result}, or [] when the dossier
+    """The rows of the EVIDENCE Bases table: {line, claim, bases, result}, or [] when the worksheet
     holds none."""
-    body = inputs.dossier_section(EVIDENCE_SECTION) if inputs is not None and inputs.dossier_lines else ''
+    body = inputs.worksheet_section(EVIDENCE_SECTION) if inputs is not None and inputs.worksheet_lines else ''
     rows = []
     for table in tables_of(body.split('\n')):
         if not BASES_HEADER.match(table[0]):
@@ -52,7 +52,7 @@ def bases_rows(inputs):
 def recorded_maps(inputs):
     """The block maps the EVIDENCE section records: [{line, title, map}], the title as written,
     which may be a prefix of the page's."""
-    body = inputs.dossier_section(EVIDENCE_SECTION) if inputs is not None and inputs.dossier_lines else ''
+    body = inputs.worksheet_section(EVIDENCE_SECTION) if inputs is not None and inputs.worksheet_lines else ''
     out = []
     for line in body.split('\n'):
         found = MAP_ROW.match(line) or MAP_LINE.match(line)
@@ -62,8 +62,8 @@ def recorded_maps(inputs):
 
 
 def parity_tables(inputs):
-    body = inputs.dossier_section(PARITY_SECTION)
-    if not body and PARITY_SECTION not in (inputs.dossier_lines or []):
+    body = inputs.worksheet_section(PARITY_SECTION)
+    if not body and PARITY_SECTION not in (inputs.worksheet_lines or []):
         return (None, [], [])
     tables = tables_of(body.split('\n'))
     scope = [t for t in tables if SCOPE_HEADER.match(t[0])]

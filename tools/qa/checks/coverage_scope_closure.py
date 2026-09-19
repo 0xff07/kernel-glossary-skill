@@ -117,7 +117,7 @@ def inspect_page(page, inputs):
                 unresolved.append(symbol)
         if symbol not in symbols:
             symbols.append(symbol)
-    parity = inputs.dossier_section('## PARITY')
+    parity = inputs.worksheet_section('## PARITY')
     findings, listing = ([], [])
     counts = {'named': 0, 'absent': 0, 'accounted': 0}
     for symbol in symbols:
@@ -127,7 +127,7 @@ def inspect_page(page, inputs):
         elif symbol in parity:
             counts['accounted'] += 1
             listing.append(f'accounted in PARITY, not on the page: {symbol}')
-            findings.append(Finding(None, 'note', f"scoped symbol `{symbol}` is absent from the page and accounted for in the dossier's PARITY section; read the reason"))
+            findings.append(Finding(None, 'note', f"scoped symbol `{symbol}` is absent from the page and accounted for in the worksheet's PARITY section; read the reason"))
         else:
             counts['absent'] += 1
             listing.append(f'absent: {symbol}')

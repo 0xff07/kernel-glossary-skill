@@ -9,12 +9,12 @@ DIGEST_LINE = re.compile('page sha256:\\s*([0-9a-f]{64})', re.I)
 SHORT = 12
 
 def acceptance(page, inputs):
-    text = inputs.dossier_section(EVIDENCE_SECTION)
+    text = inputs.worksheet_section(EVIDENCE_SECTION)
     present = [name for name, pattern in ACCEPTANCE if pattern.search(text)]
     missing = [name for name, _p in ACCEPTANCE if name not in present]
     findings = []
     if not text.strip():
-        findings.append(Finding(None, 'review', 'no EVIDENCE section in the dossier'))
+        findings.append(Finding(None, 'review', 'no EVIDENCE section in the worksheet'))
     for name in missing:
         findings.append(Finding(None, 'review', f'acceptance line not found in EVIDENCE: {name}'))
     found = DIGEST_LINE.findall(text)
@@ -31,5 +31,5 @@ def acceptance(page, inputs):
     yield from observations(findings, footer, [], {'present': present, 'missing': missing, 'digest': described})
 
 def check(page, inputs):
-    inputs.require('dossier')
+    inputs.require('worksheet')
     yield from acceptance(page, inputs)

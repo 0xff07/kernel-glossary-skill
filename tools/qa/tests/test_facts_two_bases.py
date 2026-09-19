@@ -34,10 +34,10 @@ class Behavior(unittest.TestCase):
         self.assertEqual(found[-1].data, {'sentences': 1, 'with_basis': 0, 'without_basis': 1, 'new_since_commit': 1, 'stale_bases': 0})
 
     def test_a_recorded_basis_turns_the_row_into_a_note_and_a_stale_row_is_reported(self):
-        dossier = ('## EVIDENCE\n### Bases\n| line | claim | basis 1 | basis 2 | result |\n|---|---|---|---|---|\n'
+        worksheet = ('## EVIDENCE\n### Bases\n| line | claim | basis 1 | basis 2 | result |\n|---|---|---|---|---|\n'
                    '| 1 | Three callers reach | find_callers | git grep -n | agrees |\n'
                    '| 1 | Nine callers | git grep | read | agrees |\n| 7 | anything | x | y | z |\n\npage sha256: ' + 'a' * 64 + '\n')
-        found = list(check(page('Three callers reach the helper. Four callers free it.'), TestInputs(dossier=dossier)))
+        found = list(check(page('Three callers reach the helper. Four callers free it.'), TestInputs(worksheet=worksheet)))
         reviews = [f for f in found if f.severity == 'review']
         self.assertEqual(len(reviews), 1)
         self.assertIn('Four callers free it.', reviews[0].message)

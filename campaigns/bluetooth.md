@@ -4,7 +4,7 @@
 
 ## Context
 
-Campaign short name: `bluetooth`. Campaign file: `campaigns/bluetooth.md`; artifact directory: `progress/bluetooth/` (dossiers and other agent intermediates land there; nothing outside it).
+Campaign short name: `bluetooth`. Campaign file: `campaigns/bluetooth.md`; artifact directory: `progress/bluetooth/` (worksheets and other agent intermediates land there; nothing outside it).
 
 Request source: `prompt.md` at the documented tree's root, amended by the user in conversation on 2026-07-18. Every constraint that governs this campaign is recorded VERBATIM under Scope decisions below, so this file stands alone: neither `prompt.md` nor the originating conversation is needed to resume it.
 
@@ -27,7 +27,7 @@ Standing instructions to any executor, on any machine, cold or warm:
 
 1. Confirm the tree: a Linux kernel checkout at tag `v7.0`, commit `028ef9c96e96` (`git describe --tags` at the tree root prints `v7.0`). A different tree voids every anchor in this spec — stop and surface it.
 2. Derive campaign state: diff this catalog's 73 rows against their output paths under `docs/bluetooth/`. A page on disk is done (presumed to have completed its writing run's check pass); a missing page is open. There is no shared execution log to consult.
-3. Create or reuse the machine-local workspace `progress/bluetooth/` (run log `log.md`, dossiers). It is never committed.
+3. Create or reuse the machine-local workspace `progress/bluetooth/` (run log `log.md`, worksheets). It is never committed.
 4. Execute ONLY the slice the invoker named — a batch from this spec's batch order (its recommended slicing), or an explicit page list. Given a bare "run bluetooth" with no slice: report the derived state and ask; never pick a slice autonomously. Overwrite guard: a catalog page that already exists on disk is never overwritten silently — stop and surface it.
 5. Run the slice per SKILL.md "Modes": one writer per page, briefed per `guidelines/campaign.md` section 5 (the writer brief) with the page's catalog row, its cluster's boundary rules, and the project-specific bans and write-time cautions from this spec's Execution & verification section; then the orchestrator check per page (`guidelines/checking.md` section 7); events go to the run log.
 6. Promote anything durable — a spec claim the tree refuted, a user amendment, a settled adjudication — into this spec as a dated amendment (or surface it for the waivers files). The run log does not travel.

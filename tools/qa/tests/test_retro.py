@@ -1,11 +1,11 @@
-"""kg retro: the first-pass tables and EXEMPT lines of a campaign's dossiers, summed per rule."""
+"""kg retro: the first-pass tables and EXEMPT lines of a campaign's worksheets, summed per rule."""
 import tempfile
 import unittest
 from pathlib import Path
 
 import retro
 
-RECORDED = '''# Dossier
+RECORDED = '''# Worksheet
 
 ## LINT
 
@@ -23,7 +23,7 @@ EXEMPT old.rule "y": ruling
 
 LINTED 2026-09-18 page sha256: 0 qa sha256: 1
 '''
-BARE = '# Dossier\n\n## LINT\n\nEXEMPT style.walk "z": ruling\n'
+BARE = '# Worksheet\n\n## LINT\n\nEXEMPT style.walk "z": ruling\n'
 WALKER = ('## LINT\n### First pass\n| rule | FAIL | review |\n|---|---|---|\n| style.walk | 0 | 2 |\n\n'
           'EXEMPT style.walk "w": ruling\nEXEMPT style.walk "v": ruling\n')
 
@@ -31,10 +31,10 @@ WALKER = ('## LINT\n### First pass\n| rule | FAIL | review |\n|---|---|---|\n| s
 def campaign(root, extra=0):
     base = Path(root) / 'usb4' / 'acpi'
     base.mkdir(parents=True)
-    (base / 'a.dossier.md').write_text(RECORDED, encoding='utf-8')
-    (base / 'b.dossier.md').write_text(BARE, encoding='utf-8')
+    (base / 'a.worksheet.md').write_text(RECORDED, encoding='utf-8')
+    (base / 'b.worksheet.md').write_text(BARE, encoding='utf-8')
     for n in range(extra):
-        (base / f'p{n:02}.dossier.md').write_text(WALKER, encoding='utf-8')
+        (base / f'p{n:02}.worksheet.md').write_text(WALKER, encoding='utf-8')
     return Path(root)
 
 
@@ -56,7 +56,7 @@ class Retro(unittest.TestCase):
             self.assertEqual((rows['style.walk']['hit_pages'], rows['style.walk']['exempt'], rows['style.walk']['exempt_all'], rows['style.walk']['note']), (0, 0, 1, ''))
             self.assertEqual(rows['old.rule']['note'], 'not a rule now')
             text = '\n'.join(retro.render(root, pages, list(rows.values())))
-            self.assertTrue(text.startswith(f'retrospective over 1 page in {root} (1 dossier without a first-pass record)'), text)
+            self.assertTrue(text.startswith(f'retrospective over 1 page in {root} (1 worksheet without a first-pass record)'), text)
             self.assertIn('usb4/acpi/a 2026-09-18', text)
             listing = '\n'.join(retro.render(root, pages, [rows['style.superlatives']], rule='style.superlatives'))
             self.assertIn('usb4/acpi/a', listing)
@@ -71,7 +71,7 @@ class Retro(unittest.TestCase):
             self.assertEqual((rows['style.walk']['exempt'], rows['style.walk']['exempt_all'], rows['style.walk']['note']), (40, 41, '100% exempt'))
             self.assertEqual(rows['excerpts.verbatim']['note'], '')
 
-    def test_a_dossier_without_the_heading_records_nothing(self):
+    def test_a_worksheet_without_the_heading_records_nothing(self):
         lines = ['## LINT', 'The first pass found nothing worth a table.', '| rule | FAIL | review |', '|---|---|---|', '| style.walk | 0 | 1 |']
         self.assertIsNone(retro.first_pass_table(lines))
         self.assertEqual(retro.first_pass_table(['**First pass**', '', '| rule | FAIL | review |', '|---|---|---|', '| style.walk | 0 | 1 |']), {'style.walk': (0, 1)})

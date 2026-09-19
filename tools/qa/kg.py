@@ -67,7 +67,7 @@ def cmd_check(args):
     found, requirements, _sections, errors = load_rules(skill_dir())
     selected = rulebook.select(found, args.only)
     page = Page(args.page)
-    inputs = Inputs(args.page, tree=args.tree, dossier=args.dossier, campaign=args.campaign, spec=args.spec)
+    inputs = Inputs(args.page, tree=args.tree, worksheet=args.worksheet, campaign=args.campaign, spec=args.spec)
     inputs.bind_version(page)
     inputs.problems.extend(errors)
     results = run_rules(page, inputs, selected)
@@ -107,7 +107,7 @@ def cmd_view(args):
 def cmd_table(args):
     from links_table import emit_table
     page = Page(args.page)
-    inputs = Inputs(args.page, tree=args.tree, dossier=args.dossier, campaign=args.campaign)
+    inputs = Inputs(args.page, tree=args.tree, worksheet=args.worksheet, campaign=args.campaign)
     inputs.bind_version(page)
     if inputs.problems:
         for problem in inputs.problems:
@@ -179,12 +179,12 @@ def main(argv=None):
     for name in ('regions', 'prose', 'raw', 'spans-visible'):
         mode.add_argument('--' + name, action='store_true')
     view.set_defaults(func=cmd_view)
-    table = sub.add_parser('table', help="emit the dossier's LINKS table")
+    table = sub.add_parser('table', help="emit the worksheet's LINKS table")
     table.add_argument('page')
     table.set_defaults(func=cmd_table)
     for command in (check, table):
         command.add_argument('--tree')
-        command.add_argument('--dossier')
+        command.add_argument('--worksheet')
         command.add_argument('--campaign')
     st = sub.add_parser('selftest', help='validate bindings, rule tests and shared engine tests')
     st.add_argument('--rule', metavar='ID', help="execute this rule's test module")
@@ -193,7 +193,7 @@ def main(argv=None):
     where.add_argument('rule_id')
     where.set_defaults(func=cmd_where)
     sub.add_parser('rules', help='list checks by guideline ID').set_defaults(func=cmd_rules)
-    retro = sub.add_parser('retro', help="per rule, what the checks found on the first pass of every page a campaign's dossiers record")
+    retro = sub.add_parser('retro', help="per rule, what the checks found on the first pass of every page a campaign's worksheets record")
     retro.add_argument('dir', nargs='?', default='progress', help='a progress directory (default: progress)')
     retro.add_argument('--rule', metavar='ID', help='list the pages for this rule instead')
     retro.set_defaults(func=cmd_retro)

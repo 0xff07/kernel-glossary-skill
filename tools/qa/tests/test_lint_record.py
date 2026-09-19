@@ -8,7 +8,7 @@ from tests.support import TestInputs, page
 
 class Records(unittest.TestCase):
     def inputs(self, page_digest='a'*64, qa_digest='c'*64, suffix=''):
-        return TestInputs(dossier=f'## LINT\nLINTED 2026-09-15 page sha256: {page_digest} qa sha256: {qa_digest}\n{suffix}')
+        return TestInputs(worksheet=f'## LINT\nLINTED 2026-09-15 page sha256: {page_digest} qa sha256: {qa_digest}\n{suffix}')
 
     def test_current_page_and_qa(self):
         inputs = self.inputs(suffix='check pass: self-run\n')
@@ -23,10 +23,10 @@ class Records(unittest.TestCase):
             self.assertTrue(any(f.severity == 'review' for f in check(page('# T'), inputs)))
 
     def test_legacy_missing_and_last_record(self):
-        inputs = TestInputs(dossier='## LINT\nLINTED 2026-09-14 page sha256: '+'a'*64)
+        inputs = TestInputs(worksheet='## LINT\nLINTED 2026-09-14 page sha256: '+'a'*64)
         self.assertEqual(page_state_of(inputs)[0], 'WRITTEN')
         self.assertTrue(any('legacy' in f.message and f.severity == 'review' for f in check(page('# T'),inputs)))
-        self.assertEqual(page_state_of(TestInputs(dossier='## LINT\n'))[0], 'WRITTEN')
+        self.assertEqual(page_state_of(TestInputs(worksheet='## LINT\n'))[0], 'WRITTEN')
         self.assertEqual(page_state_of(TestInputs())[0], 'WRITTEN')
         with self.assertRaises(MissingInput):
             list(check(page('# T'),TestInputs()))

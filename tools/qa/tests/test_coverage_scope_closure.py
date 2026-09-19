@@ -60,7 +60,7 @@ class Run(unittest.TestCase):
         open(self.page_path, 'w', encoding='utf-8').write(skeleton(details=details))
         inputs = TestInputs(tree=self.root)
         inputs.spec, inputs.page_path, inputs.base, inputs.tree = (self.spec, self.page_path, self.base, self.root)
-        inputs.dossier_lines = None
+        inputs.worksheet_lines = None
         return observed(coverage.check(Page(self.page_path), inputs))
 
     def test_an_anchor_the_page_never_names(self):

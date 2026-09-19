@@ -45,7 +45,7 @@ def prose_sentences(page, baseline=None):
 
 def sentence_worklist(candidates, *, label, baseline_present, bases=None, page=None, report_stale=False):
     """Report candidates already selected by the caller; label is presentation text. A candidate
-    the dossier's Bases table covers (a row at its page line whose claim fragment is in the
+    the worksheet's Bases table covers (a row at its page line whose claim fragment is in the
     sentence) is a note rather than a reading row; with `report_stale`, a row whose fragment no
     longer sits on its line is reported too."""
     rows, notes, used = [], [], set()

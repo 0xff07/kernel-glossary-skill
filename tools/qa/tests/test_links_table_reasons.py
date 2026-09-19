@@ -1,5 +1,5 @@
 from checks.links_table_reasons import check
-"""plugins.links_table: the dossier's LINKS rows read back, the closure of their kind / reason
+"""plugins.links_table: the worksheet's LINKS rows read back, the closure of their kind / reason
 cells, and the table `kg table` emits."""
 import io
 import os
@@ -12,12 +12,12 @@ from tests.support import URL, page, skeleton, TestInputs, observed
 ROW = '| `{span}` | {region} | 1 | 0 |  | {url} | struct kg_ring {{ | {reason} |'
 
 class FakeInputs(TestInputs):
-    dossier_section = Inputs.dossier_section
+    worksheet_section = Inputs.worksheet_section
 
     def __init__(self, rows, tree=None):
         super().__init__()
-        self.dossier_lines = ['## LINKS', links_table.HEADER, links_table.SEPARATOR] + rows + ['', '## PARITY']
-        self.dossier = '<dossier>'
+        self.worksheet_lines = ['## LINKS', links_table.HEADER, links_table.SEPARATOR] + rows + ['', '## PARITY']
+        self.worksheet = '<worksheet>'
         self.tree, self.cache = (tree, {})
 
 def rows_of(*rows):

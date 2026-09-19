@@ -175,7 +175,7 @@ observations and remaining work are visible.
 ## 6. Inputs and shared parsing
 
 `inputs.require(name)` returns a resolved, usable input or raises `MissingInput`
-with a useful reason. Supported names are `tree`, `git`, `dossier` and `baseline`;
+with a useful reason. Supported names are `tree`, `git`, `worksheet` and `baseline`;
 `git` returns the source tree path after checking Git availability.
 
 Perform independent page work before work that requires another input where
@@ -193,7 +193,7 @@ input is unavailable. Excerpt introductions and OTHER SOURCES formatting can
 produce page observations before source resolution; source body slices wait for
 a validated tree.
 
-Source version, cited-file cleanliness and dossier identity are validated before
+Source version, cited-file cleanliness and worksheet identity are validated before
 dependent work. Checks use resolved inputs rather than discovering alternate
 paths that bypass validation. A catalog lookup requires Git when it needs tree
 resolution; work with no applicable catalog row or commit entry need not do so.
@@ -214,10 +214,10 @@ Separator recognition validates the whole row so negative values remain data.
 Sentence helpers share normalization and baseline tracking while rule modules
 retain the language heuristics that select candidates.
 
-Add shared parsing when real callers need it. Source and dossier utilities,
+Add shared parsing when real callers need it. Source and worksheet utilities,
 anchor classification and the LINKS emitter are ordinary shared modules; checks
-and emitters do not depend on another rule's registration. `dossier_utils.py`
-also reads the dossier's EVIDENCE for the two facts checks (the Bases table) and
+and emitters do not depend on another rule's registration. `worksheet_utils.py`
+also reads the worksheet's EVIDENCE for the two facts checks (the Bases table) and
 for `arrangement.units` (the recorded block map).
 
 ## 7. Commands
@@ -245,7 +245,7 @@ introductions belong to their respective rule outputs.
 
 `table` emits the LINKS table. `view` provides page representations through
 `--prose`, `--raw`, `--spans-visible` or `--regions`.
-`retro` reads a campaign's dossiers and prints, per rule, what the checks found on
+`retro` reads a campaign's worksheets and prints, per rule, what the checks found on
 first passes (section 11).
 
 A nonexistent ID or an empty explicit selection is an error. Exit codes are:
@@ -260,7 +260,7 @@ A partial `--only` run never establishes LINTED state.
 
 ## 8. Exemptions and page state
 
-Exemptions are recorded in the dossier's LINT section:
+Exemptions are recorded in the worksheet's LINT section:
 
 ```text
 EXEMPT rule-id "fragment" [line]: ruling
@@ -277,7 +277,7 @@ re-adjudication; their suffix is not dropped to broaden their scope silently.
 
 `lint_record.py` provides record interpretation for both the `lint.record` check
 and the CLI. Page state does not depend on a check's human-readable messages.
-After a complete full check pass and human adjudication, the dossier records:
+After a complete full check pass and human adjudication, the worksheet records:
 
 ```text
 LINTED <date> page sha256: <digest> qa sha256: <qa-digest>
@@ -298,7 +298,7 @@ automatically create a record or establish factual correctness.
 
 Use standard-library `unittest`, inline text and small page builders. Tests need
 Python 3.10+ and Git for temporary source repositories, with no external kernel
-tree or dossier. Create temporary source trees and dossiers only where needed.
+tree or worksheet. Create temporary source trees and worksheets only where needed.
 
 Each rule's corresponding test module exercises its real `check()` callable.
 Cover an offending example, a similar allowed example, relevant regions and
@@ -348,21 +348,21 @@ Retirement applies to checks, not to the prose a writer reads, and it rests on
 what each check found across pages rather than on an impression.
 
 The record. Before fixing anything the engine finds, a writer runs `kg check`
-once over the composed page and records in the dossier's LINT, under a `First
+once over the composed page and records in the worksheet's LINT, under a `First
 pass` heading, the FAIL and review counts per rule exactly as printed
-(dossier.md [lint.first-pass]). Together with the `EXEMPT` lines the dossier
+(worksheet.md [lint.first-pass]). Together with the `EXEMPT` lines the worksheet
 carries in machine-readable form, every page then holds three numbers per rule:
 what the check found before any fix, what was fixed, and what was judged a
 false hit.
 
-The command. `kg retro <progress dir> [--rule <id>]` reads every dossier under
+The command. `kg retro <progress dir> [--rule <id>]` reads every worksheet under
 the directory and prints one row per rule: pages with a record, pages where the
 rule fired on the first pass, the first-pass FAIL and review totals, the
 `EXEMPT` lines written against it on those pages and the share of its hits they
-cover, the `EXEMPT` lines across every dossier, and the last page and date it
+cover, the `EXEMPT` lines across every worksheet, and the last page and date it
 fired. `--rule` lists the pages instead. It is run once per
-batch or campaign and changes nothing; dossiers without a record are counted in
-its first line, and a rule the dossiers name that the skill no longer carries
+batch or campaign and changes nothing; worksheets without a record are counted in
+its first line, and a rule the worksheets name that the skill no longer carries
 is listed last and marked.
 
 The thresholds, applied by a person. Over at least twenty pages: a check with no

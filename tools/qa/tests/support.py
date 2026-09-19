@@ -43,21 +43,21 @@ class TestInputs:
     """Small resolved-input double; real resolver behavior is tested separately."""
     from inputs import Inputs as _Inputs
     require = _Inputs.require
-    dossier_section = _Inputs.dossier_section
+    worksheet_section = _Inputs.worksheet_section
     complete = _Inputs.complete
     missing = _Inputs.missing
     incomplete_reason = _Inputs.incomplete_reason
 
-    def __init__(self, tree=None, dossier=None, baseline=None, **values):
+    def __init__(self, tree=None, worksheet=None, baseline=None, **values):
         self.tree = tree
         self.git = bool(tree)
         self.cache = {}
         self.source_problems = []
         self.problems, self.notes = [], []
-        self.dossier = '<dossier>' if dossier is not None else None
-        self.dossier_lines = dossier.split('\n') if dossier is not None else None
-        self.dossier_how = 'convention'
-        self.dossier_rejected = []
+        self.worksheet = '<worksheet>' if worksheet is not None else None
+        self.worksheet_lines = worksheet.split('\n') if worksheet is not None else None
+        self.worksheet_how = 'convention'
+        self.worksheet_rejected = []
         self.baseline = baseline
         self.page_digest = 'a' * 64
         self.qa_digest = 'c' * 64

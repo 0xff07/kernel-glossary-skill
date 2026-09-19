@@ -12,7 +12,7 @@ from tests.test_runner import binding
 
 class State(unittest.TestCase):
     def inputs(self):
-        return TestInputs(dossier='## LINT\nLINTED 2026-09-15 page sha256: '+'a'*64+' qa sha256: '+'c'*64)
+        return TestInputs(worksheet='## LINT\nLINTED 2026-09-15 page sha256: '+'a'*64+' qa sha256: '+'c'*64)
 
     def test_matching_record_and_failed_or_incomplete_run(self):
         clean=Result(binding(lambda p,i: []))

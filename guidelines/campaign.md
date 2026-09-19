@@ -52,11 +52,11 @@ Write the page <output path> for the <subsystem> knowledge base.
 SKILL_DIR: <absolute path to the kernel-glossary-skill checkout>
 WORKSPACE: <SKILL_DIR>/progress/<campaign>/
 OPERATION: <create | resume>; for a resume, the page's starting digest: sha256 <digest>, and the rebuilt page goes to YOUR SCRATCH/<slug>.md; for a create that derives from a removed page, its revision: git show <commit>:<path>, reused under writing.md [facts.derived-pages]
-YOUR DOSSIER: <SKILL_DIR>/progress/<campaign>/<dir>/<group>/<slug>.dossier.md (mirroring docs/<dir>/<group>/<slug>.md)
+YOUR WORKSHEET: <SKILL_DIR>/progress/<campaign>/<dir>/<group>/<slug>.worksheet.md (mirroring docs/<dir>/<group>/<slug>.md)
 YOUR SCRATCH: <session scratchpad>/<dir>/<group>/<slug>/ (the scratchpad is shared and two pages may share a slug; scratch and a resumed page go only here)
 
 MANDATORY READING, by phase (SKILL.md, "Reading routes"); nothing ahead of its phase:
-1. Before research: <SKILL_DIR>/SKILL.md, the passes you run yourself; <SKILL_DIR>/guidelines/kernel.md, what a kernel page is made of; <SKILL_DIR>/guidelines/dossier.md, the dossier you keep, which is the recovery point; the page's entry in <SKILL_DIR>/guidelines/subsystems.md; and the campaign facts below.
+1. Before research: <SKILL_DIR>/SKILL.md, the passes you run yourself; <SKILL_DIR>/guidelines/kernel.md, what a kernel page is made of; <SKILL_DIR>/guidelines/worksheet.md, the worksheet you keep, which is the recovery point; the page's entry in <SKILL_DIR>/guidelines/subsystems.md; and the campaign facts below.
 2. Before writing: <SKILL_DIR>/guidelines/writing.md whole, every rule the page must meet, composed under from the first sentence; and <SKILL_DIR>/guidelines/template.md.
 3. When the page will carry a figure: <SKILL_DIR>/guidelines/figures.md from [drawing] to [patterns], [register-figures] as well when the figure is a register or bitfield, then only the pattern file under <SKILL_DIR>/references/figures/ that the index matches.
 4. At QA: <SKILL_DIR>/guidelines/checking.md, the steps you run before reporting done, with python3 <SKILL_DIR>/tools/qa/kg.py check <page> for the mechanical ones.
@@ -71,18 +71,18 @@ CAMPAIGN FACTS:
 
 DIRECTIVES.
 - At most about 25 KB of output per command; a persisted output is read by slice only.
-- Under the skill checkout the only files you write are the page and your dossier, nowhere else in progress/ and never in guidelines/ or campaigns/; scratch goes only to YOUR SCRATCH. No git operation that changes state.
+- Under the skill checkout the only files you write are the page and your worksheet, nowhere else in progress/ and never in guidelines/ or campaigns/; scratch goes only to YOUR SCRATCH. No git operation that changes state.
 - A create: if the output path exists when you are about to write, stop and report. A resume: stop and report if the page on disk is not at the starting digest the brief names; otherwise write the rebuilt page to YOUR SCRATCH/<slug>.md, never over the page on disk, and report its digest, and the orchestrator moves it into place.
-- Enumerate call-site populations before any prose that counts or characterizes them, and give every count and universal claim its row in the dossier's Bases table (dossier.md [evidence.bases]).
-- The page states results and their scope, never the search; the search stays in the dossier.
+- Enumerate call-site populations before any prose that counts or characterizes them, and give every count and universal claim its row in the worksheet's Bases table (worksheet.md [evidence.bases]).
+- The page states results and their scope, never the search; the search stays in the worksheet.
 - Keep the parity checklist as you compose; fill or de-catalog every row.
-- Before your first fix, run `kg check` once over the composed page and record the FAIL and review counts per rule under a `First pass` heading in the dossier's LINT (dossier.md [lint.first-pass]).
-- Run the QA steps after the page is complete, fix what they find before reporting, and persist the LINKS table with every kind / reason cell filled and the EVIDENCE and LINT sections into the dossier, ending EVIDENCE with `page sha256: <digest>` of the page the evidence describes.
+- Before your first fix, run `kg check` once over the composed page and record the FAIL and review counts per rule under a `First pass` heading in the worksheet's LINT (worksheet.md [lint.first-pass]).
+- Run the QA steps after the page is complete, fix what they find before reporting, and persist the LINKS table with every kind / reason cell filled and the EVIDENCE and LINT sections into the worksheet, ending EVIDENCE with `page sha256: <digest>` of the page the evidence describes.
 - LINT ends with your verdicts. The `LINTED <date> page sha256: <digest> qa sha256: <qa-digest>` record and the `check pass:` line are the check pass's, never yours; a writer that writes either is reported.
 - Final message: the lead verbatim; sections written; catalog count and parity outcome (de-catalogings with reasons); QA results (units verified, anchors confirmed, counts with second bases, the generator summary notes, the lead and SUMMARY counts and sentence roles, sweep candidates per class with dispositions, the rhythm outliers with dispositions, the introduction summary); the exemptions applied; any hint that did not reproduce; any claim that is not disk-settleable and how the page scopes it. Not the page text beyond the lead.
 ```
 
-The researcher brief, an explicit opt-in when research fans out ahead of writing; the researcher writes only the dossier and reports a two-line summary:
+The researcher brief, an explicit opt-in when research fans out ahead of writing; the researcher writes only the worksheet and reports a two-line summary:
 
 ```
 Research the page <page slug> for the <subsystem> knowledge base; do not
@@ -93,7 +93,7 @@ SKILL_DIR: <absolute path to the kernel-glossary-skill checkout>
 MANDATORY READING, in order:
 1. <SKILL_DIR>/SKILL.md, the prep and research passes.
 2. <SKILL_DIR>/guidelines/kernel.md [sources], the source rules.
-3. <SKILL_DIR>/guidelines/dossier.md, your deliverable's format.
+3. <SKILL_DIR>/guidelines/worksheet.md, your deliverable's format.
 4. <SKILL_DIR>/guidelines/subsystems.md, the page's subsystem entry only.
 
 MISSION. <Scope statement from the catalog row, naming the anchor symbols
@@ -103,11 +103,11 @@ FACTS. Documented tree: <path>, version <tag>, commit <sha>.
 Architecture scope: <arch>. Index line numbers are hints; confirm on disk
 before recording a location.
 
-Write the dossier to <SKILL_DIR>/progress/<campaign>/<dir>/<group>/<slug>.dossier.md
+Write the worksheet to <SKILL_DIR>/progress/<campaign>/<dir>/<group>/<slug>.worksheet.md
 (mirroring docs/<dir>/<group>/<slug>.md), and write nowhere else in progress/, which
 belongs to other campaigns too.
 Your final message is a two-line summary (symbol count, enumerations
-recorded, open gaps), not the dossier text.
+recorded, open gaps), not the worksheet text.
 ```
 
 The inventory brief, one per area, dispatched in parallel to read-only agents on a mid-tier model; the digest lands verbatim in the spec, every location tree-relative:

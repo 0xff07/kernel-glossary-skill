@@ -1,5 +1,5 @@
 """kg retro: per rule, what the checks found on the first pass of every page a campaign's
-dossiers record, for the retrospective that decides which checks to keep."""
+worksheets record, for the retrospective that decides which checks to keep."""
 import re
 from collections import Counter
 from pathlib import Path
@@ -16,7 +16,7 @@ NOISE_SHARE = 0.7
 
 def first_pass_table(lines):
     """{slug: (fail, review)} from the table under the first line that reads 'First pass', or
-    None when the dossier records none."""
+    None when the worksheet records none."""
     for i, line in enumerate(lines):
         if not FIRST_PASS.match(line.strip()):
             continue
@@ -38,19 +38,19 @@ def first_pass_table(lines):
     return None
 
 
-def read_dossier(path, root):
+def read_worksheet(path, root):
     lines = path.read_text(encoding="utf-8", errors="replace").split("\n")
     dates = [m.group(1) for line in lines if (m := LINTED.match(line))]
-    return {"page": path.relative_to(root).as_posix()[:-len(".dossier.md")],
+    return {"page": path.relative_to(root).as_posix()[:-len(".worksheet.md")],
             "first": first_pass_table(lines),
             "exempt": Counter(m.group(1) for line in lines if (m := EXEMPT.match(line))),
             "date": dates[-1] if dates else None}
 
 
 def gather(root):
-    """One record per dossier under `root`, in path order."""
+    """One record per worksheet under `root`, in path order."""
     root = Path(root)
-    return [read_dossier(path, root) for path in sorted(root.rglob("*.dossier.md"))]
+    return [read_worksheet(path, root) for path in sorted(root.rglob("*.worksheet.md"))]
 
 
 def known_rules(base):
@@ -60,9 +60,9 @@ def known_rules(base):
 
 
 def summarize(pages, known):
-    """One row per rule: the known rules in order, then rules the dossiers name that the skill no
+    """One row per rule: the known rules in order, then rules the worksheets name that the skill no
     longer carries. Hits, exemptions and the share come from the pages with a first-pass record;
-    `exempt_all` counts the EXEMPT lines of every dossier."""
+    `exempt_all` counts the EXEMPT lines of every worksheet."""
     recorded = [page for page in pages if page["first"]]
     seen = []
     for page in recorded:
@@ -97,7 +97,7 @@ def render(root, pages, rows, rule=None):
     recorded = [page for page in pages if page["first"]]
     missing = len(pages) - len(recorded)
     out = [f"retrospective over {len(recorded)} page{'s' if len(recorded) != 1 else ''} in {root}"
-           f" ({missing} dossier{'s' if missing != 1 else ''} without a first-pass record)"]
+           f" ({missing} worksheet{'s' if missing != 1 else ''} without a first-pass record)"]
     if rule:
         out.append(f"{'page':40} {'date':10} {'FAIL':>5} {'review':>7} {'exempt':>7}")
         for page in pages:

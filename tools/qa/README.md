@@ -24,12 +24,12 @@ belong to checks: use `check --only <id>` to retrieve them. See
 [checking.md](../../guidelines/checking.md) for the inventory-to-guideline mapping.
 
 The resolver uses the existing checkout conventions for the kernel tree,
-`progress/<campaign>/<dir>/<group>/<slug>.dossier.md`, the differing committed page at
+`progress/<campaign>/<dir>/<group>/<slug>.worksheet.md`, the differing committed page at
 `HEAD`, and `campaigns/<dir>.md` (a campaign whose short name differs from the
-docs directory passes `--spec` at every check). Override them with `--tree`, `--dossier`,
-`--campaign`, `--spec`, or `KG_TREE`, `KG_DOSSIER`, `KG_CAMPAIGN`. Check pages in
-place so their dossier identity and baseline resolve correctly. Source version,
-cited-file cleanliness and dossier identity are validated before dependent work.
+docs directory passes `--spec` at every check). Override them with `--tree`, `--worksheet`,
+`--campaign`, `--spec`, or `KG_TREE`, `KG_WORKSHEET`, `KG_CAMPAIGN`. Check pages in
+place so their worksheet identity and baseline resolve correctly. Source version,
+cited-file cleanliness and worksheet identity are validated before dependent work.
 
 ## Add or extend a check
 
@@ -82,7 +82,7 @@ def check(page, inputs):
 ```
 
 `require()` returns a resolved input or raises `MissingInput`. Supported inputs
-are `tree`, `git` (returns the source tree path), `dossier` and `baseline`.
+are `tree`, `git` (returns the source tree path), `worksheet` and `baseline`.
 The runner catches missing inputs and errors during iteration, retains findings
 already yielded, and continues other checks. A baseline may be intentionally
 optional: inspect `inputs.baseline` and emit a note if no differing committed page
@@ -121,7 +121,7 @@ Exit 1 means a FAIL or engine/input error; exit 2 means missing required inputs
 without another failure; exit 0 means complete execution without FAIL. Human review
 can remain at exit 0. `--only` never establishes LINTED state.
 
-Exemptions use `EXEMPT rule-id "fragment" [line]: ruling` in the dossier's LINT
+Exemptions use `EXEMPT rule-id "fragment" [line]: ruling` in the worksheet's LINT
 section. A fragment must match one observation; a line hint resolves ambiguity.
 Stale, ambiguous and line-only entries exempt nothing. Legacy `rule-id/part`
 entries require re-adjudication. Exemptions cannot suppress execution errors or
@@ -142,9 +142,9 @@ created automatically from a clean run.
 ## Retire a check
 
 `python3 tools/qa/kg.py retro progress/<campaign>` reads the first-pass records and
-`EXEMPT` lines of a campaign's dossiers and prints, per rule, the pages it fired on,
+`EXEMPT` lines of a campaign's worksheets and prints, per rule, the pages it fired on,
 its first-pass FAIL and review totals, the exempted share of its hits on those pages,
-the `EXEMPT` lines across every dossier and the last page it fired on; `--rule <id>` lists the pages instead. [DESIGN.md](DESIGN.md)
+the `EXEMPT` lines across every worksheet and the last page it fired on; `--rule <id>` lists the pages instead. [DESIGN.md](DESIGN.md)
 section 11 says how the numbers turn into a retirement.
 
 ## Validation and maintenance
@@ -154,12 +154,12 @@ rule, executes rule and shared engine tests, and checks all reference figures.
 Selected selftest executes that rule's tests regardless of its detection technique.
 Unknown IDs, missing tests, zero executed tests and broken modules fail visibly.
 Tests need Python 3.10+ and Git for temporary source repositories, with no external
-kernel tree or dossier. The GitHub Actions workflow runs the full selftest.
+kernel tree or worksheet. The GitHub Actions workflow runs the full selftest.
 
 `rules.py` owns discovery and binding validation; `kg.py` executes checks;
 `inputs.py` resolves inputs; `pagemodel.py` parses pages; `report.py` reports findings
 and applies exemptions; `lint_record.py` interprets records and hashes QA sources;
-`selftest.py` validates tests and reference figures. Shared source/dossier utilities
+`selftest.py` validates tests and reference figures. Shared source/worksheet utilities
 and the LINKS emitter remain ordinary modules beside them.
 
 [DESIGN.md](DESIGN.md) defines the current design principles and check contract.

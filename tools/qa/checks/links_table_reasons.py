@@ -34,5 +34,5 @@ def reasons(page, inputs):
     yield from observations(findings, footer, listing, {'links_rows': len(rows), 'prose_rows': len(prose_rows), 'catalog_text_rows': len(catalog_text), 'links_blank_reasons': len(blank)})
 
 def check(page, inputs):
-    inputs.require('dossier')
+    inputs.require('worksheet')
     yield from reasons(page, inputs)

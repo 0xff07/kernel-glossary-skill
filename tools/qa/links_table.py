@@ -22,9 +22,9 @@ CATALOG_SPAN_MARK = "'\\<"
 FRAGMENT = '#L'
 
 def links_rows(inputs):
-    """({span: cells}, refused spans) from the dossier's LINKS section."""
+    """({span: cells}, refused spans) from the worksheet's LINKS section."""
     rows, refused = ({}, [])
-    for line in inputs.dossier_section(LINKS_SECTION).split('\n'):
+    for line in inputs.worksheet_section(LINKS_SECTION).split('\n'):
         if not line.startswith('| `'):
             continue
         cells = split_cells(line)
@@ -77,7 +77,7 @@ def emit_table(page, inputs, out=sys.stdout, err=sys.stderr):
     if inputs.tree is None:
         print('no kernel tree: the disk lines cannot be read, so no table is emitted', file=err)
         return 2
-    rows, refused = links_rows(inputs) if inputs.dossier_lines else ({}, [])
+    rows, refused = links_rows(inputs) if inputs.worksheet_lines else ({}, [])
     lines = [HEADER, SEPARATOR]
     for key in sorted(page.spans, key=str.lower):
         span = page.spans[key]
@@ -102,5 +102,5 @@ def emit_table(page, inputs, out=sys.stdout, err=sys.stderr):
             text = ', '.join((f'`{k}`' for k in keys[:REPORTED_SPANS]))
             return text if len(keys) <= REPORTED_SPANS else f'{text}, and {len(keys) - REPORTED_SPANS} more'
         changes = ', '.join((f'`{k}` ({rows[k][1]} -> {page.spans[k].region})' for k in moved)) or '-'
-        print(f'links delta against {inputs.dossier}: carried {len(lines) - 2 - len(added)} kind / reason cells; {len(added)} added row(s) to fill: {named(added)}; {len(removed)} removed: {named(removed)}; {len(moved)} region change(s): {changes}', file=err)
+        print(f'links delta against {inputs.worksheet}: carried {len(lines) - 2 - len(added)} kind / reason cells; {len(added)} added row(s) to fill: {named(added)}; {len(removed)} removed: {named(removed)}; {len(moved)} region change(s): {changes}', file=err)
     return 0

@@ -32,9 +32,9 @@ class Behavior(unittest.TestCase):
         self.assertTrue(any('[carried]' in f.message for f in found))
 
     def test_a_recorded_basis_is_a_note_and_the_count_check_owns_stale_rows(self):
-        dossier = ('## EVIDENCE\n| line | claim | basis 1 | basis 2 | result |\n|---|---|---|---|---|\n'
+        worksheet = ('## EVIDENCE\n| line | claim | basis 1 | basis 2 | result |\n|---|---|---|---|---|\n'
                    '| 1 | Only the `probe` | find_callers | git grep | agrees |\n| 9 | gone | x | y | z |\n')
-        found = list(check(page('Only the probe calls it.'), TestInputs(dossier=dossier)))
+        found = list(check(page('Only the probe calls it.'), TestInputs(worksheet=worksheet)))
         self.assertFalse(any(f.severity == 'review' for f in found))
         self.assertTrue(any('basis recorded' in f.message for f in found))
         self.assertFalse(any('names no sentence there' in f.message for f in found))

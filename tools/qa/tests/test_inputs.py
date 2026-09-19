@@ -1,15 +1,15 @@
-"""inputs: the EXEMPT line grammar, a page's key and place under docs/, and the dossier verdict."""
+"""inputs: the EXEMPT line grammar, a page's key and place under docs/, and the worksheet verdict."""
 import os
 import shutil
 import tempfile
 import unittest
 
-from inputs import Inputs, dossier_verdict, page_key, page_within
+from inputs import Inputs, worksheet_verdict, page_key, page_within
 
 
 def exemptions_of(lint_text):
     fake = Inputs.__new__(Inputs)
-    fake.dossier_lines = ("## LINT\n" + lint_text).split("\n")
+    fake.worksheet_lines = ("## LINT\n" + lint_text).split("\n")
     return fake.exemptions()
 
 
@@ -40,7 +40,7 @@ class ExemptLines(unittest.TestCase):
 
     def test_only_the_lint_section_is_read(self):
         fake = Inputs.__new__(Inputs)
-        fake.dossier_lines = ['## EVIDENCE', 'EXEMPT style.walk "walks" 3: not here', '## LINT', 'EXEMPT style.vtable "vtable": here']
+        fake.worksheet_lines = ['## EVIDENCE', 'EXEMPT style.walk "walks" 3: not here', '## LINT', 'EXEMPT style.vtable "vtable": here']
         self.assertEqual([e["rule"] for e in fake.exemptions()], ["style.vtable"])
 
 
@@ -55,7 +55,7 @@ class PagePlace(unittest.TestCase):
         self.assertEqual(page_within(outside, base), (None, "page.md"))
 
 
-class DossierVerdict(unittest.TestCase):
+class WorksheetVerdict(unittest.TestCase):
     HEAD = "0123456789abcdef"
 
     def setUp(self):
@@ -63,19 +63,19 @@ class DossierVerdict(unittest.TestCase):
         self.page = os.path.join(self.base, "docs", "kg", "ring.md")
         os.makedirs(os.path.dirname(self.page))
         open(self.page, "w", encoding="utf-8").write("# ring\n")
-        self.dossier = os.path.join(self.base, "progress", "kg", "kg", "ring.dossier.md")
-        os.makedirs(os.path.dirname(self.dossier))
+        self.worksheet = os.path.join(self.base, "progress", "kg", "kg", "ring.worksheet.md")
+        os.makedirs(os.path.dirname(self.worksheet))
 
     def tearDown(self):
         shutil.rmtree(self.base)
 
     def write(self, output="docs/kg/ring.md", campaign="kg", version="v0.1, commit 0123456789ab"):
-        open(self.dossier, "w", encoding="utf-8").write(
-            f"# Dossier: ring\n\n## HEADER\n- output path: {output}\n- campaign: {campaign} (directory progress/kg/)\n"
+        open(self.worksheet, "w", encoding="utf-8").write(
+            f"# Worksheet: ring\n\n## HEADER\n- output path: {output}\n- campaign: {campaign} (directory progress/kg/)\n"
             f"- documented version: {version}\n\n## LINT\n")
 
     def verdict(self, active=None):
-        return dossier_verdict(self.dossier, self.page, self.HEAD, self.base, active)
+        return worksheet_verdict(self.worksheet, self.page, self.HEAD, self.base, active)
 
     def test_accepted(self):
         self.write()
@@ -154,10 +154,10 @@ class RequiredInputs(unittest.TestCase):
     def test_required_names_and_source_validation(self):
         from inputs import MissingInput
         from tests.support import TestInputs
-        inputs = TestInputs(tree='/resolved/tree', dossier='## LINT\n', baseline='old')
+        inputs = TestInputs(tree='/resolved/tree', worksheet='## LINT\n', baseline='old')
         self.assertEqual(inputs.require('tree'), '/resolved/tree')
         self.assertEqual(inputs.require('git'), '/resolved/tree')
-        self.assertEqual(inputs.require('dossier'), '<dossier>')
+        self.assertEqual(inputs.require('worksheet'), '<worksheet>')
         self.assertEqual(inputs.require('baseline'), 'old')
         with self.assertRaises(ValueError):
             inputs.require('invented')
@@ -165,7 +165,7 @@ class RequiredInputs(unittest.TestCase):
         for name in ('tree','git'):
             with self.assertRaisesRegex(MissingInput,'source version differs'):
                 inputs.require(name)
-        self.assertEqual(inputs.require('dossier'), '<dossier>')
+        self.assertEqual(inputs.require('worksheet'), '<worksheet>')
 
     def test_optional_absent_baseline_and_read_error(self):
         from unittest.mock import patch

@@ -9,7 +9,7 @@ SLUG = re.compile(r"^[a-z][a-z0-9-]*\.[a-z0-9][a-z0-9-]*$")
 ITEM_MARKER = re.compile(r"^\s*(?:\d+\.|-)\s+\[([a-z][a-z0-9-]*\.[a-z0-9][a-z0-9-]*)(?:, ([a-z]+))?\]\s")
 ROW_MARKER = re.compile(r"\|\s*([a-z][a-z0-9-]*\.[a-z0-9][a-z0-9-]*)(?:, ([a-z]+))?\s*\|\s*$")
 SECTION_HEADING = re.compile(r"^## (.+?) \[([a-z][a-z0-9-]*)\]\s*$")
-DOC_ORDER = ("kernel", "writing", "figures", "dossier", "checking", "campaign")
+DOC_ORDER = ("kernel", "writing", "figures", "worksheet", "checking", "campaign")
 
 
 class RuleError(ValueError):

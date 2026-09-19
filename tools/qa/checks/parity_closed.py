@@ -1,8 +1,8 @@
 """Checks for [parity.closed]."""
 from report import Finding
 from report import observations
-from dossier_utils import parity_tables
-from dossier_utils import row_symbols
+from worksheet_utils import parity_tables
+from worksheet_utils import row_symbols
 from pagemodel import split_cells
 RULE = 'parity.closed'
 PAIRED_ROW = '` / `'
@@ -13,7 +13,7 @@ REPORTED_MISSING = 8
 def parity(page, inputs):
     tables, _scope, catalog = parity_tables(inputs)
     if tables is None:
-        yield from observations([Finding(None, 'review', 'no PARITY section in the dossier')], 'parity: absent', [], {})
+        yield from observations([Finding(None, 'review', 'no PARITY section in the worksheet')], 'parity: absent', [], {})
         return
     findings = []
     rows = empty = 0
@@ -39,5 +39,5 @@ def parity(page, inputs):
     yield from observations(findings, footer, [], {'catalog_symbols': len(keys), 'parity_rows': rows, 'parity_empty': empty, 'missing_rows': missing})
 
 def check(page, inputs):
-    inputs.require('dossier')
+    inputs.require('worksheet')
     yield from parity(page, inputs)

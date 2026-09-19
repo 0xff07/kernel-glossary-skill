@@ -54,15 +54,15 @@ def block_map(page, inputs):
     footer = f"subsections={len(page.subsections)} distinct-maps={len(set(maps))} longest-repeat={worst} figures={sum((m['figures'] for m in measures))} other-fences={sum((m['others'] for m in measures))}"
     yield from reading(rows, notes, footer, {'subsections': len(page.subsections), 'maps': maps, 'inventory': entries, 'prose_words': prose_words}, severity='note')
 def map_record(page, inputs):
-    """The block maps the dossier records against the page's, matched by subsection title."""
-    from dossier_utils import recorded_maps
-    if inputs is None or not getattr(inputs, 'dossier_lines', None):
-        yield from reading([], [], 'block map record: no dossier, not compared', {'recorded': None}, severity='note')
+    """The block maps the worksheet records against the page's, matched by subsection title."""
+    from worksheet_utils import recorded_maps
+    if inputs is None or not getattr(inputs, 'worksheet_lines', None):
+        yield from reading([], [], 'block map record: no worksheet, not compared', {'recorded': None}, severity='note')
         return
     recorded = recorded_maps(inputs)
     rows, notes, matched = [], [], set()
     if not recorded:
-        rows.append(Row(None, 'no block map recorded in EVIDENCE; copy the map of every DETAILS subsection into the dossier (dossier.md [evidence.block-map])', set()))
+        rows.append(Row(None, 'no block map recorded in EVIDENCE; copy the map of every DETAILS subsection into the worksheet (worksheet.md [evidence.block-map])', set()))
     differing = 0
     for sub in page.subsections if recorded else []:
         title = sub['title']

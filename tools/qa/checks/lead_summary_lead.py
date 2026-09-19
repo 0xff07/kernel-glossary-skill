@@ -28,7 +28,7 @@ def lead_sentences(page, inputs):
     words = sum((word_count(p) for p in paragraphs))
     kinds = ' '.join((k for k, _v in blocks))
     figures = [v for k, v in blocks if k == 'D']
-    rows = [Row(1, '  lead sentences (tag each purpose, position or promise in the dossier):', set())]
+    rows = [Row(1, '  lead sentences (tag each purpose, position or promise in the worksheet):', set())]
     rows += [Row(1, f'   {n:2} [ ] {s[:SENTENCE_CLIP]}', set()) for n, s in enumerate(found, 1)]
     footer = f"LEAD words={words} paragraphs={len(paragraphs)} sentences={len(found)} blocks={kinds} figure={', '.join((f'{s} lines' for s in figures)) or 'none'}"
     yield from reading(rows, [], footer, {'words': words, 'paragraphs': len(paragraphs), 'sentences': found, 'blocks': kinds}, severity='review')

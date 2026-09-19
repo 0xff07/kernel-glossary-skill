@@ -1,4 +1,4 @@
-"""plugins.links_table: the dossier's LINKS rows read back, the closure of their kind / reason
+"""plugins.links_table: the worksheet's LINKS rows read back, the closure of their kind / reason
 cells, and the table `kg table` emits."""
 import io
 import os
@@ -11,12 +11,12 @@ from tests.support import URL, page, skeleton, TestInputs, observed
 ROW = '| `{span}` | {region} | 1 | 0 |  | {url} | struct kg_ring {{ | {reason} |'
 
 class FakeInputs(TestInputs):
-    dossier_section = Inputs.dossier_section
+    worksheet_section = Inputs.worksheet_section
 
     def __init__(self, rows, tree=None):
         super().__init__()
-        self.dossier_lines = ['## LINKS', links_table.HEADER, links_table.SEPARATOR] + rows + ['', '## PARITY']
-        self.dossier = '<dossier>'
+        self.worksheet_lines = ['## LINKS', links_table.HEADER, links_table.SEPARATOR] + rows + ['', '## PARITY']
+        self.worksheet = '<worksheet>'
         self.tree, self.cache = (tree, {})
 
 def rows_of(*rows):
@@ -36,7 +36,7 @@ class Emit(unittest.TestCase):
     def test_no_tree_no_table(self):
         err = io.StringIO()
         inputs = FakeInputs([])
-        inputs.dossier_lines = None
+        inputs.worksheet_lines = None
         self.assertEqual(links_table.emit_table(page(skeleton()), inputs, out=io.StringIO(), err=err), 2)
         self.assertIn('no kernel tree', err.getvalue())
 

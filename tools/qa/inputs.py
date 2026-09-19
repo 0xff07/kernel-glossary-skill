@@ -24,7 +24,7 @@ EXEMPT_KEY = re.compile(r"\"((?:[^\"\\\n]|\\.)+)\"|(\d+)")
 EXEMPT_ESCAPE = re.compile(r"\\(\")")
 DOCS = "docs"
 PROGRESS = "progress"
-DOSSIER_SUFFIX = ".dossier.md"
+WORKSHEET_SUFFIX = ".worksheet.md"
 TREE_MARKERS = ("Kconfig",)
 
 
@@ -113,7 +113,7 @@ def sha256_of(path):
     return hashlib.sha256(open(path, "rb").read()).hexdigest()
 
 
-def dossier_header(path):
+def worksheet_header(path):
     fields = {}
     try:
         for line in open(path, encoding="utf-8"):
@@ -127,7 +127,7 @@ def dossier_header(path):
     return fields
 
 
-def dossier_campaign(path, base):
+def worksheet_campaign(path, base):
     relative = os.path.relpath(os.path.abspath(path), os.path.join(base, PROGRESS)).replace(os.sep, "/")
     parts = relative.split("/")
     if parts[0] == ".." or len(parts) < 2:
@@ -135,12 +135,12 @@ def dossier_campaign(path, base):
     return parts[0]
 
 
-def dossier_verdict(path, page_path, head, base, active=None):
-    """Why a dossier is not this page's at this tree's commit, or '' when it is (dossier.md
+def worksheet_verdict(path, page_path, head, base, active=None):
+    """Why a worksheet is not this page's at this tree's commit, or '' when it is (worksheet.md
     [header])."""
     if not os.path.exists(path):
         return "does not exist"
-    fields = dossier_header(path)
+    fields = worksheet_header(path)
     stated = fields.get("output path", "").split()[0].strip("`") if fields.get("output path") else ""
     if not stated:
         return "carries no output path in its HEADER"
@@ -149,7 +149,7 @@ def dossier_verdict(path, page_path, head, base, active=None):
     campaign = fields.get("campaign", "").split(" ")[0].strip("`")
     if not campaign:
         return "carries no campaign in its HEADER"
-    directory = dossier_campaign(path, base)
+    directory = worksheet_campaign(path, base)
     if campaign != directory:
         return f"names campaign {campaign} but lies under progress/{directory}/"
     if active and campaign != active:
@@ -165,7 +165,7 @@ def dossier_verdict(path, page_path, head, base, active=None):
 class Inputs:
     """The resolved inputs of one run."""
 
-    def __init__(self, page_path, tree=None, dossier=None, campaign=None, base=None, spec=None):
+    def __init__(self, page_path, tree=None, worksheet=None, campaign=None, base=None, spec=None):
         self.page_path = page_path
         self.base = base or skill_dir()
         self.problems, self.notes = [], []
@@ -174,7 +174,7 @@ class Inputs:
         self.qa_digest = qa_digest(self.base)
         self.spec = spec                          # a campaign spec named outright
         self._resolve_tree(tree)
-        self._resolve_dossier(dossier, campaign)
+        self._resolve_worksheet(worksheet, campaign)
         self._resolve_baseline()
         self.page_digest = sha256_of(page_path)
 
@@ -240,56 +240,56 @@ class Inputs:
                     self.problems.append("the page cites paths the commit does not track: "
                                          + ", ".join(untracked[:6]) + (" and more" if len(untracked) > 6 else ""))
 
-    # ---- the dossier ----
+    # ---- the worksheet ----
 
-    def _resolve_dossier(self, explicit, campaign):
-        explicit = explicit or os.environ.get("KG_DOSSIER")
+    def _resolve_worksheet(self, explicit, campaign):
+        explicit = explicit or os.environ.get("KG_WORKSHEET")
         self.campaign = campaign or os.environ.get("KG_CAMPAIGN") or None
-        name = page_key(self.page_path, self.base) + DOSSIER_SUFFIX
+        name = page_key(self.page_path, self.base) + WORKSHEET_SUFFIX
         if explicit:
             candidates, how = [os.path.abspath(explicit)], "option"
         elif self.campaign:
             candidates, how = [os.path.join(self.base, PROGRESS, self.campaign, name)], "campaign"
         else:
             candidates, how = sorted(glob.glob(os.path.join(self.base, PROGRESS, "*", name))), "convention"
-        self.dossier_how = how
-        self.dossier_rejected = []
+        self.worksheet_how = how
+        self.worksheet_rejected = []
         accepted = []
         for path in candidates:
-            why = dossier_verdict(path, self.page_path, self.tree_head, self.base, self.campaign)
+            why = worksheet_verdict(path, self.page_path, self.tree_head, self.base, self.campaign)
             if why:
-                self.dossier_rejected.append(f"dossier {path} {why}; not used")
+                self.worksheet_rejected.append(f"worksheet {path} {why}; not used")
             else:
                 accepted.append(path)
         if len(accepted) > 1:
-            where = ", ".join(dossier_campaign(p, self.base) for p in accepted)
-            self.dossier_rejected.append(f"ambiguous dossier: {len(accepted)} campaigns name this page at this "
+            where = ", ".join(worksheet_campaign(p, self.base) for p in accepted)
+            self.worksheet_rejected.append(f"ambiguous worksheet: {len(accepted)} campaigns name this page at this "
                                          f"commit ({where}); pass --campaign or $KG_CAMPAIGN; none used")
             accepted = []
-        self.dossier = accepted[0] if accepted else None
+        self.worksheet = accepted[0] if accepted else None
         if how == "option":
-            self.problems.extend(self.dossier_rejected)
+            self.problems.extend(self.worksheet_rejected)
         else:
-            self.notes.extend(self.dossier_rejected)
-        if self.dossier is None and not self.dossier_rejected and how != "option":
-            flat = os.path.splitext(os.path.basename(self.page_path))[0] + DOSSIER_SUFFIX
+            self.notes.extend(self.worksheet_rejected)
+        if self.worksheet is None and not self.worksheet_rejected and how != "option":
+            flat = os.path.splitext(os.path.basename(self.page_path))[0] + WORKSHEET_SUFFIX
             if flat != name:
                 pattern = os.path.join(self.base, PROGRESS, self.campaign or "*", flat)
                 for stale in sorted(glob.glob(pattern)):
                     mirrored = os.path.join(os.path.dirname(stale), name)
-                    self.notes.append(f"a dossier lies at the retired flat path {stale}; the mirrored path is "
+                    self.notes.append(f"a worksheet lies at the retired flat path {stale}; the mirrored path is "
                                       f"{mirrored} (move it there; it was not read)")
-        if self.dossier is None and not self.dossier_rejected:
-            self.notes.append("no dossier found; the dossier rules skip")
-        self.dossier_lines = (open(self.dossier, encoding="utf-8").read().split("\n")
-                              if self.dossier else None)
+        if self.worksheet is None and not self.worksheet_rejected:
+            self.notes.append("no worksheet found; the worksheet rules skip")
+        self.worksheet_lines = (open(self.worksheet, encoding="utf-8").read().split("\n")
+                              if self.worksheet else None)
 
     def exemptions(self):
-        """The EXEMPT verdicts the dossier's LINT section records for the engine (dossier.md
+        """The EXEMPT verdicts the worksheet's LINT section records for the engine (worksheet.md
         [lint]): [{rule, fragment, line, ruling, text}], the fragment a piece of the flagged text
         and the line an optional hint."""
         found = []
-        for match in EXEMPT_LINE.finditer(self.dossier_section("## LINT")):
+        for match in EXEMPT_LINE.finditer(self.worksheet_section("## LINT")):
             fragment, line = None, None
             for key in EXEMPT_KEY.finditer(match.group(2)):
                 if key.group(1):
@@ -300,9 +300,9 @@ class Inputs:
                           "ruling": (match.group(3) or "").strip(), "text": match.group(0).strip()})
         return found
 
-    def dossier_section(self, name):
-        """The text under one H2 of the dossier, or ''."""
-        lines = self.dossier_lines
+    def worksheet_section(self, name):
+        """The text under one H2 of the worksheet, or ''."""
+        lines = self.worksheet_lines
         if lines is None or name not in lines:
             return ""
         start = lines.index(name)
@@ -354,7 +354,7 @@ class Inputs:
 
     def require(self, name):
         """Return a resolved, usable input, or explain why execution cannot finish."""
-        if name not in ('tree', 'git', 'dossier', 'baseline'):
+        if name not in ('tree', 'git', 'worksheet', 'baseline'):
             raise ValueError(f"unknown input {name!r}")
         if name in ('tree', 'git') and self.source_problems:
             raise MissingInput('source validation failed: ' + '; '.join(self.source_problems))
@@ -362,8 +362,8 @@ class Inputs:
             raise MissingInput('no kernel tree')
         if name == 'git' and not self.git:
             raise MissingInput('no git in the kernel tree')
-        if name == 'dossier' and self.dossier is None:
-            raise MissingInput('; '.join(self.dossier_rejected) or 'no dossier')
+        if name == 'worksheet' and self.worksheet is None:
+            raise MissingInput('; '.join(self.worksheet_rejected) or 'no worksheet')
         if name == 'baseline' and self.baseline is None:
             raise MissingInput('no committed baseline differs from the page')
         return self.tree if name == 'git' else getattr(self, name)
@@ -383,7 +383,7 @@ class Inputs:
 
     def report_lines(self):
         out = [f"kg 3  page {self.page_path}  tree {self.tree or '-'}"
-               + (f" at {self.tree_tag}" if self.tree_tag else "") + f"  dossier {self.dossier or '-'}"]
+               + (f" at {self.tree_tag}" if self.tree_tag else "") + f"  worksheet {self.worksheet or '-'}"]
         out += [f"   page sha256: {self.page_digest}  qa sha256: {self.qa_digest}"]
         out += [f"   FAIL  inputs: {p}" for p in self.problems]
         out += [f"   note: {n}" for n in self.notes]
@@ -391,5 +391,5 @@ class Inputs:
 
     def as_dict(self):
         return {"page_digest": self.page_digest, "qa_digest": self.qa_digest, "tree": self.tree, "tree_tag": self.tree_tag, "tree_head": self.tree_head,
-                "dossier": self.dossier, "campaign": self.campaign, "baseline": self.baseline is not None,
+                "worksheet": self.worksheet, "campaign": self.campaign, "baseline": self.baseline is not None,
                 "problems": self.problems, "notes": self.notes}
