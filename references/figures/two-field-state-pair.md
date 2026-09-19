@@ -1,7 +1,7 @@
 # Pattern: two-field state pair
 
 1. Use when an object's state is the relation between two of its fields (a mode and a requested mode, a count and a limit, a value and its shadow) and a handful of numbered actions move it between the settled state and the divergent one.
-2. Draw the two states as boxes named by the relation, each action as a labelled `──►` edge carrying its number, the failure and no-op cases as loops on the box they leave unchanged, and a one-line legend mapping the numbers to functions and lines. The reader checks the figure by finding every writer of either field in the legend.
+2. Draw the two states as boxes named by the relation, each action as a labelled `──►` edge carrying its number, the failure and no-op cases as loops on the box they leave unchanged, and a legend beneath, one entry per mark naming the function, its site and what it does to the pair. The reader checks the figure by finding every writer of either field in the legend.
 3. Distinct from the state-transition graph over an enumeration of named states; here the two states are defined by a predicate over the fields, and the actions are the writers the page's excerpts show. Distinct from the object lifecycle strip, which shows one run in time; this shows every legal move.
 
 ```
@@ -20,6 +20,8 @@
                             ▲ │
                             └─┘ ④ disable while req is OFF
 
-       ① tmu_mode_init tmu.c:357   ② tb_switch_tmu_configure tmu.c:1068
-       ③ tb_switch_tmu_enable tmu.c:1013   ④ tb_switch_tmu_disable tmu.c:620
+       ① tmu_mode_init            tmu.c:357   mode ← hardware, mode_request ← mode: the pair starts settled
+       ② tb_switch_tmu_configure  tmu.c:1068  mode_request ← the requested mode: the pair diverges
+       ③ tb_switch_tmu_enable     tmu.c:1013  mode ← mode_request on success: the pair settles again
+       ④ tb_switch_tmu_disable    tmu.c:620   mode ← OFF: settled only when OFF was requested
 ```

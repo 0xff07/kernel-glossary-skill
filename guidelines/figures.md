@@ -11,7 +11,23 @@ When a figure earns its place, the shapes that fail, the geometry every figure k
 5. [drawing.journey-or-model] A figure depicts a journey or a model, never a catalog: a pipeline, a sequence, a before-and-after, a lifecycle, or a structure and its relationships. On a page organized around a journey or model the primary figure shows that spine whole, and a local figure shows the objects and boundaries of the current operation; the two may share objects, the local one keeps its orientation within the larger model, and omitted branches never turn a partial view into a claim of completeness. Figures of successive stages keep names, positions and directions where those are unchanged and update what the operation changes.
 6. [drawing.assertions] A figure's arrows and boundaries assert relationships and its labels assert behavior; the source beside it supports them, and its placement keeps the excerpts it prepares or follows intact. A local figure stays complete: object names, directions, boundaries and enough notation to be read where it stands, with nothing added to reach a line count and nothing cut to shrink it.
 
-7. [drawing.legend, qa] A figure names a function only through a circled number, `①` to `⑳`, resolved by a legend inside the fence beneath the drawing, one entry per number in the form `① name file:line`, a later entry in the same file written `:line` alone; the drawing itself carries objects, fields, events and values. The check matches the numbers in the drawing to the legend's, requires every legend site to be a line an excerpt on the page reproduces, and requires the site to lie in the named function, so a figure's claims about who acts are as checkable as the prose's.
+7. [drawing.legend, qa] A figure names a function only through a circled number, `①` to `⑳`, resolved by a legend inside the fence beneath the drawing, one entry per line in the form `① name file:line  what happens there`: the mark, the function, its site, and a phrase of a few words saying what that site does to the object or decides, so the legend answers who, where and what. The drawing itself carries objects, fields, events and values, and may set a one-word verb beside a mark. The check matches the numbers in the drawing to the legend's, requires every legend site to be a line an excerpt on the page reproduces and to lie in the named function, and requires the phrase; on a lifecycle figure the phrase names the field the writer sets.
+
+8. [drawing.triggers, qa] The shapes below are drawn wherever a DETAILS subsection carries them: the table is the obligation, the pattern index the form, and a subsection that carries a shape and no figure records why the shape is not its point. The check lists such subsections from their prose and excerpts.
+
+| the material | draw it as | exempt |
+|---|---|---|
+| a set of three or more named states, modes or classes the prose walks | state-transition graph, or the two-field state pair when the state is a relation between two fields | a set the page only tabulates, no transition described |
+| two or more actors handing work to each other: parent and child router, upstream and downstream, host and device, producer and consumer | swimlane sequence | one call from one actor to the other |
+| a definition of six or more members, or a word partitioned into named bit ranges | side-by-side struct comparison, linked structs via pointers, the two-view memory strip, or the register grid | a definition shown for the one member the paragraph is about |
+| an operation that reshapes a structure: allocate and attach, insert, split, merge, tear down | before-and-after transformation | one scalar written |
+| routers, adapters and tunnels in a tree, or a guard that is a place in the tree | topology with a boundary, or parent and children fan-out | a single link named |
+| a field two or more functions write | the object lifecycle strip ([lifecycle]) | none |
+| three or more ordered steps across two actors or two files | swimlane sequence or lifetime Gantt | the steps of one function, which the walkthrough reads |
+
+9. [drawing.model, qa] Every page carries its model figure under the lead or in SUMMARY: the objects and the relationships the page is about, or the spine of its journey, so the reader holds the map before DETAILS; on an object page it is the lifecycle strip. The check requires one figure in the lead or SUMMARY.
+
+10. [drawing.walk, qa] In DETAILS, the paragraph after a figure with a legend walks its marks in order, one sentence per mark, the function named as a link, so the reader goes from the drawing to the code by that paragraph; the model figure under the lead or in SUMMARY carries its legend alone. The check requires each legend function linked in the paragraph after the figure and flags a walk out of mark order.
 
 ## Object lifecycle figures [lifecycle]
 

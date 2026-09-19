@@ -75,8 +75,11 @@ def lifecycle(page, inputs):
                 holder = construct.label(path.rsplit('/', 1)[-1]) if construct else 'no function'
                 fail(f'{tag}: {site} lies in {holder}, not in {writer}()')
                 continue
-            if not any(e['mark'] == mark and e['name'] == writer for e in legends):
+            matching = [e for e in legends if e['mark'] == mark and e['name'] == writer]
+            if not matching:
                 findings.append(Finding(None, 'review', f'{tag} {writer} {site}: no figure legend on the page carries this mark with this writer'))
+            elif not any(re.search(r'\b' + re.escape(field) + r'\b', e['phrase']) for e in matching):
+                findings.append(Finding(None, 'review', f"{tag} {writer} {site}: the legend phrase does not name {field}; say which field the writer sets and to what"))
             counts['verified'] += 1
         for field in sorted({r['field'] for r in orows}):
             in_table = {r['writer'] for r in orows if r['field'] == field}

@@ -72,7 +72,7 @@ The provenance comment every fenced C block opens with is kernel.md [provenance]
 6. [arrangement.headings, qa] A `###` heading is a declarative clause of at most ten words, true of everything in its section; a condition or implementation detail the reader does not need to find the subsection moves into its opening paragraph.
 
 7. [arrangement.tables] A comparison of operations under conditions is a table before the excerpt, with plain-English cells and every symbol linked in every row, and a member table beside a definition keeps the placement that makes the explanation available. Two representations may cover one relationship when each adds something; prose that reads a table row by row is removed.
-8. [arrangement.figure-placement, qa] Place a local figure where a spatial, temporal or transformational relationship would cost the reader effort to hold, before or after source that needs continuous reading and never inside it; no figure count is a target, and variation follows size, role and stage.
+8. [arrangement.figure-placement, qa] Place a local figure where a spatial, temporal or transformational relationship would cost the reader effort to hold, before or after source that needs continuous reading and never inside it; beyond the model figure and the shapes figures.md [drawing.triggers] names, no figure count is a target, and variation follows size, role and stage.
 
 9. [arrangement.route, qa] DETAILS opens, before its first subsection, with the route: one paragraph of three to five sentences naming in order what the subsections establish, so the reader knows the road before walking it. The check requires the paragraph and lists its sentences.
 

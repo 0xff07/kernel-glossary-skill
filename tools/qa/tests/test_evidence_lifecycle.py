@@ -11,7 +11,7 @@ from tests.support import PROSE, page, skeleton, TestInputs, observed
 RING_H = '\n' * 11 + 'struct kg_ring {\n\tunsigned int head;\n\tunsigned int tail;\n};\n'
 RING_C = ['int kg_ring_push(struct kg_ring *ring, int v)', '{', '\tring->head++;', '\treturn 0;', '}', '',
           'void kg_ring_reset(struct kg_ring *ring)', '{', '\tring->head = 0;', '\tring->tail = 0;', '}']
-FIGURE = '```\n    ┌──────┐  ①  ┌──────┐\n    │ push │ ──► │ head │ ②\n    └──────┘     └──────┘\n    ① kg_ring_push ring.c:3   ② kg_ring_reset :9\n```'
+FIGURE = '```\n    ┌──────┐  ①  ┌──────┐\n    │ push │ ──► │ head │ ②\n    └──────┘     └──────┘\n    ① kg_ring_push ring.c:3  head advances by one\n    ② kg_ring_reset :9  head returns to zero\n```'
 EXCERPTS = '```c\n/* drivers/kg/ring.c:1 */\n' + '\n'.join(RING_C) + '\n```'
 HEADER = '## EVIDENCE\n### Lifecycle\n| object | field | mark | writer | site | event | value |\n|---|---|---|---|---|---|---|\n'
 
@@ -51,6 +51,8 @@ class Lifecycle(unittest.TestCase):
         self.assertEqual([r for r in self.by(found, 'review') if 'also writes' in r], [])
         found = self.run_on(table('| `struct kg_ring` | tail | ③ | kg_ring_reset | ring.c:10 | reset | 0 |'))
         self.assertIn('no figure legend on the page carries this mark with this writer', self.by(found, 'review')[0])
+        found = self.run_on(table('| `struct kg_ring` | tail | ② | kg_ring_reset | ring.c:10 | reset | 0 |'))
+        self.assertIn('the legend phrase does not name tail', self.by(found, 'review')[0])
 
     def test_wrong_rows_fail(self):
         found = self.run_on(table('| `struct kg_ring` | head | ① | kg_ring_push | ring.c:4 | push | +1 |'))

@@ -5,6 +5,7 @@ from measurements import reproduced_lines
 from pagemodel import legend_entries
 from report import Finding, observations
 RULE = 'drawing.legend'
+MIN_PHRASE_WORDS = 3
 
 def resolve(cited, file):
     """(tree path, None) for a legend file among the page's cited files, or (None, why)."""
@@ -17,7 +18,7 @@ def resolve(cited, file):
 
 def legends(page, inputs):
     findings, listing = [], []
-    counts = {'figures': 0, 'with_legend': 0, 'marks': 0, 'entries': 0, 'findings': 0}
+    counts = {'figures': 0, 'with_legend': 0, 'marks': 0, 'entries': 0, 'phrased': 0, 'findings': 0}
     reproduced = reproduced_lines(page, inputs)
     cited = page.cited_files()
     tables = {}
@@ -42,6 +43,10 @@ def legends(page, inputs):
             fail(f'figure {number}: legend entries {extra} mark nothing in the drawing')
         for e in entries:
             where = f"figure {number}: legend {e['mark']} {e['name']} {e['file'] or ''}:{e['line']}"
+            if len(e['phrase'].split()) < MIN_PHRASE_WORDS:
+                fail(f'{where} carries no phrase; say in a few words what happens there, `{e["mark"]} {e["name"]} file:line  what it does`, one entry per line')
+            else:
+                counts['phrased'] += 1
             path, why = resolve(cited, e['file']) if e['file'] else (None, 'names no file')
             if path is None:
                 fail(f'{where} {why}')
@@ -61,7 +66,7 @@ def legends(page, inputs):
             if e['line'] not in reproduced.get(path, set()):
                 fail(f'{where} is a line no excerpt on the page reproduces; show it beside the figure or drop the mark')
         listing.append(f'fig {number}: marks={len(marks)} legend={len(entries)}')
-    footer = f"figures={counts['figures']} with-legend={counts['with_legend']} marks={counts['marks']} entries={counts['entries']} findings={counts['findings']}"
+    footer = f"figures={counts['figures']} with-legend={counts['with_legend']} marks={counts['marks']} entries={counts['entries']} phrased={counts['phrased']} findings={counts['findings']}"
     yield from observations(findings, footer, listing, dict(counts))
 
 def check(page, inputs):

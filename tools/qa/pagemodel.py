@@ -35,7 +35,7 @@ CIRCLED = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳"
 LEGEND_MARK = re.compile("[" + CIRCLED + "]")
 # a legend entry beneath a drawing: the mark, the function or symbol, and its site, the file
 # inherited from the previous entry when written as `:line` alone
-LEGEND_ENTRY = re.compile(r"([" + CIRCLED + r"])\s+([A-Za-z_]\w*)(?:\(\))?\s+(?:([\w./-]+\.[chS]))?:(\d+)\b")
+LEGEND_ENTRY = re.compile(r"([" + CIRCLED + r"])\s+([A-Za-z_]\w*)(?:\(\))?\s+(?:([\w./-]+\.[chS]))?:(\d+)\b[ \t]*(.*?)(?=[ \t]*[" + CIRCLED + r"][ \t]+[A-Za-z_]|$)")
 # a standalone elision line, bare or carrying how many lines it drops and where the excerpt resumes
 ELISION_MARK = re.compile(r"^\.\.\.(?:\s*/\*\s*(\d+) lines?, to :(\d+)\s*\*/)?\s*$")
 CATALOG_SYMBOL = re.compile(r"\[`'\\<([^\\]+)\\>'(?::'[^']*')?`\]")
@@ -115,7 +115,8 @@ def legend_entries(body):
         for m in found:
             path = m.group(3) or last_file
             last_file = path
-            entries.append({"mark": m.group(1), "name": m.group(2), "file": path, "line": int(m.group(4)), "row": row})
+            entries.append({"mark": m.group(1), "name": m.group(2), "file": path, "line": int(m.group(4)), "row": row,
+                            "phrase": m.group(5).strip()})
     return entries, marks
 
 
@@ -290,6 +291,22 @@ class Page:
                 first = j + 1
             j -= 1
         return ("\n".join(reversed(out)), first)
+
+    def outro_of(self, fence):
+        """The prose paragraph after a fence: the first run of prose lines below it, before the next
+        heading, figure, table, list or excerpt, with the page line of its first line."""
+        lines = self.lines
+        j = fence.end
+        while j < len(lines) and not lines[j].strip():
+            j += 1
+        if j >= len(lines) or lines[j].startswith(("```", "#", "|")) or re.match(r"^\s*[-*]\s", lines[j]):
+            return ("", None)
+        out = []
+        first = j + 1
+        while j < len(lines) and lines[j].strip() and not lines[j].startswith(("```", "#", "|")):
+            out.append(lines[j])
+            j += 1
+        return ("\n".join(out), first)
 
     def in_fence(self, n):
         """True when the 1-based line n lies inside a fence, markers included."""

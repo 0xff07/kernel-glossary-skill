@@ -411,9 +411,12 @@ comment included, and `--whole` prints the function or definition holding the
 cited line, so a writer never transcribes source by hand.
 
 A figure's function references go through a numbered legend, `① name
-file:line`, which `drawing.legend` verifies the way prose sites are verified:
-the numbers match the drawing, the site is reproduced by an excerpt and lies in
-the named function. An object lifecycle figure adds a Lifecycle table to the
+file:line  what happens there`, which `drawing.legend` verifies the way prose
+sites are verified: the numbers match the drawing, the site is reproduced by an
+excerpt and lies in the named function, and each entry carries its phrase;
+`drawing.walk` requires the paragraph after a DETAILS figure to link the
+legend's functions in mark order, the reader's way back from the drawing to the
+code. An object lifecycle figure adds a Lifecycle table to the
 worksheet's EVIDENCE; `evidence.lifecycle` reads each row against the tree (the
 member exists, the site assigns it inside the named writer, the mark stands in a
 legend) and against a census of every function that writes the field, so a
@@ -436,3 +439,18 @@ ties the order of DETAILS to the object's lifecycle figure. `kg view --load`
 prints the measurements behind these rules, words per sentence, links per
 sentence, distinct symbols, blocks, figures, recaps and the longest run
 without one, so a change to the rules can be judged by what it does to a page.
+
+## 14. Figures the material demands
+
+Two rules make figures a matter of the material rather than the writer's
+budget. `drawing.model` requires one figure under the lead or in SUMMARY, the
+page's map. `drawing.triggers` carries the trigger table of figures.md and
+lists, for reading, every DETAILS subsection whose prose or excerpts carry one
+of its shapes and no figure: an enum excerpt or a family of enumerator spans
+of three or more (a state set), two actors of a known pair named twice each
+(a hand-over), a definition of six or more members (a layout), two or more
+list or allocation primitives in one excerpt (a reshaping), a topology helper
+or the word depth twice (a tree), three or more ordinal sentence openers (a
+sequence). The heuristics are deliberately broad; the writer answers each row
+with a figure or a recorded reason, and the retrospective shows which shapes
+the pages actually draw.
