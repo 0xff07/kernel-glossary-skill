@@ -31,7 +31,7 @@ PROVENANCE = re.compile(r"^/\* ([\w./-]+):(\d+)\b[^*]*\*/\s*$")
 PROVENANCE_FILE = re.compile(r"/\* ([\w./-]+):\d+")
 ELISION = "..."
 CATALOG_SYMBOL = re.compile(r"\[`'\\<([^\\]+)\\>'(?::'[^']*')?`\]")
-# the decoration a catalog name carries and a PARITY row does not: the tag, a pointer star, an
+# the decoration a catalog name carries and a COMPLETENESS row does not: the tag, a pointer star, an
 # array bound, a call's parentheses
 NAME_DECORATION = re.compile(r"\(\)$|\[[^\]]*\]$")
 CATALOG_ENTRY = re.compile(r"^- \[`(?:'\\<([^\\]+)\\>'(?::'[^']*')?|([^`'][^`]*))`\]"
@@ -126,7 +126,7 @@ def prose_stats(text):
 
 
 def catalog_name(key):
-    """The symbol a catalog entry names, as a PARITY row and the prose spell it: the last word of
+    """The symbol a catalog entry names, as a COMPLETENESS row and the prose spell it: the last word of
     the entry, without its pointer star, array bound or parentheses."""
     return NAME_DECORATION.sub("", key.split()[-1]).strip("*&")
 

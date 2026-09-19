@@ -16,7 +16,7 @@ class FakeInputs(TestInputs):
 
     def __init__(self, rows, tree=None):
         super().__init__()
-        self.worksheet_lines = ['## LINKS', links_table.HEADER, links_table.SEPARATOR] + rows + ['', '## PARITY']
+        self.worksheet_lines = ['## LINKS', links_table.HEADER, links_table.SEPARATOR] + rows + ['', '## COMPLETENESS']
         self.worksheet = '<worksheet>'
         self.tree, self.cache = (tree, {})
 

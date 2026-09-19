@@ -1,8 +1,8 @@
-"""plugins.worksheet: the identity verdicts, the scope-closure and catalog tables of PARITY, the
+"""plugins.worksheet: the identity verdicts, the scope-closure and catalog tables of COMPLETENESS, the
 acceptance lines and the evidence digest, and the LINT record that evidences LINTED."""
 import unittest
 from inputs import Inputs
-from checks import parity_scope_table as worksheet
+from checks import completeness_catalog_table as worksheet
 from tests.support import page, skeleton, TestInputs, observed
 DIGEST = 'a' * 64
 OTHER = 'b' * 64
@@ -22,26 +22,28 @@ class FakeInputs(TestInputs):
 def check(name, text, **fields):
     return observed(worksheet.check(page(skeleton()), FakeInputs(text, **fields)))
 
-class Parity(unittest.TestCase):
+class Completeness(unittest.TestCase):
     SCOPE = '| anchors | location on the page |\n|---|---|\n| `kg_ring` | DETAILS, the first subsection |\n\n'
     ROWS = '| symbol | DEFINITION | USAGE |\n|---|---|---|\n| `struct kg_ring` | C@66 | C@80 |\n'
 
-    def test_scope_table_recognised_by_either_spelling(self):
-        for header in ('anchors', 'anchor symbol'):
-            text = '## PARITY\n' + self.SCOPE.replace('anchors', header) + self.ROWS
-            self.assertEqual(check('scope-table', text).findings, [], header)
+    def test_catalog_rows_closed(self):
+        self.assertEqual(check('completeness', '## COMPLETENESS\n' + self.SCOPE + self.ROWS).findings, [])
 
-    def test_missing_scope_table(self):
-        result = check('scope-table', '## PARITY\n' + self.ROWS)
-        self.assertEqual(len(result.findings), 1)
-        self.assertIn('no scope-closure table', result.findings[0].message)
+    def test_empty_cell_and_missing_row(self):
+        empty = check('completeness', '## COMPLETENESS\n' + self.SCOPE + self.ROWS.replace('C@80', ''))
+        self.assertEqual([f.severity for f in empty.findings], ['FAIL'])
+        missing = check('completeness', '## COMPLETENESS\n' + self.SCOPE + '| symbol | DEFINITION | USAGE |\n|---|---|---|\n| `other` | C@1 | C@2 |\n')
+        self.assertTrue(any(('no catalog-table row naming them' in f.message for f in missing.findings)))
+
+    def test_no_completeness_section(self):
+        self.assertIn('no COMPLETENESS section', check('completeness', '## LINT\n').findings[0].message)
 if __name__ == '__main__':
     unittest.main()
 
 
 class Dependencies(unittest.TestCase):
     def test_missing_required_input(self):
-        from checks.parity_scope_table import check
+        from checks.completeness_catalog_table import check
         from inputs import MissingInput
         from tests.support import TestInputs, page, skeleton
         with self.assertRaises(MissingInput):

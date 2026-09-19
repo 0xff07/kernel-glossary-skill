@@ -1,7 +1,7 @@
 """Shared parsing and reporting utilities."""
 import re
 from pagemodel import TABLE_SEPARATOR
-PARITY_SECTION = '## PARITY'
+COMPLETENESS_SECTION = '## COMPLETENESS'
 SCOPE_HEADER = re.compile('^\\|.*\\banchors?\\b.*\\|.*\\|', re.I)
 ROW_SPAN = re.compile('`([^`]+)`')
 ROW_DECORATION = re.compile('^(?:\\\\<)?(?:struct |enum |union )?|\\\\>$|\\(\\)$|\\[[^\\]]*\\]$')
@@ -61,9 +61,9 @@ def recorded_maps(inputs):
     return out
 
 
-def parity_tables(inputs):
-    body = inputs.worksheet_section(PARITY_SECTION)
-    if not body and PARITY_SECTION not in (inputs.worksheet_lines or []):
+def completeness_tables(inputs):
+    body = inputs.worksheet_section(COMPLETENESS_SECTION)
+    if not body and COMPLETENESS_SECTION not in (inputs.worksheet_lines or []):
         return (None, [], [])
     tables = tables_of(body.split('\n'))
     scope = [t for t in tables if SCOPE_HEADER.match(t[0])]

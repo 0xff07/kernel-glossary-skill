@@ -1,8 +1,8 @@
-"""Checks for [excerpts.catalog-parity]."""
+"""Checks for [excerpts.catalog-completeness]."""
 from report import Finding
 import re
 from pagemodel import on_page_pattern
-RULE = 'excerpts.catalog-parity'
+RULE = 'excerpts.catalog-completeness'
 
 def catalog_symbols_in_some_fence(page):
     code = page.excerpted_code()

@@ -1,6 +1,6 @@
-"""Behavior and boundaries for excerpts catalog parity."""
+"""Behavior and boundaries for excerpts catalog completeness."""
 import unittest
-from checks.excerpts_catalog_parity import check
+from checks.excerpts_catalog_completeness import check
 from tests.support import CAUTION, EXCERPT, FIGURE, PROSE, URL, MINIMAL_PAGE, TestInputs, observed, page, skeleton
 
 class Behavior(unittest.TestCase):

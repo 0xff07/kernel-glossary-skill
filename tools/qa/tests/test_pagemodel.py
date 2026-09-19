@@ -147,7 +147,7 @@ class Constructs(unittest.TestCase):
 
 
 class CatalogNames(unittest.TestCase):
-    def test_a_name_drops_what_a_parity_row_drops(self):
+    def test_a_name_drops_what_a_completeness_row_drops(self):
         from pagemodel import catalog_name
         self.assertEqual(catalog_name("struct tb_nhi *nhi"), "nhi")
         self.assertEqual(catalog_name("unsigned long privdata[]"), "privdata")

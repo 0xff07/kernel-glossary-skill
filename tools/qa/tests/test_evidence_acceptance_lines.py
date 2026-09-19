@@ -1,4 +1,4 @@
-"""plugins.worksheet: the identity verdicts, the scope-closure and catalog tables of PARITY, the
+"""plugins.worksheet: the identity verdicts, the scope-closure and catalog tables of COMPLETENESS, the
 acceptance lines and the evidence digest, and the LINT record that evidences LINTED."""
 import unittest
 from inputs import Inputs

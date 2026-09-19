@@ -1109,7 +1109,7 @@ Reviewer read the full spec and verified 46 anchors on disk across all nine grou
 
 ## Execution & verification
 
-- Pipeline: writer → orchestrator check per SKILL.md ("Modes") and `guidelines/checking.md` section 2/`03-check.md`; the page is the writer's end to end (facts and prose; parity table closed, mechanical QA steps run, evidence persisted into the worksheet); the orchestrator adjudicates escalations at batch checkpoints and stamps WRITTEN → LINTED in the run log.
+- Pipeline: writer → orchestrator check per SKILL.md ("Modes") and `guidelines/checking.md` section 2/`03-check.md`; the page is the writer's end to end (facts and prose; completeness table closed, mechanical QA steps run, evidence persisted into the worksheet); the orchestrator adjudicates escalations at batch checkpoints and stamps WRITTEN → LINTED in the run log.
 - Batches of about five pages, one writer per page, hard checkpoint between batches; writer deaths resume the same agent ("do not redo the research; write the page now from what you have"), fresh writer from the worksheet after two failed resumes. Every page gets a worksheet at `progress/acpi/<slug>.worksheet.md`.
 - Model tiers: writers on the strongest available model; inventory mid-tier; adjudication and sign-off never delegated.
 - Project-specific writing bans (from the request, on top of Gate A/3a): no hedging wordings; no vendor-specific mechanisms or examples (interpretation under Scope decisions #7); figures per 7g-7i only — never a call-graph/flow-enumeration figure (Scope decisions #4); every ACPI construct named in prose is paired with its kernel representation (Scope decisions #1).

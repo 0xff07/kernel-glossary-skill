@@ -1,6 +1,6 @@
 # The worksheet
 
-The worksheet is the page's entire working file: the research, the parity table, the QA evidence and the lint findings, at `progress/<campaign>/<dir>/<group>/<slug>.worksheet.md`, one per page, mirroring the page's path `docs/<dir>/<group>/<slug>.md` because two groups of one subsystem may share a slug, machine-local and never committed. It exists so a page's work survives the agent that did it, so passes can run in different sessions or by different agents, and so a later pass starts its re-derivations from recorded search bases.
+The worksheet is the page's entire working file: the research, the completeness table, the QA evidence and the lint findings, at `progress/<campaign>/<dir>/<group>/<slug>.worksheet.md`, one per page, mirroring the page's path `docs/<dir>/<group>/<slug>.md` because two groups of one subsystem may share a slug, machine-local and never committed. It exists so a page's work survives the agent that did it, so passes can run in different sessions or by different agents, and so a later pass starts its re-derivations from recorded search bases.
 
 ## The file [file]
 
@@ -20,11 +20,11 @@ The worksheet is the page's entire working file: the research, the parity table,
 
 2. [links-table.reasons, qa] The last cell is the writer's: a kind (symbol, location, config, generated, file) confirming a linked row's anchor, or the reason that licenses a bare row. Anchor confirmation is page-wide, catalog rows included; span closure requires a non-empty last cell on every prose row and on every catalog row whose span is not one of the catalog's own entries, the bare spans in a bullet's descriptive text.
 
-## PARITY [parity]
+## COMPLETENESS [completeness]
 
-1. [parity.scope-table, qa] First the scope closure: every anchor symbol and behavior the catalog row names, with its location on the page or its scope reduction and reason, as a table whose header names the anchors; a catalog cut never discharges it.
+1. [completeness.scope-table, qa] First the scope closure: every anchor symbol and behavior the catalog row names, with its location on the page or its scope reduction and reason, as a table whose header names the anchors; a catalog cut never discharges it.
 
-2. [parity.closed, qa] Then one row per COVERAGE catalog symbol, two cells: where DETAILS shows its DEFINITION as a fenced C block, and where it shows a concrete USAGE. At exit every row is filled or its symbol is de-cataloged to a linked prose mention with a one-line reason; the parity rule matches the rows to the catalog by name and reports a symbol with no row and any empty cell. Block and unit counts are measurements and prove nothing, because one fence can hold several definitions and one caller excerpt can serve several usages.
+2. [completeness.catalog-table, qa] Then one row per COVERAGE catalog symbol, two cells: where DETAILS shows its DEFINITION as a fenced C block, and where it shows a concrete USAGE. At exit every row is filled or its symbol is de-cataloged to a linked prose mention with a one-line reason; the catalog-table rule matches the rows to the catalog by name and reports a symbol with no row and any empty cell. Block and unit counts are measurements and prove nothing, because one fence can hold several definitions and one caller excerpt can serve several usages.
 
 ## EVIDENCE [evidence]
 
@@ -99,7 +99,7 @@ included; span closure requires a non-empty last cell on every prose row
 and on every catalog row whose span is not a catalog entry.
 The check pass re-runs the same command and diffs.
 
-## PARITY
+## COMPLETENESS
 First the scope closure: every anchor symbol and behavior the catalog
 row names, with its location on the page or its scope reduction and
 reason; a catalog cut never discharges it. Then one row per COVERAGE

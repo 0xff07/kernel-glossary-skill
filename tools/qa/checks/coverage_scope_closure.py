@@ -117,21 +117,21 @@ def inspect_page(page, inputs):
                 unresolved.append(symbol)
         if symbol not in symbols:
             symbols.append(symbol)
-    parity = inputs.worksheet_section('## PARITY')
+    completeness = inputs.worksheet_section('## COMPLETENESS')
     findings, listing = ([], [])
     counts = {'named': 0, 'absent': 0, 'accounted': 0}
     for symbol in symbols:
         if named_on(text, symbol, families):
             counts['named'] += 1
             listing.append(f'named: {symbol}' + (' (family)' if symbol in families else ''))
-        elif symbol in parity:
+        elif symbol in completeness:
             counts['accounted'] += 1
-            listing.append(f'accounted in PARITY, not on the page: {symbol}')
-            findings.append(Finding(None, 'note', f"scoped symbol `{symbol}` is absent from the page and accounted for in the worksheet's PARITY section; read the reason"))
+            listing.append(f'accounted in COMPLETENESS, not on the page: {symbol}')
+            findings.append(Finding(None, 'note', f"scoped symbol `{symbol}` is absent from the page and accounted for in the worksheet's COMPLETENESS section; read the reason"))
         else:
             counts['absent'] += 1
             listing.append(f'absent: {symbol}')
-            findings.append(Finding(None, 'review', f'scoped symbol `{symbol}` is never named on the page (scope closure: cover it, or record the scope reduction and its reason above PARITY)'))
+            findings.append(Finding(None, 'review', f'scoped symbol `{symbol}` is never named on the page (scope closure: cover it, or record the scope reduction and its reason above COMPLETENESS)'))
     for symbol in unresolved:
         findings.append(Finding(None, 'review', f'scoped span `{symbol}` resolves to no name in the tree under any expansion; read the catalog row'))
     footer = f"scope: row=found symbols={len(symbols)} named={counts['named']} absent={counts['absent']} accounted={counts['accounted']} unresolved={len(unresolved)} resolved-against=tree"

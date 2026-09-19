@@ -114,7 +114,7 @@ Procedure: `guidelines/campaign.md`.
 
 ### 2. Writing campaign
 
-Executes an approved plan in batches of about five pages. Per page, a writer agent researches with semcode and writes the complete page — it owns all the facts, closes the catalog-to-DETAILS parity table, runs the mechanical checks (`kg check`: excerpt byte-compare, link-anchor confirmation, the bands and the sweeps) with its counts re-derived on a second basis, and persists the evidence into the page's worksheet.
+Executes an approved plan in batches of about five pages. Per page, a writer agent researches with semcode and writes the complete page — it owns all the facts, closes the catalog-to-DETAILS completeness table, runs the mechanical checks (`kg check`: excerpt byte-compare, link-anchor confirmation, the bands and the sweeps) with its counts re-derived on a second basis, and persists the evidence into the page's worksheet.
 
 Then the orchestrator re-runs those same procedures itself and compares the answers against what the writer recorded; a disagreement is a finding. It adjudicates every residual against the rules' own exemptions and applies exactly specified fixes in place, never delegating either. Pages land under `docs/<dir>/` in state WRITTEN → LINTED, which is where a page's pipeline ends. There is no repair campaign: a page the user wants rewritten is removed in a commit of its own and created again from the removed revision as prior material.
 
@@ -124,7 +124,7 @@ Example prompts:
 
 > Execute the approved plan at campaigns/drm.md. Run batches B1 through B3, checkpointing between batches.
 
-What to expect back: per-batch checkpoints reporting pages done/remaining with writer and check evidence, the machine-local run log updated after every page, and one worksheet per page (research, parity table, evidence, lint) accumulating under `progress/<campaign>/`, mirroring the page paths; the spec records no execution state.
+What to expect back: per-batch checkpoints reporting pages done/remaining with writer and check evidence, the machine-local run log updated after every page, and one worksheet per page (research, completeness table, evidence, lint) accumulating under `progress/<campaign>/`, mirroring the page paths; the spec records no execution state.
 
 Procedure: `SKILL.md` ("Modes"), with the writer brief in `guidelines/campaign.md` and the check pass in `guidelines/checking.md`.
 
