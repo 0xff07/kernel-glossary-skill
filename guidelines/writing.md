@@ -74,11 +74,9 @@ The provenance comment every fenced C block opens with is kernel.md [provenance]
 7. [arrangement.tables] A comparison of operations under conditions is a table before the excerpt, with plain-English cells and every symbol linked in every row, and a member table beside a definition keeps the placement that makes the explanation available. Two representations may cover one relationship when each adds something; prose that reads a table row by row is removed.
 8. [arrangement.figure-placement, qa] Place a local figure where a spatial, temporal or transformational relationship would cost the reader effort to hold, before or after source that needs continuous reading and never inside it; beyond the model figure and the shapes figures.md [drawing.triggers] names, no figure count is a target, and variation follows size, role and stage.
 
-9. [arrangement.route, qa] DETAILS opens, before its first subsection, with the route: one paragraph of three to five sentences naming in order what the subsections establish, so the reader knows the road before walking it. The check requires the paragraph and lists its sentences.
+9. [arrangement.route, qa] DETAILS opens, before its first subsection, with the route: one paragraph of three to five sentences naming in order what the subsections establish and the objects they act on, so the reader knows the road before walking it. The check requires the paragraph and lists its sentences.
 
-10. [arrangement.actors, qa] After the route, a page whose catalog names eight or more symbols carries an actor table, columns actor and role: the objects and functions the page keeps returning to, each a linked symbol with a one-line role, the cataloged structs among them; one name per actor, used unchanged through the page. The check requires the table on such a page, lists its rows, and flags a row without a linked symbol and a cataloged object the table leaves out.
-
-11. [arrangement.recap, qa] DETAILS carries a recap at most every four subsections: a paragraph opening with "So far," of one to three sentences stating where the page's object stands at that point, the column of the lifecycle figure the reader has reached. The check counts the subsections between recaps and lists each recap.
+10. [arrangement.recap, qa] DETAILS carries a recap at most every four subsections: a paragraph opening with "So far," of one to three sentences stating where the page's object stands at that point, the column of the lifecycle figure the reader has reached. The check counts the subsections between recaps and lists each recap.
 
 ## Links [links-pointer]
 

@@ -20,7 +20,7 @@ def route(page, inputs):
     if not MIN_SENTENCES <= len(sentences) <= MAX_SENTENCES:
         findings.append(Finding(line, 'review', f'the route paragraph has {len(sentences)} sentences; three to five name the order of the subsections without walking them'))
     if len(paragraphs) > 1:
-        findings.append(Finding(paragraphs[1][0], 'review', f'{len(paragraphs)} paragraphs before the first subsection; the route is one paragraph, an actor table may follow it'))
+        findings.append(Finding(paragraphs[1][0], 'review', f'{len(paragraphs)} paragraphs before the first subsection; the route is one paragraph'))
     for k, sentence in enumerate(sentences, 1):
         listing.append(f'{line:5} route {k}: {sentence[:CLIP]}')
     footer = f'route=present sentences={len(sentences)} subsections={len(page.subsections)}'

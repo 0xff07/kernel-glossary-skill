@@ -433,8 +433,8 @@ route paragraph followed by every subsection's title, first sentence, recaps
 and last sentence; the rules make that skim carry the argument
 (`arrangement.route`, `purpose.conclusion-first`, `arrangement.recap`) and
 give the reader a slot for every block before it lands (`purpose.schema`, the
-actor table of `arrangement.actors`, the piece outline of `excerpts.outline`
-with the circled numbers each piece's introduction repeats). `lifecycle.order`
+piece outline of `excerpts.outline` with the circled numbers each piece's
+introduction repeats). `lifecycle.order`
 ties the order of DETAILS to the object's lifecycle figure. `kg view --load`
 prints the measurements behind these rules, words per sentence, links per
 sentence, distinct symbols, blocks, figures, recaps and the longest run
