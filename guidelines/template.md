@@ -7,7 +7,7 @@
 (The lead: what the mechanism is for, where it sits and what the page traces, in words a reader with no context can follow, symbols and counts only after that; within the band writing.md [lead-summary] sets, at most one figure.)
 
 (The model figure, under the lead or in SUMMARY: the objects and relationships the page is about, or the spine of its journey, figures.md [drawing.model].)
-(ASCII diagram goes here, if any)
+(The figure's fence goes here, indented four spaces, figures.md [geometry].)
 
 ## SUMMARY
 
