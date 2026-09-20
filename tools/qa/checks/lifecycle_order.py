@@ -2,7 +2,7 @@
 import re
 from inputs import source_lines
 from measurements import positions_of
-from pagemodel import CIRCLED
+from pagemodel import MARKS, mark_index
 from report import Finding, observations
 from worksheet_utils import lifecycle_rows
 RULE = 'lifecycle.order'
@@ -21,13 +21,13 @@ def first_showing(page, inputs, file, line):
 
 def order(page, inputs):
     findings, listing = [], []
-    rows = [r for r in lifecycle_rows(inputs) if r['mark'] in CIRCLED and SITE.match(r['site'])]
+    rows = [r for r in lifecycle_rows(inputs) if r['mark'] in MARKS and SITE.match(r['site'])]
     counts = {'marks': 0, 'shown': 0, 'inversions': 0}
     by_object = {}
     for row in rows:
         by_object.setdefault(row['object'], []).append(row)
     for obj, orows in by_object.items():
-        orows.sort(key=lambda r: CIRCLED.index(r['mark']))
+        orows.sort(key=lambda r: mark_index(r['mark']))
         shown = []
         for r in orows:
             counts['marks'] += 1

@@ -26,7 +26,7 @@ def walk(page, inputs):
                 findings.append(Finding(line or fence.end, 'FAIL', f"figure {number}: the paragraph after it does not link {e['name']}() ({e['mark']}); the paragraph after a DETAILS figure walks its marks in order, one sentence per mark, the function linked"))
         if order and order != sorted(order):
             counts['out_of_order'] += 1
-            findings.append(Finding(line or fence.end, 'review', f'figure {number}: the paragraph after it names the legend functions out of mark order; walk them ① first'))
+            findings.append(Finding(line or fence.end, 'review', f'figure {number}: the paragraph after it names the legend functions out of mark order; walk them from the first mark'))
         if not findings or all(f.line != (line or fence.end) for f in findings[-len(entries):]):
             counts['walked'] += 1
         listing.append(f"{fence.start:5} figure {number}: marks={''.join(e['mark'] for e in entries)} after={outro[:CLIP].replace(chr(10), ' ')!r}")

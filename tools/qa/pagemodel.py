@@ -31,11 +31,48 @@ PROVENANCE = re.compile(r"^/\* ([\w./-]+):(\d+)\b[^*]*\*/\s*$")
 PROVENANCE_FILE = re.compile(r"/\* ([\w./-]+):\d+")
 ELISION = "..."
 RECAP = re.compile(r"^So far,")
-CIRCLED = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳"
-LEGEND_MARK = re.compile("[" + CIRCLED + "]")
+CIRCLED_DIGITS = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳"
+NEGATIVE_CIRCLED_DIGITS = "❶❷❸❹❺❻❼❽❾❿⓫⓬⓭⓮⓯⓰⓱⓲⓳⓴"
+CIRCLED_CAPITALS = "ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ"
+CIRCLED_SMALL_LETTERS = "ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ"
+DOUBLE_CIRCLED = "⓵⓶⓷⓸⓹⓺⓻⓼⓽⓾"
+CIRCLED_LETTERS = CIRCLED_CAPITALS
+# the mark alphabets a legend or an outline numbers its series with, in the order consecutive
+# series take them (figures.md [drawing.marks]); every symbol lies outside the CJK blocks
+MARK_ALPHABETS = {"circled digits": CIRCLED_DIGITS, "negative circled digits": NEGATIVE_CIRCLED_DIGITS,
+                  "circled capitals": CIRCLED_CAPITALS, "circled small letters": CIRCLED_SMALL_LETTERS,
+                  "double-circled digits": DOUBLE_CIRCLED}
+MARK_CYCLE = list(MARK_ALPHABETS)
+MARKS = "".join(MARK_ALPHABETS.values())
+CIRCLED = MARKS
+LEGEND_MARK = re.compile("[" + MARKS + "]")
+
+
+def mark_alphabet(mark):
+    """The name of the alphabet a mark belongs to, or None."""
+    return next((name for name, symbols in MARK_ALPHABETS.items() if mark in symbols), None)
+
+
+def mark_index(mark):
+    """A mark's position in its alphabet, 1 for the first symbol; 0 for a character that is no mark."""
+    for symbols in MARK_ALPHABETS.values():
+        if mark in symbols:
+            return symbols.index(mark) + 1
+    return 0
+
+
+def next_alphabet(previous, size=1):
+    """The alphabet a series of `size` marks takes after a series in `previous` (None for the first
+    series of a page): the next in the cycle whose alphabet holds that many symbols."""
+    start = 0 if previous is None else (MARK_CYCLE.index(previous) + 1) % len(MARK_CYCLE)
+    for k in range(len(MARK_CYCLE)):
+        name = MARK_CYCLE[(start + k) % len(MARK_CYCLE)]
+        if len(MARK_ALPHABETS[name]) >= size:
+            return name
+    return MARK_CYCLE[start]
 # a legend entry beneath a drawing: the mark, the function or symbol, and its site, the file
 # inherited from the previous entry when written as `:line` alone
-LEGEND_ENTRY = re.compile(r"([" + CIRCLED + r"])\s+([A-Za-z_]\w*)(?:\(\))?\s+(?:([\w./-]+\.[chS]))?:(\d+)\b[ \t]*(.*?)(?=[ \t]*[" + CIRCLED + r"][ \t]+[A-Za-z_]|$)")
+LEGEND_ENTRY = re.compile(r"([" + MARKS + r"])\s+([A-Za-z_]\w*)(?:\(\))?\s+(?:([\w./-]+\.[chS]))?:(\d+)\b[ \t]*(.*?)(?=[ \t]*[" + MARKS + r"][ \t]+[A-Za-z_]|$)")
 # a standalone elision line, bare or carrying how many lines it drops and where the excerpt resumes
 ELISION_MARK = re.compile(r"^\.\.\.(?:\s*/\*\s*(\d+) lines?, to :(\d+)\s*\*/)?\s*$")
 CATALOG_SYMBOL = re.compile(r"\[`'\\<([^\\]+)\\>'(?::'[^']*')?`\]")
@@ -105,7 +142,7 @@ def split_cells(line):
 
 def legend_entries(body):
     """(entries, marks in the drawing) of one figure body: entries as {mark, name, file, line, row}
-    in order, marks as the set of circled numbers on the lines that are not legend lines."""
+    in order, marks as the set of marks on the lines that are not legend lines."""
     entries, marks, last_file = [], set(), None
     for row, line in enumerate(body):
         found = list(LEGEND_ENTRY.finditer(line))
@@ -162,15 +199,21 @@ def sentences_of(text):
     return [s for s in SENTENCE_END.split(prose_text(text).strip()) if re.search(r"\w", s)]
 
 
+def is_word(token):
+    """A whitespace-separated token that carries a word character once its mark glyphs are removed:
+    a mark such as ① or Ⓐ is no word whichever alphabet it comes from."""
+    return re.search(r"\w", LEGEND_MARK.sub("", token)) is not None
+
+
 def word_count(text):
     """The words of one paragraph: every whitespace-separated token carrying a word character."""
-    return sum(1 for word in prose_text(text).split() if re.search(r"\w", word))
+    return sum(1 for word in prose_text(text).split() if is_word(word))
 
 
 def prose_stats(text):
     """(words, sentences, the length in words of each sentence) of one paragraph."""
     found = sentences_of(text)
-    return word_count(text), len(found), [len(s.split()) for s in found]
+    return word_count(text), len(found), [sum(1 for w in s.split() if is_word(w)) for s in found]
 
 
 def catalog_name(key):

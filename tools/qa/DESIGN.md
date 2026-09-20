@@ -197,7 +197,7 @@ registration:
 - `pagemodel.py` is the page as every check reads it, parsed once per run:
   sections and regions, headings, paragraphs, tables and cells (escaped pipes,
   separator rows validated whole), spans, fences, excerpt units with their
-  provenance, figures and their circled-number legends, the catalog keys and
+  provenance, figures and their marked legends, the catalog keys and
   entries, the cited files, a fence's introduction and outro, readable
   sentences and the skim of DETAILS.
 - `constructs.py` parses a kernel source file into its file-scope constructs,
@@ -228,7 +228,7 @@ Excerpts. `excerpts.walkthrough` takes each cataloged function's extent from
 `constructs.py`, maps the page's units onto it with `walk_utils.py` and reports
 lines never shown as FAIL, pieces shown before the walk reaches them as review
 and lines shown again as a count; `excerpts.outline` requires the piece table
-and the circled numbers the introductions repeat. `excerpts.reshown` lists
+and the marks the introductions repeat. `excerpts.reshown` lists
 every location link whose lines the page reproduces only elsewhere and every
 re-show longer than about twelve lines; `excerpts.contiguity` fails an elision
 inside a function; `excerpts.verbatim` validates the one surviving elision
@@ -253,7 +253,9 @@ each row with a figure or a recorded reason. `drawing.legend` verifies a
 legend the way prose sites are verified, the numbers match the drawing, each
 site is reproduced and lies inside the named function, each entry carries its
 phrase, and `drawing.walk` requires the paragraph after a DETAILS figure to link
-the legend's functions in mark order. `geometry.layout` and `geometry.unicode`
+the legend's functions in mark order; `drawing.marks` reads the marked series in
+page order, outlines and legends alike, one alphabet per series and the five
+alphabets taken in a fixed cycle. `geometry.layout` and `geometry.unicode`
 measure the drawing itself.
 
 Lifecycle. `lifecycle.when` takes as candidates the cataloged `struct name`
