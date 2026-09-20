@@ -252,11 +252,11 @@ lists every DETAILS subsection carrying one with no figure; the writer answers
 each row with a figure or a recorded reason. `drawing.legend` verifies a
 legend the way prose sites are verified, the numbers match the drawing, each
 site is reproduced and lies inside the named function, each entry carries its
-phrase, and `drawing.walk` requires the paragraph after a DETAILS figure to link
-the legend's functions in mark order; `drawing.marks` reads the marked series in
-page order, outlines and legends alike, one alphabet per series and the five
-alphabets taken in a fixed cycle. `geometry.layout` and `geometry.unicode`
-measure the drawing itself.
+phrase, and `drawing.walk` requires the paragraph after a DETAILS figure to name
+every mark and link the legend's functions in mark order; `drawing.marks` reads
+the marked series in page order, outlines and legends alike, one alphabet per
+series and the five alphabets taken in a fixed cycle. `geometry.layout` and
+`geometry.unicode` measure the drawing itself.
 
 Lifecycle. `lifecycle.when` takes as candidates the cataloged `struct name`
 keys the subsystem's sources define, a catalog entry for a member such as
