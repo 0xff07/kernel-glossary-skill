@@ -102,6 +102,8 @@ At v7.2 no file under `drivers/thunderbolt/` quotes a USB4 specification section
 
 ## OTHER SOURCES
 
+### Added by Claude Opus 5
+
 - [thunderbolt: Add initial support for USB4 (commit b04079837b20)](https://lore.kernel.org/r/20191217123345.31850-5-mika.westerberg@linux.intel.com)
 - [thunderbolt: Make tb_find_port() available to other files (commit 386e5e29d81c)](https://lore.kernel.org/r/20191217123345.31850-2-mika.westerberg@linux.intel.com)
 - [thunderbolt: Add support for Time Management Unit (commit cf29b9afb121)](https://lore.kernel.org/r/20191217123345.31850-8-mika.westerberg@linux.intel.com)
