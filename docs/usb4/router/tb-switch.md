@@ -124,6 +124,8 @@ Everything below is a disclosed synthesis over [`drivers/thunderbolt/tb.h`](http
 
 ## OTHER SOURCES
 
+### Added by Claude Opus 5
+
 - [thunderbolt: Add initial support for USB4 (commit b04079837b20)](https://lore.kernel.org/r/20191217123345.31850-5-mika.westerberg@linux.intel.com)
 - [thunderbolt: Add support for Time Management Unit (commit cf29b9afb121)](https://lore.kernel.org/r/20191217123345.31850-8-mika.westerberg@linux.intel.com)
 - [thunderbolt: fix memory leak of object sw (commit 704a940d551c)](https://lore.kernel.org/r/20191220220526.11307-1-colin.king@canonical.com)
