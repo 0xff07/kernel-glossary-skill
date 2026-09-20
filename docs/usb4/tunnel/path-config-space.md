@@ -67,6 +67,8 @@ The path configuration space and the entry structure it holds are defined by the
 
 ## OTHER SOURCES
 
+### Added by Claude Opus 5
+
 The commits that produced the v7.2 shape of this space carry no `Link:` trailer, so no mailing-list URL is available for them; each is named in the text below by its abbreviated sha and subject instead.
 
 ## REGISTERS
