@@ -37,7 +37,7 @@ Every journey through the space starts at a read or a write that names [`TB_CFG_
 
 ## SPECIFICATIONS
 
-The path configuration space and the entry structure it holds are defined by the USB4 Specification, which is membership-gated and is not quoted here. The driver carries no macro for any field of this space, so [`struct tb_regs_hop`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L517) is the only in-tree encoding of the layout and is the source for every bit position on this page. The tree cites no section number for it. One rule of the specification is quoted in the history, by commit 7e49bb89df86 ("thunderbolt: Avoid reserved fields in path config space for USB4 routers"), whose message states that "According to USB4 spec, USB4 Connection Manager shall not change value of any fields that are defined as \"RsvdZ\" or \"VD\". Specifically fields: Path Credits Allocated, IFC, ISE fields in path config space shall not be written by CM. To handle this, CM shall first read current path config space from the hardware, change only the fields that can be changed, and then write back the path config space." Two comments in [`drivers/thunderbolt/path.c`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c), at [`drivers/thunderbolt/path.c:409-414`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L409) and [`drivers/thunderbolt/path.c:559-563`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L559), name the same category, the first calling the two ingress bits and the second all three fields "vendor defined in the USB4 spec".
+The path configuration space and the entry structure it holds are defined by the USB4 Specification, which is membership-gated and is not quoted here. The driver carries no macro for any field of this space, so [`struct tb_regs_hop`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L517) is the only in-tree encoding of the layout and is the source for every bit position on this page. The tree cites no section number for it. One rule of the specification is quoted in the history, by commit 7e49bb89df86 ("thunderbolt: Avoid reserved fields in path config space for USB4 routers"), whose message states that "According to USB4 spec, USB4 Connection Manager shall not change value of any fields that are defined as \"RsvdZ\" or \"VD\". Specifically fields: Path Credits Allocated, IFC, ISE fields in path config space shall not be written by CM. To handle this, CM shall first read current path config space from the hardware, change only the fields that can be changed, and then write back the path config space." Two comments in [`drivers/thunderbolt/path.c`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c), at [`path.c:409-414`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L409) and [`path.c:559-563`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L559), name the same category, the first calling the two ingress bits and the second all three fields "vendor defined in the USB4 spec".
 
 - USB4 Specification: the Path Configuration Space of an adapter and the Path Entry Structure it holds. Referenced by commit 7e49bb89df86 without a section number.
 
@@ -71,14 +71,7 @@ The commits that produced the v7.2 shape of this space carry no `Link:` trailer,
 
 ## REGISTERS
 
-An access to this space names the same five things any configuration access names, and differs from its neighbours in how the offset is read. [`tb_port_read`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L700) and [`tb_port_write`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L714) take the target adapter, a buffer, one member of [`enum tb_cfg_space`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L15), a dword offset and a dword count, and hand them to the control channel. For [`TB_CFG_HOPS`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L16) the offset is an entry index scaled by the entry size, and the index is the ingress HopID the entry serves.
-
-| space | selector | value | one addressed unit | dword offset of unit N |
-|---|---|---|---|---|
-| path configuration space | [`TB_CFG_HOPS`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L16) | 0 | one [`struct tb_regs_hop`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L517), two dwords | `2 * N`, spelled [`PATH_LEN`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/debugfs.c#L36)-scaled in debugfs |
-| adapter configuration space | [`TB_CFG_PORT`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L17) | 1 | one adapter register | `N` |
-| router configuration space | [`TB_CFG_SWITCH`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L18) | 2 | one router register | `N` |
-| counters configuration space | [`TB_CFG_COUNTERS`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L19) | 3 | one counter set, three dwords | `N` scaled by [`COUNTER_SET_LEN`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/debugfs.c#L38) |
+The registers of this space are the two dwords of one entry, and every access to them names [`TB_CFG_HOPS`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L16), the member of [`enum tb_cfg_space`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L15) that selects the path configuration space.
 
 The first dword of an entry is drawn below from the member widths [`struct tb_regs_hop`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L517) declares first, least significant member leading, so each range is the running sum of the widths before it.
 
@@ -93,8 +86,12 @@ The first dword of an entry is drawn below from the member widths [`struct tb_re
           │ │  (30:25)  │ │   (23:17)   │  (16:11)  │        (10:0)       │
           └─┴───────────┴─┴─────────────┴───────────┴─────────────────────┘
 
-    E = enable (31)          M = pmps (24)
-    credits = initial_credits;  unknown1 reads "set to zero" in the source
+    E = enable, bit 31 (whether to forward this HopID at all)
+    M = pmps, bit 24 (whether the path supports power-management packets)
+    credits = initial_credits (the flow-control credits this path is allocated)
+    out_port (the adapter on this router the packet leaves by)
+    next_hop (the HopID the packet carries out of out_port)
+    unknown1 (nothing the driver names) reads "set to zero" in the source
 ```
 
 The second dword is drawn from the widths [`struct tb_regs_hop`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L517) declares after those, on the same ruler, and it packs eight single-bit members between the counter index and the weight.
@@ -110,35 +107,18 @@ The second dword is drawn from the widths [`struct tb_regs_hop`](https://elixir.
           │31:29│ │ │ │ │ │ │       (22:12)       │ │10:8 │ (7:4) │ (3:0) │
           └─────┴─┴─┴─┴─┴─┴─┴─────────────────────┴─┴─────┴───────┴───────┘
 
-    P = pending (28)               S = egress_shared_buffer (27)
-    I = ingress_shared_buffer (26) F = egress_fc (25)
-    C = ingress_fc (24)            N = counter_enable (23)
-    D = drop_packages (11)         pri = priority
-    u3 = unknown3, unk2 = unknown2; both read "set to zero" in the source
+    P = pending, bit 28 (reports that packets are still in flight)
+    S = egress_shared_buffer, bit 27 (whether the leaving side shares buffering)
+    I = ingress_shared_buffer, bit 26 (whether the arriving side shares buffering)
+    F = egress_fc, bit 25 (whether the leaving side is flow-controlled)
+    C = ingress_fc, bit 24 (whether the arriving side is flow-controlled)
+    N = counter_enable, bit 23 (whether to count packets through this entry)
+    counter (the counter set to charge in TB_CFG_COUNTERS)
+    D = drop_packages, bit 11 (which end of a full queue to drop from)
+    pri = priority (the priority group this path is queued in)
+    weight (the share this path takes inside its priority group)
+    u3 = unknown3, unk2 = unknown2 (nothing the driver names); both read "set to zero" in the source
 ```
-
-Each member below is paired with the software field that supplies its value and with the line that assigns it. The values themselves are chosen when a path is built, and this table records only which field reaches which bits.
-
-| member | bits | what the router takes from it | fed by | assigned at |
-|---|---|---|---|---|
-| [`next_hop`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L519) | 10:0 | the HopID the packet carries out of [`out_port`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L523) | [`next_hop_index`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L386) | [`path.c:542`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L542) |
-| [`out_port`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L523) | 16:11 | the adapter on this router the packet leaves by | [`out_port`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L383) | [`path.c:543`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L543) |
-| [`initial_credits`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L524) | 23:17 | the flow-control credits this path is allocated | [`initial_credits`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L387) | [`path.c:566`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L566), under a condition |
-| [`pmps`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L525) | 24 | whether the path supports power-management packets | [`pm_support`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L389) | [`path.c:544`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L544) |
-| [`unknown1`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L526) | 30:25 | nothing the driver names | nothing | [`path.c:545`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L545) |
-| [`enable`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L527) | 31 | whether to forward this HopID at all | nothing, set to 1 and cleared to 0 | [`path.c:546`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L546), [`path.c:394`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L394) |
-| [`weight`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L530) | 3:0 | the share this path takes inside its priority group | [`weight`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L439) | [`path.c:551`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L551) |
-| [`unknown2`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L531) | 7:4 | nothing the driver names | nothing | [`path.c:552`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L552) |
-| [`priority`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L532) | 10:8 | the priority group this path is queued in | [`priority`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L438) | [`path.c:553`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L553) |
-| [`drop_packages`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L533) | 11 | which end of a full queue to drop from | [`drop_packages`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L440) | [`path.c:554`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L554) |
-| [`counter`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L534) | 22:12 | the counter set to charge in [`TB_CFG_COUNTERS`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L19) | [`in_counter_index`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L385) | [`path.c:555`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L555) |
-| [`counter_enable`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L535) | 23 | whether to count packets through this entry | [`in_counter_index`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L385) compared against -1 | [`path.c:556`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L556) |
-| [`ingress_fc`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L536) | 24 | whether the arriving side is flow-controlled | [`ingress_fc_enable`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L435) masked by hop position | [`path.c:567`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L567), under a condition |
-| [`egress_fc`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L537) | 25 | whether the leaving side is flow-controlled | [`egress_fc_enable`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L436) masked by hop position | [`path.c:557`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L557) |
-| [`ingress_shared_buffer`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L538) | 26 | whether the arriving side shares buffering | [`ingress_shared_buffer`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L433) masked by hop position | [`path.c:568`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L568), under a condition |
-| [`egress_shared_buffer`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L539) | 27 | whether the leaving side shares buffering | [`egress_shared_buffer`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L434) masked by hop position | [`path.c:558`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L558) |
-| [`pending`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L540) | 28 | reports that packets are still in flight | nothing, the router owns it | never assigned |
-| [`unknown3`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L541) | 31:29 | nothing the driver names | nothing | [`path.c:572`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L572) |
 
 ## DETAILS
 
@@ -161,6 +141,15 @@ enum tb_cfg_space {
 ```
 
 [`TB_CFG_HOPS`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L16) is value 0, and [`struct tb_cfg_address`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L50) carries the selector to the router in a two-bit field. [`TB_CFG_PORT`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L17), [`TB_CFG_SWITCH`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L18) and [`TB_CFG_COUNTERS`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L19) ride in the same field, so reading an adapter register and reading a path entry differ by one enumerator and one offset. [`PATH_LEN`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/debugfs.c#L36) is 2, the dwords one entry occupies, and the rest of the driver spells the same width as the literal 2.
+
+An access to this space names the same five things any configuration access names, and differs from its neighbours in how the offset is read. [`tb_port_read`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L700) and [`tb_port_write`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L714) take the target adapter, a buffer, one member of [`enum tb_cfg_space`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L15), a dword offset and a dword count, and hand them to the control channel. For [`TB_CFG_HOPS`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L16) the offset is an entry index scaled by the entry size, and the index is the ingress HopID the entry serves.
+
+| space | selector | value | one addressed unit | dword offset of unit N |
+|---|---|---|---|---|
+| path configuration space | [`TB_CFG_HOPS`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L16) | 0 | one [`struct tb_regs_hop`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L517), two dwords | `2 * N`, spelled [`PATH_LEN`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/debugfs.c#L36)-scaled in debugfs |
+| adapter configuration space | [`TB_CFG_PORT`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L17) | 1 | one adapter register | `N` |
+| router configuration space | [`TB_CFG_SWITCH`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L18) | 2 | one router register | `N` |
+| counters configuration space | [`TB_CFG_COUNTERS`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_msgs.h#L19) | 3 | one counter set, three dwords | `N` scaled by [`COUNTER_SET_LEN`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/debugfs.c#L38) |
 
 [`tb_path_find_dst_port`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L34) shows the resulting form at the read that opens each step of its search for a path's last adapter.
 
@@ -381,7 +370,7 @@ The helper runs where an entry has just been read and where one is about to be w
 
 ### Programming an entry begins by reading it back
 
-Building a tunnel fills an entry on every adapter along it, and at v7.2 the fill starts with a read of the entry being filled. [`tb_path_activate`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L492) zeroes a local image, clears whatever the hardware currently holds, and then reads the entry back over those zeroes before it assigns anything. Commit 7e49bb89df86 ("thunderbolt: Avoid reserved fields in path config space for USB4 routers") put the read there, and v7.2 is the first release carrying it.
+Building a tunnel fills an entry on every adapter along it, and at v7.2 the fill starts with a read of the entry being filled. [`tb_path_activate`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L492) zeroes a local image, clears whatever the hardware currently holds, and then reads the entry back over those zeroes before it assigns anything. Commit 7e49bb89df86 ("thunderbolt: Avoid reserved fields in path config space for USB4 routers") put the read there, and v7.2 is the first release carrying it. This subsection comes in two parts, the read with the assignments that follow it, and the table of what fills each member.
 
 ```c
 /* drivers/thunderbolt/path.c:529 */
@@ -406,6 +395,29 @@ Building a tunnel fills an entry on every adapter along it, and at v7.2 the fill
 ```
 
 [`tb_path_activate`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L492) states the reason for the read in the comment above it, that it is "needed for USB4 routers". After the read the local image holds the hardware's value for all eighteen members, and each assignment that follows overwrites one of them. [`next_hop`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L519) and [`out_port`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L523) come from the software hop, [`pmps`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L525) from its [`pm_support`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L389) flag, [`unknown1`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L526) is forced back to zero, and [`enable`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L527) is set last of the first dword.
+
+Each member below is paired with the software field that supplies its value and with the line that assigns it. The values themselves are chosen when a path is built, and this table records only which field reaches which bits.
+
+| member | fed by | assigned at |
+|---|---|---|
+| [`next_hop`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L519) | [`next_hop_index`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L386) | [`path.c:542`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L542) |
+| [`out_port`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L523) | [`out_port`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L383) | [`path.c:543`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L543) |
+| [`initial_credits`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L524) | [`initial_credits`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L387) | [`path.c:566`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L566), under a condition |
+| [`pmps`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L525) | [`pm_support`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L389) | [`path.c:544`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L544) |
+| [`unknown1`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L526) | nothing | [`path.c:545`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L545) |
+| [`enable`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L527) | nothing, set to 1 and cleared to 0 | [`path.c:546`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L546), [`path.c:394`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L394) |
+| [`weight`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L530) | [`weight`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L439) | [`path.c:551`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L551) |
+| [`unknown2`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L531) | nothing | [`path.c:552`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L552) |
+| [`priority`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L532) | [`priority`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L438) | [`path.c:553`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L553) |
+| [`drop_packages`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L533) | [`drop_packages`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L440) | [`path.c:554`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L554) |
+| [`counter`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L534) | [`in_counter_index`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L385) | [`path.c:555`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L555) |
+| [`counter_enable`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L535) | [`in_counter_index`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L385) compared against -1 | [`path.c:556`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L556) |
+| [`ingress_fc`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L536) | [`ingress_fc_enable`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L435) masked by hop position | [`path.c:567`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L567), under a condition |
+| [`egress_fc`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L537) | [`egress_fc_enable`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L436) masked by hop position | [`path.c:557`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L557) |
+| [`ingress_shared_buffer`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L538) | [`ingress_shared_buffer`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L433) masked by hop position | [`path.c:568`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L568), under a condition |
+| [`egress_shared_buffer`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L539) | [`egress_shared_buffer`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L434) masked by hop position | [`path.c:558`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L558) |
+| [`pending`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L540) | nothing, the router owns it | never assigned |
+| [`unknown3`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L541) | nothing | [`path.c:572`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/path.c#L572) |
 
 The read costs one control transaction per hop and returns the rest of the entry, which the three members of the next subsection depend on.
 
@@ -755,7 +767,7 @@ Inside the gate, [`regs_write`](https://elixir.bootlin.com/linux/v7.2/source/dri
 	}
 ```
 
-[`regs_write`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/debugfs.c#L221) picks a four-field input format for a path line against five for an adapter or router line, because the read side of this file prints a HopID column where the others print a capability pair. The same comparison then routes each parsed line to [`path_write_one`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/debugfs.c#L207), while the other spaces take a direct one-dword [`tb_port_write`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L714) on the branch below. The function calls [`add_taint`](https://elixir.bootlin.com/linux/v7.2/source/include/linux/panic.h#L109) at [`drivers/thunderbolt/debugfs.c:242`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/debugfs.c#L242) before it parses anything, because the "user did hardware changes behind the driver's back".
+[`regs_write`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/debugfs.c#L221) picks a four-field input format for a path line against five for an adapter or router line, because the read side of this file prints a HopID column where the others print a capability pair. The same comparison then routes each parsed line to [`path_write_one`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/debugfs.c#L207), while the other spaces take a direct one-dword [`tb_port_write`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L714) on the branch below. The function calls [`add_taint`](https://elixir.bootlin.com/linux/v7.2/source/include/linux/panic.h#L109) at [`debugfs.c:242`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/debugfs.c#L242) before it parses anything, because the "user did hardware changes behind the driver's back".
 
 So far, the debugfs surface has given the space a per-adapter file that dumps entries raw, a pair of macros that binds its two halves, and a write path that exists only under one configuration option. That write path is also the reason the space has a writer of its own.
 
