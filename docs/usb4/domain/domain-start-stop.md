@@ -467,7 +467,7 @@ static void tb_discover_dp_resources(struct tb *tb)
     Ⓒ tb_discover_dp_resources tb.c:179   reserves the DP IN adapter of each DP tunnel
 ```
 
-[`tb_scan_switch()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.c#L1273) produces the router devices, one per remote found on any port of any router it reaches. [`tb_discover_tunnels()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.c#L1694) produces the tunnel entries and the [`boot`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L198) flags along each PCIe path. [`tb_discover_dp_resources()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.c#L172) produces the DP IN entries, and it can do so only because the tunnel entries already exist.
+At Ⓐ, [`tb_scan_switch()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.c#L1273) produces the router devices, one per remote found on any port of any router it reaches. At Ⓑ, [`tb_discover_tunnels()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.c#L1694) produces the tunnel entries and the [`boot`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L198) flags along each PCIe path. At Ⓒ, [`tb_discover_dp_resources()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.c#L172) produces the DP IN entries, and it can do so only because the tunnel entries already exist.
 
 So far, the host router is on the bus and one of two starts has run. A surviving discovery pass has filled the router tree, the tunnel list and the DP resource list from the hardware.
 
