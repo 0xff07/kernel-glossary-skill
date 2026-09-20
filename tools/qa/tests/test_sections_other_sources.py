@@ -1,5 +1,5 @@
-"""plugins.recency on a temporary git repository: an OTHER SOURCES entry matches its commit's
-Link trailer, and a cited driver file has a commit within the window."""
+"""plugins.recency on a temporary git repository: a commit entry of OTHER SOURCES matches its commit's
+Link trailer, the reader's entries are listed and left alone, and a cited driver file has a commit within the window."""
 import os
 import shutil
 import subprocess
@@ -29,11 +29,12 @@ class Recency(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.root)
 
-    def sources(self, entry):
-        return skeleton().replace('## OTHER SOURCES\n\n', f'## OTHER SOURCES\n\n{entry}\n\n')
+    def sources(self, entry, block=True):
+        body = f'### Added by kg\n\n{entry}' if block else entry
+        return skeleton().replace('## OTHER SOURCES\n\n', f'## OTHER SOURCES\n\n{body}\n\n')
 
-    def trailers(self, entry):
-        return observed(recency.check(page(self.sources(entry)), TestInputs(tree=self.root)))
+    def trailers(self, entry, block=True, baseline=None):
+        return observed(recency.check(page(self.sources(entry, block)), TestInputs(tree=self.root, baseline=baseline)))
 
     def test_entry_matching_its_trailer(self):
         result = self.trailers(f'- [kg: add the ring (commit {self.sha[:12]})]({LINK})')
@@ -48,11 +49,33 @@ class Recency(unittest.TestCase):
         result = self.trailers(f'- [kg: add the ring (commit 0123456789ab)]({LINK})')
         self.assertIn('no such commit in the tree', result.findings[0].message)
 
-    def test_entry_out_of_form_and_bare_url(self):
-        result = self.trailers(f'- [the ring]({LINK})\n- {LINK}')
-        messages = ' '.join((f.message for f in result.findings))
-        self.assertIn('not in the `[<subject> (commit <sha>)](<url>)` form', messages)
-        self.assertIn('bare URL entry', messages)
+    def test_the_readers_lines_outside_a_block_are_listed_and_left_alone(self):
+        result = self.trailers(f'- [the ring, a talk]({LINK})\n- {LINK} a thread a reader found\n- [kg: add the ring (commit 0123456789ab)](https://example.org/unrelated)', block=False)
+        self.assertEqual(result.findings, [])
+        self.assertEqual(result.data['reader_lines'], 3)
+        self.assertEqual(result.data['commit_entries'], 0)
+
+    def test_a_non_commit_bullet_inside_the_models_block_fails(self):
+        result = self.trailers('- a note with no link at all')
+        self.assertEqual([f.severity for f in result.findings], ['FAIL'])
+        self.assertIn('is not a commit entry', result.findings[0].message)
+
+    def test_a_readers_line_of_the_committed_page_must_survive(self):
+        old = self.sources(f'- [kg: add the ring (commit {self.sha[:12]})]({LINK})').replace('## OTHER SOURCES\n\n', '## OTHER SOURCES\n\n- a talk a reader found\n\n')
+        kept = old
+        result = observed(recency.check(page(kept), TestInputs(tree=self.root, baseline=old)))
+        self.assertEqual(result.findings, [])
+        self.assertEqual(result.data['kept'], 1)
+        dropped = self.sources(f'- [kg: add the ring (commit {self.sha[:12]})]({LINK})')
+        result = observed(recency.check(page(dropped), TestInputs(tree=self.root, baseline=old)))
+        self.assertEqual([f.severity for f in result.findings], ['FAIL'])
+        self.assertIn("reader's shelf in the committed page is gone", result.findings[0].message)
+
+    def test_an_unmigrated_committed_page_binds_nothing(self):
+        old = skeleton().replace('## OTHER SOURCES\n\n', f'## OTHER SOURCES\n\n- [kg: add the ring (commit {self.sha[:12]})]({LINK})\n\n')
+        result = observed(recency.check(page(self.sources(f'- [kg: add the ring (commit {self.sha[:12]})]({LINK})')), TestInputs(tree=self.root, baseline=old)))
+        self.assertEqual(result.findings, [])
+        self.assertEqual(result.data['lost'], 0)
 if __name__ == '__main__':
     unittest.main()
 
@@ -64,17 +87,17 @@ class Dependencies(unittest.TestCase):
         from tests.support import TestInputs, page, skeleton
         with self.assertRaises(MissingInput):
             text = skeleton().replace('## OTHER SOURCES\n',
-                f'## OTHER SOURCES\n- [ring (commit 0123456789ab)]({LINK})\n')
+                f'## OTHER SOURCES\n### Added by kg\n- [ring (commit 0123456789ab)]({LINK})\n')
             list(check(page(text), TestInputs()))
 
     def test_page_only_findings_precede_missing_git(self):
         import kg
         from tests.test_runner import binding
         text = skeleton().replace('## OTHER SOURCES\n',
-            f'## OTHER SOURCES\n- {LINK}\n- [ring (commit 0123456789ab)]({LINK})\n')
+            f'## OTHER SOURCES\n### Added by kg\n- a note with no link at all\n- [ring (commit 0123456789ab)]({LINK})\n')
         result, = kg.run_rules(page(text), TestInputs(), [binding(recency.check, recency.RULE)])
         self.assertIsNotNone(result.skipped)
-        self.assertTrue(any(f.severity == 'FAIL' and 'bare URL' in f.message for f in result.findings))
+        self.assertTrue(any(f.severity == 'FAIL' and 'is not a commit entry' in f.message for f in result.findings))
 
     def test_no_commit_entries_need_no_git(self):
         import kg
@@ -91,12 +114,12 @@ class Dependencies(unittest.TestCase):
         from report import exit_status
         from tests.test_runner import binding
         text = skeleton().replace('## OTHER SOURCES\n',
-            f'## OTHER SOURCES\n- {LINK}\n- [ring (commit 0123456789ab)]({LINK})\n')
+            f'## OTHER SOURCES\n### Added by kg\n- a note with no link at all\n- [ring (commit 0123456789ab)]({LINK})\n')
         inputs = TestInputs(tree='/tree')
         failed = SimpleNamespace(returncode=128, stdout='', stderr='cannot read object')
         with patch('inputs.subprocess.run', return_value=failed):
             result, = kg.run_rules(page(text), inputs, [binding(recency.check, recency.RULE)])
         self.assertIn('cannot read object', result.error)
-        self.assertTrue(any('bare URL' in f.message for f in result.findings))
+        self.assertTrue(any('is not a commit entry' in f.message for f in result.findings))
         self.assertFalse(any('no such commit' in f.message for f in result.findings))
         self.assertEqual(exit_status([result], inputs), 1)

@@ -227,7 +227,11 @@ implementation leans on.
 Links. `links.site-text` reads each location link's text against its URL path
 and lists for reading a text that carries its directory where no cited file
 shares the base name, and a bare base name where two cited files share it, so
-the reader sees `tb.c:130` while the URL keeps the path.
+the reader sees `tb.c:130` while the URL keeps the path. `sections.other-sources`
+verifies the entries under the `### Added by <model>` headings of OTHER SOURCES
+against their `Link:` trailers, lists the reader's lines without reading them,
+and, once the committed page is in that form, fails a reader's line that the
+page no longer carries.
 
 Excerpts. `excerpts.walkthrough` takes each cataloged function's extent from
 `constructs.py`, maps the page's units onto it with `walk_utils.py` and reports

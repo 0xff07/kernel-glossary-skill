@@ -23,6 +23,10 @@
 
 ## OTHER SOURCES
 
+(Material no model generated, for grounding a model or checking the page by hand: the mechanism's commits with their mailing-list threads, and whatever a reader adds later. The reader writes anywhere in this section, in any form; a model writes only under its own `### Added by <model>` heading, commit entries taken from `Link:` trailers, and changes nothing else here. kernel.md [sections.other-sources].)
+
+### Added by <model>
+
 ## REGISTERS
 
 (The subsystem's section-six heading from subsystems.md: REGISTERS, METHODS, PRIMITIVES or INTERFACES, for the architecture constructs; omit the section when the entry says none. Under REGISTERS: the registers, bitfields and fields the page touches, drawn, with the prose saying what each field decides on the page's paths, and no table of helpers per register; the helpers belong to COVERAGE and to DETAILS at their stage. figures.md [registers.section].)
