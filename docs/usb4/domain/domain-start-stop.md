@@ -67,6 +67,8 @@ The register work the sequence triggers through the router helpers it calls belo
 
 ## OTHER SOURCES
 
+### Added by Claude Opus 5
+
 - [thunderbolt: Add support for USB 3.x tunnels (commit e6f818585713)](https://lore.kernel.org/r/20191217123345.31850-9-mika.westerberg@linux.intel.com)
 - [thunderbolt: Add support for Time Management Unit (commit cf29b9afb121)](https://lore.kernel.org/r/20191217123345.31850-8-mika.westerberg@linux.intel.com)
 
