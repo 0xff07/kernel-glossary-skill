@@ -263,7 +263,9 @@ the marked series in page order, outlines and legends alike, one alphabet per
 series and the five alphabets taken in a fixed cycle. `geometry.layout` and
 `geometry.unicode` measure the drawing itself. `registers.section` lists a table
 under REGISTERS and a REGISTERS that links register definitions (a URL ending
-in `regs.h`) and draws none.
+in `regs.h`) and draws none; `registers.ruler` reads the grids of figures that
+carry a bit ruler and fails a cell boundary off the bit grid or a divider
+junction that meets no boundary in the rows beside it.
 
 Lifecycle. `lifecycle.when` takes as candidates the cataloged `struct name`
 keys the subsystem's sources define, a catalog entry for a member such as
