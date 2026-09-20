@@ -97,6 +97,8 @@ The capability list of an adapter's configuration space, its per-entry identifie
 
 ## OTHER SOURCES
 
+### Added by Claude Opus 5
+
 - [thunderbolt: Add initial support for USB4 (commit b04079837b20)](https://lore.kernel.org/r/20191217123345.31850-5-mika.westerberg@linux.intel.com)
 
 ## REGISTERS
