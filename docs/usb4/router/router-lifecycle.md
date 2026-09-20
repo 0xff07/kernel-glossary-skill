@@ -75,6 +75,8 @@ Everything below is a disclosed synthesis over [`drivers/thunderbolt/switch.c`](
 
 ## OTHER SOURCES
 
+### Added by Claude Opus 5
+
 - [thunderbolt: fix memory leak of object sw (commit 704a940d551c)](https://lore.kernel.org/r/20191220220526.11307-1-colin.king@canonical.com)
 - [thunderbolt: Power cycle the router if NVM authentication fails (commit 7a7ebfa85f4f)](https://bugzilla.kernel.org/show_bug.cgi?id=205457)
 - [thunderbolt: Add initial support for USB4 (commit b04079837b20)](https://lore.kernel.org/r/20191217123345.31850-5-mika.westerberg@linux.intel.com)
