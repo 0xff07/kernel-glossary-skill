@@ -76,9 +76,60 @@ The bring-up and teardown sequence reads and writes no register word of its own.
 
 The enumeration write is the first of them. [`tb_switch_configure()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/switch.c#L2605) sets the cached router header's enabled bit, puts 0xff into its Notification Timeout field [`plug_events_delay`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L183) under a comment that reads "255 ms for all routers". The same call records the connection-manager version in [`ROUTER_CS_4`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L198) and writes four dwords starting at [`ROUTER_CS_1`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L195) at [`switch.c:2634-2635`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/switch.c#L2634). The same helper reaches [`tb_switch_port_hotplug_enable()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/switch.c#L3266) later through [`tb_switch_add()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/switch.c#L3298), at [`switch.c:3365`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/switch.c#L3365), before the router device is registered.
 
-Three USB4 words follow, all reached through helpers that begin with a route test. [`usb4_switch_setup()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L243) waits 500 ms for Router Ready on [`ROUTER_CS_6_RR`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L218). [`usb4_switch_configuration_valid()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L316) writes [`ROUTER_CS_5_CV`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L211) into [`ROUTER_CS_5`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L202) and then waits 500 ms for [`ROUTER_CS_6_CR`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L219).
+Three USB4 words follow, all reached through helpers that begin with a route test. [`usb4_switch_setup()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L243) waits 500 ms for Router Ready on [`ROUTER_CS_6_RR`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L218). [`usb4_switch_configuration_valid()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L316) writes [`ROUTER_CS_5_CV`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L211) into [`ROUTER_CS_5`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L202) and then waits 500 ms for [`ROUTER_CS_6_CR`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L219). The figure plots the router dwords from [`ROUTER_CS_1`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L195) through [`ROUTER_CS_6`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L212) on one ruler, marking the fields these paragraphs name and keeping the unmarked spans at their true widths.
 
-The tests at [`usb4.c:251-252`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L251) and [`usb4.c:321-322`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L321) return success for a router at route 0. The host router therefore reaches neither wait, and both apply to the device routers a scan attaches below it. The third word is the adapter one that admits plug events, [`ADP_CS_5`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L319), whose [`ADP_CS_5_DHP`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L322) bit [`usb4_port_hotplug_enable()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L1154) clears at [`usb4.c:1163-1164`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L1163).
+```
+    Router configuration space, dwords 1 to 6
+    ─────────────────────────────────────────
+    to scale; the ruler pins every boundary and a · marks an unnamed span
+
+    bit    3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
+           1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+          ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+    DW1   │                            · (31:0)                           │
+          ├───────────────────────────────────────────────────────────────┤
+    DW2   │                            · (31:0)                           │
+          ├─┬─────────────────────────────────────────────────────────────┤
+    DW3   │E│                           · (30:0)                          │
+          ├─┴─────────────────────────────┬───────────────┬───────────────┤
+    DW4   │               ·               │      cmuv     │ plug_ev_delay │
+          │            (31:16)            │     (15:8)    │     (7:0)     │
+          ├─┬─────────────────────────────┴───────────────┴───────────────┤
+    DW5   │V│                           · (30:0)                          │
+          ├─┴─────────┬─┬─┬───────────────────────────────────────────────┤
+    DW6   │ · (31:26) │C│R│                    · (23:0)                   │
+          └───────────┴─┴─┴───────────────────────────────────────────────┘
+
+    E             = enabled (the cached header's bit 31, set before the write)
+    cmuv          = ROUTER_CS_4_CMUV_V1 or _V2 (the connection-manager version)
+    plug_ev_delay = plug_events_delay (the Notification Timeout, written 0xff)
+    V             = ROUTER_CS_5_CV (configuration valid, written into dword 5)
+    C             = ROUTER_CS_6_CR (the bit the wait after the CV write tests)
+    R             = ROUTER_CS_6_RR (Router Ready, the bit the setup wait tests)
+    ·             = bits outside what these paths name
+    DW1 to DW4 are the dwords the enumeration write covers, DW5 and DW6 the
+    two USB4 handshake words.
+```
+
+The tests at [`usb4.c:251-252`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L251) and [`usb4.c:321-322`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L321) return success for a router at route 0. The host router therefore reaches neither wait, and both apply to the device routers a scan attaches below it. The third word is the adapter one that admits plug events, [`ADP_CS_5`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L319), whose [`ADP_CS_5_DHP`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L322) bit [`usb4_port_hotplug_enable()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L1154) clears at [`usb4.c:1163-1164`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L1163). The figure below draws that dword on its own ruler, with the cleared bit called out beneath it.
+
+```
+    ADP_CS_5, the adapter word that admits plug events
+    ──────────────────────────────────────────────────
+    to scale; the start path clears the top bit of this dword
+
+    bit    3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
+           1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+          ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+    CS_5  │D│·│·│L│L│L│L│L│L│L│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│
+          └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
+           │
+      DHP ─┘
+
+    D   = ADP_CS_5_DHP (the disable-hotplug bit, cleared to admit plug events)
+    L   = ADP_CS_5_LCA_MASK (GENMASK(28, 22), the other field of this dword)
+    ·   = bits outside what these paths name: 30:29 and 21:0
+```
 
 The hardware is therefore reporting plugs on the host router's adapters before the software gate opens. Events that arrive in that window are queued and then discarded, which is the subject of the gate subsections below.
 
