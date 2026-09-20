@@ -224,6 +224,11 @@ registration:
 The guidelines define what each rule requires; this section says only what the
 implementation leans on.
 
+Links. `links.site-text` reads each location link's text against its URL path
+and lists for reading a text that carries its directory where no cited file
+shares the base name, and a bare base name where two cited files share it, so
+the reader sees `tb.c:130` while the URL keeps the path.
+
 Excerpts. `excerpts.walkthrough` takes each cataloged function's extent from
 `constructs.py`, maps the page's units onto it with `walk_utils.py` and reports
 lines never shown as FAIL, pieces shown before the walk reaches them as review
