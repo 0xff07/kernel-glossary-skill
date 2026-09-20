@@ -261,7 +261,9 @@ phrase, and `drawing.walk` requires the paragraph after a DETAILS figure to name
 every mark and link the legend's functions in mark order; `drawing.marks` reads
 the marked series in page order, outlines and legends alike, one alphabet per
 series and the five alphabets taken in a fixed cycle. `geometry.layout` and
-`geometry.unicode` measure the drawing itself.
+`geometry.unicode` measure the drawing itself. `registers.section` lists a table
+under REGISTERS and a REGISTERS that links register definitions (a URL ending
+in `regs.h`) and draws none.
 
 Lifecycle. `lifecycle.when` takes as candidates the cataloged `struct name`
 keys the subsystem's sources define, a catalog entry for a member such as
