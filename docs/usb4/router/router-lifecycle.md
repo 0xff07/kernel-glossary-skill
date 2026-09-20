@@ -85,7 +85,57 @@ The allocation reaches the router's configuration space twice and writes nothing
 
 Every header write the allocation performs goes to the in-memory copy [`sw->config`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L173), so the object's view of those five dwords diverges from the router until the upload step runs. [`tb_switch_configure()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/switch.c#L2605) performs that upload between the allocation and the add order, writing four dwords starting at [`ROUTER_CS_1`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L195) and then running the Configuration Valid handshake for a USB4 router.
 
+```
+    struct tb_regs_switch_header, the five dwords read at allocation
+    ────────────────────────────────────────────────────────────────
+    to scale; the bracket is the window the upload writes back
+
+    bit    3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
+           1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+          ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+    DW0   │       device_id (31:16)       │       vendor_id (15:0)        │ CS_0
+          ├───────────────┬─┬─────┬───────┴───┬───────────┬───────────────┤
+    DW1   │       ·       │·│depth│ max_port  │ upstream  │       ·       │ CS_1 ┐
+          │    (31:24)    │ │22:20│  (19:14)  │  (13:8)   │     (7:0)     │      │
+          ├───────────────┴─┴─────┴───────────┴───────────┴───────────────┤      │
+    DW2   │                        route_lo (31:0)                        │ CS_2 │ the four dwords
+          ├─┬─────────────────────────────────────────────────────────────┤      │
+    DW3   │E│                       route_hi (30:0)                       │ CS_3 │ the upload writes
+          ├─┴─────────────┬───────────────┬───────────────┬───────────────┤      │
+    DW4   │       ·       │       ·       │       ·       │       ·       │ CS_4 ┘
+          │    (31:24)    │    (23:16)    │    (15:8)     │     (7:0)     │
+          └───────────────┴───────────────┴───────────────┴───────────────┘
+
+    E        = enabled, cleared by the allocation and set by the upload
+    depth    = depth, the router's distance from the host in hops
+    max_port = max_port_number, the highest adapter number on the router
+    upstream = upstream_port_number, the adapter that faces the host
+    route_lo, route_hi = the low and the high half of the route
+    ·        = a bitfield of the struct drawn to scale with its name left off
+    ┐ ┘      = the upload window, four dwords written from ROUTER_CS_1
+    CS_0 to CS_4 = the Router CS numbers the specification gives these dwords
+```
+
 One step of the add order reaches an adapter register of its own. [`tb_switch_port_hotplug_enable()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/switch.c#L3266) runs [`usb4_port_hotplug_enable()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/usb4.c#L1154) on every adapter that carries a USB4 port capability, and that helper clears [`ADP_CS_5_DHP`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L322) in the adapter register [`ADP_CS_5`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb_regs.h#L319).
+
+```
+    ADP_CS_5 and the hotplug bit the add order clears
+    ─────────────────────────────────────────────────
+    to scale; one cell per bit, the two named fields called out below
+
+    bit    3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
+           1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+          ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+    CS_5  │D│·│·│L│L│L│L│L│L│L│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│·│
+          └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
+           │           │
+      D ───┘           │
+      L ───────────────┘
+
+    D = ADP_CS_5_DHP, BIT(31), the disable-hotplug bit the step clears
+    L = ADP_CS_5_LCA_MASK, GENMASK(28, 22), paired with ADP_CS_5_LCA_SHIFT = 22
+    · = a bit the kernel names nowhere, 30:29 and 21:0
+```
 
 Removal reaches the router space once more on a router that is still attached. [`tb_plug_events_active()`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/switch.c#L1750) reads and rewrites the dword one past the plug-events capability offset [`sw->cap_plug_events`](https://elixir.bootlin.com/linux/v7.2/source/drivers/thunderbolt/tb.h#L189), masking the event sources back off, and it returns at once for a USB4 router or one owned by the firmware connection manager.
 
