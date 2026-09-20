@@ -7,7 +7,7 @@ Write the page <output path> for the <subsystem> knowledge base.
 
 SKILL_DIR: <absolute path to the kernel-glossary-skill checkout>
 WORKSPACE: <SKILL_DIR>/progress/<campaign>/
-OPERATION: <create | resume>; for a resume, the page's starting digest: sha256 <digest>, and the rebuilt page goes to YOUR SCRATCH/<slug>.md; for a create that derives from a removed page, its revision: git show <commit>:<path>, reused under writing.md [facts.derived-pages]
+OPERATION: <create | resume>; for a resume, the page's starting digest: sha256 <digest>, and the rebuilt page goes to YOUR SCRATCH/<slug>.md; for a create that derives from a removed page, its revision: git show <commit>:<path>, reused under writing.md [facts.derived-pages]; the removed page is material, never a floor or a ceiling: every rule applies as on a fresh create, the catalog is re-curated (ownership follows the campaign's boundary statements: a symbol they assign to this page is cataloged here whatever a page not yet rebuilt holds, one they assign elsewhere is left to that page, and one they leave unassigned goes to the sibling that catalogs it on disk), every figure the trigger table asks for is drawn, and a sentence that does not meet the writing rules is rewritten rather than kept
 YOUR WORKSHEET: <SKILL_DIR>/progress/<campaign>/<dir>/<group>/<slug>.worksheet.md (mirroring docs/<dir>/<group>/<slug>.md)
 YOUR SCRATCH: <session scratchpad>/<dir>/<group>/<slug>/ (the scratchpad is shared and two pages may share a slug; scratch and a resumed page go only here)
 
