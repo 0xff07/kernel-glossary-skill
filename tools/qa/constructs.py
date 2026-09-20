@@ -146,6 +146,7 @@ def members_of(source, name):
     out, depth = [], 0
     for line in source[start:]:
         code = re.sub(r'/\*.*?\*/', '', line)
+        code = re.sub(r'/\*.*$|//.*$', '', code)
         depth += code.count('{') - code.count('}')
         if depth <= 0 and line.strip().startswith('}'):
             break

@@ -41,3 +41,9 @@ class SourcesWithin(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class MembersBehindAnOpenComment(unittest.TestCase):
+    def test_a_member_whose_line_ends_in_an_opening_comment_is_seen(self):
+        from constructs import members_of
+        source = ["struct kg_hdr {", "\tu32 delay:8; /*", "\t\t * a comment that runs on", "\t\t */", "\tu32 cmuv:8; // trailing", "};"]
+        self.assertEqual(members_of(source, 'kg_hdr'), ['delay', 'cmuv'])
