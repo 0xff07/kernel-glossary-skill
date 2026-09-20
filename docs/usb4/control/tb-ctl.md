@@ -118,6 +118,8 @@ The packet types the channel carries, the reserved HopID it opens and the route 
 
 ## OTHER SOURCES
 
+### Added by Claude Opus 5
+
 - [lib/crc32: standardize on crc32c() name for Castagnoli CRC32 (commit 8df36829045a)](https://lore.kernel.org/r/20250208024911.14936-5-ebiggers@kernel.org)
 
 ## REGISTERS
