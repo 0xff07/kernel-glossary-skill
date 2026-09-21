@@ -56,8 +56,8 @@ def find_pattern(page, pattern, *, name, severity='review', view='prose', region
     regex = re.compile(pattern, flags)
     hits = 0
     for n, _tag, text, area, _cat in rows_of(page, view, region, not_in_cells):
-        match = regex.search(text)
-        if not match or exempt(text, match, flags, unless):
+        match = next((m for m in regex.finditer(text) if not exempt(text, m, flags, unless)), None)
+        if match is None:
             continue
         hits += 1
         context = context_of(text, match)

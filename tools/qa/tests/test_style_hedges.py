@@ -18,3 +18,12 @@ class Examples(unittest.TestCase):
     def test_source_excerpt_is_not_prose(self):
         text = '# Title\n\n```c\n' + ' '.join(['— **bold** usually walks straightforward vtable']) + '\n```\n'
         self.assertFalse([f for f in check(page(text), None) if f.severity == 'FAIL'])
+
+
+class PastAnExemptMatch(unittest.TestCase):
+    def test_a_hedge_after_an_exempt_compound_is_still_found(self):
+        from checks import style_hedges as rule
+        from tests.support import page, skeleton, observed
+        found = observed(rule.check(page(skeleton(details='### A\n\nThe read-mostly table usually changes during probe.\n')), None))
+        self.assertEqual(found.footer, 'hedges=1')
+        self.assertIn('usually', found.findings[0].message)
