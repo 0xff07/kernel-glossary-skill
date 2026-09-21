@@ -41,7 +41,7 @@ class Lifecycle(unittest.TestCase):
                                   '| `struct kg_ring` | head | ② | kg_ring_reset | ring.c:9 | reset | 0 |'))
         self.assertEqual(self.by(found, 'FAIL'), [])
         self.assertEqual(self.by(found, 'review'), [])
-        self.assertEqual(found.footer, 'rows=2 objects=1 verified=2 missing-writers=0 excluded-files=0 findings=0')
+        self.assertEqual(found.footer, 'rows=2 objects=1 verified=2 uncorroborated=0 missing-writers=0 excluded-files=0 findings=0')
 
     def test_a_missing_writer_and_an_unmarked_row_are_review_rows(self):
         found = self.run_on(table('| `struct kg_ring` | head | ① | kg_ring_push | ring.c:3 | push | +1 |'))
@@ -71,3 +71,19 @@ class Lifecycle(unittest.TestCase):
             list(rule.check(page(skeleton()), TestInputs(tree=self.root)))
 if __name__ == '__main__':
     unittest.main()
+
+
+class Corroboration(Lifecycle):
+    def test_an_assignment_to_another_structs_field_is_not_corroborated(self):
+        src = ['struct kg_alpha {', '\tint state;', '};', 'struct kg_beta {', '\tint state;', '};', '',
+               'void kg_update_beta(struct kg_beta *b)', '{', '\tb->state = 1;', '}', '',
+               'void kg_update_alpha(struct kg_alpha *a)', '{', '\ta->state = 1;', '}']
+        open(os.path.join(self.root, 'drivers', 'kg', 'alpha.c'), 'w', encoding='utf-8').write('\n'.join(src) + '\n')
+        excerpt = '```c\n/* drivers/kg/alpha.c:1 */\n' + '\n'.join(src) + '\n```'
+        fig = '```\n    ┌───┐  ①  ┌───┐\n    │ a │ ──► │ s │\n    └───┘     └───┘\n    ① kg_update_beta alpha.c:10  state is set\n```'
+        details = f'### A\n\n{PROSE}\n\n{excerpt}\n\n{PROSE}\n\n{fig}\n\n{PROSE}\n'
+        worksheet = table('| `struct kg_alpha` | state | ① | kg_update_beta | alpha.c:10 | update | 1 |')
+        found = observed(rule.check(page(skeleton(details=details)), TestInputs(tree=self.root, worksheet=worksheet)))
+        self.assertEqual(self.by(found, 'FAIL'), [])
+        self.assertTrue(any('does not list this site' in r for r in self.by(found, 'review')), self.by(found, 'review'))
+        self.assertIn('verified=0 uncorroborated=1', found.footer)

@@ -19,7 +19,7 @@ def lifecycle(page, inputs):
     rows = lifecycle_rows(inputs)
     excluded = lifecycle_exclusions(inputs)
     findings, listing = [], []
-    counts = {'rows': len(rows), 'objects': 0, 'verified': 0, 'missing_writers': 0, 'findings': 0}
+    counts = {'rows': len(rows), 'objects': 0, 'verified': 0, 'missing_writers': 0, 'findings': 0, 'uncorroborated': 0}
     if not rows:
         yield from observations([], 'lifecycle rows=0', [], dict(counts))
         return
@@ -78,7 +78,11 @@ def lifecycle(page, inputs):
                 findings.append(Finding(None, 'review', f'{tag} {writer} {site}: no figure legend on the page carries this mark with this writer'))
             elif not any(re.search(r'\b' + re.escape(field) + r'\b', e['phrase']) for e in matching):
                 findings.append(Finding(None, 'review', f"{tag} {writer} {site}: the legend phrase does not name {field}; say which field the writer sets and to what"))
-            counts['verified'] += 1
+            if any(p == path and l == line and f == writer for p, l, f in census.get(field, [])):
+                counts['verified'] += 1
+            else:
+                counts['uncorroborated'] += 1
+                findings.append(Finding(None, 'review', f"{tag} {writer} {site}: the census of struct {name}'s writers does not list this site, so the assignment may set another struct's {field}; verify by hand that the variable is a {obj}"))
         for field in sorted({r['field'] for r in orows}):
             in_table = {r['writer'] for r in orows if r['field'] == field}
             for fn in sorted({f for p, _l, f in census.get(field, []) if p.split('/')[-1] not in excluded} - in_table):
@@ -86,7 +90,7 @@ def lifecycle(page, inputs):
                 counts['missing_writers'] += 1
                 findings.append(Finding(None, 'review', f'{obj}.{field}: {fn}() also writes it ({sites}) and has no row; a lifecycle with a writer missing asserts a state the code can leave'))
         listing.append(f"{obj}: rows={len(orows)} fields={', '.join(sorted({r['field'] for r in orows}))}")
-    footer = f"rows={counts['rows']} objects={counts['objects']} verified={counts['verified']} missing-writers={counts['missing_writers']} excluded-files={len(excluded)} findings={counts['findings']}"
+    footer = f"rows={counts['rows']} objects={counts['objects']} verified={counts['verified']} uncorroborated={counts['uncorroborated']} missing-writers={counts['missing_writers']} excluded-files={len(excluded)} findings={counts['findings']}"
     yield from observations(findings, footer, listing, dict(counts))
 
 def check(page, inputs):
