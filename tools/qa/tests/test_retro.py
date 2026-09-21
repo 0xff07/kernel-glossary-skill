@@ -53,8 +53,8 @@ class Retro(unittest.TestCase):
             self.assertEqual((verbatim['fail'], verbatim['review'], verbatim['hit_pages'], verbatim['pages']), (4, 0, 1, 1))
             self.assertEqual((rows['style.superlatives']['exempt'], rows['style.superlatives']['share']), (1, 0.25))
             self.assertEqual(rows['style.superlatives']['last']['date'], '2026-09-18')
-            self.assertEqual((rows['style.walk']['hit_pages'], rows['style.walk']['exempt'], rows['style.walk']['exempt_all'], rows['style.walk']['note']), (0, 0, 1, ''))
-            self.assertEqual(rows['old.rule']['note'], 'not a rule now')
+            self.assertEqual((rows['style.walk']['hit_pages'], rows['style.walk']['exempt'], rows['style.walk']['exempt_all'], rows['style.walk']['note']), (0, 0, 1, 'unknown on 1 recorded page'))
+            self.assertEqual(rows['old.rule']['note'], 'not a rule now; unknown on 1 recorded page')
             text = '\n'.join(retro.render(root, pages, list(rows.values())))
             self.assertTrue(text.startswith(f'retrospective over 1 page in {root} (1 worksheet without a first-pass record)'), text)
             self.assertIn('usb4/acpi/a 2026-09-18', text)
@@ -67,7 +67,7 @@ class Retro(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = campaign(tmp, extra=20)
             rows = {row['rule']: row for row in retro.summarize(retro.gather(root), ['excerpts.verbatim', 'style.walk', 'style.lists'])}
-            self.assertEqual(rows['style.lists']['note'], 'no hit in 21 pages')
+            self.assertEqual(rows['style.lists']['note'], 'unknown on 21 recorded pages')
             self.assertEqual((rows['style.walk']['exempt'], rows['style.walk']['exempt_all'], rows['style.walk']['note']), (40, 41, '100% exempt'))
             self.assertEqual(rows['excerpts.verbatim']['note'], '')
 
@@ -79,3 +79,23 @@ class Retro(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class RulesRun(unittest.TestCase):
+    NEWER = ('## LINT\n### First pass\n== rules run (2): style.walk, style.hedges\n\n| rule | FAIL | review |\n|---|---|---|\n'
+             '| style.walk | 0 | 1 |\n\n')
+    OLDER = '## LINT\n### First pass\n| rule | FAIL | review |\n|---|---|---|\n| style.walk | 0 | 1 |\n\n'
+
+    def test_a_record_naming_its_rules_is_a_sample_of_each_and_an_older_one_only_of_its_hits(self):
+        with tempfile.TemporaryDirectory() as root:
+            base = Path(root) / 'usb4' / 'x'
+            base.mkdir(parents=True)
+            (base / 'new.worksheet.md').write_text(self.NEWER, encoding='utf-8')
+            (base / 'old.worksheet.md').write_text(self.OLDER, encoding='utf-8')
+            pages = retro.gather(root)
+            rows = {row['rule']: row for row in retro.summarize(pages, ['style.walk', 'style.hedges', 'style.lists'])}
+            self.assertEqual(rows['style.walk']['pages'], 2)
+            self.assertEqual(rows['style.hedges']['pages'], 1)
+            self.assertEqual(rows['style.lists']['pages'], 0)
+            self.assertEqual(rows['style.hedges']['note'], 'unknown on 1 recorded page')
+            self.assertEqual(rows['style.lists']['note'], 'not run on 1 recorded page; unknown on 1 recorded page')

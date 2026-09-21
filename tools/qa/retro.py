@@ -9,6 +9,7 @@ import rules
 FIRST_PASS = re.compile(r"^(?:#{1,6}\s*|\*\*\s*)?first pass\b", re.I)
 EXEMPT = re.compile(r"^EXEMPT\s+([a-z][a-z0-9-]*\.[a-z0-9][a-z0-9-]*)\b")
 LINTED = re.compile(r"^LINTED\s+(\d{4}-\d{2}-\d{2})\b")
+RULES_RUN = re.compile(r"rules run\b[^:]*:\s*(.*)$", re.I)
 GUARD_PAGES = 20   # pages without a hit before a check reads as a guard nobody needs
 NOISE_HITS = 5     # hits before an exempted share says anything
 NOISE_SHARE = 0.7
@@ -38,11 +39,43 @@ def first_pass_table(lines):
     return None
 
 
+def first_pass_rules(lines):
+    """The rules the first-pass run executed, from a `rules run (N): a, b, c` line inside the First
+    pass block, or None when the record predates that line; a rule absent from the table is then
+    known to have run and found nothing only when this line names it."""
+    for i, line in enumerate(lines):
+        if not FIRST_PASS.match(line.strip()):
+            continue
+        for later in lines[i + 1:]:
+            if later.startswith("#") and not FIRST_PASS.match(later.strip()):
+                break
+            m = RULES_RUN.search(later)
+            if m:
+                found = {slug.strip("`* ") for slug in re.split(r"[,\s]+", m.group(1)) if slug.strip("`* ")}
+                return {slug for slug in found if rules.SLUG.match(slug)} or None
+    return None
+
+
+def coverage(page, slug):
+    """'ran' when the page's first pass names the rule in its `rules run` line or its table, 'not run'
+    when the line exists and lacks it, 'unknown' for a record without the line that does not list it."""
+    if slug in page["first"]:
+        return "ran"
+    if page["rules"] is not None:
+        return "ran" if slug in page["rules"] else "not run"
+    return "unknown"
+
+
+def evaluated(page, slug):
+    return coverage(page, slug) == "ran"
+
+
 def read_worksheet(path, root):
     lines = path.read_text(encoding="utf-8", errors="replace").split("\n")
     dates = [m.group(1) for line in lines if (m := LINTED.match(line))]
     return {"page": path.relative_to(root).as_posix()[:-len(".worksheet.md")],
             "first": first_pass_table(lines),
+            "rules": first_pass_rules(lines),
             "exempt": Counter(m.group(1) for line in lines if (m := EXEMPT.match(line))),
             "date": dates[-1] if dates else None}
 
@@ -71,9 +104,10 @@ def summarize(pages, known):
         seen.extend(slug for slug in page["exempt"] if slug not in seen)
     rows = []
     for slug in list(known) + [slug for slug in seen if slug not in known]:
-        fails = sum(page["first"].get(slug, (0, 0))[0] for page in recorded)
-        reviews = sum(page["first"].get(slug, (0, 0))[1] for page in recorded)
-        hit = [page for page in recorded if sum(page["first"].get(slug, (0, 0))) > 0]
+        sample = [page for page in recorded if evaluated(page, slug)]
+        fails = sum(page["first"].get(slug, (0, 0))[0] for page in sample)
+        reviews = sum(page["first"].get(slug, (0, 0))[1] for page in sample)
+        hit = [page for page in sample if sum(page["first"].get(slug, (0, 0))) > 0]
         exempt = sum(page["exempt"].get(slug, 0) for page in recorded)
         exempt_all = sum(page["exempt"].get(slug, 0) for page in pages)
         hits = fails + reviews
@@ -82,11 +116,17 @@ def summarize(pages, known):
         notes = []
         if slug not in known:
             notes.append("not a rule now")
-        if not hit and len(recorded) >= GUARD_PAGES:
-            notes.append(f"no hit in {len(recorded)} pages")
+        if not hit and len(sample) >= GUARD_PAGES:
+            notes.append(f"no hit in {len(sample)} pages")
         if hits >= NOISE_HITS and share is not None and share >= NOISE_SHARE:
             notes.append(f"{share:.0%} exempt")
-        rows.append({"rule": slug, "pages": len(recorded), "hit_pages": len(hit), "fail": fails,
+        if not hit:
+            # the coverage of a rule matters where a reader might retire it on the strength of no hit
+            for state in ("not run", "unknown"):
+                n = sum(1 for page in recorded if coverage(page, slug) == state)
+                if n:
+                    notes.append(f"{state} on {n} recorded page{'s' if n != 1 else ''}")
+        rows.append({"rule": slug, "pages": len(sample), "hit_pages": len(hit), "fail": fails,
                      "review": reviews, "exempt": exempt, "exempt_all": exempt_all, "share": share, "last": last,
                      "note": "; ".join(notes)})
     return rows
