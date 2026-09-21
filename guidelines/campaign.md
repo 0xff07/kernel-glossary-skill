@@ -38,7 +38,7 @@ Per-page states are recorded only in run logs, never in the spec. A lesson that 
 
 ## Slices and the run log [slices]
 
-1. [slices.one-batch] A slice is one batch: writers dispatched together, one per page, then the check pass per page, then the run closed with its log updated. Before dispatch, apply the overwrite guard to every page the slice creates; a resume names its starting digest in the brief instead, the writer rebuilds the page in its scratch directory, and the orchestrator re-checks the digest and moves the rebuilt page into place; a page whose digest no longer matches is surfaced, never written over.
+1. [slices.one-batch] A slice is one batch: writers dispatched together, one per page, then the check pass per page, then the run closed with its log updated. Before dispatch, apply the overwrite guard to every page the slice creates; a resume names its starting digest in the brief instead, and the writer verifies it against the page on disk before continuing the page there; a page whose digest no longer matches is surfaced, never written over.
 2. [slices.log] After every completed page and at the checkpoint, append to `progress/<campaign>/log.md` the page state, statistics, adjudications and agent events. Anything durable goes to the spec as a dated errata entry; the log dies with the machine by design.
 3. [slices.permissions] Sub-agents need Write permission before dispatch; without it, process sequentially rather than fail and retry.
 

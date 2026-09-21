@@ -7,9 +7,9 @@ Write the page <output path> for the <subsystem> knowledge base.
 
 SKILL_DIR: <absolute path to the kernel-glossary-skill checkout>
 WORKSPACE: <SKILL_DIR>/progress/<campaign>/
-OPERATION: <create | resume>; for a resume, the page's starting digest: sha256 <digest>, and the rebuilt page goes to YOUR SCRATCH/<slug>.md; for a create that derives from a removed page, its revision: git show <commit>:<path>, reused under writing.md [facts.derived-pages]; the removed page is material, never a floor or a ceiling: every rule applies as on a fresh create, the catalog is re-curated (ownership follows the campaign's boundary statements: a symbol they assign to this page is cataloged here whatever a page not yet rebuilt holds, one they assign elsewhere is left to that page, and one they leave unassigned goes to the sibling that catalogs it on disk), every figure the trigger table asks for is drawn, and a sentence that does not meet the writing rules is rewritten rather than kept
+OPERATION: <create | resume>; for a resume, the page's starting digest: sha256 <digest>, verified against the page on disk before anything is written, the page then continued in place; for a create that derives from a removed page, its revision: git show <commit>:<path>, reused under writing.md [facts.derived-pages]; the removed page is material, never a floor or a ceiling: every rule applies as on a fresh create, the catalog is re-curated (ownership follows the campaign's boundary statements: a symbol they assign to this page is cataloged here whatever a page not yet rebuilt holds, one they assign elsewhere is left to that page, and one they leave unassigned goes to the sibling that catalogs it on disk), every figure the trigger table asks for is drawn, and a sentence that does not meet the writing rules is rewritten rather than kept
 YOUR WORKSHEET: <SKILL_DIR>/progress/<campaign>/<dir>/<group>/<slug>.worksheet.md (mirroring docs/<dir>/<group>/<slug>.md)
-YOUR SCRATCH: <session scratchpad>/<dir>/<group>/<slug>/ (the scratchpad is shared and two pages may share a slug; scratch and a resumed page go only here)
+YOUR SCRATCH: <session scratchpad>/<dir>/<group>/<slug>/ (the scratchpad is shared and two pages may share a slug; scratch goes only here)
 
 MANDATORY READING, by phase (SKILL.md, "Reading routes"); nothing ahead of its phase:
 1. Before research: <SKILL_DIR>/SKILL.md, the passes you run yourself; <SKILL_DIR>/guidelines/kernel.md, what a kernel page is made of; <SKILL_DIR>/guidelines/worksheet.md, the worksheet you keep, which is the recovery point; the page's entry in <SKILL_DIR>/guidelines/subsystems.md; and the campaign facts below.
@@ -28,7 +28,7 @@ CAMPAIGN FACTS:
 DIRECTIVES.
 - At most about 25 KB of output per command; a persisted output is read by slice only.
 - Under the skill checkout the only files you write are the page and your worksheet, nowhere else in progress/ and never in guidelines/ or campaigns/; scratch goes only to YOUR SCRATCH. No git operation that changes state.
-- A create: if the output path exists when you are about to write, stop and report. A resume: stop and report if the page on disk is not at the starting digest the brief names; otherwise write the rebuilt page to YOUR SCRATCH/<slug>.md, never over the page on disk, and report its digest, and the orchestrator moves it into place.
+- A create: if the output path exists when you are about to write, stop and report. A resume: stop and report if the page on disk is not at the starting digest the brief names; otherwise continue the page in place, the one case in which a writer writes over a page on disk, and report its final digest.
 - Enumerate call-site populations before any prose that counts or characterizes them, and give every count and universal claim its row in the worksheet's Bases table (worksheet.md [evidence.bases]).
 - The page states results and their scope, never the search; the search stays in the worksheet.
 - A site is cited as a location link whose text is the file's base name and line, `tb.c:130`, the path from the tree root only where two cited files share a base name or the file has no extension (kernel.md [links.site-text]).
