@@ -18,7 +18,7 @@ def resolve(cited, file):
 
 def legends(page, inputs):
     findings, listing = [], []
-    counts = {'figures': 0, 'with_legend': 0, 'marks': 0, 'entries': 0, 'phrased': 0, 'findings': 0}
+    counts = {'figures': 0, 'with_legend': 0, 'marks': 0, 'entries': 0, 'phrased': 0, 'findings': 0, 'unresolved': 0}
     reproduced = reproduced_lines(page, inputs)
     cited = page.cited_files()
     tables = {}
@@ -58,15 +58,16 @@ def legends(page, inputs):
             if path not in tables:
                 tables[path] = constructs_of(source)
             construct = construct_at(tables[path], e['line'])
-            inside = (construct is not None and construct.name == e['name']) or e['name'] in source[e['line'] - 1]
-            if not inside:
-                holder = construct.label(path.rsplit('/', 1)[-1]) if construct else 'no construct'
-                fail(f"{where} does not lie in {e['name']}(): {holder} holds that line")
+            if construct is None:
+                counts['unresolved'] += 1
+                findings.append(Finding(None, 'review', f"{where}: no construct is parsed around that line, so whether it lies in {e['name']}() is unresolved; verify by hand"))
+            elif construct.name != e['name']:
+                fail(f"{where} does not lie in {e['name']}(): {construct.label(path.rsplit('/', 1)[-1])} holds that line")
                 continue
             if e['line'] not in reproduced.get(path, set()):
                 fail(f'{where} is a line no excerpt on the page reproduces; show it beside the figure or drop the mark')
         listing.append(f'fig {number}: marks={len(marks)} legend={len(entries)}')
-    footer = f"figures={counts['figures']} with-legend={counts['with_legend']} marks={counts['marks']} entries={counts['entries']} phrased={counts['phrased']} findings={counts['findings']}"
+    footer = f"figures={counts['figures']} with-legend={counts['with_legend']} marks={counts['marks']} entries={counts['entries']} phrased={counts['phrased']} findings={counts['findings']} unresolved={counts['unresolved']}"
     yield from observations(findings, footer, listing, dict(counts))
 
 def check(page, inputs):

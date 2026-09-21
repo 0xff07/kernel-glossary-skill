@@ -9,7 +9,8 @@ from checks import drawing_legend as rule
 from inputs import MissingInput
 from tests.support import PROSE, page, skeleton, TestInputs, observed
 RING_C = ['int kg_ring_push(struct kg_ring *ring, int v)', '{', '\tring->head++;', '\treturn 0;', '}', '',
-          'void kg_ring_reset(struct kg_ring *ring)', '{', '\tring->head = 0;', '\tring->tail = 0;', '}']
+          'void kg_ring_reset(struct kg_ring *ring)', '{', '\tring->head = 0;', '\tring->tail = 0;', '}', '',
+          'void kg_ring_drain(struct kg_ring *ring)', '{', '\tkg_ring_reset(ring);', '}']
 EXCERPT = '```c\n/* drivers/kg/ring.c:1 */\n' + '\n'.join(RING_C[:5]) + '\n```'
 
 def figure(*legend):
@@ -37,7 +38,7 @@ class Legend(unittest.TestCase):
     def test_marks_resolved_by_reproduced_sites_pass(self):
         found = self.run_on(figure('① kg_ring_push ring.c:3  advances the head', '② kg_ring_push :4  returns success to the caller'))
         self.assertEqual(self.fails(found), [])
-        self.assertEqual(found.footer, 'figures=1 with-legend=1 marks=2 entries=2 phrased=2 findings=0')
+        self.assertEqual(found.footer, 'figures=1 with-legend=1 marks=2 entries=2 phrased=2 findings=0 unresolved=0')
         found = self.run_on(figure('① kg_ring_push ring.c:3   ② kg_ring_push :4'))
         self.assertTrue(all('carries no phrase' in f for f in self.fails(found)))
         self.assertEqual(len(self.fails(found)), 2)
@@ -58,8 +59,22 @@ class Legend(unittest.TestCase):
 
     def test_a_figure_without_marks_is_left_alone_and_a_missing_tree_is_reported(self):
         found = self.run_on('```\n    ┌──┐\n    │ a│\n    └──┘\n```')
-        self.assertEqual(found.footer, 'figures=1 with-legend=0 marks=0 entries=0 phrased=0 findings=0')
+        self.assertEqual(found.footer, 'figures=1 with-legend=0 marks=0 entries=0 phrased=0 findings=0 unresolved=0')
         with self.assertRaises(MissingInput):
             list(rule.check(page(skeleton()), TestInputs(tree=None)))
 if __name__ == '__main__':
     unittest.main()
+
+
+class Containment(Legend):
+    def test_a_call_site_is_not_the_named_function(self):
+        text = skeleton(details=f'### A\n\n{PROSE}\n\n{EXCERPT}\n\n' + figure('① kg_ring_push ring.c:3  head advances', '② kg_ring_reset ring.c:15  reset is called') + f'\n\n{PROSE}\n')
+        found = observed(rule.check(page(text), TestInputs(tree=self.root)))
+        fails = [f.message for f in found.findings if f.severity == 'FAIL']
+        self.assertTrue(any('does not lie in kg_ring_reset(): kg_ring_drain' in m for m in fails), fails)
+
+    def test_a_line_outside_any_construct_is_unresolved(self):
+        text = skeleton(details=f'### A\n\n{PROSE}\n\n{EXCERPT}\n\n' + figure('① kg_ring_push ring.c:3  head advances', '② kg_ring_reset ring.c:6  between the functions') + f'\n\n{PROSE}\n')
+        found = observed(rule.check(page(text), TestInputs(tree=self.root)))
+        self.assertTrue(any('unresolved' in f.message and f.severity == 'review' for f in found.findings))
+        self.assertIn('unresolved=1', found.footer)
