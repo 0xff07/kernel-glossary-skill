@@ -80,6 +80,19 @@ def qa_digest(document):
     return inputs.get('qa_digest') or inputs.get('qa_sha256') or ''
 
 
+REUSE_KEYS = ('page_digest', 'qa_digest', 'tree', 'tree_head', 'worksheet', 'worksheet_digest', 'spec', 'campaign', 'baseline')
+
+
+def reusable(candidate, current):
+    """Whether a cached document was checked under the inputs a fresh check would resolve now: the
+    page and QA digests, the tree and its head, the worksheet and its digest, the spec, the campaign
+    and whether a committed baseline differed."""
+    inputs = candidate.get('inputs') or {}
+    if not inputs.get('qa_digest') and inputs.get('qa_sha256'):
+        inputs = dict(inputs, qa_digest=inputs['qa_sha256'])
+    return all(inputs.get(key) == current.get(key) for key in REUSE_KEYS)
+
+
 def gather(base, directory, cache=None, tree=None, progress=None):
     """Rows for every page under the directory, reusing a cached document whose page and QA
     digests still match; a fresh check is written to the cache when one is given."""
@@ -96,7 +109,9 @@ def gather(base, directory, cache=None, tree=None, progress=None):
         if cached and cached.exists():
             try:
                 candidate = json.load(open(cached, encoding='utf-8'))
-                if (candidate.get('inputs') or {}).get('page_digest') == digest and qa_digest(candidate) == current_qa_digest(base):
+                from inputs import Inputs
+                current = Inputs(page_path, tree=tree).as_dict()
+                if reusable(candidate, current):
                     document = candidate
             except (OSError, ValueError):
                 document = None

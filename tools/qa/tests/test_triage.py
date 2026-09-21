@@ -33,3 +33,13 @@ class Triage(unittest.TestCase):
         self.assertIn('fix      pages=1', text)
 if __name__ == '__main__':
     unittest.main()
+
+
+class CacheReuse(unittest.TestCase):
+    def test_a_cached_document_is_reused_only_under_the_same_inputs(self):
+        current = {'page_digest': 'p', 'qa_digest': 'q', 'tree': '/t', 'tree_head': 'h', 'worksheet': '/w', 'worksheet_digest': 'wd', 'spec': None, 'campaign': None, 'baseline': False}
+        self.assertTrue(triage.reusable({'inputs': dict(current)}, current))
+        for key, other in (('worksheet_digest', 'changed'), ('tree_head', 'h2'), ('tree', '/other'), ('worksheet', None), ('page_digest', 'p2'), ('qa_digest', 'q2')):
+            self.assertFalse(triage.reusable({'inputs': dict(current, **{key: other})}, current), key)
+        legacy = dict(current); legacy['qa_sha256'] = legacy.pop('qa_digest')
+        self.assertTrue(triage.reusable({'inputs': legacy}, current))

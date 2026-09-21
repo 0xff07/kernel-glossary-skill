@@ -427,5 +427,6 @@ class Inputs:
 
     def as_dict(self):
         return {"page_digest": self.page_digest, "qa_digest": self.qa_digest, "tree": self.tree, "tree_tag": self.tree_tag, "tree_head": self.tree_head,
-                "worksheet": self.worksheet, "campaign": self.campaign, "baseline": self.baseline is not None,
+                "worksheet": self.worksheet, "worksheet_digest": sha256_of(self.worksheet) if self.worksheet else None,
+                "spec": self.spec, "campaign": self.campaign, "baseline": self.baseline is not None,
                 "problems": self.problems, "notes": self.notes}
