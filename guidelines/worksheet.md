@@ -15,7 +15,7 @@ The worksheet is the page's entire working file: the research, the completeness 
 
 ## LINKS [links-table]
 
-1. [links-table.machine-emitted, qa] LINKS is machine-emitted by `python3 tools/qa/kg.py table <page>`, eight columns per distinct inline span: span, region, linked, bare, bare at, anchor URL, disk line, kind / reason. The first seven are the script's and are never hand-edited: region is catalog inside the four catalog sections (SPECIFICATIONS, COVERAGE, DOCUMENTATION, OTHER SOURCES) and prose everywhere else (the lead, SUMMARY, section six and DETAILS); linked and bare are occurrence counts; bare at lists up to six page lines of the bare prose occurrences; anchor URL and disk line are what the script fetched. A re-emitted table keeps every kind / reason cell the worksheet already holds; the check pass re-runs the same command and diffs its rows against the page's spans.
+1. [links-table.machine-emitted, qa] LINKS is written by `python3 tools/qa/kg.py table <page>`, which puts the table into this section itself and prints the rows to fill, eight columns per distinct inline span: span, region, linked, bare, bare at, anchor URL, disk line, kind / reason. The first seven are the script's and are never hand-edited: region is catalog inside the four catalog sections (SPECIFICATIONS, COVERAGE, DOCUMENTATION, OTHER SOURCES) and prose everywhere else (the lead, SUMMARY, section six and DETAILS); linked and bare are occurrence counts; bare at lists up to six page lines of the bare prose occurrences; anchor URL and disk line are what the script fetched. A rewritten table keeps every kind / reason cell the section already holds; the check reports a table whose rows are not the page's spans in one line, and the check pass runs the command again and reads the delta it prints.
 
 2. [links-table.reasons, qa] The last cell is the writer's: a kind (symbol, location, config, generated, file) confirming a linked row's anchor, or the reason that licenses a bare row. Anchor confirmation is page-wide, catalog rows included; span closure requires a non-empty last cell on every prose row and on every catalog row whose span is not one of the catalog's own entries, the bare spans in a bullet's descriptive text.
 
@@ -91,8 +91,9 @@ Symbols renamed, removed or newly added at the documented version
 relative to widely-documented older kernels; known stale-index hints.
 
 ## LINKS
-MACHINE-EMITTED by `kg table`, one eight-column row per distinct inline
-span:
+WRITTEN by `kg table`, one eight-column row per distinct inline span; the
+command puts the table here and prints the rows whose kind / reason cell is
+to fill:
 
 | span | region | linked | bare | bare at | anchor URL | disk line | kind / reason |
 

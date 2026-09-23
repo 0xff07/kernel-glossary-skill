@@ -1,5 +1,5 @@
 """plugins.links_table: the worksheet's LINKS rows read back, the closure of their kind / reason
-cells, and the table `kg table` emits."""
+cells, and the table `kg table` writes into the worksheet, or prints without one."""
 import io
 import os
 import shutil
@@ -50,9 +50,49 @@ class Emit(unittest.TestCase):
         ring = next((l for l in lines if l.startswith('| `struct kg_ring`')))
         self.assertTrue(ring.endswith('| struct kg_ring { | symbol, confirmed |'), ring)
         self.assertTrue(any((l.startswith('| `head` | prose | 0 | 1 |') for l in lines)))
-        self.assertIn('carried 1 kind / reason cells', err.getvalue())
-        self.assertIn('added row(s) to fill:', err.getvalue())
-        self.assertIn('`head`', err.getvalue())
+        self.assertIn('the table is printed, not written', err.getvalue())
+        self.assertIn('carried 1 kind / reason cells', out.getvalue())
+        self.assertIn('added row(s) to fill:', out.getvalue())
+        self.assertIn('`head`', out.getvalue())
+
+    def test_the_table_is_written_into_the_worksheet_on_disk(self):
+        details = f'### A\n\nThe ring is [`struct kg_ring`]({URL}) and the count is `head`.\n'
+        worksheet = os.path.join(self.root, 'ring.worksheet.md')
+        template = ['# Worksheet', '', '## LINKS', 'WRITTEN by `kg table`, one row per span:', '',
+                    '| span | region | linked | bare | bare at | anchor URL | disk line | kind / reason |', '',
+                    "The first seven columns are the script's.", '', '## COMPLETENESS', 'nothing yet']
+        open(worksheet, 'w', encoding='utf-8').write('\n'.join(template) + '\n')
+        inputs = FakeInputs([], tree=self.root)
+        inputs.worksheet, inputs.worksheet_lines = worksheet, template
+        out, err = (io.StringIO(), io.StringIO())
+        self.assertEqual(links_table.emit_table(page(skeleton(details=details)), inputs, out=out, err=err), 0)
+        written = open(worksheet, encoding='utf-8').read().split('\n')
+        self.assertIn(f'LINKS table written to {worksheet}:', out.getvalue())
+        self.assertIn('added row(s) to fill', out.getvalue())
+        self.assertIn('`head`', out.getvalue())
+        self.assertEqual(written[:5], template[:5])
+        self.assertEqual(written[5], links_table.HEADER)
+        self.assertEqual(written[6], links_table.SEPARATOR)
+        rows = [k for k in range(7, len(written)) if written[k].startswith('|')]
+        after = rows[-1] + 1
+        self.assertTrue(any(written[k].startswith('| `head` | prose | 0 | 1 |') for k in rows), written[7:after])
+        self.assertTrue(any(written[k].startswith('| `struct kg_ring` | prose | 1 | 0 |') for k in rows), written[7:after])
+        self.assertEqual(written[after:after + 5], template[6:11])
+        # a second write keeps the cell a person filled in, and replaces the whole table
+        head = next(k for k in rows if written[k].startswith('| `head`'))
+        written[head] = written[head].rsplit('|', 2)[0] + '| a settled bare span |'
+        open(worksheet, 'w', encoding='utf-8').write('\n'.join(written) + '\n')
+        inputs.worksheet_lines = written
+        self.assertEqual(links_table.emit_table(page(skeleton(details=details)), inputs, out=io.StringIO(), err=err), 0)
+        again = open(worksheet, encoding='utf-8').read().split('\n')
+        self.assertTrue(again[head].endswith('| a settled bare span |'), again[head])
+        self.assertEqual(len(again), len(written))
+
+    def test_a_section_without_a_table_and_a_worksheet_without_the_section(self):
+        table = [links_table.HEADER, links_table.SEPARATOR, '| `x` | prose | 1 | 0 |  |  |  | symbol |']
+        self.assertEqual(links_table.with_table(['## LINKS', 'text', '', '## COMPLETENESS'], table),
+                         ['## LINKS', 'text', ''] + table + ['', '## COMPLETENESS'])
+        self.assertEqual(links_table.with_table(['# Worksheet', ''], table), ['# Worksheet', '', '', '## LINKS', ''] + table)
 if __name__ == '__main__':
     unittest.main()
 

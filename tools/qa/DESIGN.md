@@ -234,7 +234,7 @@ registration:
 - `worksheet_utils.py` reads the worksheet's tables: the Bases rows, the
   recorded block map, the COMPLETENESS tables, the Lifecycle rows and the
   `excluded:` files under them; `Inputs.exemptions()` reads the LINT section.
-- `span_utils.py` classifies link anchors and `links_table.py` emits the
+- `span_utils.py` classifies link anchors and `links_table.py` writes the
   LINKS table; `sentence_utils.py`, `patterns.py` and `measurements.py` serve
   the style and facts sweeps as section 3 describes.
 
@@ -307,7 +307,7 @@ neighbourhood a page cites.
 | `check <page> [--only ID ...] [--json] [--checklist] [--tree] [--worksheet] [--spec]` | runs the checks and prints the findings and the page state, the new ones since the last full run in full and the standing ones counted; a full run records the first pass once the page is whole and the last run every time, beside the worksheet |
 | `view <page> --regions / --prose / --raw / --spans-visible / --load` | prints a page representation, `--load` the reading-load measurements |
 | `skim <page>` | prints the reading path of DETAILS: the route, then each subsection's title, first sentence, recaps and last sentence |
-| `table <page>` | emits the worksheet's LINKS table |
+| `table <page>` | writes the worksheet's LINKS table, keeping its kind / reason cells, and prints the delta and the rows to fill; prints the table when no worksheet is on disk |
 | `excerpt <path:first[-last]> [--whole]` | prints a verbatim unit with its provenance comment, or the whole construct holding the line |
 | `selftest [--rule ID]` | validates the bindings and runs the rule tests, the shared engine tests and the reference figures |
 | `where <ID>` | names the guideline, the check module and the test module |

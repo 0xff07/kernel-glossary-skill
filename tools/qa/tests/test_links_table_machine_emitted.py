@@ -34,9 +34,12 @@ class ReadBack(unittest.TestCase):
     def test_emitted_diff(self):
         details = f'### A\n\nThe ring is [`struct kg_ring`]({URL}) and the count is `head`.\n'
         stale = observed(check(page(skeleton(details=details)), FakeInputs(rows_of(('gone', 'prose', 'symbol')))))
-        messages = ' '.join((f.message for f in stale.findings))
-        self.assertIn('`head` has no LINKS row', messages)
-        self.assertIn('`gone` has no span on the page', messages)
+        reviews = [f.message for f in stale.findings if f.severity == 'review']
+        self.assertEqual(len(reviews), 1, reviews)
+        self.assertRegex(reviews[0], r'\d span\(s\) without a row \(.*`head`, `struct kg_ring`\)')
+        self.assertIn('1 row(s) without a span (`gone`)', reviews[0])
+        self.assertIn('run kg table', reviews[0])
+        self.assertEqual(stale.data['only_in_worksheet'], ['gone'])
 if __name__ == '__main__':
     unittest.main()
 
