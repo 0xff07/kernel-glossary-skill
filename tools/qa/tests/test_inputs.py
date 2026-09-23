@@ -82,6 +82,7 @@ class WorksheetPath(unittest.TestCase):
         expected = os.path.join(self.base, "progress", "kg", "kg", "ring.worksheet.md")
         inputs = self.resolve()
         self.assertEqual(inputs.worksheet_path, expected)
+        self.assertEqual(inputs.first_pass_path, os.path.join(self.base, "progress", "kg", "kg", "ring.first-pass.json"))
         self.assertIsNone(inputs.worksheet)
         self.assertEqual(inputs.problems, [])
         self.assertTrue(any(n.startswith(f"no worksheet at {expected}") for n in inputs.notes), inputs.notes)
@@ -104,10 +105,12 @@ class WorksheetPath(unittest.TestCase):
         open(named, "w", encoding="utf-8").write("## LINT\n")
         inputs = self.resolve(worksheet=named)
         self.assertEqual((inputs.worksheet, inputs.problems), (named, []))
+        self.assertEqual(inputs.first_pass_path, os.path.join(self.base, "elsewhere", "ring.first-pass.json"))
 
     def test_a_page_outside_docs_has_no_conventional_path(self):
         inputs = self.resolve(page=os.path.join(self.base, "page.md"))
         self.assertIsNone(inputs.worksheet_path)
+        self.assertIsNone(inputs.first_pass_path)
         self.assertTrue(any("outside docs/" in n for n in inputs.notes), inputs.notes)
 
 

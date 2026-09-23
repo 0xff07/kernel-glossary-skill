@@ -23,6 +23,7 @@ EXEMPT_ESCAPE = re.compile(r"\\(\")")
 DOCS = "docs"
 PROGRESS = "progress"
 WORKSHEET_SUFFIX = ".worksheet.md"
+FIRST_PASS_SUFFIX = ".first-pass.json"
 TREE_MARKERS = ("Kconfig",)
 
 
@@ -241,6 +242,8 @@ class Inputs:
             self.worksheet_path = os.path.join(self.base, PROGRESS, campaign, name)
         else:
             self.worksheet_path = None
+        self.first_pass_path = (self.worksheet_path[:-len(WORKSHEET_SUFFIX)] + FIRST_PASS_SUFFIX
+                                if self.worksheet_path and self.worksheet_path.endswith(WORKSHEET_SUFFIX) else None)
         self.worksheet = self.worksheet_path if self.worksheet_path and os.path.isfile(self.worksheet_path) else None
         self.worksheet_missing = ""
         if self.worksheet is None:

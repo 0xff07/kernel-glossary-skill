@@ -288,7 +288,7 @@ neighbourhood a page cites.
 
 | Command | What it does |
 |---|---|
-| `check <page> [--only ID ...] [--json] [--checklist] [--tree] [--worksheet] [--spec]` | runs the checks and prints findings, inventories and the page state |
+| `check <page> [--only ID ...] [--json] [--checklist] [--first-pass] [--tree] [--worksheet] [--spec]` | runs the checks and prints findings, inventories and the page state; `--first-pass` also writes the run's counts per rule beside the worksheet, once |
 | `view <page> --regions / --prose / --raw / --spans-visible / --load` | prints a page representation, `--load` the reading-load measurements |
 | `skim <page>` | prints the reading path of DETAILS: the route, then each subsection's title, first sentence, recaps and last sentence |
 | `table <page>` | emits the worksheet's LINKS table |
@@ -296,19 +296,18 @@ neighbourhood a page cites.
 | `selftest [--rule ID]` | validates the bindings and runs the rule tests, the shared engine tests and the reference figures |
 | `where <ID>` | names the guideline, the check module and the test module |
 | `rules` | lists the checks by guideline ID |
-| `retro <progress dir> [--rule ID]` | per rule, what the checks found on the first pass of every page a campaign's worksheets record |
+| `retro <progress dir> [--rule ID]` | per rule, what the first pass found over a workspace's first-pass records, and the EXEMPT lines its worksheets carry |
 | `triage <docs dir> [--cache DIR] [--json] [--verbose]` | one row per page under the current rules, graded current, fix or rebuild |
 
-`retro` prints, per rule, the pages with a first-pass record, the pages where
-the rule fired, the first-pass FAIL and review totals, the `EXEMPT` lines
-written against it and the share of its hits they cover, and the last page and
-date it fired; `--rule` lists the pages instead. `triage` prints, per page, the
-FAIL and review totals, the excerpt-rule failures, the units and the share that
-are skeletons, the walkthrough gaps, the reading and figure failures, lines,
-figures and state, then a summary per grade: no FAIL is current; walk gaps at
-most one owned function in five and skeletons at most a third of the units is
-fix; the rest is rebuild. Its `--cache` reuses a page's check document while
-the page and QA digests match. Both commands change nothing.
+`retro` prints, per rule, the first-pass records naming it, those where it
+fired, the first-pass FAIL and review totals and the `EXEMPT` lines written
+against it; `--rule` lists the pages instead. `triage` prints, per page, the
+FAIL and review totals, the excerpt-rule failures, the units and the share
+that are skeletons, the walkthrough gaps, the reading and figure failures,
+lines, figures and state, then a summary per grade: no FAIL is current; walk
+gaps at most one owned function in five and skeletons at most a third of the
+units is fix; the rest is rebuild. Its `--cache` reuses a page's check
+document while the page and QA digests match. Both commands change nothing.
 
 | Exit code | Meaning |
 |---|---|
@@ -400,11 +399,13 @@ rule changes its module and tests, and its guideline when the requirement
 changes; shared parsing grows only when another caller needs it.
 
 Retiring one rests on what the check found across pages, not on an impression.
-Before fixing anything, a writer runs `kg check` once over the composed page
-and records the FAIL and review counts per rule under `First pass` in the
-worksheet's LINT (worksheet.md [lint.first-pass]); with the `EXEMPT` lines,
-every page then holds per rule what was found, what was fixed and what was
-judged a false hit, and `kg retro` sums them.
+Before fixing anything, a writer runs `kg check --first-pass` once over the
+composed page, and the engine writes the FAIL and review counts per rule to the
+first-pass record beside the worksheet (worksheet.md [lint.first-pass]); with
+the `EXEMPT` lines, every page then holds per rule what was found, what was
+fixed and what was judged a false hit, and `kg retro` sums them. The records
+live in the workspace and die with the machine like the worksheets, so a
+retirement is decided while they exist.
 
 The thresholds, applied by a person over at least twenty pages: a check with no
 first-pass hit is a guard the writers no longer need, and goes when it carries
@@ -413,7 +414,8 @@ mostly exempted, seven in ten or more, is producing reading work, so its exempt
 logic is reworked or the check goes and the prose stays; a check with fixed
 hits stays; a manual rule whose reading rows are adjudicated "no change" page
 after page is merged into its neighbour or given a form the engine can verify.
-`retro` marks the first two cases in its last column.
+A rule younger than a record is absent from it, so the person reads a rule's
+age from Git beside its counts.
 
 Retirement is deletion. The module and its test go, the requirement drops its
 `qa` marker, and a retired rule loses its sentence with a clause added to the

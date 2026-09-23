@@ -1,101 +1,71 @@
-"""kg retro: the first-pass tables and EXEMPT lines of a campaign's worksheets, summed per rule."""
+"""kg retro: the first-pass records and the EXEMPT lines of a workspace, summed per rule."""
+import json
 import tempfile
 import unittest
+from collections import Counter
 from pathlib import Path
 
 import retro
 
-RECORDED = '''# Worksheet
-
-## LINT
-
-### First pass
-One run before any fix.
-
-| rule | FAIL | review |
-|---|---|---|
-| `excerpts.verbatim` | 4 | 0 |
-| style.superlatives | 1 | 3 |
-| TOTAL | 5 | 3 |
-
-EXEMPT style.superlatives "x": ruling
-EXEMPT old.rule "y": ruling
-
-LINTED 2026-09-18 page sha256: 0 qa sha256: 1
-'''
-BARE = '# Worksheet\n\n## LINT\n\nEXEMPT style.walk "z": ruling\n'
-WALKER = ('## LINT\n### First pass\n| rule | FAIL | review |\n|---|---|---|\n| style.walk | 0 | 2 |\n\n'
-          'EXEMPT style.walk "w": ruling\nEXEMPT style.walk "v": ruling\n')
+RECORD = {"kg": 3, "page": "docs/usb4/acpi/a.md", "date": "2026-09-18", "page_digest": "0" * 64, "qa_digest": "1" * 64,
+          "rules": {"excerpts.verbatim": {"FAIL": 4, "review": 0, "complete": True},
+                    "style.superlatives": {"FAIL": 1, "review": 3, "complete": True},
+                    "style.walk": {"FAIL": 0, "review": 0, "complete": True}}}
+CONVERTED = {"kg": 3, "page": "docs/usb4/acpi/c.md", "date": "2026-09-10", "page_digest": None, "qa_digest": None,
+             "converted": "from the First pass table of c.worksheet.md", "rules": {"style.walk": {"FAIL": 0, "review": 2}}}
+A = '# Worksheet\n\n## LINT\n\nEXEMPT style.superlatives "x": ruling\nEXEMPT old.rule "y": ruling\n\nLINTED 2026-09-18 page sha256: 0 qa sha256: 1\n'
+B = '# Worksheet\n\n## LINT\n\nEXEMPT style.walk "z": ruling\n'
 
 
-def campaign(root, extra=0):
+def workspace(root):
     base = Path(root) / 'usb4' / 'acpi'
     base.mkdir(parents=True)
-    (base / 'a.worksheet.md').write_text(RECORDED, encoding='utf-8')
-    (base / 'b.worksheet.md').write_text(BARE, encoding='utf-8')
-    for n in range(extra):
-        (base / f'p{n:02}.worksheet.md').write_text(WALKER, encoding='utf-8')
+    (base / 'a.first-pass.json').write_text(json.dumps(RECORD), encoding='utf-8')
+    (base / 'c.first-pass.json').write_text(json.dumps(CONVERTED), encoding='utf-8')
+    (base / 'a.worksheet.md').write_text(A, encoding='utf-8')
+    (base / 'b.worksheet.md').write_text(B, encoding='utf-8')
     return Path(root)
 
 
 class Retro(unittest.TestCase):
 
-    def test_pages_rows_and_listing(self):
+    def test_records_rows_and_listing(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = campaign(tmp)
-            pages = retro.gather(root)
-            self.assertEqual([page['page'] for page in pages], ['usb4/acpi/a', 'usb4/acpi/b'])
-            self.assertEqual(pages[0]['first'], {'excerpts.verbatim': (4, 0), 'style.superlatives': (1, 3)})
-            self.assertIsNone(pages[1]['first'])
-            rows = {row['rule']: row for row in retro.summarize(pages, ['excerpts.verbatim', 'style.superlatives', 'style.walk'])}
-            self.assertEqual(list(rows), ['excerpts.verbatim', 'style.superlatives', 'style.walk', 'old.rule'])
+            root = workspace(tmp)
+            records, exemptions = retro.gather(root)
+            self.assertEqual([r['page'] for r in records], ['usb4/acpi/a', 'usb4/acpi/c'])
+            self.assertEqual(records[0]['rules'], {'excerpts.verbatim': (4, 0), 'style.superlatives': (1, 3), 'style.walk': (0, 0)})
+            self.assertEqual((records[0]['converted'], records[1]['converted']), (False, True))
+            self.assertEqual(exemptions, {'usb4/acpi/a': Counter({'style.superlatives': 1, 'old.rule': 1}),
+                                          'usb4/acpi/b': Counter({'style.walk': 1})})
+            rows = {row['rule']: row for row in retro.summarize(records, exemptions, ['excerpts.verbatim', 'style.superlatives', 'style.walk', 'style.lists'])}
+            self.assertEqual(list(rows), ['excerpts.verbatim', 'style.superlatives', 'style.walk', 'style.lists', 'old.rule'])
             verbatim = rows['excerpts.verbatim']
-            self.assertEqual((verbatim['fail'], verbatim['review'], verbatim['hit_pages'], verbatim['pages']), (4, 0, 1, 1))
-            self.assertEqual((rows['style.superlatives']['exempt'], rows['style.superlatives']['share']), (1, 0.25))
-            self.assertEqual(rows['style.superlatives']['last']['date'], '2026-09-18')
-            self.assertEqual((rows['style.walk']['hit_pages'], rows['style.walk']['exempt'], rows['style.walk']['exempt_all'], rows['style.walk']['note']), (0, 0, 1, 'unknown on 1 recorded page'))
-            self.assertEqual(rows['old.rule']['note'], 'not a rule now; unknown on 1 recorded page')
-            text = '\n'.join(retro.render(root, pages, list(rows.values())))
-            self.assertTrue(text.startswith(f'retrospective over 1 page in {root} (1 worksheet without a first-pass record)'), text)
-            self.assertIn('usb4/acpi/a 2026-09-18', text)
-            listing = '\n'.join(retro.render(root, pages, [rows['style.superlatives']], rule='style.superlatives'))
-            self.assertIn('usb4/acpi/a', listing)
-            self.assertIn('2026-09-18', listing)
-            self.assertNotIn('usb4/acpi/b', listing)
+            self.assertEqual((verbatim['pages'], verbatim['hit_pages'], verbatim['fail'], verbatim['review'], verbatim['exempt']), (1, 1, 4, 0, 0))
+            self.assertEqual((rows['style.superlatives']['fail'], rows['style.superlatives']['review'], rows['style.superlatives']['exempt']), (1, 3, 1))
+            # the converted record names style.walk, so both records are its sample; one hit
+            self.assertEqual((rows['style.walk']['pages'], rows['style.walk']['hit_pages'], rows['style.walk']['review'], rows['style.walk']['exempt']), (2, 1, 2, 1))
+            self.assertEqual((rows['style.lists']['pages'], rows['style.lists']['hit_pages']), (0, 0))
+            self.assertEqual((rows['old.rule']['known'], rows['old.rule']['exempt']), (False, 1))
+            text = retro.render(root, records, exemptions, list(rows.values()))
+            self.assertTrue(text[0].startswith(f'retrospective over 2 first-pass records and 2 worksheets in {root} (1 record converted'), text[0])
+            self.assertIn('rules the records or the worksheets name that the skill no longer carries:', text)
+            self.assertTrue(text[-1].startswith('old.rule'))
+            listing = retro.render(root, records, exemptions, [rows['style.walk']], rule='style.walk')
+            self.assertEqual(len(listing), 5)
+            self.assertIn('usb4/acpi/a', listing[2])
+            self.assertIn('no first-pass record naming the rule', next(l for l in listing if 'usb4/acpi/b' in l))
+            self.assertIn('2026-09-10', next(l for l in listing if 'usb4/acpi/c' in l))
 
-    def test_guard_and_noise_notes_need_enough_pages(self):
+    def test_a_record_naming_no_valid_rule_is_an_empty_sample(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = campaign(tmp, extra=20)
-            rows = {row['rule']: row for row in retro.summarize(retro.gather(root), ['excerpts.verbatim', 'style.walk', 'style.lists'])}
-            self.assertEqual(rows['style.lists']['note'], 'unknown on 21 recorded pages')
-            self.assertEqual((rows['style.walk']['exempt'], rows['style.walk']['exempt_all'], rows['style.walk']['note']), (40, 41, '100% exempt'))
-            self.assertEqual(rows['excerpts.verbatim']['note'], '')
-
-    def test_a_worksheet_without_the_heading_records_nothing(self):
-        lines = ['## LINT', 'The first pass found nothing worth a table.', '| rule | FAIL | review |', '|---|---|---|', '| style.walk | 0 | 1 |']
-        self.assertIsNone(retro.first_pass_table(lines))
-        self.assertEqual(retro.first_pass_table(['**First pass**', '', '| rule | FAIL | review |', '|---|---|---|', '| style.walk | 0 | 1 |']), {'style.walk': (0, 1)})
+            base = Path(tmp) / 'x'
+            base.mkdir()
+            (base / 'p.first-pass.json').write_text(json.dumps({'kg': 3, 'rules': {'TOTAL': {'FAIL': 5, 'review': 3}}}), encoding='utf-8')
+            records, exemptions = retro.gather(tmp)
+            self.assertEqual((records[0]['rules'], exemptions), ({}, {}))
+            self.assertEqual(retro.summarize(records, exemptions, ['style.walk'])[0]['pages'], 0)
 
 
 if __name__ == '__main__':
     unittest.main()
-
-
-class RulesRun(unittest.TestCase):
-    NEWER = ('## LINT\n### First pass\n== rules run (2): style.walk, style.hedges\n\n| rule | FAIL | review |\n|---|---|---|\n'
-             '| style.walk | 0 | 1 |\n\n')
-    OLDER = '## LINT\n### First pass\n| rule | FAIL | review |\n|---|---|---|\n| style.walk | 0 | 1 |\n\n'
-
-    def test_a_record_naming_its_rules_is_a_sample_of_each_and_an_older_one_only_of_its_hits(self):
-        with tempfile.TemporaryDirectory() as root:
-            base = Path(root) / 'usb4' / 'x'
-            base.mkdir(parents=True)
-            (base / 'new.worksheet.md').write_text(self.NEWER, encoding='utf-8')
-            (base / 'old.worksheet.md').write_text(self.OLDER, encoding='utf-8')
-            pages = retro.gather(root)
-            rows = {row['rule']: row for row in retro.summarize(pages, ['style.walk', 'style.hedges', 'style.lists'])}
-            self.assertEqual(rows['style.walk']['pages'], 2)
-            self.assertEqual(rows['style.hedges']['pages'], 1)
-            self.assertEqual(rows['style.lists']['pages'], 0)
-            self.assertEqual(rows['style.hedges']['note'], 'unknown on 1 recorded page')
-            self.assertEqual(rows['style.lists']['note'], 'not run on 1 recorded page; unknown on 1 recorded page')

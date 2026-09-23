@@ -38,13 +38,13 @@ The worksheet is the page's entire working file: the research, the completeness 
 
 ## LINT [lint]
 
-1. [lint.layout] LINT is four blocks in this order, each under its own `###` heading: `First pass`, the table of [lint.first-pass]; `Verdicts`, every candidate with its verdict; `Exemptions`, the `EXEMPT` lines and nothing else; `Check pass`, the check pass's reproduction and fixes. The `LINTED` record is the section's last line, and OPEN GAPS follows the section.
+1. [lint.layout] LINT is three blocks in this order, each under its own `###` heading: `Verdicts`, every candidate with its verdict; `Exemptions`, the `EXEMPT` lines and nothing else; `Check pass`, the check pass's reproduction and fixes. The `LINTED` record is the section's last line, and OPEN GAPS follows the section.
 2. [lint.verdicts] Every candidate the prose view and the figure sweep surfaced, each FIXED (exact before and after), ESCALATED, or EXEMPT (with the ruling applied), the verdict written before acting; then the check pass's own reproduction, where a disagreement is a finding. An EXEMPT verdict is also written on a line of its own, which `kg check` reads: the finding of that rule whose text carries the fragment is printed as a note with the ruling and no longer fails the run.
    - The form is `EXEMPT <rule-id> "<a fragment of the flagged text>": <the ruling applied>`; a double quote inside the fragment is written `\"`, and the ruling runs to the end of the line, pipes included.
    - A page line may follow the fragment as a hint that picks one finding where the fragment matches several. A fragment is required; a line number alone exempts nothing.
    - A line that matches nothing is reported as stale and one that matches several as ambiguous, and neither exempts anything, so an exemption survives an edit above it and a stale one is seen rather than silently kept.
    - Legacy `EXEMPT rule-id/part` entries require re-adjudication and are never broadened by dropping the part. Engine errors and missing inputs cannot be exempted.
-3. [lint.first-pass] Before the first fix, the writer runs `kg check` once over the composed page and records, under a `First pass` heading, the run's `== rules run (N): ...` line and then a table of the FAIL and review counts per rule exactly as the run printed them, one row per rule that reported any and a total; `kg retro` reads both across a campaign's worksheets, counting a page as a sample of a rule only when that line names the rule or the table carries it, so the heading, the line and the two count columns keep this form.
+3. [lint.first-pass] Before the first fix, the writer runs `kg check <page> --first-pass` once over the composed page; the engine writes the run's FAIL and review counts per rule to `<slug>.first-pass.json` beside the worksheet and never overwrites one, so the record is of the page before any fix, and `kg retro` sums the records of a workspace. Nothing is copied into LINT.
 4. [lint.record, qa] LINT ends with the check pass's record, `LINTED <date> page sha256: <digest> qa sha256: <qa-digest>`, using both digests printed by the final full `kg check` run; single-agent mode records `check pass: self-run` before it. The page digest covers the page bytes. The QA digest covers sorted repository-relative paths and bytes of guideline Markdown and executable Python under `tools/qa/`, including shared helpers, excluding tests. A missing record, a legacy record without a QA digest, or either changed digest means WRITTEN and requires a new check pass. A current record stands only with completed human adjudication and a complete full run without FAIL, engine errors or input problems. Partial `--only` runs establish no page state. The engine never writes this record automatically. The last LINTED line is the record; earlier lines remain as history and settle nothing.
 
 ## The skeleton [skeleton]
@@ -145,11 +145,6 @@ for the check pass, never proof. Ends with `page sha256: <digest>` of the
 page this evidence describes.
 
 ## LINT
-### First pass
-| rule | FAIL | review |
-The counts of the first full `kg check` run over the composed page, before
-any fix, one row per rule that reported any and a total.
-
 ### Verdicts
 Every candidate the prose view and the figure sweep surfaced, each FIXED
 (exact before and after), ESCALATED, or EXEMPT (with the ruling applied),

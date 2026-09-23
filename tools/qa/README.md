@@ -10,6 +10,7 @@ remain manual. The only check interface is `RULE` and `check(page, inputs)`.
 python3 tools/qa/kg.py check page.md
 python3 tools/qa/kg.py check page.md --only page.self-contained --json
 python3 tools/qa/kg.py check page.md --checklist
+python3 tools/qa/kg.py check page.md --first-pass
 python3 tools/qa/kg.py where page.self-contained
 python3 tools/qa/kg.py rules
 python3 tools/qa/kg.py selftest --rule page.self-contained
@@ -144,11 +145,12 @@ created automatically from a clean run.
 
 ## Retire a check
 
-`python3 tools/qa/kg.py retro progress/<campaign>` reads the first-pass records and
-`EXEMPT` lines of a campaign's worksheets and prints, per rule, the pages it fired on,
-its first-pass FAIL and review totals, the exempted share of its hits on those pages,
-the `EXEMPT` lines across every worksheet and the last page it fired on; `--rule <id>` lists the pages instead. [DESIGN.md](DESIGN.md)
-section 11 says how the numbers turn into a retirement.
+`python3 tools/qa/kg.py check <page> --first-pass` writes a page's first-pass counts per
+rule beside its worksheet, once. `python3 tools/qa/kg.py retro progress/<campaign>` sums
+those records and the `EXEMPT` lines of the worksheets and prints, per rule, the records
+naming it, those where it fired, its first-pass FAIL and review totals and its `EXEMPT`
+lines; `--rule <id>` lists the pages instead. [DESIGN.md](DESIGN.md) section 12 says how
+the numbers turn into a retirement.
 
 ## Validation and maintenance
 

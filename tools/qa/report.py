@@ -213,7 +213,6 @@ def render_text(results, page_lines, baseline, inputs, state_line):
             out.append(f"   ERROR: {result.error}")
     out.append(f"== done: {tally['FAIL']} FAIL, {tally['review']} review, {tally['note']} note, "
                f"{tally['errors']} engine errors, {tally['incomplete']} incomplete rules")
-    out.append(f"== rules run ({len(results)}): " + ", ".join(sorted(r.rule.id for r in results)))
     out.append("== validation complete; review findings still require adjudication" if inputs.complete(results)
                else "== INCOMPLETE validation: " + inputs.incomplete_reason(results))
     out.append(state_line)
