@@ -197,21 +197,37 @@ def finding_line(finding, tag=""):
     return f"   {finding.severity}: {where}{finding.message}{tag}"
 
 
+def is_detail(finding):
+    """An inventory row or a per-item detail: kept in --json, counted in the text report."""
+    data = finding.data if isinstance(finding.data, dict) else {}
+    return finding.severity == "note" and bool(data.get("inventory") or data.get("detail"))
+
+
 def render_text(results, page_lines, baseline, inputs, state_line):
+    """The text report: per rule, the FAIL and review findings and the notes a person reads, the
+    summary note included; the inventory rows and per-item details are counted, --json keeps them."""
     out = list(inputs.report_lines())
     tally = collections.Counter()
     for result in results:
         out.append(header(result))
+        withheld = 0
         for finding in result.findings:
             tally[finding.severity] += 1
+            if is_detail(finding):
+                withheld += 1
+                continue
             out.append(finding_line(finding, provenance_tag(page_lines, baseline, finding.line)))
+        if withheld:
+            tally['withheld'] += withheld
+            out.append(f"   {withheld} inventory line{'s' if withheld != 1 else ''}, in --json")
         if result.skipped:
             tally['incomplete'] += 1
             out.append(f"   INCOMPLETE: {result.skipped}")
         if result.error:
             tally['errors'] += 1
             out.append(f"   ERROR: {result.error}")
-    out.append(f"== done: {tally['FAIL']} FAIL, {tally['review']} review, {tally['note']} note, "
+    out.append(f"== done: {tally['FAIL']} FAIL, {tally['review']} review, {tally['note']} note "
+               f"({tally['withheld']} inventory lines in --json only), "
                f"{tally['errors']} engine errors, {tally['incomplete']} incomplete rules")
     out.append("== validation complete; review findings still require adjudication" if inputs.complete(results)
                else "== INCOMPLETE validation: " + inputs.incomplete_reason(results))

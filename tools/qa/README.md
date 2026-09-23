@@ -22,7 +22,7 @@ python3 tools/qa/kg.py view page.md --prose
 ```
 
 `view` also accepts `--raw`, `--spans-visible` or `--regions`. Reading inventories
-belong to checks: use `check --only <id>` to retrieve them. See
+belong to checks: use `check --only <id> --json` to retrieve them. See
 [checking.md](../../guidelines/checking.md) for the inventory-to-guideline mapping.
 
 The resolver uses the existing checkout conventions for the kernel tree,
@@ -110,8 +110,11 @@ entry need not require Git.
 | `0 findings` | Nothing emitted; not a judgment that the full guideline passes |
 
 JSON version 3 groups results by guideline ID. Every observation is in `findings`;
-former listing rows and footer measurements now appear as findings and summary
-notes with `data`. Text output includes them too. A review row's `data.flags`
+listing rows and footer measurements appear as findings and summary notes with
+`data`. The text report prints the FAIL and review findings, the notes a person
+reads and each rule's summary note; an inventory row (`data.inventory`) or a
+per-item detail (`data.detail`) is counted per rule and in the `== done` line and
+printed only by `--json`. A review row's `data.flags`
 records what the heuristic observed, without declaring that the full guideline
 passed. Empty flags do not clear the reading task.
 

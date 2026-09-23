@@ -7,7 +7,7 @@ import re
 from collections import namedtuple
 
 from pagemodel import LINK
-from report import Row, reading
+from report import Finding, Row, reading
 
 CODE_SPAN = re.compile(r'`[^`]+`')
 SENTENCE_END = re.compile(r'(?<=[.!?])\s+')
@@ -48,7 +48,7 @@ def sentence_worklist(candidates, *, label, baseline_present, bases=None, page=N
     the worksheet's Bases table covers (a row at its page line whose claim fragment is in the
     sentence) is a note rather than a reading row; with `report_stale`, a row whose fragment no
     longer sits on its line is reported too."""
-    rows, notes, used = [], [], set()
+    rows, notes, recorded, used = [], [], [], set()
     new = with_basis = 0
     by_line = {}
     for index, row in enumerate(bases or []):
@@ -63,7 +63,7 @@ def sentence_worklist(candidates, *, label, baseline_present, bases=None, page=N
         else:
             used.add(match)
             with_basis += 1
-            notes.append((line, f'{shown} (basis recorded)'))
+            recorded.append((line, f'{shown} (basis recorded)'))
     stale = 0
     if report_stale and page is not None:
         for row in bases or []:
@@ -80,4 +80,6 @@ def sentence_worklist(candidates, *, label, baseline_present, bases=None, page=N
             'new_since_commit': new if baseline_present else None}
     if report_stale:
         data['stale_bases'] = stale
+    for line, text in recorded:  # details: read in --json or with --only
+        yield Finding(line, 'note', text, {'detail': True})
     yield from reading(rows, notes, summary=summary, data=data)

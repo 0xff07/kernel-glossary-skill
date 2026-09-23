@@ -106,10 +106,16 @@ inventory.
 | `review` | A candidate or reading work item that needs human judgment |
 | `note` | Context: an inventory row, a measurement or a recorded exemption |
 
-Every observation appears in the output: reading candidates as review findings,
+Every observation is a finding: reading candidates as review findings,
 informational rows as notes, aggregate measurements as summary notes with
 structured `data`. `--json` groups the results by guideline ID with the full
-details; the text report prints the same inventories and summaries.
+details. The text report prints the FAIL and review findings, the notes a person
+reads and each rule's summary note; an inventory row (`data.inventory`, what
+`report.observations()` makes of listing rows) or a per-item detail
+(`data.detail`: a block of the block map, a sentence whose basis is recorded, a
+block added or removed against the baseline) is counted per rule and in the
+`== done` line and never printed, because a writer reads the report many times
+and the inventories are what a JSON reader asks for.
 
 Execution completeness is separate from guideline judgment. A rule that emits
 nothing is `0 findings`, which does not say the requirement holds; `INCOMPLETE`

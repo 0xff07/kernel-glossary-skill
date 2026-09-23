@@ -1,4 +1,5 @@
 """Checks for [arrangement.units]."""
+from report import Finding
 from report import reading
 from report import Row
 import collections
@@ -14,6 +15,7 @@ def block_measure(kind):
 
 def block_map(page, inputs):
     rows, notes = ([], [])
+    details = []  # one line per block, read in --json or with --only
     maps = []
     measures = []
     entries = []
@@ -24,10 +26,10 @@ def block_map(page, inputs):
         for block in blocks:
             if block.kind == 'P':
                 longest = max(block.stats[2]) if block.stats[2] else 0
-                rows.append(Row(block.line, f'    P@{block.line:<6} sentences={block.stats[1]:<3} words={block.size:<4} longest={longest}', set()))
+                details.append(Finding(block.line, 'note', f'    P@{block.line:<6} sentences={block.stats[1]:<3} words={block.size:<4} longest={longest}', {'detail': True}))
             else:
                 label = f'{block.label} {block.text}'.rstrip() if block.kind == 'C' else block.label
-                rows.append(Row(block.line, f'    {block.kind}@{block.line:<6} {block_measure(block.kind)}={block.size:<4} {label}', set()))
+                details.append(Finding(block.line, 'note', f'    {block.kind}@{block.line:<6} {block_measure(block.kind)}={block.size:<4} {label}', {'detail': True}))
             if block.kind in DENSE:
                 entries.append({'kind': block.kind, 'line': block.line, 'size': block.size, 'label': block.label, 'construct': block.text if block.kind == 'C' else ''})
         for before, middle, after in zip(blocks, blocks[1:], blocks[2:]):
@@ -52,7 +54,10 @@ def block_map(page, inputs):
     counts = collections.Counter((e['kind'] for e in entries))
     notes.insert(0, (None, f"inventory: structured blocks={len(entries)} excerpts={counts['C']} figures={counts['D']} tables={counts['T']} other fences={counts['Q']} prose words under DETAILS={prose_words}"))
     footer = f"subsections={len(page.subsections)} distinct-maps={len(set(maps))} longest-repeat={worst} figures={sum((m['figures'] for m in measures))} other-fences={sum((m['others'] for m in measures))}"
+    yield from details
     yield from reading(rows, notes, footer, {'subsections': len(page.subsections), 'maps': maps, 'inventory': entries, 'prose_words': prose_words}, severity='note')
+
+
 def map_record(page, inputs):
     """The block maps the worksheet records against the page's, matched by subsection title."""
     from worksheet_utils import recorded_maps
@@ -127,7 +132,7 @@ def baseline_inventory(page, inputs):
         if not a or not b or a.group(1) != b.group(1):
             return False
         return int(b.group(2)) < int(a.group(2)) <= int(b.group(2)) + old[3] + 2
-    notes = []
+    notes = []  # one line per block, details read in --json or with --only
     for block in sorted(added, key=lambda b: b[2]):
         note = next((f' (a split of the baseline unit {o[1]})' for o in before if is_split_of(block, o)), '') if block[0] == 'C' else ''
         notes.append((block[2], f'structured block added against the baseline: {block[0]} {block[1]}{note}'))
@@ -150,7 +155,9 @@ def baseline_inventory(page, inputs):
             notes.append((after['line'], f"subsection changed against the baseline: [{title[:FINDING_CLIP]}] {', '.join(parts)}"))
     carried = len(set(shapes_now) & set(shapes_before))
     footer = f'inventory against the baseline: before={len(before)} after={len(now)} added={len(added)} removed={len(removed)} moved={len(moved)}; subsections carried={carried} changed={changed} new={len(shapes_now) - carried} gone={len(shapes_before) - carried}'
-    yield from reading([], notes, footer, {'added': len(added), 'removed': len(removed), 'moved': len(moved), 'changed': changed}, severity='note')
+    for line, text in notes:
+        yield Finding(line, 'note', text, {'detail': True})
+    yield from reading([], [], footer, {'added': len(added), 'removed': len(removed), 'moved': len(moved), 'changed': changed}, severity='note')
 
 def reuse(page, inputs):
     from report import reuse_lines

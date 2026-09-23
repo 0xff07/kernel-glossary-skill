@@ -1,7 +1,9 @@
-"""Exemptions stay attached to one observation and cannot clear execution errors."""
+"""Exemptions stay attached to one observation and cannot clear execution errors; the text
+report counts inventories and details and prints the rest."""
 import unittest
 import report
 from report import Finding, Result
+from tests.support import TestInputs
 from tests.test_runner import binding
 
 
@@ -56,3 +58,20 @@ class Exemptions(unittest.TestCase):
         self.assertEqual(len(errors), 1)
         self.assertIn('ambiguous', errors[0][1])
         self.assertEqual([f.severity for f in found.findings], ['note', 'review'])
+
+
+class TextReport(unittest.TestCase):
+    def test_inventories_and_details_are_counted_not_printed(self):
+        found = result(Finding(3, 'FAIL', 'a defect'), Finding(4, 'review', 'a candidate'),
+                       Finding(5, 'note', 'a reading note'), Finding(None, 'note', 'measurements', {'units': 2}),
+                       Finding(6, 'note', 'an inventory row', {'inventory': True}),
+                       Finding(7, 'note', 'a per-item detail', {'detail': True}))
+        inputs = type('Inputs', (TestInputs,), {'report_lines': lambda self: []})()
+        text, tally = report.render_text([found], ['# T'] * 8, None, inputs, '== state: WRITTEN')
+        for shown in ('a defect', 'a candidate', 'a reading note', 'measurements'):
+            self.assertIn(shown, text)
+        for hidden in ('an inventory row', 'a per-item detail'):
+            self.assertNotIn(hidden, text)
+        self.assertIn('2 inventory lines, in --json', text)
+        self.assertIn('4 note (2 inventory lines in --json only)', text)
+        self.assertEqual((tally['note'], tally['withheld']), (4, 2))
