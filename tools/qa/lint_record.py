@@ -8,13 +8,15 @@ RECORD = re.compile(r"\bLINTED\s+(\S+)\s+page sha256:\s*([0-9a-f]{64})(?:[ \t]+q
 
 # modules that only read check results and never produce them; editing them changes no finding
 REPORTING_ONLY = ("retro.py", "triage.py")
+# the one guideline no writer reads (SKILL.md, the reading routes); it binds no page
+CAMPAIGN_GUIDELINE = "campaign.md"
 
 
 def qa_digest(base):
-    """The digest of everything that decides a finding: the guidelines and the QA code, the tests
-    and the reporting-only modules left out."""
+    """The digest of everything that decides a finding: the guidelines a writer reads and the QA code;
+    the tests, the reporting-only modules and campaign.md left out."""
     base = Path(base)
-    paths = list((base / "guidelines").glob("*.md"))
+    paths = [p for p in (base / "guidelines").glob("*.md") if p.name != CAMPAIGN_GUIDELINE]
     paths += [p for p in (base / "tools/qa").rglob("*.py")
               if "tests" not in p.relative_to(base / "tools/qa").parts and p.name not in REPORTING_ONLY]
     digest = hashlib.sha256()

@@ -342,7 +342,8 @@ LINTED <date> page sha256: <digest> qa sha256: <qa-digest>
 `lint_record.py` interprets the record for the `lint.record` check and the
 CLI; page state never depends on a check's human-readable messages. The QA
 digest hashes, in sorted order of their repository-relative paths, the bytes of
-every guideline Markdown file and every Python file under `tools/qa/` except
+every guideline Markdown file a writer reads, which is every file under
+`guidelines/` but `campaign.md`, and every Python file under `tools/qa/` except
 the tests and the reporting-only modules `retro.py` and `triage.py`, which read
 findings and produce none. File bytes include uncommitted changes, so a commit
 ID cannot stand in for the digest.

@@ -138,8 +138,8 @@ that run:
 LINTED <date> page sha256: <digest> qa sha256: <qa-digest>
 ```
 
-The QA digest includes guideline Markdown and executable QA Python, including
-shared helpers; tests, this README and the reporting-only modules `retro.py` and
+The QA digest includes the guideline Markdown a writer reads (every file under
+`guidelines/` but `campaign.md`) and executable QA Python, including shared helpers; tests, this README and the reporting-only modules `retro.py` and
 `triage.py` are excluded, since they read findings and produce none. Either changed digest, or an
 old record without a QA digest, returns the page to WRITTEN. Records are never
 created automatically from a clean run.
