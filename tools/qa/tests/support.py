@@ -56,8 +56,7 @@ class TestInputs:
         self.problems, self.notes = [], []
         self.worksheet = '<worksheet>' if worksheet is not None else None
         self.worksheet_lines = worksheet.split('\n') if worksheet is not None else None
-        self.worksheet_how = 'convention'
-        self.worksheet_rejected = []
+        self.worksheet_missing = '' if worksheet is not None else 'no worksheet'
         self.baseline = baseline
         self.page_digest = 'a' * 64
         self.qa_digest = 'c' * 64

@@ -11,12 +11,10 @@ ACCEPTANCE = '- scoped behaviors covered: done\n- claims supported nearby: done\
 class FakeInputs(TestInputs):
     worksheet_section = Inputs.worksheet_section
 
-    def __init__(self, text, how='convention', rejected=(), digest=DIGEST):
+    def __init__(self, text, digest=DIGEST):
         super().__init__()
         self.worksheet_lines = text.split('\n') if text is not None else None
         self.worksheet = '<worksheet>' if text is not None else None
-        self.worksheet_how = how
-        self.worksheet_rejected = list(rejected)
         self.page_digest = digest
 
 def check(name, text, **fields):

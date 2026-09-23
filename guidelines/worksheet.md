@@ -4,7 +4,7 @@ The worksheet is the page's entire working file: the research, the completeness 
 
 ## The file [file]
 
-1. [file.hint-sheet] The worksheet is a hint sheet, never a source. Every fact taken from it is re-verified against the on-disk tree at the documented version before it lands in the page, the check pass never accepts an entry as evidence, and a worksheet that disagrees with the disk is corrected the moment the disagreement is found.
+1. [file.hint-sheet] The worksheet is a hint sheet, never a source. Every fact taken from it is re-verified against the on-disk tree at the documented version before it lands in the page, the check pass never accepts an entry as evidence, and a worksheet that disagrees with the disk is corrected the moment the disagreement is found. Nothing in it carries an identity or a freshness the engine checks: a stale or wrong entry costs a lookup, never a wrong finding, because every row the checks read is matched to the current page or the tree when it is read, and the LINTED record names the page and QA digests it certifies.
 2. [file.kept-current] Whoever runs the research pass creates it and keeps it current, and each later pass appends its own section. Entries are one or two lines each, in the anchored-facts style of an inventory digest: locations, search bases and outcomes, never prose.
 3. [file.promoted] Anything durable it records, a correction against the spec, a lesson, a settled adjudication, is promoted into the campaign spec as a dated errata entry or surfaced to the user; run events go to the run log; a finding left only here is lost when the machine is, by design.
 4. [file.disposable] A run's worksheets are disposable once its campaign closes and are kept until then; another campaign's worksheets are off limits unless the user directs resume or reuse. Helper scripts and scratch go to the scratchpad under a per-page subdirectory, never here.
@@ -12,7 +12,6 @@ The worksheet is the page's entire working file: the research, the completeness 
 ## HEADER [header]
 
 1. [header.fields] The HEADER states the output path, the campaign with its directory, the subsystem entry, the documented version with its commit, the research tooling with the index state or the fallback and why, the architecture and CONFIG scope, and, in a campaign, the boundary statement verbatim.
-2. [header.identity, qa] Only a worksheet whose HEADER names this page, lies under the campaign directory it names, and documents the commit the tree is at is read; the scripts refuse any other candidate, whether the convention found it or an option named it, and several accepted candidates are an ambiguity that no age order resolves.
 
 ## LINKS [links-table]
 

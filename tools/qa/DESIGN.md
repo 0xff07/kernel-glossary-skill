@@ -160,8 +160,11 @@ any check depends on it:
 - the kernel tree, from `--tree`, `KG_TREE` or the checkout convention,
   checked to be a kernel tree, its Git availability, the version the page's
   links pin and the cleanliness of the files the page cites;
-- the worksheet, by convention at `progress/<campaign>/<dir>/<group>/<slug>.worksheet.md`
-  or from `--worksheet`, its identity checked against the page;
+- the worksheet, at `progress/<campaign>/<dir>/<group>/<slug>.worksheet.md` by
+  convention, the campaign being the page's top directory under `docs/` or the
+  basename of `--spec`, or from `--worksheet`: one path, never a search, and
+  nothing in the file checked for identity, since every row a check reads is
+  matched to the page or the tree;
 - the campaign spec, `campaigns/<dir>.md` by convention or `--spec`;
 - the baseline, the last committed revision of the page that differs from it,
   which the facts rules use for provenance;
@@ -285,7 +288,7 @@ neighbourhood a page cites.
 
 | Command | What it does |
 |---|---|
-| `check <page> [--only ID ...] [--json] [--checklist] [--tree] [--worksheet] [--campaign] [--spec]` | runs the checks and prints findings, inventories and the page state |
+| `check <page> [--only ID ...] [--json] [--checklist] [--tree] [--worksheet] [--spec]` | runs the checks and prints findings, inventories and the page state |
 | `view <page> --regions / --prose / --raw / --spans-visible / --load` | prints a page representation, `--load` the reading-load measurements |
 | `skim <page>` | prints the reading path of DETAILS: the route, then each subsection's title, first sentence, recaps and last sentence |
 | `table <page>` | emits the worksheet's LINKS table |

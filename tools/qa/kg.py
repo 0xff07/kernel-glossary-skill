@@ -67,7 +67,7 @@ def cmd_check(args):
     found, requirements, _sections, errors = load_rules(skill_dir())
     selected = rulebook.select(found, args.only)
     page = Page(args.page)
-    inputs = Inputs(args.page, tree=args.tree, worksheet=args.worksheet, campaign=args.campaign, spec=args.spec)
+    inputs = Inputs(args.page, tree=args.tree, worksheet=args.worksheet, spec=args.spec)
     inputs.bind_version(page)
     inputs.problems.extend(errors)
     results = run_rules(page, inputs, selected)
@@ -158,7 +158,7 @@ def cmd_view(args):
 def cmd_table(args):
     from links_table import emit_table
     page = Page(args.page)
-    inputs = Inputs(args.page, tree=args.tree, worksheet=args.worksheet, campaign=args.campaign)
+    inputs = Inputs(args.page, tree=args.tree, worksheet=args.worksheet)
     inputs.bind_version(page)
     if inputs.problems:
         for problem in inputs.problems:
@@ -283,7 +283,6 @@ def main(argv=None):
     for command in (check, table):
         command.add_argument('--tree')
         command.add_argument('--worksheet')
-        command.add_argument('--campaign')
     excerpt = sub.add_parser('excerpt', help='print a verbatim unit with its provenance comment, ready to paste')
     excerpt.add_argument('location', help='path:first or path:first-last, relative to the tree')
     excerpt.add_argument('--whole', action='store_true', help='the whole function or definition holding the cited line')

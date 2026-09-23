@@ -24,12 +24,14 @@ belong to checks: use `check --only <id>` to retrieve them. See
 [checking.md](../../guidelines/checking.md) for the inventory-to-guideline mapping.
 
 The resolver uses the existing checkout conventions for the kernel tree,
-`progress/<campaign>/<dir>/<group>/<slug>.worksheet.md`, the differing committed page at
+`progress/<campaign>/<dir>/<group>/<slug>.worksheet.md` (the campaign being the page's
+top directory under `docs/`, or the basename of `--spec`), the differing committed page at
 `HEAD`, and `campaigns/<dir>.md` (a campaign whose short name differs from the
 docs directory passes `--spec` at every check). Override them with `--tree`, `--worksheet`,
-`--campaign`, `--spec`, or `KG_TREE`, `KG_WORKSHEET`, `KG_CAMPAIGN`. Check pages in
-place so their worksheet identity and baseline resolve correctly. Source version,
-cited-file cleanliness and worksheet identity are validated before dependent work.
+`--spec`, or `KG_TREE`, `KG_WORKSHEET`. Check pages in place so their worksheet and
+baseline resolve. Source version and cited-file cleanliness are validated before
+dependent work; the worksheet is read as found, since every row a check takes from it
+is matched to the page or the tree.
 
 ## Add or extend a check
 

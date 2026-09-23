@@ -1,5 +1,4 @@
 """Resolve and validate shared inputs once; checks ask for them with require()."""
-import glob
 import hashlib
 import os
 import re
@@ -14,7 +13,6 @@ class MissingInput(Exception):
 
 GIT_TIMEOUT = 60
 COMMIT_ID = re.compile(r"\b[0-9a-f]{12,40}\b")
-HEADER_FIELD = re.compile(r"^- (output path|campaign|documented version):\s*(.*)$")
 # an EXEMPT verdict the engine reads: EXEMPT <rule-id>[/part] ["<fragment>"] [<page line>]: <ruling>,
 # the fragment a piece of the flagged text (a double quote inside it written \"), the line only a
 # hint, and the ruling the rest of the line
@@ -148,59 +146,10 @@ def sha256_of(path):
     return hashlib.sha256(open(path, "rb").read()).hexdigest()
 
 
-def worksheet_header(path):
-    fields = {}
-    try:
-        for line in open(path, encoding="utf-8"):
-            if line.startswith("## ") and not line.startswith("## HEADER") and fields:
-                break
-            found = HEADER_FIELD.match(line.rstrip("\n"))
-            if found and found.group(1) not in fields:
-                fields[found.group(1)] = found.group(2).strip()
-    except OSError:
-        return {}
-    return fields
-
-
-def worksheet_campaign(path, base):
-    relative = os.path.relpath(os.path.abspath(path), os.path.join(base, PROGRESS)).replace(os.sep, "/")
-    parts = relative.split("/")
-    if parts[0] == ".." or len(parts) < 2:
-        return os.path.basename(os.path.dirname(path))
-    return parts[0]
-
-
-def worksheet_verdict(path, page_path, head, base, active=None):
-    """Why a worksheet is not this page's at this tree's commit, or '' when it is (worksheet.md
-    [header])."""
-    if not os.path.exists(path):
-        return "does not exist"
-    fields = worksheet_header(path)
-    stated = fields.get("output path", "").split()[0].strip("`") if fields.get("output path") else ""
-    if not stated:
-        return "carries no output path in its HEADER"
-    if os.path.normpath(stated) != os.path.normpath(page_relative(page_path, base)):
-        return f"names {stated}, not this page"
-    campaign = fields.get("campaign", "").split(" ")[0].strip("`")
-    if not campaign:
-        return "carries no campaign in its HEADER"
-    directory = worksheet_campaign(path, base)
-    if campaign != directory:
-        return f"names campaign {campaign} but lies under progress/{directory}/"
-    if active and campaign != active:
-        return f"names campaign {campaign} but the active campaign is {active}"
-    commits = COMMIT_ID.findall(fields.get("documented version", ""))
-    if not commits:
-        return "carries no documented version with its commit in its HEADER"
-    if head and not (head.startswith(commits[0]) or commits[0].startswith(head)):
-        return f"documents commit {commits[0][:12]}, not the tree's {head[:12]}"
-    return ""
-
-
 class Inputs:
     """The resolved inputs of one run."""
 
-    def __init__(self, page_path, tree=None, worksheet=None, campaign=None, base=None, spec=None):
+    def __init__(self, page_path, tree=None, worksheet=None, base=None, spec=None):
         self.page_path = page_path
         self.base = base or skill_dir()
         self.subsystem = subsystem_entry(page_path, self.base)
@@ -210,7 +159,7 @@ class Inputs:
         self.qa_digest = qa_digest(self.base)
         self.spec = spec                          # a campaign spec named outright
         self._resolve_tree(tree)
-        self._resolve_worksheet(worksheet, campaign)
+        self._resolve_worksheet(worksheet)
         self._resolve_baseline()
         self.page_digest = sha256_of(page_path)
 
@@ -278,47 +227,28 @@ class Inputs:
 
     # ---- the worksheet ----
 
-    def _resolve_worksheet(self, explicit, campaign):
+    def _resolve_worksheet(self, explicit):
+        """One path, never a search: `--worksheet` or $KG_WORKSHEET, else the mirrored path under the
+        campaign the page's top directory names, or the basename of `--spec` when one is given. Nothing
+        in the file is checked for identity: every row a check reads is matched to the page or the tree."""
         explicit = explicit or os.environ.get("KG_WORKSHEET")
-        self.campaign = campaign or os.environ.get("KG_CAMPAIGN") or None
+        directory, _within = page_within(self.page_path, self.base)
+        campaign = os.path.splitext(os.path.basename(self.spec))[0] if self.spec else directory
         name = page_key(self.page_path, self.base) + WORKSHEET_SUFFIX
         if explicit:
-            candidates, how = [os.path.abspath(explicit)], "option"
-        elif self.campaign:
-            candidates, how = [os.path.join(self.base, PROGRESS, self.campaign, name)], "campaign"
+            self.worksheet_path = os.path.abspath(explicit)
+        elif campaign:
+            self.worksheet_path = os.path.join(self.base, PROGRESS, campaign, name)
         else:
-            candidates, how = sorted(glob.glob(os.path.join(self.base, PROGRESS, "*", name))), "convention"
-        self.worksheet_how = how
-        self.worksheet_rejected = []
-        accepted = []
-        for path in candidates:
-            why = worksheet_verdict(path, self.page_path, self.tree_head, self.base, self.campaign)
-            if why:
-                self.worksheet_rejected.append(f"worksheet {path} {why}; not used")
-            else:
-                accepted.append(path)
-        if len(accepted) > 1:
-            where = ", ".join(worksheet_campaign(p, self.base) for p in accepted)
-            self.worksheet_rejected.append(f"ambiguous worksheet: {len(accepted)} campaigns name this page at this "
-                                         f"commit ({where}); pass --campaign or $KG_CAMPAIGN; none used")
-            accepted = []
-        self.worksheet = accepted[0] if accepted else None
-        if how == "option":
-            self.problems.extend(self.worksheet_rejected)
-        else:
-            self.notes.extend(self.worksheet_rejected)
-        if self.worksheet is None and not self.worksheet_rejected and how != "option":
-            flat = os.path.splitext(os.path.basename(self.page_path))[0] + WORKSHEET_SUFFIX
-            if flat != name:
-                pattern = os.path.join(self.base, PROGRESS, self.campaign or "*", flat)
-                for stale in sorted(glob.glob(pattern)):
-                    mirrored = os.path.join(os.path.dirname(stale), name)
-                    self.notes.append(f"a worksheet lies at the retired flat path {stale}; the mirrored path is "
-                                      f"{mirrored} (move it there; it was not read)")
-        if self.worksheet is None and not self.worksheet_rejected:
-            self.notes.append("no worksheet found; the worksheet rules skip")
+            self.worksheet_path = None
+        self.worksheet = self.worksheet_path if self.worksheet_path and os.path.isfile(self.worksheet_path) else None
+        self.worksheet_missing = ""
+        if self.worksheet is None:
+            self.worksheet_missing = (f"no worksheet at {self.worksheet_path}" if self.worksheet_path
+                                      else "no worksheet path: the page lies outside docs/ and no --worksheet names one")
+            (self.problems if explicit else self.notes).append(self.worksheet_missing + "; the worksheet rules skip")
         self.worksheet_lines = (open(self.worksheet, encoding="utf-8").read().split("\n")
-                              if self.worksheet else None)
+                                if self.worksheet else None)
 
     def exemptions(self):
         """The EXEMPT verdicts the worksheet's LINT section records for the engine (worksheet.md
@@ -399,7 +329,7 @@ class Inputs:
         if name == 'git' and not self.git:
             raise MissingInput('no git in the kernel tree')
         if name == 'worksheet' and self.worksheet is None:
-            raise MissingInput('; '.join(self.worksheet_rejected) or 'no worksheet')
+            raise MissingInput(self.worksheet_missing or 'no worksheet')
         if name == 'baseline' and self.baseline is None:
             raise MissingInput('no committed baseline differs from the page')
         return self.tree if name == 'git' else getattr(self, name)
@@ -427,6 +357,5 @@ class Inputs:
 
     def as_dict(self):
         return {"page_digest": self.page_digest, "qa_digest": self.qa_digest, "tree": self.tree, "tree_tag": self.tree_tag, "tree_head": self.tree_head,
-                "worksheet": self.worksheet, "worksheet_digest": sha256_of(self.worksheet) if self.worksheet else None,
-                "spec": self.spec, "campaign": self.campaign, "baseline": self.baseline is not None,
+                "worksheet": self.worksheet, "spec": self.spec, "baseline": self.baseline is not None,
                 "problems": self.problems, "notes": self.notes}

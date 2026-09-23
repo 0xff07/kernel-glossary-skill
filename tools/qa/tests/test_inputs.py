@@ -1,10 +1,12 @@
-"""inputs: the EXEMPT line grammar, a page's key and place under docs/, and the worksheet verdict."""
+"""inputs: the EXEMPT line grammar, a page's key and place under docs/, and the worksheet path."""
 import os
 import shutil
 import tempfile
 import unittest
 
-from inputs import Inputs, worksheet_verdict, page_key, page_within, subsystem_entry
+from unittest.mock import patch
+
+from inputs import Inputs, page_key, page_within, subsystem_entry
 
 
 def exemptions_of(lint_text):
@@ -55,45 +57,58 @@ class PagePlace(unittest.TestCase):
         self.assertEqual(page_within(outside, base), (None, "page.md"))
 
 
-class WorksheetVerdict(unittest.TestCase):
-    HEAD = "0123456789abcdef"
+class WorksheetPath(unittest.TestCase):
+    """One path by convention or option, never a search, and nothing in the file checked for identity."""
 
     def setUp(self):
         self.base = tempfile.mkdtemp()
         self.page = os.path.join(self.base, "docs", "kg", "ring.md")
         os.makedirs(os.path.dirname(self.page))
         open(self.page, "w", encoding="utf-8").write("# ring\n")
-        self.worksheet = os.path.join(self.base, "progress", "kg", "kg", "ring.worksheet.md")
-        os.makedirs(os.path.dirname(self.worksheet))
 
     def tearDown(self):
         shutil.rmtree(self.base)
 
-    def write(self, output="docs/kg/ring.md", campaign="kg", version="v0.1, commit 0123456789ab"):
-        open(self.worksheet, "w", encoding="utf-8").write(
-            f"# Worksheet: ring\n\n## HEADER\n- output path: {output}\n- campaign: {campaign} (directory progress/kg/)\n"
-            f"- documented version: {version}\n\n## LINT\n")
+    def resolve(self, worksheet=None, spec=None, page=None):
+        inputs = Inputs.__new__(Inputs)
+        inputs.base, inputs.page_path, inputs.spec = self.base, page or self.page, spec
+        inputs.problems, inputs.notes = [], []
+        with patch.dict(os.environ):
+            os.environ.pop("KG_WORKSHEET", None)
+            inputs._resolve_worksheet(worksheet)
+        return inputs
 
-    def verdict(self, active=None):
-        return worksheet_verdict(self.worksheet, self.page, self.HEAD, self.base, active)
+    def test_the_conventional_path_follows_the_pages_directory(self):
+        expected = os.path.join(self.base, "progress", "kg", "kg", "ring.worksheet.md")
+        inputs = self.resolve()
+        self.assertEqual(inputs.worksheet_path, expected)
+        self.assertIsNone(inputs.worksheet)
+        self.assertEqual(inputs.problems, [])
+        self.assertTrue(any(n.startswith(f"no worksheet at {expected}") for n in inputs.notes), inputs.notes)
+        os.makedirs(os.path.dirname(expected))
+        open(expected, "w", encoding="utf-8").write("# Worksheet: anything\n\n## LINT\nEXEMPT style.walk \"w\": ruling\n")
+        inputs = self.resolve()
+        self.assertEqual(inputs.worksheet, expected)
+        self.assertEqual([e["rule"] for e in inputs.exemptions()], ["style.walk"])
 
-    def test_accepted(self):
-        self.write()
-        self.assertEqual(self.verdict(), "")
-        self.assertEqual(self.verdict(active="kg"), "")
+    def test_the_spec_names_the_campaign(self):
+        inputs = self.resolve(spec=os.path.join(self.base, "campaigns", "other.md"))
+        self.assertEqual(inputs.worksheet_path, os.path.join(self.base, "progress", "other", "kg", "ring.worksheet.md"))
 
-    def test_refusals(self):
-        self.assertEqual(self.verdict(), "does not exist")
-        self.write(output="docs/kg/other.md")
-        self.assertIn("not this page", self.verdict())
-        self.write(campaign="other")
-        self.assertIn("lies under progress/kg/", self.verdict())
-        self.write(version="v0.1, commit fedcba987654")
-        self.assertIn("documents commit fedcba987654", self.verdict())
-        self.write(version="v0.1")
-        self.assertIn("no documented version with its commit", self.verdict())
-        self.write()
-        self.assertIn("the active campaign is other", self.verdict(active="other"))
+    def test_an_explicit_worksheet_is_used_or_is_a_problem(self):
+        named = os.path.join(self.base, "elsewhere", "ring.worksheet.md")
+        inputs = self.resolve(worksheet=named)
+        self.assertIsNone(inputs.worksheet)
+        self.assertTrue(any(p.startswith(f"no worksheet at {named}") for p in inputs.problems), inputs.problems)
+        os.makedirs(os.path.dirname(named))
+        open(named, "w", encoding="utf-8").write("## LINT\n")
+        inputs = self.resolve(worksheet=named)
+        self.assertEqual((inputs.worksheet, inputs.problems), (named, []))
+
+    def test_a_page_outside_docs_has_no_conventional_path(self):
+        inputs = self.resolve(page=os.path.join(self.base, "page.md"))
+        self.assertIsNone(inputs.worksheet_path)
+        self.assertTrue(any("outside docs/" in n for n in inputs.notes), inputs.notes)
 
 
 if __name__ == "__main__":
