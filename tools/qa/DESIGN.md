@@ -297,17 +297,16 @@ neighbourhood a page cites.
 | `where <ID>` | names the guideline, the check module and the test module |
 | `rules` | lists the checks by guideline ID |
 | `retro <progress dir> [--rule ID]` | per rule, what the first pass found over a workspace's first-pass records, and the EXEMPT lines its worksheets carry |
-| `triage <docs dir> [--cache DIR] [--json] [--verbose]` | one row per page under the current rules, graded current, fix or rebuild |
+| `triage <docs dir> [--json] [--verbose] [--tree]` | one row per page under the current rules: FAIL and review totals, FAIL per rule family, lines, figures and state |
 
 `retro` prints, per rule, the first-pass records naming it, those where it
 fired, the first-pass FAIL and review totals and the `EXEMPT` lines written
-against it; `--rule` lists the pages instead. `triage` prints, per page, the
-FAIL and review totals, the excerpt-rule failures, the units and the share
-that are skeletons, the walkthrough gaps, the reading and figure failures,
-lines, figures and state, then a summary per grade: no FAIL is current; walk
-gaps at most one owned function in five and skeletons at most a third of the
-units is fix; the rest is rebuild. Its `--cache` reuses a page's check
-document while the page and QA digests match. Both commands change nothing.
+against it; `--rule` lists the pages instead. `triage` checks every page afresh
+and prints, per page, the FAIL and review totals, the FAIL count per rule
+family (the part of the rule ID before the dot), lines, figures and state, then
+the totals. Both print measurements and decide nothing: whether a rule earns
+its keep or a page is rewritten is read from them (section 12). Both commands
+change nothing.
 
 | Exit code | Meaning |
 |---|---|
