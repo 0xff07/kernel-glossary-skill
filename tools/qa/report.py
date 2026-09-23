@@ -197,26 +197,64 @@ def finding_line(finding, tag=""):
     return f"   {finding.severity}: {where}{finding.message}{tag}"
 
 
+LEADING_LINE = re.compile(r"^\d+ ")
+PROVENANCE = re.compile(r"\s*\[(?:NEW|carried|n/a|mixed [^\]]*)\]")
+LINE_LIST = re.compile(r"\bat \[[\d, ]*\]")
+BLOCK_AT = re.compile(r"\b([PCDTQH])@\d+")
+OCCURRENCES = re.compile(r"\bx\d+\b")
+BASELINE_LINE = re.compile(r"\s*\(was at baseline line \d+\)")
+SENTENCE_OF = re.compile(r"\bsentence \d+ of\b")
+
+
+def finding_key(rule_id, finding):
+    """The identity of a FAIL or review finding across runs: its rule, its severity and its message
+    with the page positions taken out, since a fix elsewhere on the page moves them."""
+    text = finding.message
+    for pattern, replacement in ((LEADING_LINE, ""), (PROVENANCE, ""), (LINE_LIST, "at [..]"),
+                                 (BLOCK_AT, r"\1@N"), (OCCURRENCES, "xN"), (BASELINE_LINE, ""),
+                                 (SENTENCE_OF, "sentence N of")):
+        text = pattern.sub(replacement, text)
+    return f"{rule_id}|{finding.severity}|{' '.join(text.split())}"
+
+
 def is_detail(finding):
     """An inventory row or a per-item detail: kept in --json, counted in the text report."""
     data = finding.data if isinstance(finding.data, dict) else {}
     return finding.severity == "note" and bool(data.get("inventory") or data.get("detail"))
 
 
-def render_text(results, page_lines, baseline, inputs, state_line):
+def render_text(results, page_lines, baseline, inputs, state_line, previous=None):
     """The text report: per rule, the FAIL and review findings and the notes a person reads, the
-    summary note included; the inventory rows and per-item details are counted, --json keeps them."""
+    summary note included; the inventory rows and per-item details are counted, --json keeps them.
+    With the previous full run's record ({'date', 'keys'}) the report is a delta: a review that
+    stood at the last run is counted per rule instead of printed, a FAIL is printed always and
+    marked when it stood, and the findings gone since then are counted at the end."""
     out = list(inputs.report_lines())
     tally = collections.Counter()
+    left = collections.Counter(previous['keys']) if previous is not None else None
     for result in results:
         out.append(header(result))
-        withheld = 0
+        withheld = standing = 0
         for finding in result.findings:
             tally[finding.severity] += 1
             if is_detail(finding):
                 withheld += 1
                 continue
-            out.append(finding_line(finding, provenance_tag(page_lines, baseline, finding.line)))
+            tag = provenance_tag(page_lines, baseline, finding.line)
+            if left is not None and finding.severity in ("FAIL", "review"):
+                key = finding_key(result.rule.id, finding)
+                if left[key] > 0:
+                    left[key] -= 1
+                    if finding.severity == "review":
+                        standing += 1
+                        continue
+                    tag += " (standing)"
+                else:
+                    tally['new'] += 1
+            out.append(finding_line(finding, tag))
+        if standing:
+            tally['standing'] += standing
+            out.append(f"   standing: {standing} review as at the last run; --only {result.rule.id} lists them")
         if withheld:
             tally['withheld'] += withheld
             out.append(f"   {withheld} inventory line{'s' if withheld != 1 else ''}, in --json")
@@ -229,6 +267,9 @@ def render_text(results, page_lines, baseline, inputs, state_line):
     out.append(f"== done: {tally['FAIL']} FAIL, {tally['review']} review, {tally['note']} note "
                f"({tally['withheld']} inventory lines in --json only), "
                f"{tally['errors']} engine errors, {tally['incomplete']} incomplete rules")
+    if previous is not None:
+        out.append(f"== since the last run ({previous['date']}): {tally['new']} new, {sum(left.values())} gone, "
+                   f"{tally['standing']} standing review")
     out.append("== validation complete; review findings still require adjudication" if inputs.complete(results)
                else "== INCOMPLETE validation: " + inputs.incomplete_reason(results))
     out.append(state_line)

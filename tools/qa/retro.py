@@ -19,7 +19,7 @@ def page_of(path, root, suffix):
 
 def read_record(path, root):
     """{page, date, converted, rules: {rule: (fail, review)}} from one first-pass record; a record
-    `kg check --first-pass` wrote names every rule that ran, one converted from a First pass table
+    `kg check` wrote names every rule that ran, one converted from a First pass table
     names only the rules that hit."""
     document = json.loads(path.read_text(encoding="utf-8"))
     counts = {}

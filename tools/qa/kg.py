@@ -63,29 +63,6 @@ def state_line(results, inputs, only=False):
     return f'== state: {state} ({reason})'
 
 
-def record_first_pass(page_path, results, inputs, only):
-    """Write this run's FAIL and review counts per rule to the first-pass record beside the
-    worksheet, once: an existing record is the page before any fix and is never overwritten."""
-    import datetime
-    from inputs import page_relative
-    if only is not None:
-        return 'first pass not recorded: a partial --only run is not a first pass'
-    path = inputs.first_pass_path
-    if path is None:
-        return 'first pass not recorded: no worksheet path for this page (pass --worksheet)'
-    if os.path.exists(path):
-        return f'first pass already recorded at {path}; not overwritten'
-    document = {'kg': 3, 'page': page_relative(page_path), 'date': datetime.date.today().isoformat(),
-                'page_digest': inputs.page_digest, 'qa_digest': inputs.qa_digest,
-                'rules': {r.rule.id: {'FAIL': r.fails, 'review': r.reviews, 'complete': not (r.skipped or r.error)}
-                          for r in results}}
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, 'w', encoding='utf-8') as out:
-        json.dump(document, out, indent=1)
-        out.write('\n')
-    return f'first pass recorded at {path}'
-
-
 def cmd_check(args):
     found, requirements, _sections, errors = load_rules(skill_dir())
     selected = rulebook.select(found, args.only)
@@ -101,14 +78,23 @@ def cmd_check(args):
     for entry, status in report.apply_exemptions(results, exemptions, page.lines):
         inputs.notes.append(f"{entry['text']}: {status}; exempts nothing")
     state, reason = page_state(results, inputs, args.only is not None)
-    if args.first_pass:
-        inputs.notes.append(record_first_pass(args.page, results, inputs, args.only))
+    previous = None
+    if args.only is None:
+        # a full run keeps the records: the first pass once the page is whole, the last run always
+        import records
+        note = records.record_first_pass(args.page, page, results, inputs)
+        if note:
+            inputs.notes.append(note)
+        if inputs.last_run_path:
+            previous = records.read_last_run(inputs.last_run_path)
+            records.record_last_run(args.page, results, inputs, records.keys_of(results))
     if args.json:
         checklist = [(item['slug'], *report.requirement_state(item, results)) for item in requirements] if args.checklist else None
         print(report.render_json(args.page, results, inputs, state, checklist))
     else:
         baseline = report.baseline_sentences(inputs.baseline) if inputs.baseline is not None else None
-        text, _tally = report.render_text(results, page.lines, baseline, inputs, f'== state: {state} ({reason})')
+        text, _tally = report.render_text(results, page.lines, baseline, inputs, f'== state: {state} ({reason})',
+                                          previous=previous)
         print(text)
         if args.checklist:
             print(report.render_checklist(requirements, results))
@@ -292,8 +278,6 @@ def main(argv=None):
     check.add_argument('--checklist', action='store_true')
     check.add_argument('--only', nargs='*', metavar='RULE')
     check.add_argument('--spec')
-    check.add_argument('--first-pass', action='store_true',
-                       help="record this run's FAIL and review counts per rule beside the worksheet, once, before any fix")
     check.set_defaults(func=cmd_check)
     view = sub.add_parser('view', help='print a page representation')
     view.add_argument('page')

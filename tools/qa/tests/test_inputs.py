@@ -83,6 +83,7 @@ class WorksheetPath(unittest.TestCase):
         inputs = self.resolve()
         self.assertEqual(inputs.worksheet_path, expected)
         self.assertEqual(inputs.first_pass_path, os.path.join(self.base, "progress", "kg", "kg", "ring.first-pass.json"))
+        self.assertEqual(inputs.last_run_path, os.path.join(self.base, "progress", "kg", "kg", "ring.last-run.json"))
         self.assertIsNone(inputs.worksheet)
         self.assertEqual(inputs.problems, [])
         self.assertTrue(any(n.startswith(f"no worksheet at {expected}") for n in inputs.notes), inputs.notes)
@@ -111,6 +112,7 @@ class WorksheetPath(unittest.TestCase):
         inputs = self.resolve(page=os.path.join(self.base, "page.md"))
         self.assertIsNone(inputs.worksheet_path)
         self.assertIsNone(inputs.first_pass_path)
+        self.assertIsNone(inputs.last_run_path)
         self.assertTrue(any("outside docs/" in n for n in inputs.notes), inputs.notes)
 
 

@@ -117,6 +117,16 @@ block added or removed against the baseline) is counted per rule and in the
 `== done` line and never printed, because a writer reads the report many times
 and the inventories are what a JSON reader asks for.
 
+A full run keeps two records beside the worksheet (`records.py`): the first
+pass, written on the first full run over a page that carries every template H2
+when the worksheet holds no LINTED record yet, and never overwritten, and the
+last run, written every time with the keys of
+its FAIL and review findings, a key being the rule, the severity and the
+message with the page positions taken out. The next full run prints its delta
+against the last-run record: the new findings in full, the standing FAILs
+marked, the standing reviews counted per rule, the gone findings counted at the
+end. `--only` prints everything it selects and touches no record.
+
 Execution completeness is separate from guideline judgment. A rule that emits
 nothing is `0 findings`, which does not say the requirement holds; `INCOMPLETE`
 means a required input was unavailable, `ERROR` a broken binding, an execution
@@ -294,7 +304,7 @@ neighbourhood a page cites.
 
 | Command | What it does |
 |---|---|
-| `check <page> [--only ID ...] [--json] [--checklist] [--first-pass] [--tree] [--worksheet] [--spec]` | runs the checks and prints findings, inventories and the page state; `--first-pass` also writes the run's counts per rule beside the worksheet, once |
+| `check <page> [--only ID ...] [--json] [--checklist] [--tree] [--worksheet] [--spec]` | runs the checks and prints the findings and the page state, the new ones since the last full run in full and the standing ones counted; a full run records the first pass once the page is whole and the last run every time, beside the worksheet |
 | `view <page> --regions / --prose / --raw / --spans-visible / --load` | prints a page representation, `--load` the reading-load measurements |
 | `skim <page>` | prints the reading path of DETAILS: the route, then each subsection's title, first sentence, recaps and last sentence |
 | `table <page>` | emits the worksheet's LINKS table |
@@ -405,9 +415,9 @@ rule changes its module and tests, and its guideline when the requirement
 changes; shared parsing grows only when another caller needs it.
 
 Retiring one rests on what the check found across pages, not on an impression.
-Before fixing anything, a writer runs `kg check --first-pass` once over the
-composed page, and the engine writes the FAIL and review counts per rule to the
-first-pass record beside the worksheet (worksheet.md [lint.first-pass]); with
+Before fixing anything, a writer runs `kg check` once over the whole composed
+page, and the engine writes the FAIL and review counts per rule to the
+first-pass record beside the worksheet, once (worksheet.md [lint.first-pass]); with
 the `EXEMPT` lines, every page then holds per rule what was found, what was
 fixed and what was judged a false hit, and `kg retro` sums them. The records
 live in the workspace and die with the machine like the worksheets, so a
